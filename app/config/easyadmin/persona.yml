@@ -1,0 +1,15 @@
+easy_admin:
+    entities:
+        Persona:
+            class: AppBundle\Entity\Persona
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'apellido' }
+                    - { property: 'dni' }
+                    - { property: 'fechaNacimiento' }
+                    - { property: 'telefono' }
+                    - { property: 'celular' }
+                    - { property: 'mail' }
+                    - { property: 'domicilioPersona' , type: 'collection' , type_options: { by_reference: false, type: AppBundle\Form\DomicilioPersonaType } }
+                    - { property: 'cargoPersona' , type: 'collection' , type_options: { by_reference: false, type: AppBundle\Form\CargoPersonaType } }

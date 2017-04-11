@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        TipoExpediente:
+            class: MesaEntradaBundle\Entity\TipoExpediente
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }

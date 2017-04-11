@@ -1,0 +1,3 @@
+mesa_entrada_homepage:
+    path:     /
+    defaults: { _controller: MesaEntradaBundle:Default:index }

@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        Cargo:
+            class: AppBundle\Entity\Cargo
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }

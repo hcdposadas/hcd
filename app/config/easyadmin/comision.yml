@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        Comision:
+            class: AppBundle\Entity\Comision
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }

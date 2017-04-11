@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        AreaAdministrativa:
+            class: AppBundle\Entity\AreaAdministrativa
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }

@@ -1,0 +1,51 @@
+#easy admin
+easy_admin:
+    disabled_actions: ['delete']
+    site_name: 'HCD - Posadas'
+    show:
+        max_results: 20
+    list:
+        actions:
+            - { name: 'show', icon: 'eye', label: '' }
+            - { name: 'edit', icon: 'pencil', label: '' }
+#            - { name: 'delete', icon: 'trash', label: '' }
+
+#    entities:
+#        Pais:
+#            class: Matudelatower\UbicacionBundle\Entity\Pais
+#        Provincia:
+#            class: Matudelatower\UbicacionBundle\Entity\Provincia
+#        Departamento:
+#            class: Matudelatower\UbicacionBundle\Entity\Departamento
+#        Localidad:
+#            class: Matudelatower\UbicacionBundle\Entity\Localidad
+
+    design:
+        brand_color: '#FF3300'
+        form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
+        menu:
+            - Expediente
+            - { label: 'Tipo Expediente', entity: TipoExpediente }
+            - Iniciador
+            - { label: 'Area Administrativa', entity: AreaAdministrativa }
+            - Bloque
+            - Comision
+            - Cargo
+            - Persona
+        assets:
+            favicon: 'bundles/app/img/favicon.png'
+#
+    assets:
+        css:
+#            - 'bundles/app/plugins/datepicker/datepicker3.css'
+#            - 'bundles/app/plugins/daterangepicker/daterangepicker.css'
+#            - 'bundles/app/plugins/timepicker/bootstrap-timepicker.min.css'
+#            - 'bundles/app/plugins/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css'
+#            - 'bundles/app/css/admin.css'
+        js:
+#            - "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"
+#            - 'bundles/app/plugins/daterangepicker/daterangepicker.js'
+#            - 'bundles/app/plugins/datepicker/bootstrap-datepicker.js'
+#            - 'bundles/app/plugins/datepicker/locales/bootstrap-datepicker.es.js'
+#            - 'bundles/app/plugins/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js'
+#            - 'bundles/app/js/admin.js'

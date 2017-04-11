@@ -1,0 +1,11 @@
+easy_admin:
+    entities:
+        Expediente:
+            class: MesaEntradaBundle\Entity\Expediente
+            form:
+                fields:
+                    - { property: 'tipoExpediente' }
+                    - { property: 'letra' }
+                    - { property: 'fecha' }
+                    - { property: 'iniciador' }
+                    - { property: 'expedienteExternoFile', type: 'vich_file' }

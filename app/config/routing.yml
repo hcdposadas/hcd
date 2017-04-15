@@ -1,10 +1,14 @@
+theme:
+    resource: "@ThemeBundle/Resources/config/routing.yml"
+    prefix:   /theme
+
 util:
     resource: "@UtilBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /util
 
 app:
     resource: "@AppBundle/Resources/config/routing.yml"
-    prefix:   /app
+    prefix:   /
 
 mesa_entrada:
     resource: "@MesaEntradaBundle/Resources/config/routing.yml"

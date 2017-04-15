@@ -6,3 +6,9 @@ easy_admin:
                 fields:
                     - { property: 'nombre' }
                     - { property: 'descripcion' }
+            edit:
+                title:  'Editar Área Administrativa'
+            new:
+                title:  'Alta Área Administrativa'
+            list:
+                title:  'Área Administrativa'

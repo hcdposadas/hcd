@@ -1,3 +1,7 @@
+mesa_entrada_expediente:
+    resource: "@MesaEntradaBundle/Resources/config/routing/expediente.yml"
+    prefix:   /expediente
+
 mesa_entrada_homepage:
     path:     /
     defaults: { _controller: MesaEntradaBundle:Default:index }

@@ -32,6 +32,7 @@ easy_admin:
             - Comision
             - Cargo
             - Persona
+            - { label: 'Usuarios', entity: Usuario }
         assets:
             favicon: 'bundles/app/img/favicon.png'
 #

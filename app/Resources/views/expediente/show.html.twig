@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Expediente</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ expediente.id }}</td>
+            </tr>
+            <tr>
+                <th>Textodefinitivo</th>
+                <td>{{ expediente.textoDefinitivo }}</td>
+            </tr>
+            <tr>
+                <th>Extracto</th>
+                <td>{{ expediente.extracto }}</td>
+            </tr>
+            <tr>
+                <th>Expediente</th>
+                <td>{{ expediente.expediente }}</td>
+            </tr>
+            <tr>
+                <th>Anio</th>
+                <td>{{ expediente.anio }}</td>
+            </tr>
+            <tr>
+                <th>Letra</th>
+                <td>{{ expediente.letra }}</td>
+            </tr>
+            <tr>
+                <th>Fecha</th>
+                <td>{% if expediente.fecha %}{{ expediente.fecha|date('Y-m-d') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Registromunicipal</th>
+                <td>{{ expediente.registroMunicipal }}</td>
+            </tr>
+            <tr>
+                <th>Expedienteinterno</th>
+                <td>{{ expediente.expedienteInterno }}</td>
+            </tr>
+            <tr>
+                <th>Expedienteexterno</th>
+                <td>{{ expediente.expedienteExterno }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{% if expediente.activo %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechacreacion</th>
+                <td>{% if expediente.fechaCreacion %}{{ expediente.fechaCreacion|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechaactualizacion</th>
+                <td>{% if expediente.fechaActualizacion %}{{ expediente.fechaActualizacion|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('expediente_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

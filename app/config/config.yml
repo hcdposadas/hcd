@@ -7,6 +7,7 @@ imports:
     - { resource: easyadmin/ }
     - { resource: "@AppBundle/Resources/config/services.yml" }
     - { resource: "@UtilBundle/Resources/config/services.yml" }
+    - { resource: "@ThemeBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -14,6 +15,7 @@ parameters:
     locale: es
     app.path.expedientes_internos: /uploads/expedientes/internos
     app.path.expedientes_externos: /uploads/expedientes/externos
+    app.path.dictamenes: /uploads/dictamenes/
 
 framework:
     #esi: ~
@@ -42,6 +44,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'bootstrap_3_layout.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -82,11 +86,18 @@ vich_uploader:
         expedientes_externos:
             uri_prefix: %app.path.expedientes_externos%
             upload_destination: %kernel.root_dir%/../web/uploads/expedientes/externos
+        dictamen:
+            uri_prefix: %app.path.dictamenes%
+            upload_destination: %kernel.root_dir%/../web/uploads/dictamenes
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: UsuariosBundle\Entity\Usuario
+    from_email:
+        address: "%mailer_user%"
+        sender_name: "%mailer_user%"
+
 
 #doctrine extentions
 stof_doctrine_extensions:
@@ -104,3 +115,12 @@ ivory_ck_editor:
     configs:
         my_config:
             toolbar: [ ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],  ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat'], '/', ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'], ['Styles', 'Format']  ]
+
+knp_menu:
+    # use "twig: false" to disable the Twig extension and the TwigRenderer
+    twig:
+        template: AppBundle:Menu:knp_menu.html.twig
+    #  if true, enables the helper for PHP templates
+    templating: false
+    # the renderer to use, list is also available by default
+    default_renderer: twig

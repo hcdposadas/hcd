@@ -1,0 +1,24 @@
+expediente_index:
+    path:     /
+    defaults: { _controller: "MesaEntradaBundle:Expediente:index" }
+    methods:  GET
+
+expediente_show:
+    path:     /{id}/show
+    defaults: { _controller: "MesaEntradaBundle:Expediente:show" }
+    methods:  GET
+
+expediente_new:
+    path:     /new
+    defaults: { _controller: "MesaEntradaBundle:Expediente:new" }
+    methods:  [GET, POST]
+
+expediente_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MesaEntradaBundle:Expediente:edit" }
+    methods:  [GET, POST]
+
+expediente_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MesaEntradaBundle:Expediente:delete" }
+    methods:  DELETE

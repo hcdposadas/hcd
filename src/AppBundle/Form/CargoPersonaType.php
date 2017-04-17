@@ -12,7 +12,9 @@ class CargoPersonaType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'cargo');
+			->add( 'cargo')
+			->add( 'areaAdministrativa')
+		;
 	}
 
 	/**

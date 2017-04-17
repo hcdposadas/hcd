@@ -37,6 +37,14 @@ class CargoPersona extends BaseClass {
 	 */
 	private $cargo;
 
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AreaAdministrativa")
+	 * @ORM\JoinColumn(name="area_administrativa_id", referencedColumnName="id")
+	 */
+	private $areaAdministrativa;
+
 
 	/**
 	 * Get id
@@ -142,4 +150,28 @@ class CargoPersona extends BaseClass {
 
 		return $this;
 	}
+
+    /**
+     * Set areaAdministrativa
+     *
+     * @param \AppBundle\Entity\AreaAdministrativa $areaAdministrativa
+     *
+     * @return CargoPersona
+     */
+    public function setAreaAdministrativa(\AppBundle\Entity\AreaAdministrativa $areaAdministrativa = null)
+    {
+        $this->areaAdministrativa = $areaAdministrativa;
+
+        return $this;
+    }
+
+    /**
+     * Get areaAdministrativa
+     *
+     * @return \AppBundle\Entity\AreaAdministrativa
+     */
+    public function getAreaAdministrativa()
+    {
+        return $this->areaAdministrativa;
+    }
 }

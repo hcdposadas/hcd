@@ -18,6 +18,7 @@ parameters:
     app.path.dictamenes: /uploads/dictamenes/
 
 framework:
+    ide: %ide%
     #esi: ~
     #translator: { fallbacks: ['%locale%'] }
     translator: ~
@@ -44,6 +45,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    globals:
+        version: %version%
     form_themes:
         - 'bootstrap_3_layout.html.twig'
 

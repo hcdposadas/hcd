@@ -66,7 +66,7 @@ class Expediente extends BaseClass {
 	private $fecha;
 
 	/**
-	 * @ORM\Column(name="registro_municipal", type="string", length=255)
+	 * @ORM\Column(name="registro_municipal", type="string", length=255, nullable=true)
 	 * @var string
 	 */
 	private $registroMunicipal;
@@ -88,7 +88,7 @@ class Expediente extends BaseClass {
 	private $iniciador;
 
 	/**
-	 * @ORM\Column(type="string", length=255)
+	 * @ORM\Column(type="string", length=255, nullable=true)
 	 * @var string
 	 */
 	private $expedienteInterno;
@@ -100,7 +100,7 @@ class Expediente extends BaseClass {
 	private $expedienteInternoFile;
 
 	/**
-	 * @ORM\Column(type="string", length=255)
+	 * @ORM\Column(type="string", length=255, nullable=true)
 	 * @var string
 	 */
 	private $expedienteExterno;
@@ -159,301 +159,315 @@ class Expediente extends BaseClass {
 		return $this->expedienteExterno;
 	}
 
+	/**
+	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+	 * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+	 * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+	 * must be able to accept an instance of 'File' as the bundle will inject one here
+	 * during Doctrine hydration.
+	 *
+	 * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+	 *
+	 * @return Expediente
+	 */
+	public function setExpedienteInternoFile( File $file = null ) {
+		$this->expedienteInternoFile = $file;
+
+		if ( $file ) {
+			// It is required that at least one field changes if you are using doctrine
+			// otherwise the event listeners won't be called and the file is lost
+//			$this->updatedAt = new \DateTimeImmutable();
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @return File|null
+	 */
+	public function getExpedienteInternoFile() {
+		return $this->expedienteInternoFile;
+	}
+
+	/**
+	 * @param string $expedienteInterno
+	 *
+	 * @return Expediente
+	 */
+	public function setExpedienteInterno( $expedienteInterno ) {
+		$this->expedienteInterno = $expedienteInterno;
+
+		return $this;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getExpedienteInterno() {
+		return $this->expedienteInterno;
+	}
+
 	public function __toString() {
 		return $this->letra;
 	}
 
 
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Set textoDefinitivo
+	 *
+	 * @param string $textoDefinitivo
+	 *
+	 * @return Expediente
+	 */
+	public function setTextoDefinitivo( $textoDefinitivo ) {
+		$this->textoDefinitivo = $textoDefinitivo;
 
-    /**
-     * Set textoDefinitivo
-     *
-     * @param string $textoDefinitivo
-     * @return Expediente
-     */
-    public function setTextoDefinitivo($textoDefinitivo)
-    {
-        $this->textoDefinitivo = $textoDefinitivo;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get textoDefinitivo
+	 *
+	 * @return string
+	 */
+	public function getTextoDefinitivo() {
+		return $this->textoDefinitivo;
+	}
 
-    /**
-     * Get textoDefinitivo
-     *
-     * @return string 
-     */
-    public function getTextoDefinitivo()
-    {
-        return $this->textoDefinitivo;
-    }
+	/**
+	 * Set extracto
+	 *
+	 * @param string $extracto
+	 *
+	 * @return Expediente
+	 */
+	public function setExtracto( $extracto ) {
+		$this->extracto = $extracto;
 
-    /**
-     * Set extracto
-     *
-     * @param string $extracto
-     * @return Expediente
-     */
-    public function setExtracto($extracto)
-    {
-        $this->extracto = $extracto;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get extracto
+	 *
+	 * @return string
+	 */
+	public function getExtracto() {
+		return $this->extracto;
+	}
 
-    /**
-     * Get extracto
-     *
-     * @return string 
-     */
-    public function getExtracto()
-    {
-        return $this->extracto;
-    }
+	/**
+	 * Set expediente
+	 *
+	 * @param string $expediente
+	 *
+	 * @return Expediente
+	 */
+	public function setExpediente( $expediente ) {
+		$this->expediente = $expediente;
 
-    /**
-     * Set expediente
-     *
-     * @param string $expediente
-     * @return Expediente
-     */
-    public function setExpediente($expediente)
-    {
-        $this->expediente = $expediente;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get expediente
+	 *
+	 * @return string
+	 */
+	public function getExpediente() {
+		return $this->expediente;
+	}
 
-    /**
-     * Get expediente
-     *
-     * @return string 
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
+	/**
+	 * Set anio
+	 *
+	 * @param string $anio
+	 *
+	 * @return Expediente
+	 */
+	public function setAnio( $anio ) {
+		$this->anio = $anio;
 
-    /**
-     * Set anio
-     *
-     * @param string $anio
-     * @return Expediente
-     */
-    public function setAnio($anio)
-    {
-        $this->anio = $anio;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get anio
+	 *
+	 * @return string
+	 */
+	public function getAnio() {
+		return $this->anio;
+	}
 
-    /**
-     * Get anio
-     *
-     * @return string 
-     */
-    public function getAnio()
-    {
-        return $this->anio;
-    }
+	/**
+	 * Set letra
+	 *
+	 * @param string $letra
+	 *
+	 * @return Expediente
+	 */
+	public function setLetra( $letra ) {
+		$this->letra = $letra;
 
-    /**
-     * Set letra
-     *
-     * @param string $letra
-     * @return Expediente
-     */
-    public function setLetra($letra)
-    {
-        $this->letra = $letra;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get letra
+	 *
+	 * @return string
+	 */
+	public function getLetra() {
+		return $this->letra;
+	}
 
-    /**
-     * Get letra
-     *
-     * @return string 
-     */
-    public function getLetra()
-    {
-        return $this->letra;
-    }
+	/**
+	 * Set fecha
+	 *
+	 * @param \DateTime $fecha
+	 *
+	 * @return Expediente
+	 */
+	public function setFecha( $fecha ) {
+		$this->fecha = $fecha;
 
-    /**
-     * Set fecha
-     *
-     * @param \DateTime $fecha
-     * @return Expediente
-     */
-    public function setFecha($fecha)
-    {
-        $this->fecha = $fecha;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get fecha
+	 *
+	 * @return \DateTime
+	 */
+	public function getFecha() {
+		return $this->fecha;
+	}
 
-    /**
-     * Get fecha
-     *
-     * @return \DateTime 
-     */
-    public function getFecha()
-    {
-        return $this->fecha;
-    }
+	/**
+	 * Set registroMunicipal
+	 *
+	 * @param string $registroMunicipal
+	 *
+	 * @return Expediente
+	 */
+	public function setRegistroMunicipal( $registroMunicipal ) {
+		$this->registroMunicipal = $registroMunicipal;
 
-    /**
-     * Set registroMunicipal
-     *
-     * @param string $registroMunicipal
-     * @return Expediente
-     */
-    public function setRegistroMunicipal($registroMunicipal)
-    {
-        $this->registroMunicipal = $registroMunicipal;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get registroMunicipal
+	 *
+	 * @return string
+	 */
+	public function getRegistroMunicipal() {
+		return $this->registroMunicipal;
+	}
 
-    /**
-     * Get registroMunicipal
-     *
-     * @return string 
-     */
-    public function getRegistroMunicipal()
-    {
-        return $this->registroMunicipal;
-    }
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return Expediente
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-    /**
-     * Set expedienteInterno
-     *
-     * @param string $expedienteInterno
-     * @return Expediente
-     */
-    public function setExpedienteInterno($expedienteInterno)
-    {
-        $this->expedienteInterno = $expedienteInterno;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return Expediente
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-    /**
-     * Get expedienteInterno
-     *
-     * @return string 
-     */
-    public function getExpedienteInterno()
-    {
-        return $this->expedienteInterno;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     * @return Expediente
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * Set tipoExpediente
+	 *
+	 * @param \MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente
+	 *
+	 * @return Expediente
+	 */
+	public function setTipoExpediente( \MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente = null ) {
+		$this->tipoExpediente = $tipoExpediente;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     * @return Expediente
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+	/**
+	 * Get tipoExpediente
+	 *
+	 * @return \MesaEntradaBundle\Entity\TipoExpediente
+	 */
+	public function getTipoExpediente() {
+		return $this->tipoExpediente;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set iniciador
+	 *
+	 * @param \MesaEntradaBundle\Entity\Iniciador $iniciador
+	 *
+	 * @return Expediente
+	 */
+	public function setIniciador( \MesaEntradaBundle\Entity\Iniciador $iniciador = null ) {
+		$this->iniciador = $iniciador;
 
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     * @return Expediente
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get iniciador
+	 *
+	 * @return \MesaEntradaBundle\Entity\Iniciador
+	 */
+	public function getIniciador() {
+		return $this->iniciador;
+	}
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     * @return Expediente
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return Expediente
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set tipoExpediente
-     *
-     * @param \MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente
-     * @return Expediente
-     */
-    public function setTipoExpediente(\MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente = null)
-    {
-        $this->tipoExpediente = $tipoExpediente;
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return Expediente
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-        return $this;
-    }
-
-    /**
-     * Get tipoExpediente
-     *
-     * @return \MesaEntradaBundle\Entity\TipoExpediente 
-     */
-    public function getTipoExpediente()
-    {
-        return $this->tipoExpediente;
-    }
-
-    /**
-     * Set iniciador
-     *
-     * @param \MesaEntradaBundle\Entity\Iniciador $iniciador
-     * @return Expediente
-     */
-    public function setIniciador(\MesaEntradaBundle\Entity\Iniciador $iniciador = null)
-    {
-        $this->iniciador = $iniciador;
-
-        return $this;
-    }
-
-    /**
-     * Get iniciador
-     *
-     * @return \MesaEntradaBundle\Entity\Iniciador 
-     */
-    public function getIniciador()
-    {
-        return $this->iniciador;
-    }
+		return $this;
+	}
 }

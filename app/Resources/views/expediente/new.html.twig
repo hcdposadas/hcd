@@ -36,6 +36,28 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
+                    {{ form_row(form.textoDefinitivo) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(form.expediente) }}
+                </div>
+            </div>
+            <div class="row expediente-externo">
+                <div class="col-md-12">
+                    {{ form_row(form.expedienteExternoFile) }}
+                </div>
+            </div>
+            <div class="row expediente-interno">
+                <div class="col-md-12">
+                    {{ form_row(form.expedienteInternoFile) }}
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
                     {{ form_widget(form) }}
                 </div>
             </div>
@@ -46,3 +68,24 @@
 
     <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
 {% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('.expediente-externo').hide();
+            $('.expediente-interno').hide();
+
+            $('.tipo-expediente').change(function () {
+                console.log($(".tipo-expediente option:selected").text());
+
+                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
+                    $('.expediente-interno').show();
+                    $('.expediente-externo').hide();
+                } else {
+                    $('.expediente-interno').hide();
+                    $('.expediente-externo').show();
+                }
+
+            })
+        });
+    </script>
+{% endblock javascripts %}

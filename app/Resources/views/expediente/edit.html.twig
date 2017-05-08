@@ -1,21 +1,91 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Expediente edit</h1>
+    <h1>Editar Expediente</h1>
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Expediente</h3>
+        </div>
+        <div class="box-body">
+            {{ form_start(edit_form) }}
+            <div class="row">
+                <div class="col-md-3">
+                    {{ form_row(edit_form.tipoExpediente) }}
+                </div>
+                <div class="col-md-1">
+                    {{ form_row(edit_form.anio) }}
+                </div>
+                <div class="col-md-1">
+                    {{ form_row(edit_form.letra) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(edit_form.fecha) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(edit_form.registroMunicipal) }}
+                </div>
 
-    {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(edit_form.iniciador) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(edit_form.extracto) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.textoDefinitivo) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.expediente) }}
+                </div>
+            </div>
+            <div class="row expediente-externo">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.expedienteExternoFile) }}
+                </div>
+            </div>
+            <div class="row expediente-interno">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.expedienteInternoFile) }}
+                </div>
+            </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('expediente_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_widget(edit_form) }}
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Crear"/>
+            {{ form_end(edit_form) }}
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
 {% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('.expediente-externo').hide();
+            $('.expediente-interno').hide();
+
+            $('.tipo-expediente').change(function () {
+                console.log($(".tipo-expediente option:selected").text());
+
+                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
+                    $('.expediente-interno').show();
+                    $('.expediente-externo').hide();
+                } else {
+                    $('.expediente-interno').hide();
+                    $('.expediente-externo').show();
+                }
+
+            })
+        });
+    </script>
+{% endblock javascripts %}

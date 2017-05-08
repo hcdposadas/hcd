@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ExpedienteType extends AbstractType {
 	/**
@@ -13,7 +14,11 @@ class ExpedienteType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'tipoExpediente' )
+			->add( 'tipoExpediente',
+				null,
+				[
+					'attr' => [ 'class' => 'tipo-expediente' ]
+				] )
 			->add( 'textoDefinitivo' )
 			->add( 'extracto' )
 			->add( 'expediente' )
@@ -25,12 +30,24 @@ class ExpedienteType extends AbstractType {
 					'widget' => 'single_text',
 					'format' => 'dd/MM/yyyy',
 					'attr'   => array(
-						'class'       => 'datepicker',
+						'class' => 'datepicker',
 					),
 				) )
 			->add( 'registroMunicipal' )
-			->add( 'expedienteInterno' )
-			->add( 'expedienteExterno' )
+			->add( 'expedienteInternoFile',
+				VichFileType::class,
+				[
+					'required'      => false,
+					'allow_delete'  => true, // optional, default is true
+					'download_link' => true, // optional, default is true
+				] )
+			->add( 'expedienteExternoFile',
+				VichFileType::class,
+				[
+					'required'      => false,
+					'allow_delete'  => true, // optional, default is true
+					'download_link' => true, // optional, default is true
+				] )
 			->add( 'iniciador' );
 	}
 

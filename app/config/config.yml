@@ -49,6 +49,8 @@ twig:
         version: %version%
     form_themes:
         - 'bootstrap_3_layout.html.twig'
+#        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
+        - 'UtilBundle:Form:fields.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -127,3 +129,13 @@ knp_menu:
     templating: false
     # the renderer to use, list is also available by default
     default_renderer: twig
+
+tetranz_select2_entity:
+    minimum_input_length: 2
+    page_limit: 8
+#    allow_clear: true
+#    delay: 500
+#    language: es
+#    cache: false
+#    cache_timeout: 0
+#    scroll: true

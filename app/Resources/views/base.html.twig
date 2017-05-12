@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('bundles/theme/plugins/datatables/dataTables.bootstrap.css') }}">
+    <!-- Select2 -->
+    {#<link rel="stylesheet" href="{{ asset('bundles/theme/plugins/select2/select2.min.css') }}">#}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/AdminLTE.min.css') }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -38,6 +41,8 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     {% block stylesheets %}{% endblock %}
+    <!-- jQuery 2.2.3 -->
+    <script src="{{ asset('bundles/theme/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
 </head>
 <body class="hold-transition skin-red sidebar-mini">
 <div class="wrapper">
@@ -102,6 +107,27 @@
         <!-- /.sidebar -->
     </aside>
 
+    {# modal #}
+    <div class="modal fade" id="modal-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">{{ "Aviso" |trans }}!</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Close'|trans }}</button>
+                    <a type="button" id="modal-btn-ok" class="btn btn-primary">Ok</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -124,7 +150,7 @@
         <div class="pull-right hidden-xs">
             <b>Version</b> {{ version }}
         </div>
-        <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">HCD - Posadas</a>.</strong>
+        <strong>Copyright &copy; {{ "now"|date("Y") }} <a href="http://almsaeedstudio.com">HCD - Posadas</a>.</strong>
     </footer>
     <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->
@@ -132,8 +158,6 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 2.2.3 -->
-<script src="{{ asset('bundles/theme/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -142,8 +166,9 @@
 </script>
 <!-- Bootstrap 3.3.6 -->
 <script src="{{ asset('bundles/theme/bootstrap/js/bootstrap.min.js') }}"></script>
-<!-- Morris.js charts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<!-- Select2 -->
+{#<script src="{{ asset('bundles/theme/plugins/select2/select2.full.min.js') }}"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <!-- Sparkline -->
 <script src="{{ asset('bundles/theme/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
 <!-- jvectormap -->
@@ -167,6 +192,7 @@
 <!-- DataTables -->
 <script src="{{ asset('bundles/theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bundles/theme/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+
 <script src="{{ asset('bundles/theme/js/app.js') }}"></script>
 
 {% block javascripts %}{% endblock %}

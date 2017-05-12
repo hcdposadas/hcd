@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use UtilBundle\Form\Type\BootstrapCollectionType;
+use UtilBundle\Form\Type\Select2EntityType;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ExpedienteType extends AbstractType {
@@ -17,12 +19,20 @@ class ExpedienteType extends AbstractType {
 			->add( 'tipoExpediente',
 				null,
 				[
-					'attr' => [ 'class' => 'tipo-expediente' ]
+					'attr' => [ 'class' => 'tipo-expediente select2' ]
 				] )
 			->add( 'textoDefinitivo' )
 			->add( 'extracto' )
-			->add( 'expediente' )
-			->add( 'anio' )
+			->add( 'expediente',
+				null,
+				[
+					'label' => 'N° expediente'
+				] )
+			->add( 'anio',
+				null,
+				[
+					'label' => 'Año'
+				] )
 			->add( 'letra' )
 			->add( 'fecha',
 				DateType::class,
@@ -48,7 +58,41 @@ class ExpedienteType extends AbstractType {
 					'allow_delete'  => true, // optional, default is true
 					'download_link' => true, // optional, default is true
 				] )
-			->add( 'iniciador' );
+//			->add( 'iniciador' )
+			->add( 'iniciador',
+				Select2EntityType::class,
+				[
+					'remote_route' => 'get_cargos_por_nombre',
+					'class'        => 'MesaEntradaBundle\Entity\Iniciador',
+					'required'     => false,
+
+				] )
+			->add( 'iniciadorParticular',
+				Select2EntityType::class,
+				[
+					'remote_route' => 'get_persona_por_dni',
+					'class'        => 'AppBundle\Entity\Persona',
+					'required'     => false,
+
+				] )
+			->add( 'giros',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
+
+			->add( 'giroAdministrativos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroAdministrativoType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
+		;
 	}
 
 	/**

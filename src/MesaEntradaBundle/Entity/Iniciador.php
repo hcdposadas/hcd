@@ -30,7 +30,16 @@ class Iniciador extends BaseClass {
 	private $persona;
 
 	public function __toString() {
-		return $this->persona->__toString();
+		$personaCargo = $this->persona->getCargoPersona()->first() . ' ' . $this->persona->__toString();
+
+		return $personaCargo;
+
+	}
+
+	public function getIniciadorString() {
+		$personaCargo = $this->persona->getCargoPersona()->first() . ' ' . $this->persona->__toString();
+
+		return $personaCargo;
 	}
 
 

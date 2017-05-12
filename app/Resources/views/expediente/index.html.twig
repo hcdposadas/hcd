@@ -11,15 +11,10 @@
                 <tr>
                     <th>Id</th>
                     <th>Expediente</th>
-                    <th>Anio</th>
+                    <th>Año</th>
                     <th>Letra</th>
                     <th>Fecha</th>
                     <th>Registro municipal</th>
-                    <th>Expediente interno</th>
-                    <th>Expediente externo</th>
-                    <th>Activo</th>
-                    <th>Fecha creacion</th>
-                    <th>Fecha actualizacion</th>
                     <th>Accion</th>
                 </tr>
                 </thead>
@@ -31,22 +26,17 @@
                         <td>{{ expediente.expediente }}</td>
                         <td>{{ expediente.anio }}</td>
                         <td>{{ expediente.letra }}</td>
-                        <td>{% if expediente.fecha %}{{ expediente.fecha|date('Y-m-d') }}{% endif %}</td>
+                        <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                         <td>{{ expediente.registroMunicipal }}</td>
-                        <td>{{ expediente.expedienteInterno }}</td>
-                        <td>{{ expediente.expedienteExterno }}</td>
-                        <td>{% if expediente.activo %}Yes{% else %}No{% endif %}</td>
-                        <td>{% if expediente.fechaCreacion %}{{ expediente.fechaCreacion|date('Y-m-d H:i:s') }}{% endif %}</td>
-                        <td>{% if expediente.fechaActualizacion %}{{ expediente.fechaActualizacion|date('Y-m-d H:i:s') }}{% endif %}</td>
+
                         <td>
-                            <ul>
-                                <li>
-                                    <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">show</a>
-                                </li>
-                                <li>
-                                    <a href="{{ path('expediente_edit', { 'id': expediente.id }) }}">edit</a>
-                                </li>
-                            </ul>
+                            <a class="btn btn-default" href="{{ path('expediente_show', { 'id': expediente.id }) }}">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a class="btn btn-default"
+                               href="{{ path('expediente_edit', { 'id': expediente.id }) }}">
+                                <i class="fa fa-edit"></i>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}

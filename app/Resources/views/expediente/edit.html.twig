@@ -12,7 +12,12 @@
                 <div class="col-md-3">
                     {{ form_row(edit_form.tipoExpediente) }}
                 </div>
-                <div class="col-md-1">
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    {{ form_row(edit_form.expediente) }}
+                </div>
+                <div class="col-md-2">
                     {{ form_row(edit_form.anio) }}
                 </div>
                 <div class="col-md-1">
@@ -29,6 +34,7 @@
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(edit_form.iniciador) }}
+                    {{ form_row(edit_form.iniciadorParticular) }}
                 </div>
                 <div class="col-md-6">
                     {{ form_row(edit_form.extracto) }}
@@ -39,11 +45,6 @@
                     {{ form_row(edit_form.textoDefinitivo) }}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    {{ form_row(edit_form.expediente) }}
-                </div>
-            </div>
             <div class="row expediente-externo">
                 <div class="col-md-12">
                     {{ form_row(edit_form.expedienteExternoFile) }}
@@ -52,6 +53,16 @@
             <div class="row expediente-interno">
                 <div class="col-md-12">
                     {{ form_row(edit_form.expedienteInternoFile) }}
+                </div>
+            </div>
+            <div class="row expediente-interno">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.giroAdministrativos) }}
+                </div>
+            </div>
+            <div class="row expediente-externo">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.giros) }}
                 </div>
             </div>
 
@@ -70,22 +81,61 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-        $(document).ready(function () {
-            $('.expediente-externo').hide();
-            $('.expediente-interno').hide();
 
-            $('.tipo-expediente').change(function () {
-                console.log($(".tipo-expediente option:selected").text());
-
-                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
-                    $('.expediente-interno').show();
-                    $('.expediente-externo').hide();
-                } else {
-                    $('.expediente-interno').hide();
-                    $('.expediente-externo').show();
-                }
-
-            })
+        $(document).on('change', '.area_cabecera', function () {
+            $('.area_cabecera').not(this).prop('checked', false);
         });
+
+        $(document).on('change', '.comision_cabecera', function () {
+            $('.comision_cabecera').not(this).prop('checked', false);
+        });
+
+        $(document).ready(function () {
+
+            $('.select2entity').each(function (index) {
+                $(this).select2({
+                    ajax: {
+                        url: $(this).data('rpath'),
+                        dataType: $(this).data('data-type'),
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page_limit: $(this).data('page-limit')
+                            };
+                        },
+                        processResults: function (data) {
+                            var myResults = [];
+                            $.each(data, function (index, item) {
+                                myResults.push({
+                                    'id': item.id,
+                                    'text': item.text
+                                });
+                            });
+                            return {
+                                results: myResults
+                            };
+                        }
+                    },
+                });
+            });
+
+            $(document).ready(function () {
+                $('.expediente-externo').hide();
+                $('.expediente-interno').hide();
+
+                $('.tipo-expediente').change(function () {
+                    console.log($(".tipo-expediente option:selected").text());
+
+                    if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
+                        $('.expediente-interno').show();
+                        $('.expediente-externo').hide();
+                    } else {
+                        $('.expediente-interno').hide();
+                        $('.expediente-externo').show();
+                    }
+
+                })
+            });
     </script>
 {% endblock javascripts %}

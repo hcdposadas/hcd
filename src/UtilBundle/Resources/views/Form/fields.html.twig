@@ -1,0 +1,138 @@
+{% block bootstrapcollection_widget %}
+    {% block javascripts %}
+
+        {% set itemsCount = form.vars.data is not null ? form  | length : 0 %}
+
+        <script type="text/javascript">
+
+            var itemCant{{ form.vars.id }} = {{ itemsCount | default(0) }};
+            $(document).ready(function () {
+
+                $('#{{ form.vars.id }} .bootstrapcollection-agregar-otro-item').click(function () {
+
+                    var itemList = $('#{{ form.vars.id }} table');
+                    if (itemList.find('tbody tr').length < {{ max_items_add }}) {
+
+                        var newWidget = itemList.data('prototype');
+                        newWidget = newWidget.replace(/{{ prototype_name }}/g, itemCant{{ form.vars.id }});
+                        var newTr = $('<tr item="' + itemCant{{ form.vars.id }} + '"></tr>').html(newWidget);
+                        itemCant{{ form.vars.id }}++;
+                        newTr.appendTo(itemList);
+                    }
+                    inicializarPlugins();
+                    $(this).trigger('clicked');
+                    return false;
+                });
+
+            });</script>
+    {% endblock javascripts %}
+
+    {% spaceless %}
+
+        {% set form_prototype %}
+            {% for widget_prototype in form.vars.prototype %}
+                <td>
+                    {{ form_errors(widget_prototype) }}
+                    {{ form_widget(widget_prototype) }}
+                </td>
+            {% endfor %}
+            <td class="cell-center">
+                <a class="btn btn-default" title="Borrar item"
+                   href="javascript:void(0)"
+                   onclick="bootstrapCollectionBorrarItem(this);">
+                    <i class="fa fa-fw fa-trash-o"></i>
+                </a>
+            </td>
+        {% endset %}
+
+        <div id="{{ form.vars.id }}">
+
+            <table class="table table-striped table-bordered"
+                   data-prototype="{{ form_prototype |e }}">
+
+                <thead>
+                <tr>
+                    {% for widget_prototype in form.vars.prototype %}
+                        <th>
+                            {{ widget_prototype.vars.label |default(widget_prototype.vars.name|humanize) }}
+                        </th>
+                    {% endfor %}
+                    <th style="width: 50px;">{{ 'Accion' |trans }}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for child in form %}
+                    <tr item="{{ loop.index0 }}" {% if child.vars.valid %} class="bootstrap-collection-history {% if not display_history %} hidden{% endif %}" {% endif %}>
+                        {% for widget in child %}
+                            <td>
+                                {{ form_errors(widget) }}
+                                {{ form_widget(widget) }}
+                            </td>
+                        {% endfor %}
+
+                        {% if child.vars.valid %}
+                            <td class="cell-center">
+                                {% if form.vars.allow_delete %}
+                                    <a class="btn btn-default" title="Borrar item"
+                                       href="javascript:void(0)"
+                                       onclick="bootstrapCollectionBorrarItem(this);">
+                                        <i class="fa fa-fw fa-trash-o"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td class="cell-center">
+                                <a class="btn btn-default"
+                                   title="Borrar item"
+                                   href="javascript:void(0)"
+                                   onclick="bootstrapCollectionBorrarItem(this);">
+                                    <i class="fa fa-fw fa-trash-o"></i>
+                                </a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+            {#{% if form.vars.max_items_add < (form.vars.data | length) %}#}
+            <div class="box-footer clearfix no-border">
+                <a class="btn btn-default pull-right bootstrapcollection-agregar-otro-item">
+                    <i class="fa fa-plus"></i> {{ 'Agregar' |trans }}</a>
+            </div>
+            {#{% endif %}#}
+            <br>
+        </div>
+    {% endspaceless %}
+{% endblock bootstrapcollection_widget %}
+{% block tetranz_select2entity_widget %}
+    {% set attr = attr|merge({
+    'data-multiple':multiple ? 1:0,
+    'data-rpath':remote_path,
+    'data-value':value,
+    'data-min-length':minimum_input_length,
+    'data-page-limit':page_limit,
+    'data-data-type':data_type,
+    'data-placeholder':placeholder
+    }) %}
+
+    {# Add class for jQuery for find it #}
+    {% set attr = attr|merge({ 'class': (attr.class|default('') ~ ' select2entity')|trim }) %}
+
+    {# A bit of a hack here.
+    It seems to work more smoothly if we put the initial value into data-value rather than the value attribute.
+    But ... value needs to be non-blank for initSelection in the js to fire.
+    We need to remove this value in EntitiesToPropertyTransformer #}
+    {% set value = 'x' %}
+
+    {#{% set type = type|default('hidden') %}#}
+    {#{{ block('form_widget_simple') }}#}
+    {% set expanded = false %}
+    {% set preferred_choices = {} %}
+    {% set choices = {} %}
+    {{ block('choice_widget') }}
+
+{% endblock %}

@@ -88,6 +88,12 @@ class Persona extends BaseClass {
 		return $this->nombre . ' ' . $this->apellido;
 	}
 
+	public function getNombreCompleto() {
+
+		return $this->nombre . ' ' . $this->apellido;
+
+	}
+
 	/**
 	 * Constructor
 	 */

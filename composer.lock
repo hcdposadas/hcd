@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "99f58ee3c6c86314d9078906e3608bb7",
+    "content-hash": "9d6252de1a296970f9ab5bab3f5adc1f",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2729,6 +2729,53 @@
                 "framework"
             ],
             "time": "2017-04-05T12:52:29+00:00"
+        },
+        {
+            "name": "tetranz/select2entity-bundle",
+            "version": "v1.1",
+            "target-dir": "Tetranz/Select2EntityBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tetranz/select2entity-bundle.git",
+                "reference": "df1b04463b6574ad0e7650553bf60b93776d5bcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tetranz/select2entity-bundle/zipball/df1b04463b6574ad0e7650553bf60b93776d5bcd",
+                "reference": "df1b04463b6574ad0e7650553bf60b93776d5bcd",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": ">=2.2",
+                "symfony/symfony": ">=2.2"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": []
+            },
+            "autoload": {
+                "psr-0": {
+                    "Tetranz\\Select2EntityBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ross Keatinge",
+                    "email": "tetranz@gmail.com"
+                }
+            ],
+            "description": "A Symfony2 bundle that integrates Select2 as a drop-in replacement for a standard entity field on a Symfony form.",
+            "keywords": [
+                "autocomplete",
+                "select2",
+                "symfony",
+                "typeahead"
+            ],
+            "time": "2015-10-07T02:44:05+00:00"
         },
         {
             "name": "twig/extensions",

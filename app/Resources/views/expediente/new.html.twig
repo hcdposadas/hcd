@@ -12,7 +12,12 @@
                 <div class="col-md-3">
                     {{ form_row(form.tipoExpediente) }}
                 </div>
-                <div class="col-md-1">
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    {{ form_row(form.expediente) }}
+                </div>
+                <div class="col-md-2">
                     {{ form_row(form.anio) }}
                 </div>
                 <div class="col-md-1">
@@ -29,6 +34,7 @@
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.iniciador) }}
+                    {{ form_row(form.iniciadorParticular) }}
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.extracto) }}
@@ -39,11 +45,6 @@
                     {{ form_row(form.textoDefinitivo) }}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    {{ form_row(form.expediente) }}
-                </div>
-            </div>
             <div class="row expediente-externo">
                 <div class="col-md-12">
                     {{ form_row(form.expedienteExternoFile) }}
@@ -52,6 +53,16 @@
             <div class="row expediente-interno">
                 <div class="col-md-12">
                     {{ form_row(form.expedienteInternoFile) }}
+                </div>
+            </div>
+            <div class="row expediente-interno">
+                <div class="col-md-12">
+                    {{ form_row(form.giroAdministrativos) }}
+                </div>
+            </div>
+            <div class="row expediente-externo">
+                <div class="col-md-12">
+                    {{ form_row(form.giros) }}
                 </div>
             </div>
 
@@ -69,8 +80,48 @@
     <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
+    {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
     <script>
+
+        $(document).on('change', '.area_cabecera', function () {
+            $('.area_cabecera').not(this).prop('checked', false);
+        });
+
+        $(document).on('change', '.comision_cabecera', function () {
+            $('.comision_cabecera').not(this).prop('checked', false);
+        });
+
         $(document).ready(function () {
+
+            $('.select2entity').each(function (index) {
+                $(this).select2({
+                    ajax: {
+                        url: $(this).data('rpath'),
+                        dataType: $(this).data('data-type'),
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page_limit: $(this).data('page-limit')
+                            };
+                        },
+                        processResults: function (data) {
+                            var myResults = [];
+                            $.each(data, function (index, item) {
+                                myResults.push({
+                                    'id': item.id,
+                                    'text': item.text
+                                });
+                            });
+                            return {
+                                results: myResults
+                            };
+                        }
+                    },
+                });
+            });
+
+
             $('.expediente-externo').hide();
             $('.expediente-interno').hide();
 
@@ -85,7 +136,7 @@
                     $('.expediente-externo').show();
                 }
 
-            })
+            });
         });
     </script>
 {% endblock javascripts %}

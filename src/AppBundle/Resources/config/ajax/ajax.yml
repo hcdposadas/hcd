@@ -1,0 +1,7 @@
+get_cargos_por_nombre:
+    path: /get_cargos_por_nombre
+    defaults: { _controller: "AppBundle:Ajax:getCargosPorNombre" }
+
+get_persona_por_dni:
+    path: /get_persona_por_dni
+    defaults: { _controller: "AppBundle:Ajax:getPersonaPorDni" }

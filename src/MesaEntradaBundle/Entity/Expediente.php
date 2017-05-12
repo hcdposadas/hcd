@@ -88,6 +88,30 @@ class Expediente extends BaseClass {
 	private $iniciador;
 
 	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Persona")
+	 * @ORM\JoinColumn(name="iniciador_particular_id", referencedColumnName="id")
+	 */
+	private $iniciadorParticular;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\GiroAdministrativo", mappedBy="expediente", cascade={"persist"})
+	 *
+	 */
+	private $giroAdministrativos;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Giro", mappedBy="expediente", cascade={"persist"})
+	 *
+	 */
+	private $giros;
+
+	/**
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 * @var string
 	 */
@@ -469,5 +493,103 @@ class Expediente extends BaseClass {
 		$this->actualizadoPor = $actualizadoPor;
 
 		return $this;
+	}
+
+	/**
+	 * Set iniciadorParticular
+	 *
+	 * @param \AppBundle\Entity\Persona $iniciadorParticular
+	 *
+	 * @return Expediente
+	 */
+	public function setIniciadorParticular( \AppBundle\Entity\Persona $iniciadorParticular = null ) {
+		$this->iniciadorParticular = $iniciadorParticular;
+
+		return $this;
+	}
+
+	/**
+	 * Get iniciadorParticular
+	 *
+	 * @return \AppBundle\Entity\Persona
+	 */
+	public function getIniciadorParticular() {
+		return $this->iniciadorParticular;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * Add giro
+	 *
+	 * @param \MesaEntradaBundle\Entity\Giro $giro
+	 *
+	 * @return Expediente
+	 */
+	public function addGiro( \MesaEntradaBundle\Entity\Giro $giro ) {
+
+		$giro->setExpediente( $this );
+
+		$this->giros->add( $giro );
+
+		return $this;
+	}
+
+	/**
+	 * Remove giro
+	 *
+	 * @param \MesaEntradaBundle\Entity\Giro $giro
+	 */
+	public function removeGiro( \MesaEntradaBundle\Entity\Giro $giro ) {
+		$this->giros->removeElement( $giro );
+	}
+
+	/**
+	 * Get giros
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getGiros() {
+		return $this->giros;
+	}
+
+	/**
+	 * Add giroAdministrativo
+	 *
+	 * @param \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo
+	 *
+	 * @return Expediente
+	 */
+	public function addGiroAdministrativo( \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo ) {
+
+		$giroAdministrativo->setExpediente( $this );
+
+		$this->giroAdministrativos->add( $giroAdministrativo );
+
+		return $this;
+	}
+
+	/**
+	 * Remove giroAdministrativo
+	 *
+	 * @param \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo
+	 */
+	public function removeGiroAdministrativo( \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo ) {
+		$this->giroAdministrativos->removeElement( $giroAdministrativo );
+	}
+
+	/**
+	 * Get giroAdministrativos
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getGiroAdministrativos() {
+		return $this->giroAdministrativos;
 	}
 }

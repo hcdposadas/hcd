@@ -88,7 +88,7 @@ class AjaxController extends Controller {
 				$json[] = array(
 					'id'   => $entity['id'],
 					//'label' => $entity[$property],
-					'text' => $entity['cargoPersona'][0]['cargo']['nombre'] . ' ' . $entity['nombre'] . ' ' . $entity['apellido']
+					'text' => $entity['persona']['cargoPersona'][0]['cargo']['nombre'] . ' ' . $entity['persona']['nombre'] . ' ' . $entity['persona']['apellido']
 				);
 			}
 		}

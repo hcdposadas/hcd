@@ -33,8 +33,12 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(edit_form.iniciador) }}
-                    {{ form_row(edit_form.iniciadorParticular) }}
+                    <div class="expediente-externo">
+                        {{ form_row(edit_form.iniciador) }}
+                    </div>
+                    <div class="expediente-interno">
+                        {{ form_row(edit_form.iniciadorParticular) }}
+                    </div>
                 </div>
                 <div class="col-md-6">
                     {{ form_row(edit_form.extracto) }}
@@ -120,22 +124,21 @@
                 });
             });
 
-            $(document).ready(function () {
-                $('.expediente-externo').hide();
-                $('.expediente-interno').hide();
+            $('.expediente-externo').hide();
+            $('.expediente-interno').hide();
 
-                $('.tipo-expediente').change(function () {
-                    console.log($(".tipo-expediente option:selected").text());
+            $('.tipo-expediente').change(function () {
+                console.log($(".tipo-expediente option:selected").text());
 
-                    if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
-                        $('.expediente-interno').show();
-                        $('.expediente-externo').hide();
-                    } else {
-                        $('.expediente-interno').hide();
-                        $('.expediente-externo').show();
-                    }
+                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
+                    $('.expediente-interno').show();
+                    $('.expediente-externo').hide();
+                } else {
+                    $('.expediente-interno').hide();
+                    $('.expediente-externo').show();
+                }
 
-                })
-            });
+            })
+        });
     </script>
 {% endblock javascripts %}

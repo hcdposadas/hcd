@@ -33,8 +33,12 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.iniciador) }}
-                    {{ form_row(form.iniciadorParticular) }}
+                    <div class="expediente-externo">
+                        {{ form_row(form.iniciador) }}
+                    </div>
+                    <div class="expediente-interno">
+                        {{ form_row(form.iniciadorParticular) }}
+                    </div>
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.extracto) }}

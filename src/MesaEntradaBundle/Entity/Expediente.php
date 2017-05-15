@@ -6,12 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use UtilBundle\Entity\Base\BaseClass;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Expediente
  *
  * @ORM\Table(name="expediente")
  * @Vich\Uploadable
+ * @UniqueEntity(
+ *     fields={"expediente", "anio", "letra"},
+ *     errorPath="expediente",
+ *     message="Ya existe el expediente en el año y con esta letra"
+ * )
  * @ORM\Entity(repositoryClass="MesaEntradaBundle\Repository\ExpedienteRepository")
  */
 class Expediente extends BaseClass {
@@ -41,7 +47,7 @@ class Expediente extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="expediente", type="string", length=255, unique=true)
+	 * @ORM\Column(name="expediente", type="string", length=255)
 	 */
 	private $expediente;
 

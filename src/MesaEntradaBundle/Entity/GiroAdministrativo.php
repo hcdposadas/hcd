@@ -22,13 +22,6 @@ class GiroAdministrativo extends BaseClass {
 	private $id;
 
 	/**
-	 * @var bool
-	 *
-	 * @ORM\Column(name="cabecera", type="boolean", nullable=true)
-	 */
-	private $cabecera;
-
-	/**
 	 * @var \DateTime
 	 *
 	 * @ORM\Column(name="fechaGiro", type="date")
@@ -70,30 +63,6 @@ class GiroAdministrativo extends BaseClass {
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set cabecera
-     *
-     * @param boolean $cabecera
-     *
-     * @return GiroAdministrativo
-     */
-    public function setCabecera($cabecera)
-    {
-        $this->cabecera = $cabecera;
-
-        return $this;
-    }
-
-    /**
-     * Get cabecera
-     *
-     * @return boolean
-     */
-    public function getCabecera()
-    {
-        return $this->cabecera;
     }
 
     /**

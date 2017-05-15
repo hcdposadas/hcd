@@ -23,11 +23,7 @@ class GiroAdministrativoType extends AbstractType {
 						'class' => 'datepicker',
 					),
 				) )
-			->add( 'cabecera',
-				null,
-				[
-					'attr' => [ 'class' => 'area_cabecera' ]
-				] );
+		;
 	}
 
 	/**

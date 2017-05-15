@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}
+    Expedientes
+{% endblock title %}
 {% block body %}
     <h1>Editar Expediente</h1>
     <div class="box">
@@ -76,7 +78,7 @@
                     {{ form_widget(edit_form) }}
                 </div>
             </div>
-            <input class="btn btn-primary" type="submit" value="Crear"/>
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
             {{ form_end(edit_form) }}
         </div>
     </div>
@@ -85,10 +87,6 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-
-        $(document).on('change', '.area_cabecera', function () {
-            $('.area_cabecera').not(this).prop('checked', false);
-        });
 
         $(document).on('change', '.comision_cabecera', function () {
             $('.comision_cabecera').not(this).prop('checked', false);
@@ -124,8 +122,11 @@
                 });
             });
 
-            $('.expediente-externo').hide();
-            $('.expediente-interno').hide();
+            {% if expediente.tipoExpediente.slug == 'interno' %}
+                $('.expediente-externo').hide();
+            {% elseif expediente.tipoExpediente.slug == 'externo' %}
+                $('.expediente-interno').hide();
+            {% endif %}
 
             $('.tipo-expediente').change(function () {
                 console.log($(".tipo-expediente option:selected").text());

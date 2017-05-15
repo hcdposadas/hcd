@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}
+    Expedientes
+{% endblock title %}
 {% block body %}
     <h1>Alta Expediente</h1>
     <div class="box">
@@ -86,10 +88,6 @@
 {% block javascripts %}
     {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
     <script>
-
-        $(document).on('change', '.area_cabecera', function () {
-            $('.area_cabecera').not(this).prop('checked', false);
-        });
 
         $(document).on('change', '.comision_cabecera', function () {
             $('.comision_cabecera').not(this).prop('checked', false);

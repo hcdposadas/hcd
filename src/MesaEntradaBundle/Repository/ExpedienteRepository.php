@@ -12,4 +12,25 @@ use Doctrine\ORM\EntityRepository;
  */
 class ExpedienteRepository extends EntityRepository
 {
+    public function search($data)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->where('e.expediente = :expediente');
+
+        $qb->setParameter('expediente', $data['expediente']);
+
+// ['tipoExpediente']
+// ['expediente']
+// ['anio']
+// ['letra']
+// ['fecha']
+// ['registroMunicipal']
+// ['areaAdministrativa']
+// ['iniciador'] =>
+// ['iniciadorParticular']
+
+        return $qb->getQuery()->getResult();
+
+    }
 }

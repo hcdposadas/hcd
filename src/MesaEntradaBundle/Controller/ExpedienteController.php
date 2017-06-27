@@ -3,6 +3,7 @@
 namespace MesaEntradaBundle\Controller;
 
 use MesaEntradaBundle\Entity\Expediente;
+use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -118,7 +119,38 @@ class ExpedienteController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('expediente_delete', array('id' => $expediente->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
+    }
+
+    public function seguimientoExpedienteAction(Request $request)
+    {
+
+        $filterForm = $this->createForm(SeguimientoExpedienteFilterType::class);
+        $expedientes = array();
+        if ($request->isMethod('post')) {
+            $filterForm->handleRequest($request);
+            $data = $filterForm->getData();
+            $em = $this->getDoctrine()->getManager();
+//            print_r($data);
+//            exit;
+            $expedientes = $em->getRepository('MesaEntradaBundle:Expediente')->search($data);
+
+        }
+
+        return $this->render('expediente/seguimiento.html.twig', array(
+            'filter_form' => $filterForm->createView(),
+            'entities' => $expedientes
+        ));
+    }
+
+    public function seguimientoExpedienteTimelineAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $expediente = $em->getRepository('MesaEntradaBundle:Expediente')->find($id);
+
+        return $this->render('expediente/timeline.html.twig', array(
+            'expediente' => $expediente
+        ));
+
     }
 }

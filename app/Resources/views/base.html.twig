@@ -131,12 +131,13 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                Dashboard
-                <small>Control panel</small>
-            </h1>
-        </section>
+        {% block contentHeader %}{% endblock %}
+        {#<section class="content-header">#}
+            {#<h1>#}
+                {#Dashboard#}
+                {#<small>Control panel</small>#}
+            {#</h1>#}
+        {#</section>#}
 
         <!-- Main content -->
         <section class="content">
@@ -150,7 +151,7 @@
         <div class="pull-right hidden-xs">
             <b>Version</b> {{ version }}
         </div>
-        <strong>Copyright &copy; {{ "now"|date("Y") }} <a href="http://almsaeedstudio.com">HCD - Posadas</a>.</strong>
+        <strong>Copyright &copy; {{ "now"|date("Y") }} <a href="https://hcdposadas.gob.ar">HCD - Posadas</a>.</strong>
     </footer>
     <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->

@@ -22,3 +22,11 @@ expediente_delete:
     path:     /{id}/delete
     defaults: { _controller: "MesaEntradaBundle:Expediente:delete" }
     methods:  DELETE
+
+expediente_seguimiento:
+    path:     /seguimiento
+    defaults: { _controller: "MesaEntradaBundle:Expediente:seguimientoExpediente" }
+
+expediente_timeline:
+    path:     /{id}/timeline
+    defaults: { _controller: "MesaEntradaBundle:Expediente:seguimientoExpedienteTimeline" }

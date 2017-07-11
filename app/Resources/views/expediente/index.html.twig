@@ -39,6 +39,9 @@
                                href="{{ path('expediente_edit', { 'id': expediente.id }) }}">
                                 <i class="fa fa-edit"></i>
                             </a>
+                            <a class="btn btn-default" href="{{ path('expediente_timeline', {id: expediente.id}) }}">
+                                <i class="fa fa-road"></i>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}

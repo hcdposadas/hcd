@@ -47,6 +47,7 @@ class ExpedienteType extends AbstractType {
 			->add( 'expedienteInternoFile',
 				VichFileType::class,
 				[
+					'label' => 'Archivo Expediente',
 					'required'      => false,
 					'allow_delete'  => true, // optional, default is true
 					'download_link' => true, // optional, default is true
@@ -54,6 +55,7 @@ class ExpedienteType extends AbstractType {
 			->add( 'expedienteExternoFile',
 				VichFileType::class,
 				[
+					'label' => 'Archivo Expediente',
 					'required'      => false,
 					'allow_delete'  => true, // optional, default is true
 					'download_link' => true, // optional, default is true

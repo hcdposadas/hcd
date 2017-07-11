@@ -31,7 +31,7 @@ class Giro extends BaseClass {
 	/**
 	 * @var \DateTime
 	 *
-	 * @ORM\Column(name="fechaGiro", type="date")
+	 * @ORM\Column(name="fecha_giro", type="date")
 	 */
 	private $fechaGiro;
 
@@ -59,7 +59,12 @@ class Giro extends BaseClass {
 	 */
 	private $expediente;
 
-
+	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="archivado", type="boolean", nullable=true)
+	 */
+	private $archivado;
 
     /**
      * Get id
@@ -245,5 +250,29 @@ class Giro extends BaseClass {
         $this->actualizadoPor = $actualizadoPor;
 
         return $this;
+    }
+
+    /**
+     * Set archivado
+     *
+     * @param boolean $archivado
+     *
+     * @return Giro
+     */
+    public function setArchivado($archivado)
+    {
+        $this->archivado = $archivado;
+
+        return $this;
+    }
+
+    /**
+     * Get archivado
+     *
+     * @return boolean
+     */
+    public function getArchivado()
+    {
+        return $this->archivado;
     }
 }

@@ -24,7 +24,7 @@ class GiroAdministrativo extends BaseClass {
 	/**
 	 * @var \DateTime
 	 *
-	 * @ORM\Column(name="fechaGiro", type="date")
+	 * @ORM\Column(name="fecha_giro", type="date")
 	 */
 	private $fechaGiro;
 

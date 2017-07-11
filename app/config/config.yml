@@ -18,7 +18,7 @@ parameters:
     app.path.dictamenes: /uploads/dictamenes/
 
 framework:
-    ide: %ide%
+    ide: "%ide%"
     #esi: ~
     #translator: { fallbacks: ['%locale%'] }
     translator: ~
@@ -34,7 +34,6 @@ framework:
         engines: ['twig']
     default_locale: '%locale%'
     trusted_hosts: ~
-    trusted_proxies: ~
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id: ~
@@ -46,7 +45,7 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
-        version: %version%
+        version: "%version%"
     form_themes:
         - 'bootstrap_3_layout.html.twig'
 #        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
@@ -86,14 +85,14 @@ vich_uploader:
     db_driver: orm
     mappings:
         expedientes_internos:
-            uri_prefix: %app.path.expedientes_internos%
-            upload_destination: %kernel.root_dir%/../web/uploads/expedientes/internos
+            uri_prefix: "%app.path.expedientes_internos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/expedientes/internos"
         expedientes_externos:
-            uri_prefix: %app.path.expedientes_externos%
-            upload_destination: %kernel.root_dir%/../web/uploads/expedientes/externos
+            uri_prefix: "%app.path.expedientes_externos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/expedientes/externos"
         dictamen:
-            uri_prefix: %app.path.dictamenes%
-            upload_destination: %kernel.root_dir%/../web/uploads/dictamenes
+            uri_prefix: "%app.path.dictamenes%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/dictamenes"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

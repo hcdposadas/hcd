@@ -6,17 +6,17 @@ services:
     form.type.bootstrapcollection:
         class: UtilBundle\Form\Type\BootstrapCollectionType
         arguments:
-            entityManager: "@doctrine.orm.entity_manager"
+            - "@doctrine.orm.entity_manager"
         tags:
             - { name: form.type, alias: bootstrapcollection }
 
     tetranz_select2entity.select2entity_type:
             class: UtilBundle\Form\Type\Select2EntityType
             arguments:
-                em: "@doctrine.orm.entity_manager"
-                router: "@router"
-                minimumInputLength: %tetranz_select2_entity.minimum_input_length%
-                pageLimit: %tetranz_select2_entity.page_limit%
-                dataType: %tetranz_select2_entity.data_type%
+                - "@doctrine.orm.entity_manager"
+                - "@router"
+                - "%tetranz_select2_entity.minimum_input_length%"
+                - "%tetranz_select2_entity.page_limit%"
+                - "%tetranz_select2_entity.data_type%"
             tags:
                 - { name: form.type, alias: tetranz_select2entity }

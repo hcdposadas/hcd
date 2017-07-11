@@ -13,6 +13,7 @@ $(document).ready(function () {
             "zeroRecords": "Sin resultados"
         }
     });
+    $('.select2').select2();
     inicializarPlugins();
 });
 
@@ -22,7 +23,7 @@ function inicializarPlugins() {
         language: "es",
         autoclose: true
     });
-    $('.select2').select2();
+    $('.bootstrapcollection .select2').select2();
 }
 
 function modalAlert(msg) {

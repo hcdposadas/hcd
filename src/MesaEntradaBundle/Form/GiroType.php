@@ -13,7 +13,11 @@ class GiroType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'comisionDestino' )
+			->add( 'comisionDestino',
+				null,
+				[
+					'attr' => [ 'class' => 'select2' ]
+				] )
 			->add( 'fechaGiro',
 				DateType::class,
 				array(

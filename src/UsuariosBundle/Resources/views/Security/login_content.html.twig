@@ -9,7 +9,14 @@
         <p class="login-box-msg">Inicie Sesión</p>
 
         {% if error %}
-            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            <div class="alert alert-danger alert-dismissable">
+                <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
+                <h4>
+                    <i class="icon fa fa-ban"></i>
+                    Error!
+                </h4>
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
         {% endif %}
 
         <form action="{{ path("fos_user_security_check") }}" method="post">
@@ -30,16 +37,16 @@
             <div class="row">
                 <div class="col-xs-8">
                     {#<div class="checkbox icheck">#}
-                        {#<label>#}
-                            {#<input type="checkbox" id="remember_me" name="_remember_me" value="on">#}
-                            {#{{ 'security.login.remember_me'|trans }}#}
-                        {#</label>#}
+                    {#<label>#}
+                    {#<input type="checkbox" id="remember_me" name="_remember_me" value="on">#}
+                    {#{{ 'security.login.remember_me'|trans }}#}
+                    {#</label>#}
                     {#</div>#}
                 </div>
                 <!-- /.col -->
                 <div class="col-xs-4">
                     <input type="submit" name="_submit" class="btn btn-primary btn-block btn-flat"
-                           value="{{ 'security.login.submit'|trans }}" />
+                           value="{{ 'security.login.submit'|trans }}"/>
                 </div>
                 <!-- /.col -->
             </div>

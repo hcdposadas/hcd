@@ -67,6 +67,7 @@ class ExpedienteType extends AbstractType {
 					'remote_route' => 'get_cargos_por_nombre',
 					'class'        => 'MesaEntradaBundle\Entity\Iniciador',
 					'required'     => false,
+					'placeholder'=> 'Por Nombre'
 
 				] )
 			->add( 'iniciadorParticular',
@@ -75,6 +76,7 @@ class ExpedienteType extends AbstractType {
 					'remote_route' => 'get_persona_por_dni',
 					'class'        => 'AppBundle\Entity\Persona',
 					'required'     => false,
+					'placeholder'=> 'Por DNI'
 
 				] )
 			->add( 'giros',

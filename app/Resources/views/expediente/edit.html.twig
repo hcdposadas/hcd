@@ -3,6 +3,29 @@
     Expedientes
 {% endblock title %}
 {% block body %}
+
+    {# modal add persona #}
+    <div class="modal fade" id="modal-add-persona" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">{{ "Alta Persona" |trans }}!</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Cerrar'|trans }}</button>
+                    <a type="button" id="modal-add-persona-btn-ok" class="btn btn-primary">Ok</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# modal add persona #}
+
     <h1>Editar Expediente</h1>
     <div class="box">
         <div class="box-header">
@@ -35,11 +58,16 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <div class="expediente-externo">
+                    {#<div class="expediente-externo">#}
+                    <div>
                         {{ form_row(edit_form.iniciador) }}
                     </div>
-                    <div class="expediente-interno">
+                    {#<div class="expediente-interno">#}
+                    <div>
                         {{ form_row(edit_form.iniciadorParticular) }}
+                        <button type="button" class="btn btn-default btn-add-persona">
+                            <i class="fa fa-plus"></i> Agregar Persona
+                        </button>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -123,9 +151,9 @@
             });
 
             {% if expediente.tipoExpediente.slug == 'interno' %}
-                $('.expediente-externo').hide();
+            $('.expediente-externo').hide();
             {% elseif expediente.tipoExpediente.slug == 'externo' %}
-                $('.expediente-interno').hide();
+            $('.expediente-interno').hide();
             {% endif %}
 
             $('.tipo-expediente').change(function () {
@@ -139,7 +167,43 @@
                     $('.expediente-externo').show();
                 }
 
-            })
+            });
+
+            $('.btn-add-persona').click(function () {
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("form_persona") }}',
+                    success: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        $('#modal-add-persona').modal('toggle');
+                        inicializarPlugins();
+                    }
+                });
+            });
+
+            $('#modal-add-persona-btn-ok').click(function () {
+
+                var data = $('form[name="appbundle_persona"]').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("form_persona") }}',
+                    data: data,
+                    success: function (data) {
+                        $('#modal-add-persona').modal('toggle');
+                        modalAlert(data.mensaje);
+                    },
+                    error: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                    500: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                });
+            });
         });
     </script>
 {% endblock javascripts %}

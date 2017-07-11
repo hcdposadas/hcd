@@ -1,3 +1,7 @@
+form_persona:
+    path: /form_persona
+    defaults: { _controller: "AppBundle:Ajax:formPersona" }
+
 get_cargos_por_nombre:
     path: /get_cargos_por_nombre
     defaults: { _controller: "AppBundle:Ajax:getCargosPorNombre" }

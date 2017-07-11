@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Persona;
+use AppBundle\Form\PersonaType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,5 +96,31 @@ class AjaxController extends Controller {
 		}
 
 		return new JsonResponse( $json );
+	}
+
+	public function formPersonaAction( Request $request ) {
+
+		$persona = new Persona();
+		$form    = $this->createForm( PersonaType::class, $persona );
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$em->persist( $persona );
+			$em->flush();
+
+			return new JsonResponse( [ 'mensaje' => 'Persona Guardada Correctamente' ] );
+		}
+		$responseStatus = 200;
+		if ( $request->getMethod() == 'POST' ) {
+			$responseStatus = 500;
+		}
+
+		$formHtml = $this->renderView( '@App/Ajax/form_persona.html.twig',
+			array(
+				'form' => $form->createView()
+			) );
+
+		return new JsonResponse( [ 'form' => $formHtml ], $responseStatus );
 	}
 }

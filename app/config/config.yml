@@ -138,3 +138,9 @@ tetranz_select2_entity:
 #    cache: false
 #    cache_timeout: 0
 #    scroll: true
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     %kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64
+

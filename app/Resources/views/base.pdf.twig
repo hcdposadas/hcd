@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link href="{{ asset('favicon.ico',null, true) }}" rel="shortcut icon">
+    <style>
+        body {
+            font-family: SourceSansPro;
+            font-size: 14pt;
+        }
+        table {
+            border-collapse: collapse;
+        }
+
+        table, th {
+            border: 2px solid black;
+        }
+
+        table, td {
+            border: 1px solid black;
+        }
+
+        .titulo-reporte {
+            text-align: center;
+        }
+
+
+    </style>
+    {% block stylesheets %}
+    {% endblock stylesheets %}
+</head>
+<body>
+<h2 class="titulo-reporte">{{ title }}</h2>
+{% block body %}
+{% endblock %}
+
+
+</div>
+</body>
+</html>

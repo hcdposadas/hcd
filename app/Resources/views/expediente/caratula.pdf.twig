@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Carátula</title>
+    <style>
+
+        h1 {
+            font-size: 16pt;
+        }
+
+        h2 {
+            font-size: 14pt;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .logo-hcd {
+            width: 15%;
+            height: auto;
+        }
+
+        .tabla {
+            margin-top: 5%;
+            width: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td {
+            padding-top: .5em;
+            padding-bottom: .5em;
+        }
+
+        table td {
+            font-size: 10pt;
+        }
+
+        table td {
+            vertical-align: top;
+        }
+
+        table tr {
+            padding: 15px;
+        }
+
+        td.td-text-left {
+            text-align: left;
+        }
+
+        td.td-text-right {
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+<h1 class="text-center">HONORABLE CONCEJO DELIBERANTE</h1>
+
+<div class="text-center">
+    <figure>
+        <img src="{{ absolute_url(asset('apple-touch-icon.png')) }}" alt="HCD Logo" class="logo-hcd">
+    </figure>
+</div>
+<h2 class="text-center">Municipalidad de la Ciudad de Posadas</h2>
+<h2 class="text-center"><strong>PROVINCIA DE MISIONES</strong></h2>
+
+<div class="tabla">
+    <table>
+        <tr>
+            <td>EXPEDIENTE:</td>
+            <td class="td-text-left"><strong>{{ expediente.expediente }}</strong></td>
+            <td class="td-text-right">LETRA:</td>
+            <td class="td-text-left"><strong>{{ expediente.letra }}</strong></td>
+            <td class="td-text-right">FECHA:</td>
+            <td class="td-text-left"><strong>{{ expediente.fecha | date('d/m/Y') }}</strong></td>
+        </tr>
+        <tr>
+            <td>INICIADOR:</td>
+            <td colspan="5"><strong>{{ expediente.iniciador }}</strong></td>
+        </tr>
+        <tr>
+            <td>EXTRACTO:</td>
+            <td colspan="5"><strong>{{ expediente.extracto }}</strong></td>
+        </tr>
+    </table>
+</div>
+<hr>
+
+</body>
+</html>

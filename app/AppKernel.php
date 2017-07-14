@@ -27,6 +27,7 @@ class AppKernel extends Kernel
 			new ThemeBundle\ThemeBundle(),
 			new Knp\Bundle\MenuBundle\KnpMenuBundle(),
 			new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
+            new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
 		];
 
 		if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

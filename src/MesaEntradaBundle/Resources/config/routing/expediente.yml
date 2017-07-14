@@ -30,3 +30,7 @@ expediente_seguimiento:
 expediente_timeline:
     path:     /{id}/timeline
     defaults: { _controller: "MesaEntradaBundle:Expediente:seguimientoExpedienteTimeline" }
+
+expediente_imprimir_caratula:
+    path:     /{id}/expediente_imprimir_caratula
+    defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirCaratula" }

@@ -2,3 +2,6 @@ services:
 #    app.example:
 #        class: AppBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+    manager.reportes:
+        class: AppBundle\Services\ReportesManager
+        arguments: ["@doctrine","@security.token_storage", "@router", "@assets.packages", "@knp_snappy.pdf"]

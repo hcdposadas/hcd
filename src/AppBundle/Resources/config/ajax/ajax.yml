@@ -1,6 +1,14 @@
+form_dependencia:
+    path: /form_dependencia
+    defaults: { _controller: "AppBundle:Ajax:formDependencia" }
+
 form_persona:
     path: /form_persona
     defaults: { _controller: "AppBundle:Ajax:formPersona" }
+
+get_dependencias_por_nombre:
+    path: /get_dependencias_por_nombre
+    defaults: { _controller: "AppBundle:Ajax:getDependenciaPorNombre" }
 
 get_cargos_por_nombre:
     path: /get_cargos_por_nombre

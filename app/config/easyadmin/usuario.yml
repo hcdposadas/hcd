@@ -16,4 +16,12 @@ easy_admin:
 #                    - lastLogin
                     # if administrators are allowed to edit users' passwords and roles, add this:
                     - { property: 'plainPassword', type: 'text', type_options: { required: false } }
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN', 'ROLE_CONCEJAL': 'ROLE_CONCEJAL', 'ROLE_MESA_ENTRADA': 'ROLE_MESA_ENTRADA' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices:
+                      { 'ROLE_USER': 'ROLE_USER',
+                        'ROLE_ADMIN': 'ROLE_ADMIN',
+                        'ROLE_CONCEJAL': 'ROLE_CONCEJAL',
+                        'ROLE_MESA_ENTRADA': 'ROLE_MESA_ENTRADA',
+                        'ROLE_PERSONAL': 'ROLE_PERSONAL',
+                      }
+                      }
+                      }

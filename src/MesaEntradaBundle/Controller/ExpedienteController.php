@@ -18,11 +18,19 @@ class ExpedienteController extends Controller
      * Lists all expediente entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $expedientes = $em->getRepository('MesaEntradaBundle:Expediente')->findAll();
+        $expedientes = $em->getRepository('MesaEntradaBundle:Expediente')->getQbAll();
+
+	    $paginator = $this->get( 'knp_paginator' );
+
+	    $expedientes  = $paginator->paginate(
+		    $expedientes,
+		    $request->query->get( 'page', 1 )/* page number */,
+		    10/* limit per page */
+	    );
 
         return $this->render('expediente/index.html.twig',
             array(

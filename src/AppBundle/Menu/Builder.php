@@ -39,18 +39,39 @@ class Builder implements ContainerAwareInterface {
 				)
 			)
 			     ->setUri( '#' )
-			     ->setExtra( 'icon', 'fa fa-building' )
+			     ->setExtra( 'icon', 'fa fa-exchange' )
 			     ->setAttribute( 'class', 'treeview' );
 
 			$menu[ $keyEmpresa ]
 				->addChild(
-					'Expediente',
+					'Expedientes',
 					array(
 						'route' => 'expediente_index',
 					)
 				);
 		}
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
 
+			$keyPersonal = 'PERSONAL';
+			$menu->addChild(
+				$keyPersonal,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-users' )
+			     ->setAttribute( 'class', 'treeview' );
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Personas',
+					array(
+						'route' => 'persona_index',
+					)
+				);
+		}
 
 //		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_EMPRESA' ) ) {
 //

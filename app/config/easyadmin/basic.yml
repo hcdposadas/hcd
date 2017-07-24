@@ -31,7 +31,9 @@ easy_admin:
             - Bloque
             - Comision
             - Cargo
+            - Dependencia
             - Persona
+            - { label: 'Tipo Relación Persona', entity: TipoRelacionPersona }
             - { label: 'Usuarios', entity: Usuario }
         assets:
             favicon: 'bundles/app/img/favicon.png'

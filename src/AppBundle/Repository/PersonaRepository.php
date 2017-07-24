@@ -26,4 +26,9 @@ class PersonaRepository extends EntityRepository {
 		}
 	}
 
+	public function getQbAll(  ) {
+		$qb = $this->createQueryBuilder( 'p' );
+		return $qb;
+	}
+
 }

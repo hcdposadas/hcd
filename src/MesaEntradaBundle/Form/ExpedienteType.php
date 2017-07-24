@@ -50,7 +50,7 @@ class ExpedienteType extends AbstractType {
 					'label' => 'Archivo Expediente',
 					'required'      => false,
 					'allow_delete'  => true, // optional, default is true
-					'download_link' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
 				] )
 			->add( 'expedienteExternoFile',
 				VichFileType::class,
@@ -58,7 +58,7 @@ class ExpedienteType extends AbstractType {
 					'label' => 'Archivo Expediente',
 					'required'      => false,
 					'allow_delete'  => true, // optional, default is true
-					'download_link' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
 				] )
 //			->add( 'iniciador' )
 			->add( 'iniciador',
@@ -77,6 +77,15 @@ class ExpedienteType extends AbstractType {
 					'class'        => 'AppBundle\Entity\Persona',
 					'required'     => false,
 					'placeholder'=> 'Por DNI'
+
+				] )
+			->add( 'dependencia',
+				Select2EntityType::class,
+				[
+					'remote_route' => 'get_dependencias_por_nombre',
+					'class'        => 'AppBundle\Entity\Dependencia',
+					'required'     => false,
+					'placeholder'=> 'Por Nombre'
 
 				] )
 			->add( 'giros',

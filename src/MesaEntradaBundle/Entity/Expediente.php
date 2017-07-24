@@ -104,6 +104,14 @@ class Expediente extends BaseClass {
 	/**
 	 * @var
 	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Dependencia")
+	 * @ORM\JoinColumn(name="dependencia_id", referencedColumnName="id")
+	 */
+	private $dependencia;
+
+	/**
+	 * @var
+	 *
 	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\GiroAdministrativo", mappedBy="expediente", cascade={"persist"})
 	 *
 	 */
@@ -598,4 +606,28 @@ class Expediente extends BaseClass {
 	public function getGiroAdministrativos() {
 		return $this->giroAdministrativos;
 	}
+
+    /**
+     * Set dependencia
+     *
+     * @param \AppBundle\Entity\Dependencia $dependencia
+     *
+     * @return Expediente
+     */
+    public function setDependencia(\AppBundle\Entity\Dependencia $dependencia = null)
+    {
+        $this->dependencia = $dependencia;
+
+        return $this;
+    }
+
+    /**
+     * Get dependencia
+     *
+     * @return \AppBundle\Entity\Dependencia
+     */
+    public function getDependencia()
+    {
+        return $this->dependencia;
+    }
 }

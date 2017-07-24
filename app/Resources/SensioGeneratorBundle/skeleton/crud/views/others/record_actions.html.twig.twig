@@ -1,0 +1,23 @@
+
+<a class="btn btn-default" href="{{ "{{ path('" ~ route_name_prefix ~ "_index') }}" }}">Volver</a>
+
+
+{%- if ('edit' in actions) and (not hide_edit) %}
+
+
+    <a class="btn btn-default" href="{{ "{{ path('" ~ route_name_prefix ~ "_edit', { '"~ identifier ~"': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}">Editar</a>
+
+
+{%- endif %}
+
+{%- if ('delete' in actions) and (not hide_delete) %}
+
+
+    {{ '{{ form_start(delete_form) }}' }}
+        <input class="btn btn-danger" type="submit" value="Eliminar">
+    {{ '{{ form_end(delete_form) }}' }}
+
+
+{%- endif %}
+
+

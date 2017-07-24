@@ -5,25 +5,8 @@
 {% block body %}
 
     {# modal add persona #}
-    <div class="modal fade" id="modal-add-persona" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">{{ "Alta Persona" |trans }}!</h4>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Cerrar'|trans }}</button>
-                    <a type="button" id="modal-add-persona-btn-ok" class="btn btn-primary">Ok</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'default/modal_add_persona.html.twig' %}
+    {% include 'default/modal_add_dependencia.html.twig' %}
     {# modal add persona #}
 
     <h1>Editar Expediente</h1>
@@ -67,6 +50,12 @@
                         {{ form_row(edit_form.iniciadorParticular) }}
                         <button type="button" class="btn btn-default btn-add-persona">
                             <i class="fa fa-plus"></i> Agregar Persona
+                        </button>
+                    </div>
+                    <div>
+                        {{ form_row(edit_form.dependencia) }}
+                        <button type="button" class="btn btn-default btn-add-dependencia">
+                            <i class="fa fa-plus"></i> Agregar Dependencia
                         </button>
                     </div>
                 </div>
@@ -200,6 +189,42 @@
                     },
                     500: function (data) {
                         $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                });
+            });
+
+            $('.btn-add-dependencia').click(function () {
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("form_dependencia") }}',
+                    success: function (data) {
+                        $('#modal-add-dependencia .modal-body').html(data.form);
+                        $('#modal-add-dependencia').modal('toggle');
+                        inicializarPlugins();
+                    }
+                });
+            });
+
+            $('#modal-add-dependencia-btn-ok').click(function () {
+
+                var data = $('form[name="appbundle_dependencia"]').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("form_dependencia") }}',
+                    data: data,
+                    success: function (data) {
+                        $('#modal-add-dependencia').modal('toggle');
+                        modalAlert(data.mensaje);
+                    },
+                    error: function (data) {
+                        $('#modal-add-dependencia .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                    500: function (data) {
+                        $('#modal-add-dependencia .modal-body').html(data.form);
                         inicializarPlugins();
                     },
                 });

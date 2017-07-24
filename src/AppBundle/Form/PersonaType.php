@@ -24,9 +24,7 @@ class PersonaType extends AbstractType {
 					        'class' => 'datepicker',
 				        ),
 			        ) )
-		        ->add( 'telefono' )
-		        ->add( 'celular' )
-		        ->add( 'mail' );
+		;
 	}
 
 	/**

@@ -50,7 +50,7 @@ class Builder implements ContainerAwareInterface {
 					)
 				);
 		}
-		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_PERSONAL' ) ) {
 
 			$keyPersonal = 'PERSONAL';
 			$menu->addChild(

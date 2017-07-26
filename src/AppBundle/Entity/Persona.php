@@ -54,7 +54,7 @@ class Persona extends BaseClass {
 	 *
 	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\DomicilioPersona", mappedBy="persona", cascade={"persist", "remove"})
 	 */
-	private $domicilioPersona;
+	protected $domicilioPersona;
 
 	/**
 	 *
@@ -244,9 +244,15 @@ class Persona extends BaseClass {
      */
     public function addDomicilioPersona(\AppBundle\Entity\DomicilioPersona $domicilioPersona)
     {
-        $this->domicilioPersona[] = $domicilioPersona;
+//        $this->domicilioPersona[] = $domicilioPersona;
+//
+//        return $this;
 
-        return $this;
+	    $domicilioPersona->setPersona( $this );
+
+	    $this->domicilioPersona->add( $domicilioPersona );
+
+	    return $this;
     }
 
     /**
@@ -278,9 +284,15 @@ class Persona extends BaseClass {
      */
     public function addCargoPersona(\AppBundle\Entity\CargoPersona $cargoPersona)
     {
-        $this->cargoPersona[] = $cargoPersona;
+//        $this->cargoPersona[] = $cargoPersona;
+//
+//        return $this;
 
-        return $this;
+	    $cargoPersona->setPersona( $this );
+
+	    $this->cargoPersona->add( $cargoPersona );
+
+	    return $this;
     }
 
     /**

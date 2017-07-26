@@ -36,67 +36,23 @@ class DomicilioPersona extends BaseClass {
 	 * @ORM\JoinColumn(name="domicilio_id", referencedColumnName="id")
 	 */
 	private $domicilio;
-
-
-	/**
-	 * Get id
-	 *
-	 * @return integer
-	 */
-	public function getId() {
-		return $this->id;
-	}
+	
 
     /**
-     * Set persona
+     * Get id
      *
-     * @param \AppBundle\Entity\Persona $persona
-     * @return DomicilioPersona
+     * @return integer
      */
-    public function setPersona(\AppBundle\Entity\Persona $persona = null)
+    public function getId()
     {
-        $this->persona = $persona;
-
-        return $this;
-    }
-
-    /**
-     * Get persona
-     *
-     * @return \AppBundle\Entity\Persona 
-     */
-    public function getPersona()
-    {
-        return $this->persona;
-    }
-
-    /**
-     * Set domicilio
-     *
-     * @param \AppBundle\Entity\Domicilio $domicilio
-     * @return DomicilioPersona
-     */
-    public function setDomicilio(\AppBundle\Entity\Domicilio $domicilio = null)
-    {
-        $this->domicilio = $domicilio;
-
-        return $this;
-    }
-
-    /**
-     * Get domicilio
-     *
-     * @return \AppBundle\Entity\Domicilio 
-     */
-    public function getDomicilio()
-    {
-        return $this->domicilio;
+        return $this->id;
     }
 
     /**
      * Set fechaCreacion
      *
      * @param \DateTime $fechaCreacion
+     *
      * @return DomicilioPersona
      */
     public function setFechaCreacion($fechaCreacion)
@@ -110,6 +66,7 @@ class DomicilioPersona extends BaseClass {
      * Set fechaActualizacion
      *
      * @param \DateTime $fechaActualizacion
+     *
      * @return DomicilioPersona
      */
     public function setFechaActualizacion($fechaActualizacion)
@@ -120,9 +77,58 @@ class DomicilioPersona extends BaseClass {
     }
 
     /**
+     * Set persona
+     *
+     * @param \AppBundle\Entity\Persona $persona
+     *
+     * @return DomicilioPersona
+     */
+    public function setPersona(\AppBundle\Entity\Persona $persona = null)
+    {
+        $this->persona = $persona;
+
+        return $this;
+    }
+
+    /**
+     * Get persona
+     *
+     * @return \AppBundle\Entity\Persona
+     */
+    public function getPersona()
+    {
+        return $this->persona;
+    }
+
+    /**
+     * Set domicilio
+     *
+     * @param \AppBundle\Entity\Domicilio $domicilio
+     *
+     * @return DomicilioPersona
+     */
+    public function setDomicilio(\AppBundle\Entity\Domicilio $domicilio = null)
+    {
+        $this->domicilio = $domicilio;
+
+        return $this;
+    }
+
+    /**
+     * Get domicilio
+     *
+     * @return \AppBundle\Entity\Domicilio
+     */
+    public function getDomicilio()
+    {
+        return $this->domicilio;
+    }
+
+    /**
      * Set creadoPor
      *
      * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
      * @return DomicilioPersona
      */
     public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
@@ -136,6 +142,7 @@ class DomicilioPersona extends BaseClass {
      * Set actualizadoPor
      *
      * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
      * @return DomicilioPersona
      */
     public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)

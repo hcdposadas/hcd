@@ -236,6 +236,22 @@ class Persona extends BaseClass {
     }
 
     /**
+     * @param mixed $domicilioPersona
+     */
+    public function setDomicilioPersona($domicilioPersona)
+    {
+//        $this->domicilioPersona = $domicilioPersona;
+
+        foreach ($domicilioPersona as $item) {
+
+            $this->domicilioPersona->add( $item );
+            $item->setPersona( $this );
+        }
+
+        return $this;
+    }
+
+    /**
      * Add domicilioPersona
      *
      * @param \AppBundle\Entity\DomicilioPersona $domicilioPersona
@@ -273,6 +289,22 @@ class Persona extends BaseClass {
     public function getDomicilioPersona()
     {
         return $this->domicilioPersona;
+    }
+
+    /**
+     * @param mixed $cargoPersona
+     */
+    public function setCargoPersona($cargoPersona)
+    {
+//        $this->cargoPersona = $cargoPersona;
+
+        foreach ($cargoPersona as $item) {
+
+            $this->cargoPersona->add( $item );
+            $item->setPersona( $this );
+        }
+
+        return $this;
     }
 
     /**

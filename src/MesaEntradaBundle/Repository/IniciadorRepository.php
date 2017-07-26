@@ -17,8 +17,8 @@ class IniciadorRepository extends EntityRepository {
 		           ->addSelect( 'c' )
 		           ->addSelect( 'cp' );
 		$qb
-			->join( 'i.persona', 'p' )
-			->join( 'p.cargoPersona', 'cp' )
+			->join( 'i.cargoPersona', 'cp' )
+			->join( 'cp.persona', 'p' )
 			->join( 'cp.cargo', 'c' )
 			->where( "upper(p.apellido) like upper(:apellido)" );
 		$qb->setParameter( 'apellido', '%' . $apellido . '%' );

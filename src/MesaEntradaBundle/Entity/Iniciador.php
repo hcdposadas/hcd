@@ -24,105 +24,112 @@ class Iniciador extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Persona")
-	 * @ORM\JoinColumn(name="persona_id", referencedColumnName="id")
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CargoPersona")
+	 * @ORM\JoinColumn(name="cargo_persona_id", referencedColumnName="id")
 	 */
-	private $persona;
+	private $cargoPersona;
 
 	public function __toString() {
-		$personaCargo = $this->persona->getCargoPersona()->first()->getCargo() . ' ' . $this->persona->__toString();
+		$cargoPersonaCargo = $this->cargoPersona->first()->getCargo() . ' ' . $this->cargoPersona->__toString();
 
-		return $personaCargo;
+		return $cargoPersonaCargo;
 
 	}
 
 	public function getIniciadorString() {
-		$personaCargo = $this->persona->getCargoPersona()->first() . ' ' . $this->persona->__toString();
+		$cargoPersonaCargo = $this->cargoPersona->first() . ' ' . $this->cargoPersona->__toString();
 
-		return $personaCargo;
+		return $cargoPersonaCargo;
 	}
 
 
-	/**
-	 * Get id
-	 *
-	 * @return integer
-	 */
-	public function getId() {
-		return $this->id;
-	}
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Set fechaCreacion
-	 *
-	 * @param \DateTime $fechaCreacion
-	 *
-	 * @return Iniciador
-	 */
-	public function setFechaCreacion( $fechaCreacion ) {
-		$this->fechaCreacion = $fechaCreacion;
+    /**
+     * Set fechaCreacion
+     *
+     * @param \DateTime $fechaCreacion
+     *
+     * @return Iniciador
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Set fechaActualizacion
-	 *
-	 * @param \DateTime $fechaActualizacion
-	 *
-	 * @return Iniciador
-	 */
-	public function setFechaActualizacion( $fechaActualizacion ) {
-		$this->fechaActualizacion = $fechaActualizacion;
+    /**
+     * Set fechaActualizacion
+     *
+     * @param \DateTime $fechaActualizacion
+     *
+     * @return Iniciador
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Set creadoPor
-	 *
-	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
-	 *
-	 * @return Iniciador
-	 */
-	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
-		$this->creadoPor = $creadoPor;
+    /**
+     * Set cargoPersona
+     *
+     * @param \AppBundle\Entity\CargoPersona $cargoPersona
+     *
+     * @return Iniciador
+     */
+    public function setCargoPersona(\AppBundle\Entity\CargoPersona $cargoPersona = null)
+    {
+        $this->cargoPersona = $cargoPersona;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Set actualizadoPor
-	 *
-	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-	 *
-	 * @return Iniciador
-	 */
-	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
-		$this->actualizadoPor = $actualizadoPor;
+    /**
+     * Get cargoPersona
+     *
+     * @return \AppBundle\Entity\CargoPersona
+     */
+    public function getCargoPersona()
+    {
+        return $this->cargoPersona;
+    }
 
-		return $this;
-	}
+    /**
+     * Set creadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
+     * @return Iniciador
+     */
+    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
+    {
+        $this->creadoPor = $creadoPor;
 
-	/**
-	 * Set persona
-	 *
-	 * @param \AppBundle\Entity\Persona $persona
-	 *
-	 * @return Iniciador
-	 */
-	public function setPersona( \AppBundle\Entity\Persona $persona = null ) {
-		$this->persona = $persona;
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Set actualizadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
+     * @return Iniciador
+     */
+    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
+    {
+        $this->actualizadoPor = $actualizadoPor;
 
-	/**
-	 * Get persona
-	 *
-	 * @return \AppBundle\Entity\Persona
-	 */
-	public function getPersona() {
-		return $this->persona;
-	}
+        return $this;
+    }
 }

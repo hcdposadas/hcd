@@ -89,13 +89,13 @@ class AjaxController extends Controller {
 		} else {
 
 			foreach ( $entities as $entity ) {
-				foreach ( $entity['persona']['cargoPersona'] as $cargoPersona ) {
+//				foreach ( $entity['cargoPersona'] as $cargoPersona ) {
 					$json[] = array(
 						'id'   => $entity['id'],
 						//'label' => $entity[$property],
-						'text' => $cargoPersona['cargo']['nombre'] . ' ' . $entity['persona']['nombre'] . ' ' . $entity['persona']['apellido']
+						'text' => $entity['cargoPersona']['cargo']['nombre'] . ' ' . $entity['cargoPersona']['persona']['nombre'] . ' ' . $entity['cargoPersona']['persona']['apellido']
 					);
-				}
+//				}
 
 			}
 		}

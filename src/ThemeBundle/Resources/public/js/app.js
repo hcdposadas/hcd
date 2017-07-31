@@ -14,6 +14,16 @@ $(document).ready(function () {
         }
     });
     $('.select2').select2();
+    $('.reset').click(function () {
+        var form = $(this).parents().find('form');
+
+        form.find('input, textarea, input:not([type="submit"])').removeAttr('value');
+        form.find('input, textarea, input:not([type="submit"])').val('');
+        form.find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+
+        form.find('select option').removeAttr('selected').find('option:first').attr('selected', 'selected');
+    });
+
     inicializarPlugins();
 });
 

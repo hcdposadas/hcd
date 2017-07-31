@@ -31,4 +31,23 @@ class IniciadorRepository extends EntityRepository {
 			return $qb->getQuery()->getResult();
 		}
 	}
+
+	public function getACargosPorNombre($apellido, $limit = 10) {
+
+		$sql = "SELECT cargo_persona.id, persona.nombre AS nombre_persona, persona.apellido as apellido_persona, cargo.nombre AS cargo FROM cargo_persona cargo_persona
+				LEFT JOIN persona persona ON cargo_persona.persona_id = persona.id
+				LEFT JOIN cargo cargo on cargo_persona.cargo_id = cargo.id
+				INNER JOIN iniciador iniciador on cargo_persona.id = iniciador.cargo_persona_id
+				WHERE upper(persona.apellido) like upper('%$apellido%')
+				LIMIT $limit
+				";
+
+		$em   = $this->getEntityManager();
+		$stmt = $em->getConnection()
+		           ->prepare( $sql );
+		$stmt->execute();
+		$cargos = $stmt->fetchAll();
+
+		return $cargos;
+	}
 }

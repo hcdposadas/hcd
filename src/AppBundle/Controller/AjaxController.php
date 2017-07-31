@@ -75,9 +75,10 @@ class AjaxController extends Controller {
 
 		$em = $this->getDoctrine();
 
-		$value    = $request->get( 'q' );
-		$limit    = $request->get( 'page_limit' );
-		$entities = $em->getRepository( 'MesaEntradaBundle:Iniciador' )->getCargosPorNombre( $value, $limit, true );
+		$value = $request->get( 'q' );
+		$limit = $request->get( 'page_limit' );
+//		$entities = $em->getRepository( 'MesaEntradaBundle:Iniciador' )->getCargosPorNombre( $value, $limit, true );
+		$entities = $em->getRepository( 'MesaEntradaBundle:Iniciador' )->getACargosPorNombre( $value, $limit );
 
 		$json = array();
 
@@ -90,11 +91,11 @@ class AjaxController extends Controller {
 
 			foreach ( $entities as $entity ) {
 //				foreach ( $entity['cargoPersona'] as $cargoPersona ) {
-					$json[] = array(
-						'id'   => $entity['id'],
-						//'label' => $entity[$property],
-						'text' => $entity['cargoPersona']['cargo']['nombre'] . ' ' . $entity['cargoPersona']['persona']['nombre'] . ' ' . $entity['cargoPersona']['persona']['apellido']
-					);
+				$json[] = array(
+					'id'   => $entity['id'],
+					//'label' => $entity[$property],
+					'text' => $entity['cargo'] . ' ' . $entity['nombre_persona'] . ' ' . $entity['apellido_persona']
+				);
 //				}
 
 			}

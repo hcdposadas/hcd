@@ -35,6 +35,53 @@ class ExpedienteRepository extends EntityRepository {
 	public function getQbAll() {
 		$qb = $this->createQueryBuilder( 'e' );
 
+		$qb->orderBy( 'e.id', 'DESC' );
+
 		return $qb;
+	}
+
+	public function getQbBuscar( $data ) {
+		$qb = $this->getQbAll();
+
+		if ( isset( $data['tipoExpediente'] ) ) {
+			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			   ->setParameter( 'tipoExpediente', $data['tipoExpediente'] );
+		}
+		if ( $data['textoDefinitivo'] ) {
+			$qb->andWhere( 'e.textoDefinitivo = :textoDefinitivo' )
+			   ->setParameter( 'textoDefinitivo', $data['textoDefinitivo'] );
+		}
+		if ( $data['extracto'] ) {
+			$qb->andWhere( 'e.extracto = :extracto' )
+			   ->setParameter( 'extracto', $data['extracto'] );
+		}
+		if ( $data['expediente'] ) {
+			$qb
+				->andWhere( "e.expediente = :expediente" )
+				->setParameter( 'expediente', $data['expediente'] );
+		}
+		if ( $data['letra'] ) {
+			$qb->andWhere( 'e.letra = :letra' )
+			   ->setParameter( 'letra', $data['letra'] );
+		}
+		if ( $data['registroMunicipal'] ) {
+			$qb->andWhere( 'e.registroMunicipal = :registroMunicipal' )
+			   ->setParameter( 'registroMunicipal', $data['registroMunicipal'] );
+		}
+		if ( $data['iniciador'] ) {
+			$qb->andWhere( 'e.iniciador = :iniciador' )
+			   ->setParameter( 'iniciador', $data['iniciador'] );
+		}
+		if ( $data['iniciadorParticular'] ) {
+			$qb->andWhere( 'e.iniciadorParticular = :iniciadorParticular' )
+			   ->setParameter( 'iniciadorParticular', $data['iniciadorParticular'] );
+		}
+		if ( $data['dependencia'] ) {
+			$qb->andWhere( 'e.dependencia = :dependencia' )
+			   ->setParameter( 'dependencia', $data['dependencia'] );
+		}
+
+		return $qb;
+
 	}
 }

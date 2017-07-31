@@ -4,4 +4,4 @@ easy_admin:
             class: MesaEntradaBundle\Entity\Iniciador
             form:
                 fields:
-                    - { property: 'persona' }
+                    - { property: 'cargoPersona' }

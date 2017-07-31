@@ -137,6 +137,11 @@
                         }
                     },
                 });
+                var val = $(this).data('value');
+                if (val.id) {
+                    var $option = $("<option selected></option>").val(val.id).text(val.text);
+                    $(this).append($option).trigger('change');
+                }
             });
 
             {% if expediente.tipoExpediente.slug == 'interno' %}

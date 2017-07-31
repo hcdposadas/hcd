@@ -544,6 +544,7 @@ class Expediente extends BaseClass {
 	 *
 	 * @param \MesaEntradaBundle\Entity\Giro $giro
 	 *
+	 *
 	 * @return Expediente
 	 */
 	public function addGiro( \MesaEntradaBundle\Entity\Giro $giro ) {

@@ -46,7 +46,7 @@ class CargoPersona extends BaseClass {
 	private $areaAdministrativa;
 
 	public function __toString() {
-		return $this->getCargo()->getNombre();
+		return $this->getCargo()->getNombre() .' '.  $this->getPersona();
 	}
 
 	/**

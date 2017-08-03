@@ -34,3 +34,7 @@ expediente_timeline:
 expediente_imprimir_caratula:
     path:     /{id}/expediente_imprimir_caratula
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirCaratula" }
+
+expediente_imprimir_giro:
+    path:     /{id}/{giroId}/expediente_imprimir_giro
+    defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirGiro" }

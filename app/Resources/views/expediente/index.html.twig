@@ -56,6 +56,7 @@
                             <th>Letra</th>
                             <th>Fecha</th>
                             <th>Registro municipal</th>
+                            <th>Iniciador</th>
                             <th>Acción</th>
                         </tr>
                         </thead>
@@ -70,6 +71,15 @@
                                 <td>{{ expediente.letra }}</td>
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ expediente.registroMunicipal }}</td>
+                                <td>
+                                    {% if expediente.iniciador %}
+                                        {{ expediente.iniciador.cargoPersona }}
+                                    {% elseif expediente.iniciadorParticular %}
+                                        {{ expediente.iniciadorParticular.nombreCompleto }}
+                                    {% elseif expediente.dependencia %}
+                                        {{ expediente.dependencia }}
+                                    {% endif %}
+                                </td>
 
                                 <td>
                                     <a class="btn btn-default"

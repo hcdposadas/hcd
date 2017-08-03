@@ -70,6 +70,10 @@
                 <div class="box-footer">
                     <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
                     <a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>
+                    <a class="btn btn-default" target="_blank"                                                                                                                          href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Carátula
+                    </a>
+
                 </div>
             </div>
         </div>

@@ -13,214 +13,264 @@ use Symfony\Component\HttpFoundation\Response;
  * Expediente controller.
  *
  */
-class ExpedienteController extends Controller {
-	/**
-	 * Lists all expediente entities.
-	 *
-	 */
-	public function indexAction( Request $request ) {
-		$em = $this->getDoctrine()->getManager();
+class ExpedienteController extends Controller
+{
+    /**
+     * Lists all expediente entities.
+     *
+     */
+    public function indexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
 
-		$filterType = $this->createForm( ExpedienteFilterType::class,
-			null,
-			[
-				'method' => 'GET'
-			] );
+        $filterType = $this->createForm(ExpedienteFilterType::class,
+            null,
+            [
+                'method' => 'GET'
+            ]);
 
-		$filterType->handleRequest( $request );
+        $filterType->handleRequest($request);
 
 //		if ( $request->query->has( $filterType->getName() ) ) {
 //			$filterType->submit( $request->query->get( $filterType->getName() ) );
 //		}
 
-		if ( $filterType->get( 'buscar' )->isClicked() ) {
+        if ($filterType->get('buscar')->isClicked()) {
 
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData() );
-		} else {
+            $expedientes = $em->getRepository('MesaEntradaBundle:Expediente')->getQbBuscar($filterType->getData());
+        } else {
 
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbAll();
-		}
-
-
-		$paginator = $this->get( 'knp_paginator' );
-
-		$expedientes = $paginator->paginate(
-			$expedientes,
-			$request->query->get( 'page', 1 )/* page number */,
-			10/* limit per page */
-		);
-
-		return $this->render( 'expediente/index.html.twig',
-			array(
-				'expedientes' => $expedientes,
-				'filter_type' => $filterType->createView()
-			) );
-	}
-
-	/**
-	 * Creates a new expediente entity.
-	 *
-	 */
-	public function newAction( Request $request ) {
-		$expediente = new Expediente();
-		$form       = $this->createForm( 'MesaEntradaBundle\Form\ExpedienteType', $expediente );
-		$form->handleRequest( $request );
-
-		if ( $form->isSubmitted() && $form->isValid() ) {
-			$em = $this->getDoctrine()->getManager();
-			$em->persist( $expediente );
-			$em->flush();
-
-			$this->get( 'session' )->getFlashBag()->add(
-				'success',
-				'Expediente creado correctamente'
-			);
+            $expedientes = $em->getRepository('MesaEntradaBundle:Expediente')->getQbAll();
+        }
 
 
-			return $this->redirectToRoute( 'expediente_show', array( 'id' => $expediente->getId() ) );
-		}
+        $paginator = $this->get('knp_paginator');
 
-		return $this->render( 'expediente/new.html.twig',
-			array(
-				'expediente' => $expediente,
-				'form'       => $form->createView(),
-			) );
-	}
+        $expedientes = $paginator->paginate(
+            $expedientes,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
 
-	/**
-	 * Finds and displays a expediente entity.
-	 *
-	 */
-	public function showAction( Expediente $expediente ) {
-		$deleteForm = $this->createDeleteForm( $expediente );
+        return $this->render('expediente/index.html.twig',
+            array(
+                'expedientes' => $expedientes,
+                'filter_type' => $filterType->createView()
+            ));
+    }
 
-		return $this->render( 'expediente/show.html.twig',
-			array(
-				'expediente'  => $expediente,
-				'delete_form' => $deleteForm->createView(),
-			) );
-	}
+    /**
+     * Creates a new expediente entity.
+     *
+     */
+    public function newAction(Request $request)
+    {
+        $expediente = new Expediente();
+        $form = $this->createForm('MesaEntradaBundle\Form\ExpedienteType', $expediente);
+        $form->handleRequest($request);
 
-	/**
-	 * Displays a form to edit an existing expediente entity.
-	 *
-	 */
-	public function editAction( Request $request, Expediente $expediente ) {
-		$deleteForm = $this->createDeleteForm( $expediente );
-		$editForm   = $this->createForm( 'MesaEntradaBundle\Form\ExpedienteType', $expediente );
-		$editForm->handleRequest( $request );
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($expediente);
+            $em->flush();
 
-		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$this->getDoctrine()->getManager()->flush();
-			$this->get( 'session' )->getFlashBag()->add(
-				'success',
-				'Expediente modificado correctamente'
-			);
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Expediente creado correctamente'
+            );
 
-			return $this->redirectToRoute( 'expediente_edit', array( 'id' => $expediente->getId() ) );
-		}
 
-		return $this->render( 'expediente/edit.html.twig',
-			array(
-				'expediente'  => $expediente,
-				'edit_form'   => $editForm->createView(),
-				'delete_form' => $deleteForm->createView(),
-			) );
-	}
+            return $this->redirectToRoute('expediente_show', array('id' => $expediente->getId()));
+        }
 
-	/**
-	 * Deletes a expediente entity.
-	 *
-	 */
-	public function deleteAction( Request $request, Expediente $expediente ) {
-		$form = $this->createDeleteForm( $expediente );
-		$form->handleRequest( $request );
+        return $this->render('expediente/new.html.twig',
+            array(
+                'expediente' => $expediente,
+                'form' => $form->createView(),
+            ));
+    }
 
-		if ( $form->isSubmitted() && $form->isValid() ) {
-			$em = $this->getDoctrine()->getManager();
-			$em->remove( $expediente );
-			$em->flush();
-		}
+    /**
+     * Finds and displays a expediente entity.
+     *
+     */
+    public function showAction(Expediente $expediente)
+    {
+        $deleteForm = $this->createDeleteForm($expediente);
 
-		return $this->redirectToRoute( 'expediente_index' );
-	}
+        return $this->render('expediente/show.html.twig',
+            array(
+                'expediente' => $expediente,
+                'delete_form' => $deleteForm->createView(),
+            ));
+    }
 
-	/**
-	 * Creates a form to delete a expediente entity.
-	 *
-	 * @param Expediente $expediente The expediente entity
-	 *
-	 * @return \Symfony\Component\Form\Form The form
-	 */
-	private function createDeleteForm( Expediente $expediente ) {
-		return $this->createFormBuilder()
-		            ->setAction( $this->generateUrl( 'expediente_delete', array( 'id' => $expediente->getId() ) ) )
-		            ->setMethod( 'DELETE' )
-		            ->getForm();
-	}
+    /**
+     * Displays a form to edit an existing expediente entity.
+     *
+     */
+    public function editAction(Request $request, Expediente $expediente)
+    {
+        $deleteForm = $this->createDeleteForm($expediente);
+        $editForm = $this->createForm('MesaEntradaBundle\Form\ExpedienteType', $expediente);
+        $editForm->handleRequest($request);
 
-	public function seguimientoExpedienteAction( Request $request ) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Expediente modificado correctamente'
+            );
 
-		$filterForm  = $this->createForm( SeguimientoExpedienteFilterType::class );
-		$expedientes = array();
-		if ( $request->isMethod( 'post' ) ) {
-			$filterForm->handleRequest( $request );
-			$data = $filterForm->getData();
-			$em   = $this->getDoctrine()->getManager();
+            return $this->redirectToRoute('expediente_edit', array('id' => $expediente->getId()));
+        }
+
+        return $this->render('expediente/edit.html.twig',
+            array(
+                'expediente' => $expediente,
+                'edit_form' => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            ));
+    }
+
+    /**
+     * Deletes a expediente entity.
+     *
+     */
+    public function deleteAction(Request $request, Expediente $expediente)
+    {
+        $form = $this->createDeleteForm($expediente);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($expediente);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('expediente_index');
+    }
+
+    /**
+     * Creates a form to delete a expediente entity.
+     *
+     * @param Expediente $expediente The expediente entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm(Expediente $expediente)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('expediente_delete', array('id' => $expediente->getId())))
+            ->setMethod('DELETE')
+            ->getForm();
+    }
+
+    public function seguimientoExpedienteAction(Request $request)
+    {
+
+        $filterForm = $this->createForm(SeguimientoExpedienteFilterType::class);
+        $expedientes = array();
+        if ($request->isMethod('post')) {
+            $filterForm->handleRequest($request);
+            $data = $filterForm->getData();
+            $em = $this->getDoctrine()->getManager();
 //            print_r($data);
 //            exit;
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->search( $data );
+            $expedientes = $em->getRepository('MesaEntradaBundle:Expediente')->search($data);
 
-		}
+        }
 
-		return $this->render( 'expediente/seguimiento.html.twig',
-			array(
-				'filter_form' => $filterForm->createView(),
-				'entities'    => $expedientes
-			) );
-	}
+        return $this->render('expediente/seguimiento.html.twig',
+            array(
+                'filter_form' => $filterForm->createView(),
+                'entities' => $expedientes
+            ));
+    }
 
-	public function seguimientoExpedienteTimelineAction( Request $request, $id ) {
-		$em         = $this->getDoctrine()->getManager();
-		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+    public function seguimientoExpedienteTimelineAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $expediente = $em->getRepository('MesaEntradaBundle:Expediente')->find($id);
 
-		return $this->render( 'expediente/timeline.html.twig',
-			array(
-				'expediente' => $expediente
-			) );
+        return $this->render('expediente/timeline.html.twig',
+            array(
+                'expediente' => $expediente
+            ));
 
-	}
+    }
 
-	public function imprimirCaratulaAction( $id ) {
-		$em         = $this->getDoctrine()->getManager();
-		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+    public function imprimirCaratulaAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $expediente = $em->getRepository('MesaEntradaBundle:Expediente')->find($id);
 
-		$html = $this->renderView( 'expediente/caratula.pdf.twig',
-			[
-				'expediente' => $expediente
-			]
-		);
+        $html = $this->renderView('expediente/caratula.pdf.twig',
+            [
+                'expediente' => $expediente
+            ]
+        );
 
-		$title = 'Carátula';
+        $title = 'Carátula';
 
 //        return new Response($html);
 
-		return new Response(
-			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
-				array(
-					'margin-left'  => "3cm",
-					'margin-right' => "3cm",
-					'margin-top'   => "3cm",
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
+                array(
+                    'margin-left' => "3cm",
+                    'margin-right' => "3cm",
+                    'margin-top' => "3cm",
 //                    'margin-bottom' => "1cm"
-				)
-			)
-			, 200, array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
-		);
+                )
+            )
+            , 200, array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+            )
+        );
 
-	}
+    }
+
+    public function imprimirGiroAction($id, $giroId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $expediente = $em->getRepository('MesaEntradaBundle:Expediente')->find($id);
+        if (strtoupper($expediente->getTipoExpediente()) == 'INTERNO') {
+            $giro = $em->getRepository('MesaEntradaBundle:GiroAdministrativo')->find($giroId);
+            $giro = $giro->getAreaDestino();
+        } else {
+            $giro = $em->getRepository('MesaEntradaBundle:Giro')->find($giroId);
+            $giro = $giro->getComisionDestino();
+        }
+
+        $title = 'Giro';
+
+        $html = $this->renderView('expediente/giro.pdf.twig',
+            [
+                'expediente' => $expediente,
+                'giro' => $giro,
+                'title' => $title,
+            ]
+        );
+
+//        return new Response($html);
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
+                array(
+                    'margin-left' => "3cm",
+                    'margin-right' => "3cm",
+                    'margin-top' => "3cm",
+//                    'margin-bottom' => "1cm"
+                )
+            )
+            , 200, array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+            )
+        );
+    }
 
 
 }

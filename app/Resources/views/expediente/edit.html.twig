@@ -96,6 +96,10 @@
                 </div>
             </div>
             <input class="btn btn-primary" type="submit" value="Guardar"/>
+            <a class="btn btn-default" target="_blank"
+               href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
+                <i class="fa fa-print"></i> Imprimir Carátula
+            </a>
             {{ form_end(edit_form) }}
         </div>
     </div>

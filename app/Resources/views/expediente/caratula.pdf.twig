@@ -87,11 +87,11 @@
             <td>INICIADOR:</td>
             <td colspan="5"><strong>
                     {% if expediente.iniciador %}
-                    {{ expediente.iniciador }}
+                        {{ expediente.iniciador | upper }}
                     {% elseif expediente.iniciadorParticular %}
-                        {{ expediente.iniciadorParticular }}
+                        {{ expediente.iniciadorParticular | upper }}
                     {% elseif expediente.dependencia %}
-                        {{ expediente.dependencia }}
+                        {{ expediente.dependencia | upper}}
                     {% endif %}
                 </strong></td>
         </tr>

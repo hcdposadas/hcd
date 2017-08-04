@@ -24,6 +24,40 @@ $(document).ready(function () {
         form.find('select option').removeAttr('selected').find('option:first').attr('selected', 'selected');
     });
 
+    $('.select2entity').each(function (index) {
+        $(this).select2({
+            allowClear: true,
+            ajax: {
+                url: $(this).data('rpath'),
+                dataType: $(this).data('data-type'),
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page_limit: $(this).data('page-limit')
+                    };
+                },
+                processResults: function (data) {
+                    var myResults = [];
+                    $.each(data, function (index, item) {
+                        myResults.push({
+                            'id': item.id,
+                            'text': item.text
+                        });
+                    });
+                    return {
+                        results: myResults
+                    };
+                }
+            },
+        });
+        var val = $(this).data('value');
+        if (val.id) {
+            var $option = $("<option selected></option>").val(val.id).text(val.text);
+            $(this).append($option).trigger('change');
+        }
+    });
+
     inicializarPlugins();
 });
 

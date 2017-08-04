@@ -60,6 +60,15 @@
                 </div>
                 <div class="col-md-6">
                     {{ form_row(form.extracto) }}
+                    <div class="row">
+                        <h4>Tratado en Sesión</h4>
+                        <div class="col-md-6">
+                            {{ form_row(form.sesionNumero) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.sesionAnio) }}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -110,34 +119,6 @@
         });
 
         $(document).ready(function () {
-
-            $('.select2entity').each(function (index) {
-                $(this).select2({
-                    ajax: {
-                        url: $(this).data('rpath'),
-                        dataType: $(this).data('data-type'),
-                        delay: 250,
-                        data: function (params) {
-                            return {
-                                q: params.term,
-                                page_limit: $(this).data('page-limit')
-                            };
-                        },
-                        processResults: function (data) {
-                            var myResults = [];
-                            $.each(data, function (index, item) {
-                                myResults.push({
-                                    'id': item.id,
-                                    'text': item.text
-                                });
-                            });
-                            return {
-                                results: myResults
-                            };
-                        }
-                    },
-                });
-            });
 
 
             $('.expediente-externo').hide();

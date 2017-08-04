@@ -35,6 +35,13 @@ class Cargo extends BaseClass {
 	 */
 	private $descripcion;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="muestra_solo_cargo", type="boolean", nullable=true)
+     */
+	private $muestraSoloCargo;
+
 	public function __toString() {
 		return $this->nombre;
 	}
@@ -144,4 +151,28 @@ class Cargo extends BaseClass {
 
 		return $this;
 	}
+
+    /**
+     * Set muestraSoloCargo
+     *
+     * @param boolean $muestraSoloCargo
+     *
+     * @return Cargo
+     */
+    public function setMuestraSoloCargo($muestraSoloCargo)
+    {
+        $this->muestraSoloCargo = $muestraSoloCargo;
+
+        return $this;
+    }
+
+    /**
+     * Get muestraSoloCargo
+     *
+     * @return boolean
+     */
+    public function getMuestraSoloCargo()
+    {
+        return $this->muestraSoloCargo;
+    }
 }

@@ -125,6 +125,18 @@ class Expediente extends BaseClass {
 	 */
 	private $giros;
 
+    /**
+     * @ORM\Column(name="sesion_numero", type="integer", nullable=true)
+     * @var string
+     */
+    private $sesionNumero;
+
+    /**
+     * @ORM\Column(name="sesion_anio", type="integer", nullable=true)
+     * @var string
+     */
+    private $sesionAnio;
+
 	/**
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 * @var string
@@ -630,5 +642,53 @@ class Expediente extends BaseClass {
     public function getDependencia()
     {
         return $this->dependencia;
+    }
+
+    /**
+     * Set sesionNumero
+     *
+     * @param integer $sesionNumero
+     *
+     * @return Expediente
+     */
+    public function setSesionNumero($sesionNumero)
+    {
+        $this->sesionNumero = $sesionNumero;
+
+        return $this;
+    }
+
+    /**
+     * Get sesionNumero
+     *
+     * @return integer
+     */
+    public function getSesionNumero()
+    {
+        return $this->sesionNumero;
+    }
+
+    /**
+     * Set sesionAnio
+     *
+     * @param integer $sesionAnio
+     *
+     * @return Expediente
+     */
+    public function setSesionAnio($sesionAnio)
+    {
+        $this->sesionAnio = $sesionAnio;
+
+        return $this;
+    }
+
+    /**
+     * Get sesionAnio
+     *
+     * @return integer
+     */
+    public function getSesionAnio()
+    {
+        return $this->sesionAnio;
     }
 }

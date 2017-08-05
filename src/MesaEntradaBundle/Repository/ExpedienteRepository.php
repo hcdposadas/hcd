@@ -48,12 +48,14 @@ class ExpedienteRepository extends EntityRepository {
 			   ->setParameter( 'tipoExpediente', $data['tipoExpediente'] );
 		}
 		if ( $data['textoDefinitivo'] ) {
-			$qb->andWhere( 'e.textoDefinitivo = :textoDefinitivo' )
-			   ->setParameter( 'textoDefinitivo', $data['textoDefinitivo'] );
+			$q = $data['textoDefinitivo'];
+			$qb->andWhere( "upper(e.textoDefinitivo) LIKE upper(:textoDefinitivo)" )
+			   ->setParameter( 'textoDefinitivo', "%$q%" );
 		}
 		if ( $data['extracto'] ) {
-			$qb->andWhere( 'e.extracto = :extracto' )
-			   ->setParameter( 'extracto', $data['extracto'] );
+			$q = $data['extracto'];
+			$qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
+			   ->setParameter( 'extracto', "%$q%" );
 		}
 		if ( $data['expediente'] ) {
 			$qb
@@ -79,6 +81,15 @@ class ExpedienteRepository extends EntityRepository {
 		if ( $data['dependencia'] ) {
 			$qb->andWhere( 'e.dependencia = :dependencia' )
 			   ->setParameter( 'dependencia', $data['dependencia'] );
+		}
+
+		if ( ( $data['fecha'] ) ) {
+			$qb->andWhere( 'e.fecha = :fecha' );
+			$qb->setParameter( 'fecha', $data['fecha'] );
+		}
+		if ( ( $data['anio'] ) ) {
+			$qb->andWhere( 'e.anio = :anio' );
+			$qb->setParameter( 'anio', $data['anio'] );
 		}
 
 		return $qb;

@@ -426,6 +426,8 @@ class Persona extends BaseClass {
     {
         $this->legajo = $legajo;
 
+        $legajo->setPersona($this);
+
         return $this;
     }
 

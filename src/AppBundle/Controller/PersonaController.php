@@ -90,6 +90,11 @@ class PersonaController extends Controller {
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 			$this->getDoctrine()->getManager()->flush();
 
+			$this->get('session')->getFlashBag()->add(
+				'success',
+				'Personal modificado correctamente'
+			);
+
 			return $this->redirectToRoute( 'persona_edit', array( 'id' => $persona->getId() ) );
 		}
 

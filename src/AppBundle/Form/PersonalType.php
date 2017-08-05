@@ -30,15 +30,13 @@ class PersonalType extends AbstractType {
 					        'class' => 'datepicker',
 				        ),
 			        ) )
-//		        ->add( 'telefono' )
-//		        ->add( 'celular' )
-//		        ->add( 'mail' )
                 ->add( 'legajo', LegajoType::class )
 		        ->add( 'cargoPersona',
 			        BootstrapCollectionType::class,
 			        [
 				        'entry_type'    => CargoPersonaType::class,
 				        'allow_add'     => true,
+				        'by_reference'  => false,
 				        'max_items_add' => 1
 
 			        ] )

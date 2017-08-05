@@ -204,14 +204,14 @@ class ExpedienteController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $expediente = $em->getRepository('MesaEntradaBundle:Expediente')->find($id);
+	    $title = 'Carátula';
 
         $html = $this->renderView('expediente/caratula.pdf.twig',
             [
-                'expediente' => $expediente
+                'expediente' => $expediente,
+                'title' => $title,
             ]
         );
-
-        $title = 'Carátula';
 
 //        return new Response($html);
 

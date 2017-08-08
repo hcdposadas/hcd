@@ -86,14 +86,16 @@
         <tr>
             <td>INICIADOR:</td>
             <td colspan="5"><strong>
-                    {% if expediente.iniciador %}
-                        {% if expediente.iniciador.cargoPersona.cargo.muestraSoloCargo %}
-                            {{ expediente.iniciador.cargoPersona.cargo | upper }} DEL H.C.D.
+                    {% if expediente.iniciadores.count == 1 %}
+                        {% if expediente.iniciadores.first.iniciador.cargoPersona.cargo.muestraSoloCargo %}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.cargo | upper }} DEL H.C.D.
                         {% else %}
-                            {{ expediente.iniciador.cargoPersona.cargo | upper }}
-                            {{ expediente.iniciador.cargoPersona.persona.nombre | upper }}
-                            {{ expediente.iniciador.cargoPersona.persona.apellido | upper }}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.cargo | upper }}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.nombre | upper }}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.apellido | upper }}
                         {% endif %}
+                    {% elseif expediente.iniciadores.count > 1 %}
+                        CONCEJALES
                     {% elseif expediente.iniciadorParticular %}
                         {{ (expediente.iniciadorParticular.apellido ~' '~expediente.iniciadorParticular.nombre) | upper }}
                     {% elseif expediente.dependencia %}

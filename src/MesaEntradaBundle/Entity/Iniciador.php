@@ -11,30 +11,32 @@ use UtilBundle\Entity\Base\BaseClass;
  * @ORM\Table(name="iniciador")
  * @ORM\Entity(repositoryClass="MesaEntradaBundle\Repository\IniciadorRepository")
  */
-class Iniciador extends BaseClass {
-	/**
-	 * @var int
-	 *
-	 * @ORM\Column(name="id", type="integer")
-	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	private $id;
+class Iniciador extends BaseClass
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
 
-	/**
-	 * @var
-	 *
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CargoPersona")
-	 * @ORM\JoinColumn(name="cargo_persona_id", referencedColumnName="id")
-	 */
-	private $cargoPersona;
+    /**
+     * @var
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CargoPersona")
+     * @ORM\JoinColumn(name="cargo_persona_id", referencedColumnName="id")
+     */
+    private $cargoPersona;
 
-	public function __toString() {
-		$cargoPersonaCargo = $this->cargoPersona->getCargo() . ' ' . $this->cargoPersona->getPersona()->getNombreCompleto();
+    public function __toString()
+    {
+        $cargoPersonaCargo = $this->cargoPersona->getCargo() . ' ' . $this->cargoPersona->getPersona()->getNombreCompleto();
 
-		return $cargoPersonaCargo;
+        return $cargoPersonaCargo;
 
-	}
+    }
 
 //	public function getIniciadorString() {
 //		$cargoPersonaCargo = $this->cargoPersona . ' ' . $this->cargoPersona->__toString();

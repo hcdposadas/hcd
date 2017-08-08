@@ -71,16 +71,24 @@ class ExpedienteType extends AbstractType
                     'allow_delete' => true, // optional, default is true
                     'download_uri' => true, // optional, default is true
                 ])
-//			->add( 'iniciador' )
-            ->add('iniciador',
-                Select2EntityType::class,
+            ->add('iniciadores',
+                BootstrapCollectionType::class,
                 [
-                    'remote_route' => 'get_cargos_por_nombre',
-                    'class' => 'MesaEntradaBundle\Entity\Iniciador',
-                    'required' => false,
-                    'placeholder' => 'Por Nombre'
-
+                    'entry_type' => IniciadorExpedienteType::class,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
                 ])
+
+//            ->add('iniciador',
+//                Select2EntityType::class,
+//                [
+//                    'remote_route' => 'get_cargos_por_nombre',
+//                    'class' => 'MesaEntradaBundle\Entity\Iniciador',
+//                    'required' => false,
+//                    'placeholder' => 'Por Nombre'
+//
+//                ])
             ->add('iniciadorParticular',
                 Select2EntityType::class,
                 [

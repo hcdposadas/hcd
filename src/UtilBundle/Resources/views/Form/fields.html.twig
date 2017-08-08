@@ -19,9 +19,7 @@
                         itemCant{{ form.vars.id }}++;
                         newTr.appendTo(itemList);
                     }
-                    inicializarPlugins();
-                    $(this).trigger('clicked');
-                    return false;
+                    inicializarPlugins($('#{{ form.vars.id }}'));
                 });
 
             });</script>

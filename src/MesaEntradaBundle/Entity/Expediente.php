@@ -85,13 +85,23 @@ class Expediente extends BaseClass {
 	 */
 	private $tipoExpediente;
 
-	/**
-	 * @var
-	 *
-	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Iniciador")
-	 * @ORM\JoinColumn(name="iniciador_id", referencedColumnName="id")
-	 */
-	private $iniciador;
+//	/**
+//	 * @var
+//	 *
+//	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Iniciador")
+//	 * @ORM\JoinColumn(name="iniciador_id", referencedColumnName="id")
+//	 */
+//	private $iniciador;
+
+
+    /**
+     * @var
+     *
+     * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\IniciadorExpediente", mappedBy="expediente", cascade={"persist"})
+     *
+     */
+    private $iniciadores;
+
 
 	/**
 	 * @var
@@ -261,387 +271,192 @@ class Expediente extends BaseClass {
 		return $this->letra;
 	}
 
-
-	/**
-	 * Get id
-	 *
-	 * @return integer
-	 */
-	public function getId() {
-		return $this->id;
-	}
-
-	/**
-	 * Set textoDefinitivo
-	 *
-	 * @param string $textoDefinitivo
-	 *
-	 * @return Expediente
-	 */
-	public function setTextoDefinitivo( $textoDefinitivo ) {
-		$this->textoDefinitivo = $textoDefinitivo;
-
-		return $this;
-	}
-
-	/**
-	 * Get textoDefinitivo
-	 *
-	 * @return string
-	 */
-	public function getTextoDefinitivo() {
-		return $this->textoDefinitivo;
-	}
-
-	/**
-	 * Set extracto
-	 *
-	 * @param string $extracto
-	 *
-	 * @return Expediente
-	 */
-	public function setExtracto( $extracto ) {
-		$this->extracto = $extracto;
-
-		return $this;
-	}
-
-	/**
-	 * Get extracto
-	 *
-	 * @return string
-	 */
-	public function getExtracto() {
-		return $this->extracto;
-	}
-
-	/**
-	 * Set expediente
-	 *
-	 * @param string $expediente
-	 *
-	 * @return Expediente
-	 */
-	public function setExpediente( $expediente ) {
-		$this->expediente = $expediente;
-
-		return $this;
-	}
-
-	/**
-	 * Get expediente
-	 *
-	 * @return string
-	 */
-	public function getExpediente() {
-		return $this->expediente;
-	}
-
-	/**
-	 * Set anio
-	 *
-	 * @param string $anio
-	 *
-	 * @return Expediente
-	 */
-	public function setAnio( $anio ) {
-		$this->anio = $anio;
-
-		return $this;
-	}
-
-	/**
-	 * Get anio
-	 *
-	 * @return string
-	 */
-	public function getAnio() {
-		return $this->anio;
-	}
-
-	/**
-	 * Set letra
-	 *
-	 * @param string $letra
-	 *
-	 * @return Expediente
-	 */
-	public function setLetra( $letra ) {
-		$this->letra = $letra;
-
-		return $this;
-	}
-
-	/**
-	 * Get letra
-	 *
-	 * @return string
-	 */
-	public function getLetra() {
-		return $this->letra;
-	}
-
-	/**
-	 * Set fecha
-	 *
-	 * @param \DateTime $fecha
-	 *
-	 * @return Expediente
-	 */
-	public function setFecha( $fecha ) {
-		$this->fecha = $fecha;
-
-		return $this;
-	}
-
-	/**
-	 * Get fecha
-	 *
-	 * @return \DateTime
-	 */
-	public function getFecha() {
-		return $this->fecha;
-	}
-
-	/**
-	 * Set registroMunicipal
-	 *
-	 * @param string $registroMunicipal
-	 *
-	 * @return Expediente
-	 */
-	public function setRegistroMunicipal( $registroMunicipal ) {
-		$this->registroMunicipal = $registroMunicipal;
-
-		return $this;
-	}
-
-	/**
-	 * Get registroMunicipal
-	 *
-	 * @return string
-	 */
-	public function getRegistroMunicipal() {
-		return $this->registroMunicipal;
-	}
-
-	/**
-	 * Set fechaCreacion
-	 *
-	 * @param \DateTime $fechaCreacion
-	 *
-	 * @return Expediente
-	 */
-	public function setFechaCreacion( $fechaCreacion ) {
-		$this->fechaCreacion = $fechaCreacion;
-
-		return $this;
-	}
-
-	/**
-	 * Set fechaActualizacion
-	 *
-	 * @param \DateTime $fechaActualizacion
-	 *
-	 * @return Expediente
-	 */
-	public function setFechaActualizacion( $fechaActualizacion ) {
-		$this->fechaActualizacion = $fechaActualizacion;
-
-		return $this;
-	}
-
-	/**
-	 * Set tipoExpediente
-	 *
-	 * @param \MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente
-	 *
-	 * @return Expediente
-	 */
-	public function setTipoExpediente( \MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente = null ) {
-		$this->tipoExpediente = $tipoExpediente;
-
-		return $this;
-	}
-
-	/**
-	 * Get tipoExpediente
-	 *
-	 * @return \MesaEntradaBundle\Entity\TipoExpediente
-	 */
-	public function getTipoExpediente() {
-		return $this->tipoExpediente;
-	}
-
-	/**
-	 * Set iniciador
-	 *
-	 * @param \MesaEntradaBundle\Entity\Iniciador $iniciador
-	 *
-	 * @return Expediente
-	 */
-	public function setIniciador( \MesaEntradaBundle\Entity\Iniciador $iniciador = null ) {
-		$this->iniciador = $iniciador;
-
-		return $this;
-	}
-
-	/**
-	 * Get iniciador
-	 *
-	 * @return \MesaEntradaBundle\Entity\Iniciador
-	 */
-	public function getIniciador() {
-		return $this->iniciador;
-	}
-
-	/**
-	 * Set creadoPor
-	 *
-	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
-	 *
-	 * @return Expediente
-	 */
-	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
-		$this->creadoPor = $creadoPor;
-
-		return $this;
-	}
-
-	/**
-	 * Set actualizadoPor
-	 *
-	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-	 *
-	 * @return Expediente
-	 */
-	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
-		$this->actualizadoPor = $actualizadoPor;
-
-		return $this;
-	}
-
-	/**
-	 * Set iniciadorParticular
-	 *
-	 * @param \AppBundle\Entity\Persona $iniciadorParticular
-	 *
-	 * @return Expediente
-	 */
-	public function setIniciadorParticular( \AppBundle\Entity\Persona $iniciadorParticular = null ) {
-		$this->iniciadorParticular = $iniciadorParticular;
-
-		return $this;
-	}
-
-	/**
-	 * Get iniciadorParticular
-	 *
-	 * @return \AppBundle\Entity\Persona
-	 */
-	public function getIniciadorParticular() {
-		return $this->iniciadorParticular;
-	}
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-	/**
-	 * Add giro
-	 *
-	 * @param \MesaEntradaBundle\Entity\Giro $giro
-	 *
-	 *
-	 * @return Expediente
-	 */
-	public function addGiro( \MesaEntradaBundle\Entity\Giro $giro ) {
-
-		$giro->setExpediente( $this );
-
-		$this->giros->add( $giro );
-
-		return $this;
-	}
-
-	/**
-	 * Remove giro
-	 *
-	 * @param \MesaEntradaBundle\Entity\Giro $giro
-	 */
-	public function removeGiro( \MesaEntradaBundle\Entity\Giro $giro ) {
-		$this->giros->removeElement( $giro );
-	}
-
-	/**
-	 * Get giros
-	 *
-	 * @return \Doctrine\Common\Collections\Collection
-	 */
-	public function getGiros() {
-		return $this->giros;
-	}
-
-	/**
-	 * Add giroAdministrativo
-	 *
-	 * @param \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo
-	 *
-	 * @return Expediente
-	 */
-	public function addGiroAdministrativo( \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo ) {
-
-		$giroAdministrativo->setExpediente( $this );
-
-		$this->giroAdministrativos->add( $giroAdministrativo );
-
-		return $this;
-	}
-
-	/**
-	 * Remove giroAdministrativo
-	 *
-	 * @param \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo
-	 */
-	public function removeGiroAdministrativo( \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo ) {
-		$this->giroAdministrativos->removeElement( $giroAdministrativo );
-	}
-
-	/**
-	 * Get giroAdministrativos
-	 *
-	 * @return \Doctrine\Common\Collections\Collection
-	 */
-	public function getGiroAdministrativos() {
-		return $this->giroAdministrativos;
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->iniciadores = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->giros = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
-     * Set dependencia
+     * Get id
      *
-     * @param \AppBundle\Entity\Dependencia $dependencia
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set textoDefinitivo
+     *
+     * @param string $textoDefinitivo
      *
      * @return Expediente
      */
-    public function setDependencia(\AppBundle\Entity\Dependencia $dependencia = null)
+    public function setTextoDefinitivo($textoDefinitivo)
     {
-        $this->dependencia = $dependencia;
+        $this->textoDefinitivo = $textoDefinitivo;
 
         return $this;
     }
 
     /**
-     * Get dependencia
+     * Get textoDefinitivo
      *
-     * @return \AppBundle\Entity\Dependencia
+     * @return string
      */
-    public function getDependencia()
+    public function getTextoDefinitivo()
     {
-        return $this->dependencia;
+        return $this->textoDefinitivo;
+    }
+
+    /**
+     * Set extracto
+     *
+     * @param string $extracto
+     *
+     * @return Expediente
+     */
+    public function setExtracto($extracto)
+    {
+        $this->extracto = $extracto;
+
+        return $this;
+    }
+
+    /**
+     * Get extracto
+     *
+     * @return string
+     */
+    public function getExtracto()
+    {
+        return $this->extracto;
+    }
+
+    /**
+     * Set expediente
+     *
+     * @param string $expediente
+     *
+     * @return Expediente
+     */
+    public function setExpediente($expediente)
+    {
+        $this->expediente = $expediente;
+
+        return $this;
+    }
+
+    /**
+     * Get expediente
+     *
+     * @return string
+     */
+    public function getExpediente()
+    {
+        return $this->expediente;
+    }
+
+    /**
+     * Set anio
+     *
+     * @param string $anio
+     *
+     * @return Expediente
+     */
+    public function setAnio($anio)
+    {
+        $this->anio = $anio;
+
+        return $this;
+    }
+
+    /**
+     * Get anio
+     *
+     * @return string
+     */
+    public function getAnio()
+    {
+        return $this->anio;
+    }
+
+    /**
+     * Set letra
+     *
+     * @param string $letra
+     *
+     * @return Expediente
+     */
+    public function setLetra($letra)
+    {
+        $this->letra = $letra;
+
+        return $this;
+    }
+
+    /**
+     * Get letra
+     *
+     * @return string
+     */
+    public function getLetra()
+    {
+        return $this->letra;
+    }
+
+    /**
+     * Set fecha
+     *
+     * @param \DateTime $fecha
+     *
+     * @return Expediente
+     */
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    /**
+     * Get fecha
+     *
+     * @return \DateTime
+     */
+    public function getFecha()
+    {
+        return $this->fecha;
+    }
+
+    /**
+     * Set registroMunicipal
+     *
+     * @param string $registroMunicipal
+     *
+     * @return Expediente
+     */
+    public function setRegistroMunicipal($registroMunicipal)
+    {
+        $this->registroMunicipal = $registroMunicipal;
+
+        return $this;
+    }
+
+    /**
+     * Get registroMunicipal
+     *
+     * @return string
+     */
+    public function getRegistroMunicipal()
+    {
+        return $this->registroMunicipal;
     }
 
     /**
@@ -690,5 +505,235 @@ class Expediente extends BaseClass {
     public function getSesionAnio()
     {
         return $this->sesionAnio;
+    }
+
+    /**
+     * Set fechaCreacion
+     *
+     * @param \DateTime $fechaCreacion
+     *
+     * @return Expediente
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+
+        return $this;
+    }
+
+    /**
+     * Set fechaActualizacion
+     *
+     * @param \DateTime $fechaActualizacion
+     *
+     * @return Expediente
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Set tipoExpediente
+     *
+     * @param \MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente
+     *
+     * @return Expediente
+     */
+    public function setTipoExpediente(\MesaEntradaBundle\Entity\TipoExpediente $tipoExpediente = null)
+    {
+        $this->tipoExpediente = $tipoExpediente;
+
+        return $this;
+    }
+
+    /**
+     * Get tipoExpediente
+     *
+     * @return \MesaEntradaBundle\Entity\TipoExpediente
+     */
+    public function getTipoExpediente()
+    {
+        return $this->tipoExpediente;
+    }
+
+    /**
+     * Add iniciadore
+     *
+     * @param \MesaEntradaBundle\Entity\Iniciador $iniciadore
+     *
+     * @return Expediente
+     */
+    public function addIniciadore(\MesaEntradaBundle\Entity\Iniciador $iniciadore)
+    {
+        $this->iniciadores[] = $iniciadore;
+
+        return $this;
+    }
+
+    /**
+     * Remove iniciadore
+     *
+     * @param \MesaEntradaBundle\Entity\Iniciador $iniciadore
+     */
+    public function removeIniciadore(\MesaEntradaBundle\Entity\Iniciador $iniciadore)
+    {
+        $this->iniciadores->removeElement($iniciadore);
+    }
+
+    /**
+     * Get iniciadores
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIniciadores()
+    {
+        return $this->iniciadores;
+    }
+
+    /**
+     * Set iniciadorParticular
+     *
+     * @param \AppBundle\Entity\Persona $iniciadorParticular
+     *
+     * @return Expediente
+     */
+    public function setIniciadorParticular(\AppBundle\Entity\Persona $iniciadorParticular = null)
+    {
+        $this->iniciadorParticular = $iniciadorParticular;
+
+        return $this;
+    }
+
+    /**
+     * Get iniciadorParticular
+     *
+     * @return \AppBundle\Entity\Persona
+     */
+    public function getIniciadorParticular()
+    {
+        return $this->iniciadorParticular;
+    }
+
+    /**
+     * Set dependencia
+     *
+     * @param \AppBundle\Entity\Dependencia $dependencia
+     *
+     * @return Expediente
+     */
+    public function setDependencia(\AppBundle\Entity\Dependencia $dependencia = null)
+    {
+        $this->dependencia = $dependencia;
+
+        return $this;
+    }
+
+    /**
+     * Get dependencia
+     *
+     * @return \AppBundle\Entity\Dependencia
+     */
+    public function getDependencia()
+    {
+        return $this->dependencia;
+    }
+
+    /**
+     * Add giroAdministrativo
+     *
+     * @param \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo
+     *
+     * @return Expediente
+     */
+    public function addGiroAdministrativo(\MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo)
+    {
+        $this->giroAdministrativos[] = $giroAdministrativo;
+
+        return $this;
+    }
+
+    /**
+     * Remove giroAdministrativo
+     *
+     * @param \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo
+     */
+    public function removeGiroAdministrativo(\MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo)
+    {
+        $this->giroAdministrativos->removeElement($giroAdministrativo);
+    }
+
+    /**
+     * Get giroAdministrativos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGiroAdministrativos()
+    {
+        return $this->giroAdministrativos;
+    }
+
+    /**
+     * Add giro
+     *
+     * @param \MesaEntradaBundle\Entity\Giro $giro
+     *
+     * @return Expediente
+     */
+    public function addGiro(\MesaEntradaBundle\Entity\Giro $giro)
+    {
+        $this->giros[] = $giro;
+
+        return $this;
+    }
+
+    /**
+     * Remove giro
+     *
+     * @param \MesaEntradaBundle\Entity\Giro $giro
+     */
+    public function removeGiro(\MesaEntradaBundle\Entity\Giro $giro)
+    {
+        $this->giros->removeElement($giro);
+    }
+
+    /**
+     * Get giros
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGiros()
+    {
+        return $this->giros;
+    }
+
+    /**
+     * Set creadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
+     * @return Expediente
+     */
+    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
+    {
+        $this->creadoPor = $creadoPor;
+
+        return $this;
+    }
+
+    /**
+     * Set actualizadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
+     * @return Expediente
+     */
+    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
+    {
+        $this->actualizadoPor = $actualizadoPor;
+
+        return $this;
     }
 }

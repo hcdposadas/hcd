@@ -72,13 +72,13 @@
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ expediente.registroMunicipal }}</td>
                                 <td>
-                                    {% if expediente.iniciador %}
-                                        {{ expediente.iniciador.cargoPersona }}
-                                    {% elseif expediente.iniciadorParticular %}
-                                        {{ expediente.iniciadorParticular.nombreCompleto }}
-                                    {% elseif expediente.dependencia %}
-                                        {{ expediente.dependencia }}
-                                    {% endif %}
+                                    {#{% if expediente.iniciador %}#}
+                                        {#{{ expediente.iniciador.cargoPersona }}#}
+                                    {#{% elseif expediente.iniciadorParticular %}#}
+                                        {#{{ expediente.iniciadorParticular.nombreCompleto }}#}
+                                    {#{% elseif expediente.dependencia %}#}
+                                        {#{{ expediente.dependencia }}#}
+                                    {#{% endif %}#}
                                 </td>
 
                                 <td>

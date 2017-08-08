@@ -61,13 +61,58 @@ $(document).ready(function () {
     inicializarPlugins();
 });
 
-function inicializarPlugins() {
+function inicializarPlugins(elem) {
     $('.datepicker').datepicker({
         format: "dd/mm/yyyy",
         language: "es",
         autoclose: true
     });
+// TODO duplica elementos select2entity
     $('.bootstrapcollection .select2').select2();
+
+    console.log(elem);
+
+    if (typeof elem !== "undefined") {
+
+        var $elem = $('#' + elem.attr('id') + ' .select2entity');
+
+        $elem.select2({
+            allowClear: true,
+            ajax: {
+                url: $elem.data('rpath'),
+                dataType: $elem.data('data-type'),
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        page_limit: $elem.data('page-limit')
+                    };
+                },
+                processResults: function (data) {
+                    var myResults = [];
+                    $.each(data, function (index, item) {
+                        myResults.push({
+                            'id': item.id,
+                            'text': item.text
+                        });
+                    });
+                    return {
+                        results: myResults
+                    };
+                }
+            },
+        });
+
+        var val = $elem.data('value');
+
+        if (val.id) {
+            var $option = $("<option selected></option>").val(val.id).text(val.text);
+            $elem.append($option).trigger('change');
+        }
+
+
+    }
+
 }
 
 function modalAlert(msg) {

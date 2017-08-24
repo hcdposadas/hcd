@@ -74,7 +74,9 @@
                                 <td>
                                     {% if expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in expediente.iniciadores %}
+                                            {% if iniciadorExpediente.iniciador %}
                                             {{ iniciadorExpediente.iniciador.cargoPersona }} -
+                                                {% endif %}
                                         {% endfor %}
                                     {% elseif expediente.iniciadorParticular %}
                                         {{ expediente.iniciadorParticular.nombreCompleto }}

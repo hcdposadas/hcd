@@ -39,6 +39,10 @@
                 </div>
 
             </div>
+            {#TODO debe ser un textarea por ahora#}
+            {#<div class="row">#}
+                {#Expedientes adjuntos#}
+            {#</div>#}
             <div class="row">
                 <div class="col-md-6">
                     {#<div class="expediente-externo">#}
@@ -126,24 +130,24 @@
 
 
 
-            {% if expediente.tipoExpediente.slug == 'interno' %}
-            $('.expediente-externo').hide();
-            {% elseif expediente.tipoExpediente.slug == 'externo' %}
-            $('.expediente-interno').hide();
-            {% endif %}
+            {#{% if expediente.tipoExpediente.slug == 'interno' %}#}
+            {#$('.expediente-externo').hide();#}
+            {#{% elseif expediente.tipoExpediente.slug == 'externo' %}#}
+            {#$('.expediente-interno').hide();#}
+            {#{% endif %}#}
 
-            $('.tipo-expediente').change(function () {
-                console.log($(".tipo-expediente option:selected").text());
-
-                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
-                    $('.expediente-interno').show();
-                    $('.expediente-externo').hide();
-                } else {
-                    $('.expediente-interno').hide();
-                    $('.expediente-externo').show();
-                }
-
-            });
+//            $('.tipo-expediente').change(function () {
+//                console.log($(".tipo-expediente option:selected").text());
+//
+//                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
+//                    $('.expediente-interno').show();
+//                    $('.expediente-externo').hide();
+//                } else {
+//                    $('.expediente-interno').hide();
+//                    $('.expediente-externo').show();
+//                }
+//
+//            });
 
             $('.btn-add-persona').click(function () {
 

@@ -38,6 +38,10 @@
                 </div>
 
             </div>
+            {#TODO debe ser un textarea por ahora#}
+            {#<div class="row">#}
+            {#Expedientes adjuntos#}
+            {#</div>#}
             <div class="row">
                 <div class="col-md-6">
                     {#<div class="expediente-externo">#}
@@ -121,21 +125,21 @@
         $(document).ready(function () {
 
 
-            $('.expediente-externo').hide();
-            $('.expediente-interno').hide();
-
-            $('.tipo-expediente').change(function () {
-                console.log($(".tipo-expediente option:selected").text());
-
-                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
-                    $('.expediente-interno').show();
-                    $('.expediente-externo').hide();
-                } else {
-                    $('.expediente-interno').hide();
-                    $('.expediente-externo').show();
-                }
-
-            });
+//            $('.expediente-externo').hide();
+//            $('.expediente-interno').hide();
+//
+//            $('.tipo-expediente').change(function () {
+//                console.log($(".tipo-expediente option:selected").text());
+//
+//                if ($(".tipo-expediente option:selected").text().toUpperCase() == 'INTERNO') {
+//                    $('.expediente-interno').show();
+//                    $('.expediente-externo').hide();
+//                } else {
+//                    $('.expediente-interno').hide();
+//                    $('.expediente-externo').show();
+//                }
+//
+//            });
 
             $('.btn-add-persona').click(function () {
 

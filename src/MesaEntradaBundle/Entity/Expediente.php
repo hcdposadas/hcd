@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="expediente")
  * @Vich\Uploadable
  * @UniqueEntity(
- *     fields={"expediente", "anio", "letra"},
+ *     fields={"expediente", "anio"},
  *     errorPath="expediente",
  *     message="Ya existe el expediente en el año y con esta letra"
  * )

@@ -232,7 +232,7 @@ class ExpedienteController extends Controller {
 			]
 		);
 
-//        return new Response($html);
+        return new Response($html);
 
 		return new Response(
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,

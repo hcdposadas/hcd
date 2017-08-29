@@ -52,6 +52,13 @@ class GiroAdministrativo extends BaseClass {
 	 */
 	private $expediente;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="texto", type="text", nullable=true)
+	 */
+	private $texto;
+
 
 
 
@@ -215,5 +222,29 @@ class GiroAdministrativo extends BaseClass {
         $this->actualizadoPor = $actualizadoPor;
 
         return $this;
+    }
+
+    /**
+     * Set texto
+     *
+     * @param string $texto
+     *
+     * @return GiroAdministrativo
+     */
+    public function setTexto($texto)
+    {
+        $this->texto = $texto;
+
+        return $this;
+    }
+
+    /**
+     * Get texto
+     *
+     * @return string
+     */
+    public function getTexto()
+    {
+        return $this->texto;
     }
 }

@@ -85,13 +85,12 @@ class Expediente extends BaseClass {
 	 */
 	private $tipoExpediente;
 
-//	/**
-//	 * @var
-//	 *
-//	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Iniciador")
-//	 * @ORM\JoinColumn(name="iniciador_id", referencedColumnName="id")
-//	 */
-//	private $iniciador;
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="numero_nota", type="text", nullable=true)
+	 */
+	private $numeroNota;
 
 
 	/**
@@ -712,4 +711,28 @@ class Expediente extends BaseClass {
 
 		return $this;
 	}
+
+    /**
+     * Set numeroNota
+     *
+     * @param string $numeroNota
+     *
+     * @return Expediente
+     */
+    public function setNumeroNota($numeroNota)
+    {
+        $this->numeroNota = $numeroNota;
+
+        return $this;
+    }
+
+    /**
+     * Get numeroNota
+     *
+     * @return string
+     */
+    public function getNumeroNota()
+    {
+        return $this->numeroNota;
+    }
 }

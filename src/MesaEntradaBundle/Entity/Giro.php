@@ -66,6 +66,13 @@ class Giro extends BaseClass {
 	 */
 	private $archivado;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="texto", type="text", nullable=true)
+	 */
+	private $texto;
+
     /**
      * Get id
      *
@@ -274,5 +281,29 @@ class Giro extends BaseClass {
     public function getArchivado()
     {
         return $this->archivado;
+    }
+
+    /**
+     * Set texto
+     *
+     * @param string $texto
+     *
+     * @return Giro
+     */
+    public function setTexto($texto)
+    {
+        $this->texto = $texto;
+
+        return $this;
+    }
+
+    /**
+     * Get texto
+     *
+     * @return string
+     */
+    public function getTexto()
+    {
+        return $this->texto;
     }
 }

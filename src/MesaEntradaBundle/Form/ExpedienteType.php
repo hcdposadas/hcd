@@ -26,6 +26,7 @@ class ExpedienteType extends AbstractType
                 ])
             ->add('textoDefinitivo')
             ->add('extracto')
+            ->add('numeroNota')
             ->add('sesionNumero', NumberType::class, [
                 'label' => 'Nº Sesión',
                 'required' => false

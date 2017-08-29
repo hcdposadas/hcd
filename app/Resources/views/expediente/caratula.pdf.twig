@@ -94,8 +94,14 @@
                             {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.nombre | upper }}
                             {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.apellido | upper }}
                         {% endif %}
-                    {% elseif expediente.iniciadores.count > 1 %}
-                        CONCEJALES
+                    {% elseif expediente.iniciadores.count < 3 %}
+                        {% for iniciador in expediente.iniciadores %}
+                            {{ iniciador.iniciador.cargoPersona.cargo | upper }}
+                            {{ iniciador.iniciador.cargoPersona.persona.nombre | upper }}
+                            {{ iniciador.iniciador.cargoPersona.persona.apellido | upper }} .-
+                        {% endfor %}
+                    {% elseif expediente.iniciadores.count >= 3 %}
+                        CONCEJALES DEL HCD
                     {% elseif expediente.iniciadorParticular %}
                         {{ (expediente.iniciadorParticular.apellido ~' '~expediente.iniciadorParticular.nombre) | upper }}
                     {% elseif expediente.dependencia %}

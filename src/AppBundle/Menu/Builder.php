@@ -49,6 +49,16 @@ class Builder implements ContainerAwareInterface {
 						'route' => 'expediente_index',
 					)
 				);
+
+			//Dependencia
+            $menu[ $keyEmpresa ]
+                ->addChild(
+                    'Dependencias',
+                    array(
+                        'route' => 'dependencia_index',
+                    )
+                );
+
 		}
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_PERSONAL' ) ) {
 

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Dependencia</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ dependencium.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ dependencium.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{% if dependencium.activo %}Si{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fecha creacion</th>
+                <td>{% if dependencium.fechaCreacion %}{{ dependencium.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fecha actualizacion</th>
+                <td>{% if dependencium.fechaActualizacion %}{{ dependencium.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<a class="btn btn-default" href="{{ path('dependencia_index') }}">Volver</a>
+
+    <a class="btn btn-default" href="{{ path('dependencia_edit', { 'id': dependencium.id }) }}">Editar</a>
+
+    {#{{ form_start(delete_form) }}#}
+        {#<input class="btn btn-danger" type="submit" value="Eliminar">#}
+    {#{{ form_end(delete_form) }}#}
+
+{% endblock %}

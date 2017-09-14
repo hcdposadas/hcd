@@ -1,0 +1,24 @@
+dependencia_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Dependencia:index" }
+    methods:  GET
+
+dependencia_show:
+    path:     /{id}/show
+    defaults: { _controller: "AppBundle:Dependencia:show" }
+    methods:  GET
+
+dependencia_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:Dependencia:new" }
+    methods:  [GET, POST]
+
+dependencia_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "AppBundle:Dependencia:edit" }
+    methods:  [GET, POST]
+
+dependencia_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AppBundle:Dependencia:delete" }
+    methods:  DELETE

@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DependenciaType extends AbstractType
+class DependenciaAjaxType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,7 +14,6 @@ class DependenciaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('nombre')
-            ->add('activo')
         ;
     }
     
@@ -33,7 +32,7 @@ class DependenciaType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_dependencia';
+        return 'appbundle_dependencia_ajax';
     }
 
 

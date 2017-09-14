@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Dependencia;
 use AppBundle\Entity\Persona;
-use AppBundle\Form\DependenciaType;
+use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -161,7 +161,7 @@ class AjaxController extends Controller {
 	public function formDependenciaAction( Request $request ) {
 
 		$persona = new Dependencia();
-		$form    = $this->createForm( DependenciaType::class, $persona );
+		$form    = $this->createForm( DependenciaAjaxType::class, $persona );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {

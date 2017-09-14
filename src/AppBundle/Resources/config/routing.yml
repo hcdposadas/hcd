@@ -1,3 +1,7 @@
+app_dependencia:
+    resource: "@AppBundle/Resources/config/routing/dependencia.yml"
+    prefix:   /dependencia
+
 app_persona:
     resource: "@AppBundle/Resources/config/routing/persona.yml"
     prefix:   /persona

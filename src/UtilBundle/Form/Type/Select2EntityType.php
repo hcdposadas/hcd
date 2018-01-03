@@ -4,9 +4,7 @@
 namespace UtilBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -16,7 +14,6 @@ use Symfony\Component\Routing\Router;
 use Tetranz\Select2EntityBundle\Form\DataTransformer\EntitiesToPropertyTransformer;
 use UtilBundle\Form\DataTransformer\EntityToPropertyTransformer;
 
-//use Tetranz\Select2EntityBundle\Form\DataTransformer\EntityToPropertyTransformer;
 
 /**
  *

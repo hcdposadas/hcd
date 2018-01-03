@@ -11,9 +11,7 @@ services:
             - { name: form.type, alias: bootstrapcollection }
 
     form.type.jqueryautocomplete:
-        class: UtilBundle\Form\JqueryAutocompleteType
-        arguments:
-            - "@doctrine.orm.entity_manager"
+        class: UtilBundle\Form\Type\JqueryAutocompleteType
         tags:
             - { name: form.type, alias: jqueryautocomplete }
 

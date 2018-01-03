@@ -1,3 +1,7 @@
 util_homepage:
     path:     /
     defaults: { _controller: UtilBundle:Default:index }
+
+ajax_default:
+    path:     /ajax_default
+    defaults: { _controller: UtilBundle:Default:getAjaxDefault }

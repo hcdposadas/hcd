@@ -9,9 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use UtilBundle\Form\Type\BootstrapCollectionType;
-use UtilBundle\Form\Type\Select2EntityType;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ExpedienteFilterType extends AbstractType {
 	/**
@@ -52,7 +49,7 @@ class ExpedienteFilterType extends AbstractType {
 			->add( 'registroMunicipal' )
 			->add( 'iniciador' )
 			->add( 'iniciadorParticular' )
-			->add( 'dependencia' )
+			->add( 'dependencia')
 			->add( 'buscar',
 				SubmitType::class,
 				array(

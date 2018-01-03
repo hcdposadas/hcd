@@ -10,6 +10,13 @@ services:
         tags:
             - { name: form.type, alias: bootstrapcollection }
 
+    form.type.jqueryautocomplete:
+        class: UtilBundle\Form\JqueryAutocompleteType
+        arguments:
+            - "@doctrine.orm.entity_manager"
+        tags:
+            - { name: form.type, alias: jqueryautocomplete }
+
     tetranz_select2entity.select2entity_type:
             class: UtilBundle\Form\Type\Select2EntityType
             arguments:

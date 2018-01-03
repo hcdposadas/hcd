@@ -1,3 +1,123 @@
+{% block jqueryautocomplete_widget %}
+
+
+    {% spaceless %}
+
+        <script type="text/javascript">
+            /*
+             * Revisar si esta fn es necesaria en el futuro. Por el momento no se esta utilizando
+             * @author santiago.semhan
+             */
+            jQuery(document).ready(function ($) {
+                $('#suggest_{{ id }}').autocomplete({
+                    source: function (request, response) {
+                        block_prevent = true;
+                        $.getJSON(
+                            "{{path(route_name)}}",
+                            {
+                                term: this.term,
+                                class: "{{class}}",
+                                property: "{{choice_label}}",
+                                search_method: "{{search_method}}"
+                                {% if extraParams is defined  %}
+                                {#,extraParams: {{extraParams | raw}}#}
+                                , extraParams: {
+                                    {% for key, value in extraParams %}
+                                    "{{ key }}": {{ value | raw}}, {% endfor %}
+                                }
+                                {% endif %}
+                            },
+                            response
+                        );
+                        block_prevent = false;
+                    },
+                    minLength: 2,
+                    select: function (event, ui) {
+                        if (ui.item.id === undefined) {
+                            $('#{{ id}}').val('').trigger('clear');
+                            $('#suggest_{{ id}}').val('');
+                            return false;
+                        } else {
+                            $('#{{ id}}').val(ui.item.id).trigger('change');
+                        }
+                    }
+                })
+                {% if(tpl) %}
+                    .data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                    //.append( "<a>" + item.label + "<br><strong>" + item.extra + "</strong></a>" )
+                        .append("{{ tpl |raw}}")
+                        .appendTo(ul);
+                }
+                {% endif %}
+                ;
+            });</script>
+        <style>
+            .ui-autocomplete {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 2000;
+                float: left;
+                display: none;
+                min-width: 160px;
+                _width: 160px;
+                padding: 4px 0;
+                margin: 2px 0 0 0;
+                list-style: none;
+                background-color: #ffffff;
+                border-color: #ccc;
+                border-color: rgba(0, 0, 0, 0.2);
+                border-style: solid;
+                border-width: 1px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
+                -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+                -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+                -webkit-background-clip: padding-box;
+                -moz-background-clip: padding;
+                background-clip: padding-box;
+                *border-right-width: 2px;
+                *border-bottom-width: 2px;
+            .ui-menu-item > a.ui-corner-all {
+                display: block;
+                padding: 3px 15px;
+                clear: both;
+                font-weight: normal;
+                line-height: 18px;
+                color: #555555;
+                white-space: nowrap;
+            &
+            .ui-state-hover,
+            &
+            .ui-state-active {
+                color: #ffffff;
+                text-decoration: none;
+                background-color: #0088cc;
+                border-radius: 0px;
+                -webkit-border-radius: 0px;
+                -moz-border-radius: 0px;
+                background-image: none;
+            }
+            }
+            }
+        </style>
+
+    {% endspaceless %}
+
+    {#{% endblock javascripts %}#}
+    {{ block('hidden_widget') }}
+
+    {% set id = 'suggest_'~id %}
+    {% set full_name = 'suggest_'~full_name %}
+    {% set value = suggest_value %}
+    {% set class = form.vars.attr.class | default('') %}
+    <input type="text"
+           class="form-control {{ class }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{% endblock %}
+
 {% block bootstrapcollection_widget %}
     {% block javascripts %}
 
@@ -106,6 +226,7 @@
         </div>
     {% endspaceless %}
 {% endblock bootstrapcollection_widget %}
+
 {% block tetranz_select2entity_widget %}
     {% set attr = attr|merge({
     'data-multiple':multiple ? 1:0,

@@ -58,29 +58,40 @@ class ExpedienteRepository extends EntityRepository {
 			   ->setParameter( 'extracto', "%$q%" );
 		}
 		if ( $data['expediente'] ) {
-			$qb
-				->andWhere( "e.expediente = :expediente" )
-				->setParameter( 'expediente', $data['expediente'] );
+			$q = $data['expediente'];
+			$qb->andWhere( 'UPPER(e.expediente) LIKE UPPER(:expediente)' )
+			   ->setParameter( 'expediente', "%$q%" );
 		}
 		if ( $data['letra'] ) {
-			$qb->andWhere( 'e.letra = :letra' )
-			   ->setParameter( 'letra', $data['letra'] );
+			$q = $data['letra'];
+			$qb->andWhere( 'UPPER(e.letra) LIKE UPPER(:letra)' )
+			   ->setParameter( 'letra', "%$q%" );
 		}
 		if ( $data['registroMunicipal'] ) {
-			$qb->andWhere( 'e.registroMunicipal = :registroMunicipal' )
-			   ->setParameter( 'registroMunicipal', $data['registroMunicipal'] );
+			$q = $data['registroMunicipal'];
+			$qb->andWhere( 'UPPER(e.registroMunicipal) LIKE UPPER(:registroMunicipal)' )
+			   ->setParameter( 'registroMunicipal', "%$q%" );
 		}
 		if ( $data['iniciador'] ) {
-			$qb->andWhere( 'e.iniciador = :iniciador' )
-			   ->setParameter( 'iniciador', $data['iniciador'] );
+//			$qb->andWhere( 'e.iniciador = :iniciador' )
+//			   ->setParameter( 'iniciador', $data['iniciador'] );
+			$q = $data['iniciador'];
+			$qb->join( 'e.iniciador', 'iniciador' )
+			   ->andWhere( 'upper(iniciador.nombre) LIKE upper(:iniciador)' )
+			   ->setParameter( 'iniciador', "%$q%" );
 		}
 		if ( $data['iniciadorParticular'] ) {
-			$qb->andWhere( 'e.iniciadorParticular = :iniciadorParticular' )
-			   ->setParameter( 'iniciadorParticular', $data['iniciadorParticular'] );
+
+			$q = $data['iniciadorParticular'];
+			$qb->join( 'e.iniciadorParticular', 'iniciadorParticular' )
+			   ->andWhere( 'upper(iniciadorParticular.nombre) LIKE upper(:iniciadorParticular)' )
+			   ->setParameter( 'iniciadorParticular', "%$q%" );
 		}
 		if ( $data['dependencia'] ) {
-			$qb->andWhere( 'e.dependencia = :dependencia' )
-			   ->setParameter( 'dependencia', $data['dependencia'] );
+			$q = $data['dependencia'];
+			$qb->join( 'e.dependencia', 'dependencia' )
+			   ->andWhere( 'upper(dependencia.nombre) LIKE upper(:dependencia)' )
+			   ->setParameter( 'dependencia', "%$q%" );
 		}
 
 		if ( ( $data['fecha'] ) ) {

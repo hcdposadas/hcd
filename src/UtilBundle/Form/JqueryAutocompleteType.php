@@ -2,6 +2,7 @@
 
 namespace UtilBundle\Form;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormView;
@@ -20,9 +21,9 @@ class JqueryAutocompleteType extends AbstractType {
 
 		if ( ! is_null( $form->getData() ) ) {
 
-			if ( isset( $options['property'] ) ) {
+			if ( isset( $options['choice_label'] ) ) {
 
-				$getProperty = 'get' . ucwords( $options['property'] );
+				$getProperty = 'get' . ucwords( $options['choice_label'] );
 
 				$sPropertyValue = $oEntity->$getProperty();
 			} else {
@@ -33,7 +34,7 @@ class JqueryAutocompleteType extends AbstractType {
 		$view->vars = array_replace( $view->vars,
 			array(
 				'class'         => $options['class'],
-				'property'      => $options['property'],
+				'choice_label'  => $options['choice_label'],
 				'suggest_value' => $sPropertyValue,
 				'search_method' => $options['search_method'],
 				'route_name'    => $options['route_name'],
@@ -56,7 +57,7 @@ class JqueryAutocompleteType extends AbstractType {
 	}
 
 	public function getParent() {
-		return 'entity';
+		return EntityType::class;
 	}
 
 	public function getBlockPrefix() {

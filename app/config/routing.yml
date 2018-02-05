@@ -19,7 +19,8 @@ usuarios:
     prefix:   /usuarios
 
 easy_admin_bundle:
-    resource: "@EasyAdminBundle/Controller/"
+    # this is just an example; update the value of 'resource' accordingly
+    resource: "@AppBundle/Controller/AdminController.php"
     type:     annotation
     prefix:   /admin
 

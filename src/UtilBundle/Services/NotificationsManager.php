@@ -49,10 +49,18 @@ class NotificationsManager
         return $this->connection;
     }
 
-    public function notify($message)
+    public function notify($type, $data = null)
     {
+        if ($data === null) {
+            $data = $type;
+            $type = 'default';
+        }
+
         $conn = $this->getConnection();
-        $conn->publish('message', json_encode($message));
+        $conn->publish('message', json_encode(array(
+            'type' => $type,
+            'data' => $data,
+        )));
     }
 
 

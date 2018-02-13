@@ -8,6 +8,7 @@ imports:
     - { resource: "@AppBundle/Resources/config/services.yml" }
     - { resource: "@UtilBundle/Resources/config/services.yml" }
     - { resource: "@ThemeBundle/Resources/config/services.yml" }
+    - { resource: "@VotacionBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration

@@ -1,0 +1,47 @@
+{% extends '::base.html.twig' %}
+{% block title %}
+    Inicio
+{% endblock title %}
+{% block body %}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Votar</h3>
+            <div class="box-tools pull-right">
+                <div id="estado">No conectado</div>
+            </div>
+        </div>
+        <div class="box-body">
+            <div id="votacion">No hay votaciones en curso</div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+{% block javascripts %}
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script>
+        $(function () {
+            var socket = io('http://localhost:3000', {
+                transports: ['websocket'],
+                upgrade: true
+            });
+            socket.on('connect', function () {
+                $('#estado').html('Conectado');
+            });
+            socket.on('disconnect', function () {
+                $('#estado').html('No conectado');
+            });
+            socket.on('message', function (msg) {
+                if (msg.type === 'votacion.abierta') {
+                    setTimeout(function () {
+                        $('#votacion').html('No hay votaciones en curso')
+                    }, msg.data.duracion * 1000);
+
+                    $('#votacion').html('Votación en curso!!')
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

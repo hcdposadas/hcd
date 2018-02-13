@@ -14,6 +14,8 @@ io.on('connection', function(socket) {
 
 redis.subscribe('message', function(err, count) {});
 
-redis.on('message', function(subscribed, message) {
+redis.on('message', function(channel, message) {
+    message = JSON.parse(message);
+    console.log('message', message);
     io.emit('message', message);
 });

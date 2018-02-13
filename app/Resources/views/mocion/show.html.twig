@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Moción {{ mocion }}
+{% endblock title %}
+{% block body %}
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">
+                Moción {{ mocion.numero }}
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="{{ path('votacion_index', {'mocion': mocion.id}) }}" class="btn btn-primary">Votación</a>
+                    <br>
+                    <br>
+                </div>
+                <div class="col-md-12">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th>Número</th>
+                            <td>{{ mocion.numero }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha</th>
+                            <td>{% if mocion.fecha %}{{ mocion.fecha|date('d/m/Y H:i:s') }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Estado</th>
+                            <td>{{ mocion.estado }}</td>
+                        </tr>
+                        <tr>
+                            <th>Afirmativos</th>
+                            <td>{{ mocion.cuentaAfirmativos }}</td>
+                        </tr>
+                        <tr>
+                            <th>Negativos</th>
+                            <td>{{ mocion.cuentaNegativos }}</td>
+                        </tr>
+                        <tr>
+                            <th>Abstenciones</th>
+                            <td>{{ mocion.cuentaAbstenciones }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-default" href="{{ path('mocion_index') }}">Volver</a>
+    <a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">Editar</a>
+
+    <div class="pull-right">
+        {{ form_start(delete_form) }}
+        <input class="btn btn-danger" type="submit" value="Eliminar">
+        {{ form_end(delete_form) }}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{
+  "name": "hcd",
+  "version": "1.0.0",
+  "private": true,
+  "description": "hcd ===",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "ioredis": "^3.2.2",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hcdposadas/hcd.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hcdposadas/hcd/issues"
+  },
+  "homepage": "https://github.com/hcdposadas/hcd#readme"
+}

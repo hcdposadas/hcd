@@ -13,7 +13,9 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <a href="{{ path('votacion_index', {'mocion': mocion.id}) }}" class="btn btn-primary">Votación</a>
+                    {% if mocion.puedeVotarse %}
+                        <a href="{{ path('votacion_index', {'mocion': mocion.id}) }}" class="btn btn-primary">Votar esta moción</a>
+                    {% endif %}
                     <br>
                     <br>
                 </div>
@@ -30,7 +32,7 @@
                         </tr>
                         <tr>
                             <th>Estado</th>
-                            <td>{{ mocion.estado }}</td>
+                            <td>{{ mocion.textoEstado }}</td>
                         </tr>
                         <tr>
                             <th>Afirmativos</th>

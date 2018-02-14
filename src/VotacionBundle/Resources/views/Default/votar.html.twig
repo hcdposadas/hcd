@@ -12,7 +12,15 @@
             </div>
         </div>
         <div class="box-body">
-            <div id="votacion">No hay votaciones en curso</div>
+            <div class="no-hay-votaciones">No hay votaciones en curso</div>
+            <div class="votacion" style="display: none;">
+                <h3 class="mocion"></h3>
+                <br>
+                <div>
+                    <a href="" class="btn btn-success btn-lg">SI</a>
+                    <a href="" class="btn btn-danger btn-lg">NO</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -34,11 +42,13 @@
             });
             socket.on('message', function (msg) {
                 if (msg.type === 'votacion.abierta') {
+                    $('.mocion').text('Moción ' + msg.data.mocion)
+                    $('.votacion').show();
+                    $('.no-hay-votaciones').hide();
                     setTimeout(function () {
-                        $('#votacion').html('No hay votaciones en curso')
+                        $('.no-hay-votaciones').show();
+                        $('.votacion').hide();
                     }, msg.data.duracion * 1000);
-
-                    $('#votacion').html('Votación en curso!!')
                 }
             });
 

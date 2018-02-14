@@ -4,15 +4,14 @@
     Moción {{ mocion }} - Votación
 {% endblock title %}
 {% block body %}
-    <h1>Votacion creation</h1>
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">Moción {{ mocion }} - Votación</h3>
+            <h3 class="box-title">Moción {{ mocion }} - Lanzar votación</h3>
         </div>
         <div class="box-body">
             {{ form_start(form) }}
             {{ form_widget(form) }}
-            <button class="btn btn-primary" type="submit">Lanzar votación</button>
+            <button class="btn btn-danger" type="submit">Lanzar votación</button>
             {{ form_end(form) }}
         </div>
     </div>

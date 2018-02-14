@@ -7,6 +7,7 @@ use VotacionBundle\Entity\Votacion;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use VotacionBundle\Form\FinalizarVotacionType;
 use VotacionBundle\Form\VotacionType;
 
 /**
@@ -20,9 +21,9 @@ class VotacionController extends Controller
      * Lists all votacion entities.
      *
      * @Route("/", name="votacion_index")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function indexAction(Mocion $mocion)
+    public function indexAction(Request $request, Mocion $mocion)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -30,14 +31,30 @@ class VotacionController extends Controller
             'mocion' => $mocion->getId()
         ));
 
-        $votacionActiva = array_reduce($votaciones, function ($carry, Votacion $votacion) {
+        $votacionEnCurso = array_reduce($votaciones, function ($carry, Votacion $votacion) {
             return $votacion->esActiva() ? $votacion : $carry;
         }, null);
 
+        if (!$votacionEnCurso) {
+            $lanzarForm = $this->createForm(VotacionType::class);
+            $lanzarForm->handleRequest($request);
+
+            if ($lanzarForm->isSubmitted() && $lanzarForm->isValid()) {
+                $votacion = $this->get('votacion.service')
+                    ->nuevaVotacion($mocion, $lanzarForm->getData()['duracion']);
+
+                return $this->redirectToRoute('votacion_show', array(
+                    'mocion' => $mocion->getId(),
+                    'id' => $votacion->getId(),
+                ));
+            }
+        }
+
         return $this->render('votacion/index.html.twig', array(
             'votaciones' => $votaciones,
-            'votacionActiva' => $votacionActiva,
-            'mocion' => $mocion
+            'votacionEnCurso' => $votacionEnCurso,
+            'mocion' => $mocion,
+            'lanzarForm' => $lanzarForm->createView(),
         ));
     }
 
@@ -74,14 +91,40 @@ class VotacionController extends Controller
      * @Route("/{id}", name="votacion_show")
      * @Method("GET")
      */
-    public function showAction(Votacion $votacion)
+    public function showAction(Request $request, Votacion $votacion)
     {
-        $deleteForm = $this->createDeleteForm($votacion);
+        $finalizarForm = $this->createFinalizarForm($votacion);
+        $finalizarForm->handleRequest($request);
 
         return $this->render('votacion/show.html.twig', array(
             'votacion' => $votacion,
-            'delete_form' => $deleteForm->createView(),
+            'finalizar_form' => $finalizarForm->createView(),
         ));
+    }
+
+    /**
+     * @Route("/{id}", name="votacion_finalizar")
+     * @Method("POST")
+     */
+    public function finalizarAction(Request $request, Votacion $votacion)
+    {
+//        $finalizarForm = $this->createFinalizarForm($votacion);
+//        $finalizarForm->handleRequest($request);
+//
+//        if ($finalizarForm->isSubmitted()) {
+//            if ($finalizarForm->isValid()) {
+                $this->get('votacion.service')->finalizarVotacion($votacion);
+
+                return $this->redirectToRoute('mocion_show', array(
+                    'id' => $votacion->getMocion()->getId(),
+                ));
+//            }
+//        }
+//
+//        return $this->redirectToRoute('votacion_show', array(
+//            'id' => $votacion->getId(),
+//            'mocion' => $votacion->getMocion()->getId(),
+//        ));
     }
 
     /**
@@ -146,5 +189,14 @@ class VotacionController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    private function createFinalizarForm(Votacion $votacion) {
+        return $this->createForm(FinalizarVotacionType::class, $votacion, array(
+            'action' => $this->generateUrl('votacion_finalizar', array(
+                'id' => $votacion->getId(),
+                'mocion' => $votacion->getMocion()->getId(),
+            ))
+        ));
     }
 }

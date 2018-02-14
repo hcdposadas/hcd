@@ -3,6 +3,7 @@
 namespace VotacionBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -49,6 +50,13 @@ class Votacion
      * @ORM\ManyToOne(targetEntity="VotacionBundle\Entity\Mocion", inversedBy="votaciones")
      */
     private $mocion;
+
+    /**
+     * @var ArrayCollection $votos
+     *
+     * @ORM\OneToMany(targetEntity="VotacionBundle\Entity\Voto", mappedBy="votacion")
+     */
+    private $votos;
 
     /**
      * Get id
@@ -146,6 +154,22 @@ class Votacion
     public function setMocion($mocion)
     {
         $this->mocion = $mocion;
+    }
+
+    /**
+     * @return ArrayCollection|Voto[]
+     */
+    public function getVotos()
+    {
+        return $this->votos;
+    }
+
+    /**
+     * @param ArrayCollection $votos
+     */
+    public function setVotos($votos)
+    {
+        $this->votos = $votos;
     }
 
     public function esActiva(DateTime $fecha = null)

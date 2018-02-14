@@ -31,7 +31,7 @@
                         <td><a href="{{ path('mocion_show', { 'id': mocion.id }) }}">{{ mocion.id }}</a></td>
                         <td>{{ mocion.numero }}</td>
                         <td>{% if mocion.fecha %}{{ mocion.fecha|date('d/m/Y H:i:s') }}{% endif %}</td>
-                        <td>{{ mocion.estado }}</td>
+                        <td>{{ mocion.textoEstado }}</td>
                         <td>{{ mocion.cuentaAfirmativos }}</td>
                         <td>{{ mocion.cuentaNegativos }}</td>
                         <td>{{ mocion.cuentaAbstenciones }}</td>

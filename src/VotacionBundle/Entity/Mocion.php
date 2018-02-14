@@ -13,6 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Mocion
 {
+    const ESTADO_PARA_VOTAR = 0;
+    const ESTADO_EN_VOTACION = 1;
+    const ESTADO_FINALIZADO = 2;
+
     /**
      * @var int $id
      *
@@ -221,5 +225,28 @@ class Mocion
     {
         $this->resultado = $resultado;
     }
-}
 
+    /**
+     * @return bool
+     */
+    public function puedeVotarse()
+    {
+        return $this->getEstado() == self::ESTADO_PARA_VOTAR;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextoEstado()
+    {
+        switch ($this->getEstado()) {
+            case self::ESTADO_FINALIZADO:
+                return 'Finalizado';
+            case self::ESTADO_EN_VOTACION:
+                return 'En votación';
+            case self::ESTADO_PARA_VOTAR:
+                return 'Para votar';
+        }
+        return '?';
+    }
+}

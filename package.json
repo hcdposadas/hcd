@@ -1,30 +1,54 @@
 {
   "name": "hcd",
   "version": "1.0.0",
-  "private": true,
-  "description": "hcd ===",
-  "main": "server.js",
+  "description": "Honorable Concejo Deliberante de la Ciudad de Posadas",
+  "main": "webpack.config.js",
   "directories": {
     "test": "tests"
   },
-  "dependencies": {
-    "express": "^4.16.2",
-    "ioredis": "^3.2.2",
-    "socket.io": "^2.0.4"
-  },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev-server": "./node_modules/.bin/encore dev-server",
+    "dev": "./node_modules/.bin/encore dev",
+    "watch": "./node_modules/.bin/encore dev --watch",
+    "build": "./node_modules/.bin/encore production"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hcdposadas/hcd.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Honorable Concejo Deliberante de la Ciudad de Posadas",
+  "contributors": [
+    {
+      "name": "Matias Solis de la Torre",
+      "email": "matias.delatorre89@gmail.com"
+    },
+    {
+      "name": "Raul Neis",
+      "email": "raulneis@gmail.com"
+    }
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/hcdposadas/hcd/issues"
   },
-  "homepage": "https://github.com/hcdposadas/hcd#readme"
+  "homepage": "https://github.com/hcdposadas/hcd#readme",
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.19.0",
+    "bootstrap-sass": "^3.3.7",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
+    "vue": "^2.5.13",
+    "vue-loader": "^14.1.1",
+    "vue-template-compiler": "^2.5.13",
+    "webpack-notifier": "^1.5.1"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "bootstrap": "^4.0.0",
+    "express": "^4.16.2",
+    "ioredis": "^3.2.2",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.12.9",
+    "socket.io": "^2.0.4"
+  }
 }

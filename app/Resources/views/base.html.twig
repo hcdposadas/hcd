@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
-    <title>{% block title %}Welcome!{% endblock %} | HCD</title>
+    <title>{% block title %}Bienvenido!{% endblock %} | HCD</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="{{ asset('bundles/theme/bootstrap/css/bootstrap.min.css') }}">
+    {#<link rel="stylesheet" href="{{ asset('bundles/theme/bootstrap/css/bootstrap.min.css') }}">#}
+    <link rel="stylesheet" href="{{ asset('build/global.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- Ionicons -->
@@ -195,14 +196,17 @@
 </div>
 <!-- ./wrapper -->
 
+
+<script src="{{ asset('build/app.js') }}"></script>
+
 <!-- jQuery UI 1.11.4 -->
-<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+{#<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>#}
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
     $.widget.bridge('uibutton', $.ui.button);
 </script>
 <!-- Bootstrap 3.3.6 -->
-<script src="{{ asset('bundles/theme/bootstrap/js/bootstrap.min.js') }}"></script>
+{#<script src="{{ asset('bundles/theme/bootstrap/js/bootstrap.min.js') }}"></script>#}
 <!-- Select2 -->
 <script src="{{ asset('bundles/theme/plugins/select2/select2.full.min.js') }}"></script>
 <script src="{{ asset('bundles/theme/plugins/select2/i18n/es.js') }}"></script>

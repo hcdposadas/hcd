@@ -40,8 +40,15 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb;
 	}
 
-	public function getQbBuscar( $data ) {
+	public function getQbExpedientesMesaEntrada() {
 		$qb = $this->getQbAll();
+		$qb->where('e.borrador is null');
+
+		return $qb;
+	}
+
+	public function getQbBuscar( $data ) {
+		$qb = $this->getQbExpedientesMesaEntrada();
 
 		if ( isset( $data['tipoExpediente'] ) ) {
 			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
@@ -104,6 +111,20 @@ class ExpedienteRepository extends EntityRepository {
 		}
 
 		return $qb;
+
+	}
+
+	public function getQbProyecetosPorConcejal( $concejal ) {
+
+		$qb = $this->getQbAll();
+
+			$qb->join( 'e.iniciadores', 'iniciadores' )
+				->where('iniciadores.iniciador = :concejal');
+
+			$qb->setParameter('concejal', $concejal);
+
+
+			return $qb;
 
 	}
 }

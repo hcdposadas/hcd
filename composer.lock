@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ed99a4e895224e0b0953e77d733e54b",
+    "content-hash": "a1ada451e59abe94363976691e159532",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -880,16 +880,16 @@
         },
         {
             "name": "egeloen/ckeditor-bundle",
-            "version": "5.0.3",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egeloen/IvoryCKEditorBundle.git",
-                "reference": "433b4bf1fe0731d3ad88ed27f359b20cc2e30d28"
+                "reference": "9c9926918d3ae4b4d89ca2db578766ab9829ee7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egeloen/IvoryCKEditorBundle/zipball/433b4bf1fe0731d3ad88ed27f359b20cc2e30d28",
-                "reference": "433b4bf1fe0731d3ad88ed27f359b20cc2e30d28",
+                "url": "https://api.github.com/repos/egeloen/IvoryCKEditorBundle/zipball/9c9926918d3ae4b4d89ca2db578766ab9829ee7a",
+                "reference": "9c9926918d3ae4b4d89ca2db578766ab9829ee7a",
                 "shasum": ""
             },
             "require": {
@@ -900,9 +900,12 @@
                 "symfony/framework-bundle": "^2.7|^3.0"
             },
             "require-dev": {
+                "composer/composer": "^1.0",
                 "friendsofphp/php-cs-fixer": "^2.0",
-                "phpunit/phpunit": "^5.0",
+                "phpunit/phpunit": "^5.0|^6.0",
+                "sensio/distribution-bundle": "^3.0.12|^4.0|^5.0",
                 "symfony/asset": "^2.7|^3.0",
+                "symfony/console": "^2.7|^3.0",
                 "symfony/phpunit-bridge": "^2.7|^3.0",
                 "symfony/templating": "^2.7|^3.0",
                 "symfony/twig-bridge": "^2.7|^3.0",
@@ -911,6 +914,7 @@
             },
             "suggest": {
                 "egeloen/form-extra-bundle": "Allows to load CKEditor asynchronously",
+                "sensio/distribution-bundle": "Allows to install CKEditor via a script handler",
                 "symfony/asset": "Allows to rewrite/version assets",
                 "symfony/templating": "Allows to use PHP templates",
                 "symfony/twig-bridge": "Allows to use Twig templates",
@@ -919,7 +923,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0-dev"
+                    "dev-master": "6.0-dev"
                 }
             },
             "autoload": {
@@ -941,7 +945,7 @@
             "keywords": [
                 "CKEditor"
             ],
-            "time": "2017-06-05T12:35:35+00:00"
+            "time": "2017-08-18T08:19:45+00:00"
         },
         {
             "name": "egeloen/json-builder",

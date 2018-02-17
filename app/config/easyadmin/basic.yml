@@ -26,6 +26,7 @@ easy_admin:
         menu:
             - Expediente
             - { label: 'Tipo Expediente', entity: TipoExpediente }
+            - { label: 'Tipo Proyecto', entity: TipoProyecto }
             - Iniciador
             - { label: 'Area Administrativa', entity: AreaAdministrativa }
             - Bloque

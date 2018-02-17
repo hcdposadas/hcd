@@ -38,12 +38,14 @@ class ExpedienteType extends AbstractType
             ->add('expediente',
                 null,
                 [
-                    'label' => 'N° expediente'
+                    'label' => 'N° expediente',
+	                'required' => true
                 ])
             ->add('anio',
                 null,
                 [
-                    'label' => 'Año'
+                    'label' => 'Año',
+                    'required' => true
                 ])
             ->add('letra')
             ->add('fecha',

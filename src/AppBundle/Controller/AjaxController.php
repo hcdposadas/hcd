@@ -183,4 +183,56 @@ class AjaxController extends Controller {
 
 		return new JsonResponse( [ 'form' => $formHtml ], $responseStatus );
 	}
+
+	public function getTiposProyectosAction( Request $request ) {
+
+		$em = $this->getDoctrine();
+
+		$id = $request->get( 'id' );
+
+		$tipoProyecto = $em->getRepository( 'MesaEntradaBundle:TipoProyecto' )->find( $id );
+
+		if ( ! $tipoProyecto ) {
+			return new JsonResponse( 'No se encontro el tipo de proyeto', 404 );
+		}
+
+		$response = '';
+		if ( $tipoProyecto->getTextoPorDefecto() ) {
+			$response = $tipoProyecto->getTextoPorDefecto();
+		}
+
+		return new JsonResponse( $response );
+	}
+
+	public function getMisCargosPorNombreAction( Request $request ) {
+
+		$em = $this->getDoctrine();
+
+		$value = $request->get( 'q' );
+		$limit = $request->get( 'page_limit' );
+		$entities = $em->getRepository( 'MesaEntradaBundle:Iniciador' )->getACargosPorNombre( $value, $limit );
+
+		$json = array();
+
+		if ( ! count( $entities ) ) {
+			$json[] = array(
+				'text' => 'No se encontraron coincidencias',
+				'id'   => ''
+			);
+		} else {
+
+			foreach ( $entities as $entity ) {
+//				foreach ( $entity['cargoPersona'] as $cargoPersona ) {
+				$json[] = array(
+					'id'   => $entity['id'],
+					//'label' => $entity[$property],
+					'text' => $entity['cargo'] . ' ' . $entity['nombre_persona'] . ' ' . $entity['apellido_persona']
+				);
+//				}
+
+			}
+		}
+
+		return new JsonResponse( $json );
+	}
 }

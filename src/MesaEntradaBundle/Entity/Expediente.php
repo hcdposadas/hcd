@@ -47,12 +47,12 @@ class Expediente extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="expediente", type="string", length=255)
+	 * @ORM\Column(name="expediente", type="string", length=255, nullable=true)
 	 */
 	private $expediente;
 
 	/**
-	 * @ORM\Column(name="anio",type="string", length=255)
+	 * @ORM\Column(name="anio",type="string", length=255, nullable=true)
 	 * @var string
 	 */
 	private $anio;
@@ -163,6 +163,29 @@ class Expediente extends BaseClass {
 	 * @var string
 	 */
 	private $expedienteExterno;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\TipoProyecto")
+	 * @ORM\JoinColumn(name="tipo_proyecto_id", referencedColumnName="id")
+	 */
+	private $tipoProyecto;
+
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="texto", type="text", nullable=true)
+	 */
+	private $texto;
+
+	/**
+	 * @var boolean
+	 *
+	 * @ORM\Column(name="borrador", type="boolean", nullable=true)
+	 */
+	private $borrador;
 
 	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
@@ -712,27 +735,91 @@ class Expediente extends BaseClass {
 		return $this;
 	}
 
-    /**
-     * Set numeroNota
-     *
-     * @param string $numeroNota
-     *
-     * @return Expediente
-     */
-    public function setNumeroNota($numeroNota)
-    {
-        $this->numeroNota = $numeroNota;
+	/**
+	 * Set numeroNota
+	 *
+	 * @param string $numeroNota
+	 *
+	 * @return Expediente
+	 */
+	public function setNumeroNota( $numeroNota ) {
+		$this->numeroNota = $numeroNota;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get numeroNota
-     *
-     * @return string
-     */
-    public function getNumeroNota()
-    {
-        return $this->numeroNota;
-    }
+	/**
+	 * Get numeroNota
+	 *
+	 * @return string
+	 */
+	public function getNumeroNota() {
+		return $this->numeroNota;
+	}
+
+	/**
+	 * Set tipoProyecto
+	 *
+	 * @param \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto
+	 *
+	 * @return Expediente
+	 */
+	public function setTipoProyecto( \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto = null ) {
+		$this->tipoProyecto = $tipoProyecto;
+
+		return $this;
+	}
+
+	/**
+	 * Get tipoProyecto
+	 *
+	 * @return \MesaEntradaBundle\Entity\TipoProyecto
+	 */
+	public function getTipoProyecto() {
+		return $this->tipoProyecto;
+	}
+
+	/**
+	 * Set texto
+	 *
+	 * @param string $texto
+	 *
+	 * @return Expediente
+	 */
+	public function setTexto( $texto ) {
+		$this->texto = $texto;
+
+		return $this;
+	}
+
+	/**
+	 * Get texto
+	 *
+	 * @return string
+	 */
+	public function getTexto() {
+		return $this->texto;
+	}
+
+	/**
+	 * Set borrador
+	 *
+	 * @param boolean $borrador
+	 *
+	 * @return Expediente
+	 */
+	public function setBorrador( $borrador ) {
+		$this->borrador = $borrador;
+
+		return $this;
+	}
+
+	/**
+	 * Get borrador
+	 *
+	 * @return boolean
+	 */
+	public function getBorrador() {
+		return $this->borrador;
+	}
 }

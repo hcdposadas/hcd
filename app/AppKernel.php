@@ -29,7 +29,6 @@ class AppKernel extends Kernel
 			new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
 			new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            new VotacionBundle\VotacionBundle(),
         ];
 
 		if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

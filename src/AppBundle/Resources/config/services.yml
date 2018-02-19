@@ -5,3 +5,11 @@ services:
     manager.reportes:
         class: AppBundle\Services\ReportesManager
         arguments: ["@doctrine","@security.token_storage", "@router", "@assets.packages", "@knp_snappy.pdf"]
+
+    AppBundle\Form\MocionType:
+        arguments: ['@doctrine.orm.entity_manager']
+        tags: [form.type]
+
+    votacion.manager:
+            class: AppBundle\Services\VotacionManager
+            arguments: ["@doctrine.orm.default_entity_manager"]

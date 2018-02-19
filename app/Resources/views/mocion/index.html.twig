@@ -11,42 +11,48 @@
         <div class="box-body">
             <div>
                 <a class="btn btn-primary" href="{{ path('mocion_new') }}">Nueva moción</a>
+                <br><br>
             </div>
-            <table class="table table-bordered table-striped data-table">
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Número</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Afirmativos</th>
-                    <th>Negativos</th>
-                    <th>Abstenciones</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for mocion in mocions %}
-                    <tr>
-                        <td><a href="{{ path('mocion_show', { 'id': mocion.id }) }}">{{ mocion.id }}</a></td>
-                        <td>{{ mocion.numero }}</td>
-                        <td>{% if mocion.fecha %}{{ mocion.fecha|date('d/m/Y H:i:s') }}{% endif %}</td>
-                        <td>{{ mocion.textoEstado }}</td>
-                        <td>{{ mocion.cuentaAfirmativos }}</td>
-                        <td>{{ mocion.cuentaNegativos }}</td>
-                        <td>{{ mocion.cuentaAbstenciones }}</td>
-                        <td>
-                            <a class="btn btn-sm btn-default" href="{{ path('mocion_show', { 'id': mocion.id }) }}">
-                                <i class="fa fa-search"></i>
-                            </a>
-                            {#<a class="btn btn-sm btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">#}
-                                {#<i class="fa fa-edit"></i>#}
-                            {#</a>#}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Estado</th>
+                            <th>Afirmativos</th>
+                            <th>Negativos</th>
+                            <th>Abstenciones</th>
+                            <th>Resultado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for mocion in mocions %}
+                            <tr>
+                                <td><a href="{{ path('mocion_show', { 'id': mocion.id }) }}">{{ mocion.numero }}</a>
+                                </td>
+                                <td><span class="label label-primary">{{ mocion.estado }}</span></td>
+                                <td>{{ mocion.cuentaAfirmativos }}</td>
+                                <td>{{ mocion.cuentaNegativos }}</td>
+                                <td>{{ mocion.cuentaAbstenciones }}</td>
+                                <td></td>
+                                <td class="text-right">
+                                    <a class="btn btn-default" href="{{ path('mocion_show', { 'id': mocion.id }) }}">
+                                        <i class="fa fa-search"></i>
+                                    </a>
+                                    {% if mocion.editable %}
+                                        <a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

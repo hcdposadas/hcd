@@ -13,3 +13,15 @@ app_homepage:
 app_ajax:
     resource: "ajax/ajax.yml"
     prefix:   /ajax
+
+app_parametro:
+    resource: "@AppBundle/Resources/config/routing/parametro.yml"
+    prefix:   /parametro
+
+app_mocion:
+    resource: "@AppBundle/Resources/config/routing/mocion.yml"
+    prefix:   /mocion
+
+app_tipomayoria:
+    resource: "@AppBundle/Resources/config/routing/tipomayoria.yml"
+    prefix:   /tipomayoria

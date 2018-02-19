@@ -13,12 +13,12 @@ global.axios.defaults.headers.common = {
 };
 
 
-import Example from './components/Example.vue';
+import PanelVotacion from './components/PanelVotacion.vue';
 
-Vue.component('example', Example);
+Vue.component('panel-votacion', PanelVotacion);
 
 const app = new Vue({
-    // delimiters: ['[[', ']]'],
+    delimiters: ['[[', ']]'],
     el: '#app',
     data: {
     },

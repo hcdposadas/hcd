@@ -1,0 +1,24 @@
+tipomayoria_index:
+    path:     /
+    defaults: { _controller: "AppBundle:TipoMayoria:index" }
+    methods:  GET
+
+tipomayoria_show:
+    path:     /{id}/show
+    defaults: { _controller: "AppBundle:TipoMayoria:show" }
+    methods:  GET
+
+tipomayoria_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:TipoMayoria:new" }
+    methods:  [GET, POST]
+
+tipomayoria_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "AppBundle:TipoMayoria:edit" }
+    methods:  [GET, POST]
+
+tipomayoria_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AppBundle:TipoMayoria:delete" }
+    methods:  DELETE

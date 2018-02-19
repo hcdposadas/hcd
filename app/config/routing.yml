@@ -1,8 +1,3 @@
-votacion:
-    resource: "@VotacionBundle/Controller/"
-    type:     annotation
-    prefix:   /votacion
-
 theme:
     resource: "@ThemeBundle/Resources/config/routing.yml"
     prefix:   /theme

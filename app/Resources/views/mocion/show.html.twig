@@ -1,24 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Moción {{ mocion }}
-{% endblock title %}
+    Moción  Nº{{ mocion }}
+{% endblock %}
+
 {% block body %}
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">
-                Moción {{ mocion.numero }}
-            </h3>
+            <h3 class="box-title">Moción Nº{{ mocion }}</h3>
         </div>
+
         <div class="box-body">
             <div class="row">
-                <div class="col-md-12">
-                    {% if mocion.puedeVotarse %}
-                        <a href="{{ path('votacion_index', {'mocion': mocion.id}) }}" class="btn btn-primary">Votar esta moción</a>
-                    {% endif %}
-                    <br>
-                    <br>
-                </div>
                 <div class="col-md-12">
                     <table class="table">
                         <tbody>
@@ -26,39 +19,109 @@
                             <th>Número</th>
                             <td>{{ mocion.numero }}</td>
                         </tr>
-                        <tr>
-                            <th>Fecha</th>
-                            <td>{% if mocion.fecha %}{{ mocion.fecha|date('d/m/Y H:i:s') }}{% endif %}</td>
-                        </tr>
+                        {% if mocion.expediente %}
+                            <tr>
+                                <th>Expediente</th>
+                                <td>{{ mocion.expediente }}</td>
+                            </tr>
+                        {% endif %}
                         <tr>
                             <th>Estado</th>
-                            <td>{{ mocion.textoEstado }}</td>
+                            <td><span class="label label-primary">{{ mocion.estado }}</span></td>
                         </tr>
-                        <tr>
-                            <th>Afirmativos</th>
-                            <td>{{ mocion.cuentaAfirmativos }}</td>
-                        </tr>
-                        <tr>
-                            <th>Negativos</th>
-                            <td>{{ mocion.cuentaNegativos }}</td>
-                        </tr>
-                        <tr>
-                            <th>Abstenciones</th>
-                            <td>{{ mocion.cuentaAbstenciones }}</td>
-                        </tr>
+                        {% if mocion.tipoMayoria %}
+                            <tr>
+                                <th>Mayoría requerida</th>
+                                <td>{{ mocion.tipoMayoria.nombre }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if mocion.finalizada %}
+                            <tr>
+                                <th>Cuenta Afirmativos</th>
+                                <td>{{ mocion.cuentaAfirmativos }}</td>
+                            </tr>
+                            <tr>
+                                <th>Cuenta Negativos</th>
+                                <td>{{ mocion.cuentaNegativos }}</td>
+                            </tr>
+                            <tr>
+                                <th>Cuenta Abstenciones</th>
+                                <td>{{ mocion.cuentaAbstenciones }}</td>
+                            </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <a class="btn btn-default" href="{{ path('mocion_index') }}">Volver</a>
-    <a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">Editar</a>
 
-    <div class="pull-right">
-        {{ form_start(delete_form) }}
+    {% if mocion.puedeVotarse %}
+        <div class="box">
+            <div class="box-header with-border">
+                <div class="box-title">Votación</div>
+            </div>
+            <div class="box-body">
+                {% if votar %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="well">
+                                <a href="{{ path('mocion_show', {'id': mocion.id}) }}" class="btn btn-link pull-right">Volver
+                                    a la moción</a>
+                                <form action="{{ path('mocion_lanzar', {'id': mocion.id}) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Lanzar votación</button>
+                                    <span class="text-muted">&nbsp;&nbsp;&nbsp; Se lanzará la votación por {{ segundos }}
+                                        segundos.</span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="well">
+                                <a href="{{ path('mocion_show', {'id': mocion.id, 'votar': 'votar'}) }}"
+                                   class="btn btn-primary">Votar esta moción</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    {% if mocion.enVotacion %}
+        <div class="box">
+            <div class="box-header with-border">
+                <div class="box-title">Votación</div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="well">
+                            <form action="{{ path('mocion_extender', {'id': mocion.id}) }}" method="POST">
+                                <button type="submit" class="btn btn-default pull-right">Extender votación</button>
+                            </form>
+
+                            <form action="{{ path('mocion_finalizar', {'id': mocion.id}) }}" method="POST">
+                                <button type="submit" class="btn btn-primary">Finalizar votación</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <a class="btn btn-default" href="{{ path('mocion_index') }}">Volver a la lista</a>
+
+    {% if mocion.editable and not votar %}
+        <a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">Editar</a>
+        {{ form_start(delete_form, {'attr': {'class': 'pull-right'}}) }}
         <input class="btn btn-danger" type="submit" value="Eliminar">
         {{ form_end(delete_form) }}
-    </div>
+    {% endif %}
 
+{% endblock %}
+
+{% block javascripts %}
 {% endblock %}

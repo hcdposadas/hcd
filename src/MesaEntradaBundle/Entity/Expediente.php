@@ -266,8 +266,12 @@ class Expediente extends BaseClass {
 		return $this->expedienteInterno;
 	}
 
-	public function __toString() {
-		return $this->letra;
+    /**
+     * @return string
+     */
+	public function __toString()
+    {
+		return $this->expediente . '-' . $this->letra . '-' . $this->anio;
 	}
 
 	/**

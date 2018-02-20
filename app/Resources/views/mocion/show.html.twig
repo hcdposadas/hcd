@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Moción  Nº{{ mocion }}
+    Moción  Nº{{ mocion }} - {{ mocion.sesion }}
 {% endblock %}
 
 {% block body %}
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">Moción Nº{{ mocion }}</h3>
+            <h3 class="box-title">Moción Nº{{ mocion }} - {{ mocion.sesion }}</h3>
         </div>
 
         <div class="box-body">
@@ -16,8 +16,12 @@
                     <table class="table">
                         <tbody>
                         <tr>
+                            <th>Sesión</th>
+                            <td>{{ mocion.sesion }}</td>
+                        </tr>
+                        <tr>
                             <th>Número</th>
-                            <td>{{ mocion.numero }}</td>
+                            <td>Moción Nº{{ mocion.numero }}</td>
                         </tr>
                         {% if mocion.expediente %}
                             <tr>
@@ -80,7 +84,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="well">
-                                <a href="{{ path('mocion_show', {'id': mocion.id, 'votar': 'votar'}) }}"
+                                <a href="{{ path('mocion_votar', {'id': mocion.id}) }}"
                                    class="btn btn-primary">Votar esta moción</a>
                             </div>
                         </div>

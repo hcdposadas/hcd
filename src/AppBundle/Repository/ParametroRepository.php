@@ -27,7 +27,7 @@ class ParametroRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('p.grupo = :grupo')
             ->setParameter('grupo', $grupo)
             ->orderBy('p.orden', 'ASC')
-            ->addOrderBy('p.valor', 'ASC');
+            ;
     }
 
     /**

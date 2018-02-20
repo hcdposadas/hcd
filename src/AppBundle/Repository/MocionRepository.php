@@ -25,4 +25,23 @@ class MocionRepository extends \Doctrine\ORM\EntityRepository
 
         return $mocion->getNumero() + 1;
     }
+
+    /**
+     * @return Mocion|null
+     */
+    public function getEnVotacion()
+    {
+        $result = $this->createQueryBuilder('m')
+            ->join('m.estado', 'e')
+            ->where('m.activo = true')
+            ->andWhere('e.slug = :slug')
+            ->setParameter('slug', Mocion::ESTADO_EN_VOTACION)
+            ->getQuery()
+            ->getResult();
+
+        if (count($result)) {
+            return $result[0];
+        }
+        return null;
+    }
 }

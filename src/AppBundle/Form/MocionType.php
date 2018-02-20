@@ -4,8 +4,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
-use AppBundle\Entity\TipoMocion;
-use AppBundle\Repository\ParametroRepository;
+use AppBundle\Entity\Sesion;
 use Doctrine\ORM\EntityManagerInterface;
 use MesaEntradaBundle\Entity\Expediente;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -33,14 +32,27 @@ class MocionType extends AbstractType
     {
         $siguienteNumero = $this->em->getRepository(Mocion::class)->siguienteNumero();
 
+        $sesion = null;
+
         $builder
+            ->add('sesion', EntityType::class, array(
+                'label' => 'Sesión',
+                'class' => Sesion::class,
+                'data' => $sesion,
+            ))
             ->add('numero', IntegerType::class, array(
                 'disabled' => true,
                 'label' => 'Número',
                 'data' => $siguienteNumero,
             ))
+            ->add('tipo', EntityType::class, array(
+                'label' => 'Tipo de moción',
+                'class' => Parametro::class,
+                'query_builder' => $this->em->getRepository(Parametro::class)->grupo('mocion-tipo'),
+            ))
             ->add('tipoMayoria')
             ->add('expediente', EntityType::class, array(
+                'required' => false,
                 'label' => 'Expediente',
                 'class' => Expediente::class,
             ))

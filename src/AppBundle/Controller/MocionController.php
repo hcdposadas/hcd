@@ -56,16 +56,46 @@ class MocionController extends Controller
      * Finds and displays a mocion entity.
      *
      */
-    public function showAction(Request $request, Mocion $mocion, $votar = null)
+    public function showAction(Request $request, Mocion $mocion)
     {
         $deleteForm = $this->createDeleteForm($mocion);
-
 
         return $this->render('mocion/show.html.twig', array(
             'mocion' => $mocion,
             'segundos' => 15,
-            'votar' => $votar === 'votar',
-            'lanzar' => $votar === 'lanzar',
+            'votar' => false,
+            'lanzar' => false,
+            'delete_form' => $deleteForm->createView(),
+        ));
+    }
+
+    /**
+     * Finds and displays a mocion entity.
+     *
+     */
+    public function votarAction(Request $request, Mocion $mocion)
+    {
+        $deleteForm = $this->createDeleteForm($mocion);
+
+        $enVotacion = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(Mocion::class)
+            ->getEnVotacion();
+
+        if ($enVotacion) {
+            $this->addFlash(
+                'error',
+                'No se puede lanzar la votación porque la Moción Nº'.$enVotacion.' se encuentra en votación.'
+            );
+            return $this->redirectToRoute('mocion_show', array(
+                'id' => $mocion->getId()
+            ));
+        }
+
+        return $this->render('mocion/show.html.twig', array(
+            'mocion' => $mocion,
+            'segundos' => 15,
+            'votar' => true,
+            'lanzar' => false,
             'delete_form' => $deleteForm->createView(),
         ));
     }

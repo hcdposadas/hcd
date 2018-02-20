@@ -49,20 +49,18 @@ class NotificationsManager
         return $this->connection;
     }
 
-    public function notify($type, $data = null)
+    public function notify($type, $data = null, $deferred = null)
     {
-        if ($data === null) {
-            $data = $type;
-            $type = 'default';
+        $data = array(
+            'type' => $type,
+            'data' => $data,
+        );
+
+        if ($deferred !== null) {
+            $data['deferred'] = $deferred;
         }
 
         $conn = $this->getConnection();
-        $conn->publish('message', json_encode(array(
-            'type' => $type,
-            'data' => $data,
-        )));
+        $conn->publish('message', json_encode($data));
     }
-
-
-
 }

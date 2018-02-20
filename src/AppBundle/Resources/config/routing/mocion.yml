@@ -4,8 +4,8 @@ mocion_index:
     methods:  GET
 
 mocion_show:
-    path:     /{id}/show/{votar}
-    defaults: { _controller: "AppBundle:Mocion:show", votar: null }
+    path:     /{id}/show
+    defaults: { _controller: "AppBundle:Mocion:show" }
     methods:  GET
 
 mocion_new:
@@ -23,17 +23,22 @@ mocion_delete:
     defaults: { _controller: "AppBundle:Mocion:delete" }
     methods:  DELETE
 
+mocion_votar:
+    path:     /{id}/show/votar
+    defaults: { _controller: "AppBundle:Mocion:votar" }
+    methods:  GET
+
 mocion_lanzar:
     path:     /{id}/lanzar
-    defaults: { _controller: "AppBundle:Mocion:lanzarVotacion"}
+    defaults: { _controller: "AppBundle:Mocion:lanzarVotacion" }
     methods: POST
 
 mocion_extender:
     path:     /{id}/extender
-    defaults: { _controller: "AppBundle:Mocion:extenderVotacion"}
+    defaults: { _controller: "AppBundle:Mocion:extenderVotacion" }
     methods: POST
 
 mocion_finalizar:
     path:     /{id}/finalizar
-    defaults: { _controller: "AppBundle:Mocion:finalizarVotacion"}
+    defaults: { _controller: "AppBundle:Mocion:finalizarVotacion" }
     methods: POST

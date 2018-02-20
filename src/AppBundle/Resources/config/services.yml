@@ -10,6 +10,10 @@ services:
         arguments: ['@doctrine.orm.entity_manager']
         tags: [form.type]
 
+    AppBundle\Form\SesionType:
+            arguments: ['@doctrine.orm.entity_manager']
+            tags: [form.type]
+
     votacion.manager:
             class: AppBundle\Services\VotacionManager
-            arguments: ["@doctrine.orm.default_entity_manager"]
+            arguments: ["@doctrine.orm.default_entity_manager", "@notifications.manager"]

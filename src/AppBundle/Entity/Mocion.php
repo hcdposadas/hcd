@@ -20,6 +20,9 @@ class Mocion extends BaseClass
     const ESTADO_EN_VOTACION = 'mocion-estados-en-votacion';
     const ESTADO_FINALIZADO = 'mocion-estados-finalizado';
 
+    const TIPO_PLANIFICADA = 'mocion-tipo-planificada';
+    const TIPO_ESPONTANEA = 'mocion-tipo-espontanea';
+
     /**
      * @var int
      *
@@ -30,11 +33,25 @@ class Mocion extends BaseClass
     private $id;
 
     /**
+     * @var Sesion $sesion
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion", inversedBy="mociones")
+     */
+    private $sesion;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="numero", type="integer", unique=true)
      */
     private $numero;
+
+    /**
+     * @var Parametro $tipo
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
+     */
+    private $tipo;
 
     /**
      * @var TipoMayoria $tipoMocion
@@ -47,6 +64,7 @@ class Mocion extends BaseClass
      * @var Expediente $expediente
      *
      * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente")
+     * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id", nullable=true)
      */
     private $expediente;
 
@@ -85,6 +103,11 @@ class Mocion extends BaseClass
      */
     private $votaciones;
 
+    public function __construct()
+    {
+        $this->votaciones = new ArrayCollection();
+    }
+
     /**
      * @return string
      */
@@ -102,6 +125,22 @@ class Mocion extends BaseClass
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Sesion
+     */
+    public function getSesion()
+    {
+        return $this->sesion;
+    }
+
+    /**
+     * @param Sesion $sesion
+     */
+    public function setSesion($sesion)
+    {
+        $this->sesion = $sesion;
     }
 
     /**
@@ -126,6 +165,22 @@ class Mocion extends BaseClass
     public function getNumero()
     {
         return $this->numero;
+    }
+
+    /**
+     * @return Parametro
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    /**
+     * @param Parametro $tipo
+     */
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
     }
 
     /**

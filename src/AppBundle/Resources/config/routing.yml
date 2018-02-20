@@ -25,3 +25,11 @@ app_mocion:
 app_tipomayoria:
     resource: "@AppBundle/Resources/config/routing/tipomayoria.yml"
     prefix:   /tipomayoria
+
+app_sesion:
+    resource: "@AppBundle/Resources/config/routing/sesion.yml"
+    prefix:   /sesion
+
+app_concejal:
+    path:     /concejal
+    defaults: { _controller: AppBundle:Default:concejal }

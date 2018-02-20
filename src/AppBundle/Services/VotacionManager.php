@@ -6,6 +6,7 @@ use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Votacion;
 use Doctrine\ORM\EntityManager;
+use UtilBundle\Services\NotificationsManager;
 
 class VotacionManager
 {
@@ -14,9 +15,15 @@ class VotacionManager
      */
     protected $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var NotificationsManager
+     */
+    protected $notificationsManager;
+
+    public function __construct(EntityManager $entityManager, NotificationsManager $notificationsManager)
     {
         $this->entityManager = $entityManager;
+        $this->notificationsManager = $notificationsManager;
     }
 
     /**
@@ -42,17 +49,32 @@ class VotacionManager
     public function lanzar(Mocion $mocion)
     {
         if (!$mocion->puedeVotarse()) {
-            throw new \RuntimeException('No se puede lanzar votación de la moción');
+            if ($mocion->enVotacion()) {
+                throw new \RuntimeException('No se puede lanzar la votación porque la moción ya se encuentra en votación');
+            } elseif ($mocion->finalizada()) {
+                throw new \RuntimeException('No se puede lanzar la votación porque la moción ya fue finalizada');
+            } else {
+                throw new \RuntimeException('No se puede lanzar votación');
+            }
         }
+
+        $enVotacion = $this->entityManager->getRepository(Mocion::class)->getEnVotacion();
+        if ($enVotacion) {
+            throw new \RuntimeException('No se puede lanzar la votación porque la Moción Nº'.$enVotacion.' se encuentra en votación.');
+        }
+
+        $duracion = 15;
 
         $mocion->setEstado($this->getEstado(Mocion::ESTADO_EN_VOTACION));
         $votacion = new Votacion();
         $votacion->setMocion($mocion);
-        $votacion->setDuracion(15);
+        $votacion->setDuracion($duracion);
 
         $this->entityManager->persist($votacion);
         $this->entityManager->persist($mocion);
         $this->entityManager->flush();
+
+        $this->notificar($mocion, $duracion);
 
         return $votacion;
     }
@@ -68,12 +90,16 @@ class VotacionManager
             throw new \RuntimeException('No se puede extender votación de la moción');
         }
 
+        $duracion = 10;
+
         $votacion = new Votacion();
         $votacion->setMocion($mocion);
-        $votacion->setDuracion(10);
+        $votacion->setDuracion($duracion);
 
         $this->entityManager->persist($votacion);
         $this->entityManager->flush();
+
+        $this->notificar($mocion, $duracion);
 
         return $votacion;
     }
@@ -113,5 +139,24 @@ class VotacionManager
     protected function getSiguienteNumero()
     {
         return $this->entityManager->getRepository(Mocion::class)->siguienteNumero();
+    }
+
+    /**
+     * @param Mocion $mocion
+     * @param $duracion
+     */
+    protected function notificar(Mocion $mocion, $duracion)
+    {
+        $tipoMayoria = $mocion->getTipoMayoria();
+        $tipoMayoria = $tipoMayoria ? $tipoMayoria->__toString() : null;
+
+        $this->notificationsManager->notify('votacion.abierta', array(
+            'mocion' => $mocion->__toString(),
+            'tipoMayoria' => $tipoMayoria,
+            'sesion' => $mocion->getSesion()->__toString(),
+            'duracion' => $duracion
+        ));
+
+        $this->notificationsManager->notify('votacion.cerrada', null, $duracion);
     }
 }

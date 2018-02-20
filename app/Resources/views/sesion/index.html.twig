@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Sesions
+{% endblock title %}
+{% block body %}
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Sesiones</h3>
+        </div>
+        <div class="box-body">
+            <div>
+                <a class="btn btn-primary" href="{{ path('sesion_new') }}">Nueva sesión</a>
+                <br><br>
+            </div>
+            <table class="table table-bordered table-striped data-table">
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Número</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sesion in sesions %}
+                    <tr>
+                        <td>{{ sesion.tipo }}</td>
+                        <td>{{ sesion.numero }}</td>
+                        <td>{{ sesion.fecha | date('d/m/Y') }}</td>
+                        <td>
+                            <a class="btn btn-default" href="{{ path('sesion_show', { 'id': sesion.id }) }}">
+                                <i class="fa fa-search"></i>
+                            </a>
+                            <a class="btn btn-default" href="{{ path('sesion_edit', { 'id': sesion.id }) }}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -37,11 +37,32 @@ class MocionController extends Controller
     public function newAction(Request $request)
     {
         $mocion = new Mocion();
+
+        if ($request->get('tipo') === 'mocion-tipo-espontanea') {
+            $mocion->setTipo($this->get('doctrine.orm.default_entity_manager')
+                    ->getRepository(Parametro::class)
+                    ->getBySlug(Mocion::TIPO_ESPONTANEA));
+        }
+
         $form = $this->createForm('AppBundle\Form\MocionType', $mocion);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $this->get('votacion.manager')->crear($mocion);
+
+            if ($request->get('guardar-y-lanzar')) {
+                try {
+                    $this->get('votacion.manager')->lanzar($mocion);
+                } catch (\Exception $ex) {
+                    $this->addFlash(
+                        'error',
+                        $ex->getMessage()
+                    );
+                }
+
+                return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
+            }
 
             return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
         }
@@ -84,7 +105,7 @@ class MocionController extends Controller
         if ($enVotacion) {
             $this->addFlash(
                 'error',
-                'No se puede lanzar la votación porque la Moción Nº'.$enVotacion.' se encuentra en votación.'
+                'No se puede votar esta moción porque la Moción Nº'.$enVotacion.' se encuentra en votación.'
             );
             return $this->redirectToRoute('mocion_show', array(
                 'id' => $mocion->getId()

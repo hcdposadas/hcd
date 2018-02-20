@@ -1,37 +1,59 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
+var app = require('express')()
+var http = require('http').Server(app)
+var io = require('socket.io')(http)
+var port = process.env.PORT || 3000
 
-http.listen(port);
+http.listen(port)
 
-var Redis = require('ioredis');
-var redis = new Redis(6379, 'localhost');
+var Redis = require('ioredis')
+var redis = new Redis(6379, 'localhost')
+var pub = new Redis(6379, 'localhost')
+
+redis.subscribe('message', function(err, count) {})
+
+function quorum() {
+    const q = pub.hlen('presentes').then((q) => {
+        io.emit('message', {
+            type: 'quorum',
+            data: {
+                quorum: q
+            }
+        });
+        console.log('quorum', q)
+    })
+}
 
 io.on('connection', function(socket) {
-    console.log('EVENT connection', socket.handshake.query.uid);
-});
+    const concejalId = socket.handshake.query.concejalId
+    console.log('EVENT connection', concejalId)
 
-io.on('disconnect', function(socket) {
-    console.log('EVENT disconnect', socket.handshake.query.uid);
+    socket.on('disconnect', function() {
+        console.log('EVENT disconnect', concejalId)
+        if (concejalId) {
+            pub.hdel('presentes', concejalId)
+            quorum()
+        }
+    });
+    if (concejalId) {
+        pub.hset('presentes', concejalId, 1)
+        quorum()
+    }
 });
-
-redis.subscribe('message', function(err, count) {});
 
 redis.on('message', function(channel, message) {
     message = JSON.parse(message);
 
     if (message.deferred) {
         setTimeout(function () {
-            console.log('message', message);
-            io.emit('message', message);
+            console.log('message', message)
+            io.emit('message', message)
         }, message.deferred * 1000)
     } else {
         if (message.type === 'votacion.abierta') {
             if (message.data.duracion) {
                 let duracion = message.data.duracion
                 let interval = setInterval(function () {
-                    duracion--;
+                    duracion--
 
                     message.data.tiempo = duracion
 
@@ -47,7 +69,7 @@ redis.on('message', function(channel, message) {
             }
         }
 
-        console.log('message', message);
-        io.emit('message', message);
+        console.log('message', message)
+        io.emit('message', message)
     }
 });

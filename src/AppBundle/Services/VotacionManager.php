@@ -153,7 +153,7 @@ class VotacionManager
         $this->notificationsManager->notify('votacion.abierta', array(
             'mocion' => $mocion->__toString(),
             'tipoMayoria' => $tipoMayoria,
-            'sesion' => $mocion->getSesion()->__toString(),
+            'sesion' => $mocion->getSesion(),
             'duracion' => $duracion
         ));
 

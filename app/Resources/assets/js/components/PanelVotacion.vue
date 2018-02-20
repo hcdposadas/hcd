@@ -16,13 +16,10 @@
 </template>
 
 <script>
-    const io = require('socket.io-client')
-
     export default {
         data() {
             return {
-                display: true,
-                socket: null,
+                display: false,
                 tipoMayoria: null,
                 sesion: null,
                 mocion: null,
@@ -30,18 +27,13 @@
             }
         },
         mounted() {
-            this.socket = io('http://localhost:3000', {
-                transports: ['websocket'],
-                upgrade: true,
-                query: { uid: window.user.id }
-            });
-            this.socket.on('connect', function () {
+            socket.on('connect', function () {
                 console.log('socket.connect')
             });
-            this.socket.on('disconnect', function () {
+            socket.on('disconnect', function () {
                 console.log('socket.disconnect')
             });
-            this.socket.on('message', function (msg) {
+            socket.on('message', function (msg) {
                 console.log('socket.message', msg);
                 switch (msg.type) {
                     case 'votacion.abierta':

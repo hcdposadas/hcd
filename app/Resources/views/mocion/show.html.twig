@@ -9,7 +9,6 @@
         <div class="box-header">
             <h3 class="box-title">Moción Nº{{ mocion }} - {{ mocion.sesion }}</h3>
         </div>
-
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
@@ -100,14 +99,21 @@
             </div>
             <div class="box-body">
                 <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h2>Quorum:
+                            <quorum></quorum>
+                        </h2>
+                        <br>
+                    </div>
                     <div class="col-md-12">
                         <div class="well">
                             <form action="{{ path('mocion_extender', {'id': mocion.id}) }}" method="POST">
-                                <button type="submit" class="btn btn-default pull-right">Extender votación</button>
+                                <button type="submit" class="btn btn-default pull-right">Extender votación
+                                </button>
                             </form>
 
                             <form action="{{ path('mocion_finalizar', {'id': mocion.id}) }}" method="POST">
-                                <button type="submit" class="btn btn-primary">Finalizar votación</button>
+                                <button type="submit" class="btn btn-danger">Finalizar votación</button>
                             </form>
                         </div>
                     </div>
@@ -116,13 +122,17 @@
         </div>
     {% endif %}
 
-    <a class="btn btn-default" href="{{ path('mocion_index') }}">Volver a la lista</a>
+    {% if mocion.finalizada %}
+        <a class="btn btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción espontánea</a>
+        <a class="btn btn-default" href="{{ path('mocion_new') }}">Nueva moción</a>
+    {% endif %}
+    <a class="btn btn-default pull-right" href="{{ path('mocion_index') }}">Volver a la lista de mociones</a>
 
     {% if mocion.editable and not votar %}
-        <a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">Editar</a>
-        {{ form_start(delete_form, {'attr': {'class': 'pull-right'}}) }}
-        <input class="btn btn-danger" type="submit" value="Eliminar">
-        {{ form_end(delete_form) }}
+        {#<a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">Editar</a>#}
+        {#{{ form_start(delete_form, {'attr': {'class': 'pull-right'}}) }}#}
+        {#<input class="btn btn-danger" type="submit" value="Eliminar">#}
+        {#{{ form_end(delete_form) }}#}
     {% endif %}
 
 {% endblock %}

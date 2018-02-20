@@ -10,7 +10,8 @@
         </div>
         <div class="box-body">
             <div>
-                <a class="btn btn-primary" href="{{ path('mocion_new') }}">Nueva moción</a>
+                <a class="btn btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción espontánea</a>
+                <a class="btn btn-default" href="{{ path('mocion_new') }}">Nueva moción</a>
                 <br><br>
             </div>
             <div class="row">

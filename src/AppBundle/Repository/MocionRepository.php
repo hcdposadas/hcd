@@ -20,10 +20,13 @@ class MocionRepository extends \Doctrine\ORM\EntityRepository
             ->setMaxResults(1)
             ->getQuery();
 
-        /** @var Mocion $mocion */
-        $mocion = $query->getSingleResult();
 
-        return $mocion->getNumero() + 1;
+        $result = $query->getResult();
+        if (!count($result)) {
+            return 1;
+        }
+
+        return $result[0]->getNumero() + 1;
     }
 
     /**

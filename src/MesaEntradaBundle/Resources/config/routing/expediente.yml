@@ -38,3 +38,18 @@ expediente_imprimir_caratula:
 expediente_imprimir_giro:
     path:     /{id}/{giroId}/expediente_imprimir_giro
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirGiro" }
+
+proyectos_index:
+    path:     /proyectos
+    defaults: { _controller: "MesaEntradaBundle:Expediente:proyectosIndex" }
+    methods:  GET
+
+proyecto_new:
+    path:     /proyecto-new
+    defaults: { _controller: "MesaEntradaBundle:Expediente:newProyecto" }
+    methods:  [GET, POST]
+
+proyecto_edit:
+    path:     /{id}/proyecto-edit
+    defaults: { _controller: "MesaEntradaBundle:Expediente:editProyecto" }
+    methods:  [GET, POST]

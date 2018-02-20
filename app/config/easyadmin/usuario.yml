@@ -13,6 +13,7 @@ easy_admin:
                     - username
                     - email
                     - enabled
+                    - persona
 #                    - lastLogin
                     # if administrators are allowed to edit users' passwords and roles, add this:
                     - { property: 'plainPassword', type: 'text', type_options: { required: false } }

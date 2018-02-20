@@ -4,6 +4,8 @@ namespace MesaEntradaBundle\Controller;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
+use MesaEntradaBundle\Entity\GiroAdministrativo;
+use MesaEntradaBundle\Entity\IniciadorExpediente;
 use MesaEntradaBundle\Form\Filter\ExpedienteFilterType;
 use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -39,7 +41,7 @@ class ExpedienteController extends Controller {
 			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData() );
 		} else {
 
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbAll();
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntrada();
 		}
 
 
@@ -130,12 +132,12 @@ class ExpedienteController extends Controller {
 
 					// if it was a many-to-one relationship, remove the relationship like this
 					// $tag->setTask(null);
-					$iniciadorExpediente->setExpediente(null);
+					$iniciadorExpediente->setExpediente( null );
 
 					$em->persist( $iniciadorExpediente );
 
 					// if you wanted to delete the Tag entirely, you can also do that
-					 $em->remove($iniciadorExpediente);
+					$em->remove( $iniciadorExpediente );
 				}
 			}
 
@@ -288,6 +290,146 @@ class ExpedienteController extends Controller {
 				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
 			)
 		);
+	}
+
+	public function proyectosIndexAction( Request $request ) {
+
+
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+
+			$concejal = $this->getUser()->getPersona()->getCargoPersona()->first()->getIniciador();
+
+			$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $concejal );
+
+
+			$paginator = $this->get( 'knp_paginator' );
+
+			$proyectos = $paginator->paginate(
+				$proyectos,
+				$request->query->get( 'page', 1 )/* page number */,
+				10/* limit per page */
+			);
+
+
+			return $this->render( 'expediente/proyectos_index.html.twig',
+				array( 'proyectos' => $proyectos ) );
+
+		} else {
+			throw $this->createAccessDeniedException();
+		}
+
+
+	}
+
+	public function newProyectoAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$iniciarComo = [];
+
+		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
+			if ( $cargoPersona->getIniciador() ) {
+				$iniciarComo[] = $cargoPersona->getIniciador()->first();
+			}
+		}
+
+		$expediente = new Expediente();
+		$form       = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType',
+			$expediente,
+			[ 'iniciarComo' => $iniciarComo ] );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+
+			if ( $form->get( 'guardar' )->isClicked() ) {
+				$expediente->setBorrador( true );
+
+			}
+
+			if ( $form->get( 'guardarYEnviar' )->isClicked() ) {
+				$expediente->setBorrador( false );
+
+//				Departamento de Mesa de Entradas y Salidas
+
+				$giroAdministrativo = new GiroAdministrativo();
+				$areaDestino        = $em->getRepository( 'AppBundle:AreaAdministrativa' )->findOneBy( [
+					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
+				] );
+				$giroAdministrativo->setAreaDestino( $areaDestino );
+				$giroAdministrativo->setExpediente( $expediente );
+
+
+				$expediente->addGiroAdministrativo( $giroAdministrativo );
+				$em->persist( $giroAdministrativo );
+
+			}
+
+
+			$iniciadorExpediente = new IniciadorExpediente();
+
+			$iniciadorExpediente->setExpediente( $expediente );
+
+			$iniciarComoData = $form->get( "iniciarComo" )->getData();
+			$iniciadorExpediente->setIniciador( $iniciarComoData );
+
+			$expediente->addIniciadore( $iniciadorExpediente );
+
+
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Proyecto creado correctamente'
+			);
+
+
+			return $this->redirectToRoute( 'proyecto_edit', array( 'id' => $expediente->getId() ) );
+		}
+
+		return $this->render( 'expediente/proyecto_new.html.twig',
+			array(
+				'expediente'  => $expediente,
+				'iniciarComo' => $iniciarComo,
+				'form'        => $form->createView(),
+			) );
+	}
+
+	public function editProyectoAction( Request $request, Expediente $expediente ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$iniciarComo = [];
+
+		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
+			if ( $cargoPersona->getIniciador() ) {
+				$iniciarComo[] = $cargoPersona->getIniciador()->first();
+			}
+		}
+
+		$editForm = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType', $expediente );
+		$editForm->handleRequest( $request );
+
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+
+
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Proyecto modificado correctamente'
+			);
+
+			return $this->redirectToRoute( 'proyecto_edit', array( 'id' => $expediente->getId() ) );
+		}
+
+		return $this->render( 'expediente/proyecto_edit.html.twig',
+			array(
+				'expediente'  => $expediente,
+				'iniciarComo' => $iniciarComo,
+				'edit_form'   => $editForm->createView(),
+			) );
 	}
 
 

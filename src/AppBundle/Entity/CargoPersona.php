@@ -45,6 +45,12 @@ class CargoPersona extends BaseClass {
 	 */
 	private $areaAdministrativa;
 
+	/**
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Iniciador", mappedBy="cargoPersona", cascade={"persist", "remove"})
+	 */
+	private $iniciador;
+
 	public function __toString() {
 		return $this->getCargo()->getNombre() .' '.  $this->getPersona();
 	}
@@ -176,5 +182,46 @@ class CargoPersona extends BaseClass {
     public function getAreaAdministrativa()
     {
         return $this->areaAdministrativa;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->iniciador = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add iniciador
+     *
+     * @param \MesaEntradaBundle\Entity\Iniciador $iniciador
+     *
+     * @return CargoPersona
+     */
+    public function addIniciador(\MesaEntradaBundle\Entity\Iniciador $iniciador)
+    {
+        $this->iniciador[] = $iniciador;
+
+        return $this;
+    }
+
+    /**
+     * Remove iniciador
+     *
+     * @param \MesaEntradaBundle\Entity\Iniciador $iniciador
+     */
+    public function removeIniciador(\MesaEntradaBundle\Entity\Iniciador $iniciador)
+    {
+        $this->iniciador->removeElement($iniciador);
+    }
+
+    /**
+     * Get iniciador
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIniciador()
+    {
+        return $this->iniciador;
     }
 }

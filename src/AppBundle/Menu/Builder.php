@@ -83,6 +83,65 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+
+			$keyPersonal = 'PROYECTOS';
+			$menu->addChild(
+				$keyPersonal,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-folder-open' )
+			     ->setAttribute( 'class', 'treeview' );
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Listado',
+					array(
+						'route' => 'proyectos_index',
+					)
+				);
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Nuevo Proyecto',
+					array(
+						'route' => 'proyecto_new',
+					)
+				);
+		}
+
+
+		$keyPersonal = 'DOCUMENTOS';
+		$menu->addChild(
+			$keyPersonal,
+			array(
+				'childrenAttributes' => array(
+					'class' => 'treeview-menu',
+				),
+			)
+		)
+		     ->setUri( '#' )
+		     ->setExtra( 'icon', 'fa fa-file-text-o' )
+		     ->setAttribute( 'class', 'treeview' );
+		$menu[ $keyPersonal ]
+			->addChild(
+				'Carta Orgánica',
+				array(
+					'route' => 'persona_index',
+				)
+			);
+
+		$menu[ $keyPersonal ]
+			->addChild(
+				'Reglamento Interno',
+				array(
+					'route' => 'persona_index',
+				)
+			);
+
 //		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_EMPRESA' ) ) {
 //
 //			$keyEmpresa = 'EMPRESA';

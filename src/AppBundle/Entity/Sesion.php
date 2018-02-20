@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
 
@@ -14,9 +13,6 @@ use UtilBundle\Entity\Base\BaseClass;
  */
 class Sesion extends BaseClass
 {
-    const TIPO_ORDINARIA = 'sesion-tipo-ordinaria';
-    const TIPO_EXTRAORDINARIA = 'sesion-tipo-extraordinaria';
-
     /**
      * @var int
      *
@@ -27,46 +23,42 @@ class Sesion extends BaseClass
     private $id;
 
     /**
-     * @var Parametro $tipo
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
+     * @ORM\Column(name="titulo", type="string", length=255)
      */
-    private $tipo;
+    private $titulo;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="numero", type="integer")
-     */
-    private $numero;
-
-    /**
-     * @var \DateTime $fecha
+     * @var \DateTime
      *
      * @ORM\Column(name="fecha", type="date")
      */
     private $fecha;
 
-    /**
-     * @var ArrayCollection|Mocion[]
-     *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Mocion", mappedBy="sesion")
-     */
-    private $mociones;
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="orden_del_dia", type="text")
+	 */
+	private $ordenDelDia;
 
-    public function __construct()
-    {
-        $this->mociones = new ArrayCollection();
-    }
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="asuntos_entrados", type="text")
+	 */
+	private $asuntosEntrados;
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        $tipo = $this->tipo->getSlug() == self::TIPO_EXTRAORDINARIA ? 'Extraordinaria' : 'Ordinaria';
-        return 'Sesión ' . $tipo. ' Nº'. $this->getNumero().' del '.$this->getFecha()->format('d/m/Y');
-    }
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="acta", type="text", nullable=true)
+	 */
+	private $acta;
+
+
+
 
     /**
      * Get id
@@ -79,46 +71,46 @@ class Sesion extends BaseClass
     }
 
     /**
-     * @return Parametro
-     */
-    public function getTipo()
-    {
-        return $this->tipo;
-    }
-
-    /**
-     * @param Parametro $tipo
-     */
-    public function setTipo($tipo)
-    {
-        $this->tipo = $tipo;
-    }
-
-    /**
-     * Set numero
+     * Set titulo
      *
-     * @param integer $numero
+     * @param string $titulo
      *
      * @return Sesion
      */
-    public function setNumero($numero)
+    public function setTitulo($titulo)
     {
-        $this->numero = $numero;
+        $this->titulo = $titulo;
 
         return $this;
     }
 
     /**
-     * Get numero
+     * Get titulo
      *
-     * @return int
+     * @return string
      */
-    public function getNumero()
+    public function getTitulo()
     {
-        return $this->numero;
+        return $this->titulo;
     }
 
     /**
+     * Set fecha
+     *
+     * @param \DateTime $fecha
+     *
+     * @return Sesion
+     */
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    /**
+     * Get fecha
+     *
      * @return \DateTime
      */
     public function getFecha()
@@ -127,26 +119,130 @@ class Sesion extends BaseClass
     }
 
     /**
-     * @param \DateTime $fecha
+     * Set ordenDelDia
+     *
+     * @param string $ordenDelDia
+     *
+     * @return Sesion
      */
-    public function setFecha($fecha)
+    public function setOrdenDelDia($ordenDelDia)
     {
-        $this->fecha = $fecha;
+        $this->ordenDelDia = $ordenDelDia;
+
+        return $this;
     }
 
     /**
-     * @return Mocion[]|ArrayCollection
+     * Get ordenDelDia
+     *
+     * @return string
      */
-    public function getMociones()
+    public function getOrdenDelDia()
     {
-        return $this->mociones;
+        return $this->ordenDelDia;
     }
 
     /**
-     * @param Mocion[]|ArrayCollection $mociones
+     * Set asuntosEntrados
+     *
+     * @param string $asuntosEntrados
+     *
+     * @return Sesion
      */
-    public function setMociones($mociones)
+    public function setAsuntosEntrados($asuntosEntrados)
     {
-        $this->mociones = $mociones;
+        $this->asuntosEntrados = $asuntosEntrados;
+
+        return $this;
+    }
+
+    /**
+     * Get asuntosEntrados
+     *
+     * @return string
+     */
+    public function getAsuntosEntrados()
+    {
+        return $this->asuntosEntrados;
+    }
+
+    /**
+     * Set acta
+     *
+     * @param string $acta
+     *
+     * @return Sesion
+     */
+    public function setActa($acta)
+    {
+        $this->acta = $acta;
+
+        return $this;
+    }
+
+    /**
+     * Get acta
+     *
+     * @return string
+     */
+    public function getActa()
+    {
+        return $this->acta;
+    }
+
+    /**
+     * Set fechaCreacion
+     *
+     * @param \DateTime $fechaCreacion
+     *
+     * @return Sesion
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+
+        return $this;
+    }
+
+    /**
+     * Set fechaActualizacion
+     *
+     * @param \DateTime $fechaActualizacion
+     *
+     * @return Sesion
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Set creadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
+     * @return Sesion
+     */
+    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
+    {
+        $this->creadoPor = $creadoPor;
+
+        return $this;
+    }
+
+    /**
+     * Set actualizadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
+     * @return Sesion
+     */
+    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
+    {
+        $this->actualizadoPor = $actualizadoPor;
+
+        return $this;
     }
 }

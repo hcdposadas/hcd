@@ -118,7 +118,12 @@ ivory_ck_editor:
     default_config: my_config
     configs:
         my_config:
-            toolbar: [ ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],  ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat'], '/', ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'], ['Styles', 'Format']  ]
+            toolbar: [ ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+                    ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'], '/',
+                    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'], '/',
+                    ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'],
+                    ['Styles', 'Format']
+                    ]
 
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer

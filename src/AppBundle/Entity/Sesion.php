@@ -57,8 +57,13 @@ class Sesion extends BaseClass
 	 */
 	private $acta;
 
-
-
+    /**
+     * @return string
+     */
+	public function __toString()
+    {
+        return $this->getTitulo();
+    }
 
     /**
      * Get id

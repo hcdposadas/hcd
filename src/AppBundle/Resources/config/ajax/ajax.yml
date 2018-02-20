@@ -17,3 +17,11 @@ get_cargos_por_nombre:
 get_persona_por_dni:
     path: /get_persona_por_dni
     defaults: { _controller: "AppBundle:Ajax:getPersonaPorDni" }
+
+get_tipos_proyectos:
+    path: /get-tipos-proyectos
+    defaults: { _controller: "AppBundle:Ajax:getTiposProyectos" }
+
+get_mis_cargos_por_nombre:
+    path: /get_mis_cargos_por_nombre
+    defaults: { _controller: "AppBundle:Ajax:getCargosPorNombre" }

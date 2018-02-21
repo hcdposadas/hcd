@@ -1,13 +1,13 @@
-var app = require('express')()
-var http = require('http').Server(app)
-var io = require('socket.io')(http)
-var port = process.env.PORT || 3000
+const app = require('express')()
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
+const port = process.env.PORT || 3000
 
 http.listen(port)
 
-var Redis = require('ioredis')
-var redis = new Redis(6379, 'localhost')
-var pub = new Redis(6379, 'localhost')
+const Redis = require('ioredis')
+const redis = new Redis(6379, 'localhost')
+const pub = new Redis(6379, 'localhost')
 
 redis.subscribe('message', function(err, count) {})
 
@@ -51,13 +51,13 @@ redis.on('message', function(channel, message) {
     } else {
         if (message.type === 'votacion.abierta') {
             if (message.data.duracion) {
-                let duracion = message.data.duracion
+                let tiempo = 0
                 let interval = setInterval(function () {
-                    duracion--
+                    tiempo++
 
-                    message.data.tiempo = duracion
+                    message.data.tiempo = tiempo
 
-                    if (duracion <= 0) {
+                    if (tiempo >= message.data.duracion) {
                         clearInterval(interval)
                     } else {
                         io.emit('message', {

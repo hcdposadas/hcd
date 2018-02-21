@@ -57,6 +57,12 @@ class Sesion extends BaseClass
 	 */
 	private $acta;
 
+	/**
+	 *
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\Mocion", mappedBy="sesion", cascade={"persist", "remove"})
+	 */
+	private $mociones;
+
     /**
      * @return string
      */

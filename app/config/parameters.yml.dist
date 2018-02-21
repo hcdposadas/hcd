@@ -23,3 +23,5 @@ parameters:
     redis_host: 127.0.0.1
     redis_port: 6379
     redis_scheme: tcp
+
+    knp_snappy_binary: "%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64"

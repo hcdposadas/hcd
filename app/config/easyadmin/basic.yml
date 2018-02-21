@@ -24,6 +24,7 @@ easy_admin:
         brand_color: '#FF3300'
         form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
         menu:
+            - { label: 'Sesión', entity: Sesion }
             - Expediente
             - { label: 'Tipo Expediente', entity: TipoExpediente }
             - { label: 'Tipo Proyecto', entity: TipoProyecto }

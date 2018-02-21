@@ -1,0 +1,17 @@
+easy_admin:
+    entities:
+        Sesion:
+            class: AppBundle\Entity\Sesion
+            form:
+                fields:
+                    - { property: 'titulo' }
+                    - { property: 'fecha' }
+                    - { property: 'ordenDelDia', type: 'ckeditor'}
+                    - { property: 'asuntosEntrados', type: 'ckeditor'}
+                    - { property: 'acta', type: 'ckeditor'}
+            edit:
+                title:  'Editar Sesión'
+            new:
+                title:  'Alta Sesión'
+            list:
+                title:  'Sesión'

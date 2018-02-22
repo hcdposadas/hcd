@@ -63,4 +63,9 @@ class NotificationsManager
         $conn = $this->getConnection();
         $conn->publish('message', json_encode($data));
     }
+
+    public function hgetall($key)
+    {
+        return $this->getConnection()->hgetall($key);
+    }
 }

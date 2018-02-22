@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Repository\ParametroRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use MesaEntradaBundle\Entity\Expediente;
@@ -61,6 +62,13 @@ class Mocion extends BaseClass
     private $tipoMayoria;
 
     /**
+     * @var boolean $aprobado
+     *
+     * @ORM\Column(name="aprobado", type="boolean", nullable=true)
+     */
+    private $aprobado = null;
+
+    /**
      * @var Expediente $expediente
      *
      * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente")
@@ -76,14 +84,21 @@ class Mocion extends BaseClass
     private $estado;
 
     /**
-     * @var int
+     * @var int $cuentaTotal
+     *
+     * @ORM\Column(name="cuenta_total", type="integer", nullable=true)
+     */
+    private $cuentaTotal;
+
+    /**
+     * @var int $cuentaAfirmativos
      *
      * @ORM\Column(name="cuentaAfirmativos", type="integer", nullable=true)
      */
     private $cuentaAfirmativos;
 
     /**
-     * @var int
+     * @var int $cuentaNegativos
      *
      * @ORM\Column(name="cuentaNegativos", type="integer", nullable=true)
      */
@@ -208,6 +223,22 @@ class Mocion extends BaseClass
     }
 
     /**
+     * @return bool
+     */
+    public function isAprobado()
+    {
+        return $this->aprobado;
+    }
+
+    /**
+     * @param bool $aprobado
+     */
+    public function setAprobado($aprobado)
+    {
+        $this->aprobado = $aprobado;
+    }
+
+    /**
      * @return Expediente
      */
     public function getExpediente()
@@ -251,6 +282,22 @@ class Mocion extends BaseClass
         $this->cuentaAfirmativos = $cuentaAfirmativos;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCuentaTotal()
+    {
+        return $this->cuentaTotal;
+    }
+
+    /**
+     * @param int $cuentaTotal
+     */
+    public function setCuentaTotal($cuentaTotal)
+    {
+        $this->cuentaTotal = $cuentaTotal;
     }
 
     /**
@@ -357,6 +404,18 @@ class Mocion extends BaseClass
     public function enVotacion()
     {
         return $this->getEstado()->getSlug() == self::ESTADO_EN_VOTACION;
+    }
+
+    public function tiempoDeVotacionRestante()
+    {
+        foreach ($this->getVotaciones() as $votacion) {
+            if (!$votacion->finalizada()) {
+                $fecha = clone $votacion->getFechaCreacion();
+                $diff = $fecha->modify('+'.$votacion->getDuracion(). ' seconds')->diff(new DateTime());
+                return $diff->s;
+            }
+        }
+        return null;
     }
 
     /**

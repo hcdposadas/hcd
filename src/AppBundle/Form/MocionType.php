@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Sesion;
+use AppBundle\Entity\TipoMayoria;
 use Doctrine\ORM\EntityManagerInterface;
 use MesaEntradaBundle\Entity\Expediente;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -50,7 +51,10 @@ class MocionType extends AbstractType
                 'class' => Parametro::class,
                 'query_builder' => $this->em->getRepository(Parametro::class)->grupo('mocion-tipo'),
             ))
-            ->add('tipoMayoria')
+            ->add('tipoMayoria', EntityType::class, array(
+                'label' => 'Tipo de mayoría',
+                'class' => TipoMayoria::class,
+            ))
             ->add('expediente', EntityType::class, array(
                 'required' => false,
                 'label' => 'Expediente',

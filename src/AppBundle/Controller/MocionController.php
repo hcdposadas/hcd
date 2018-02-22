@@ -219,6 +219,24 @@ class MocionController extends Controller
     /**
      * @param Mocion $mocion
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function resultadosVotacionAction(Mocion $mocion)
+    {
+        try {
+            $votacion = $this->get('votacion.manager')->calcularResultados($mocion);
+        } catch (\Exception $ex) {
+            $this->addFlash(
+                'error',
+                $ex->getMessage()
+            );
+        }
+
+        return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
+    }
+
+    /**
+     * @param Mocion $mocion
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function finalizarVotacionAction(Mocion $mocion)
@@ -263,9 +281,9 @@ class MocionController extends Controller
             $valorVoto = $data['voto'];
 
             if ($valorVoto == 'no') {
-                $valorVoto = Voto::VOTO_NO;
+                $valorVoto = Voto::VOTO_NEGATIVO;
             } else if ($valorVoto == 'si') {
-                $valorVoto = Voto::VOTO_SI;
+                $valorVoto = Voto::VOTO_AFIRMATIVO;
             } else {
                 throw new Exception('El valor del voto no es válido ('.$valorVoto.')');
             }

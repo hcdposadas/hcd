@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Entity\Base\BaseClass;
 
 /**
@@ -13,8 +14,9 @@ use UtilBundle\Entity\Base\BaseClass;
  */
 class Voto extends BaseClass
 {
-    const VOTO_SI = 1;
-    const VOTO_NO = -1;
+    const VOTO_AFIRMATIVO = 1;
+    const VOTO_ABSTENCION = 0;
+    const VOTO_NEGATIVO = -1;
 
     /**
      * @var int
@@ -24,6 +26,13 @@ class Voto extends BaseClass
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var Usuario $concejal
+     *
+     * @ORM\ManyToOne(targetEntity="UsuariosBundle\Entity\Usuario")
+     */
+    private $concejal;
 
     /**
      * @var Mocion $mocion
@@ -36,6 +45,7 @@ class Voto extends BaseClass
      * @var Mocion $votacion
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Votacion", inversedBy="votos")
+     * @ORM\JoinColumn(name="votacion_id", referencedColumnName="id", nullable=true)
      */
     private $votacion;
 
@@ -51,9 +61,9 @@ class Voto extends BaseClass
      */
     public function __toString()
     {
-        if ($this->getValor() == self::VOTO_SI) {
+        if ($this->getValor() == self::VOTO_AFIRMATIVO) {
             return 'SI';
-        } elseif ($this->getValor() == self::VOTO_NO) {
+        } elseif ($this->getValor() == self::VOTO_NEGATIVO) {
             return 'NO';
         } else {
             return '?';
@@ -68,6 +78,22 @@ class Voto extends BaseClass
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Usuario
+     */
+    public function getConcejal()
+    {
+        return $this->concejal;
+    }
+
+    /**
+     * @param Usuario $concejal
+     */
+    public function setConcejal($concejal)
+    {
+        $this->concejal = $concejal;
     }
 
     /**
@@ -124,6 +150,30 @@ class Voto extends BaseClass
     public function setVotacion($votacion)
     {
         $this->votacion = $votacion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esAfirmativo()
+    {
+        return $this->getValor() == self::VOTO_AFIRMATIVO;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esNegativo()
+    {
+        return $this->getValor() == self::VOTO_NEGATIVO;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esAbstencion()
+    {
+        return $this->getValor() == self::VOTO_ABSTENCION;
     }
 }
 

@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\TipoMayoria;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,9 +15,19 @@ class TipoMayoriaType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('nombre');
+        $funciones = array();
+        foreach (TipoMayoria::funciones() as $f) {
+            $funciones[$f] = $f;
+        }
+
+        $builder
+            ->add('nombre')
+            ->add('funcion', ChoiceType::class, array(
+                'choices' => $funciones,
+            ))
+        ;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -34,6 +45,4 @@ class TipoMayoriaType extends AbstractType
     {
         return 'appbundle_tipomayoria';
     }
-
-
 }

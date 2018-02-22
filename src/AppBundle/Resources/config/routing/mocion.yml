@@ -42,3 +42,8 @@ mocion_finalizar:
     path:     /{id}/finalizar
     defaults: { _controller: "AppBundle:Mocion:finalizarVotacion" }
     methods: POST
+
+mocion_resultados:
+    path:    /{id}/resultados
+    defaults: { _controller: "AppBundle:Mocion:resultadosVotacion" }
+    methods: POST

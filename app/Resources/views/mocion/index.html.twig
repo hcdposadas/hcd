@@ -22,9 +22,6 @@
                             <th>Número</th>
                             <th>Sesión</th>
                             <th>Estado</th>
-                            <th>Afirmativos</th>
-                            <th>Negativos</th>
-                            <th>Abstenciones</th>
                             <th>Resultado</th>
                             <th></th>
                         </tr>
@@ -36,9 +33,13 @@
                                 </td>
                                 <td>{{ mocion.sesion }}</td>
                                 <td><span class="label label-primary">{{ mocion.estado }}</span></td>
-                                <td>{{ mocion.cuentaAfirmativos }}</td>
-                                <td>{{ mocion.cuentaNegativos }}</td>
-                                <td>{{ mocion.cuentaAbstenciones }}</td>
+                                <td>
+                                    {% if mocion.aprobado %}
+                                        <span class="label label-success">Aprobado</span>
+                                    {% else %}
+                                        <span class="label label-danger">No Aprobado</span>
+                                    {% endif %}
+                                </td>
                                 <td></td>
                                 <td class="text-right">
                                     <a class="btn btn-default" href="{{ path('mocion_show', { 'id': mocion.id }) }}">

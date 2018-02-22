@@ -38,7 +38,21 @@
                                 <td>{{ mocion.tipoMayoria.nombre }}</td>
                             </tr>
                         {% endif %}
-                        {% if mocion.finalizada %}
+                        {% if mocion.aprobado is not null %}
+                            <tr>
+                                <th>Resultado</th>
+                                <td>
+                                    {% if mocion.aprobado %}
+                                        <span class="label label-success">Aprobado</span>
+                                    {% else %}
+                                        <span class="label label-danger">No Aprobado</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Cuenta Votos</th>
+                                <td>{{ mocion.cuentaTotal }}</td>
+                            </tr>
                             <tr>
                                 <th>Cuenta Afirmativos</th>
                                 <td>{{ mocion.cuentaAfirmativos }}</td>
@@ -99,12 +113,6 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-12 text-center">
-                        <h2>Quorum:
-                            <quorum></quorum>
-                        </h2>
-                        <br>
-                    </div>
                     <div class="col-md-12">
                         <div class="well">
                             <form action="{{ path('mocion_extender', {'id': mocion.id}) }}" method="POST">
@@ -123,7 +131,8 @@
     {% endif %}
 
     {% if mocion.finalizada %}
-        <a class="btn btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción espontánea</a>
+        <a class="btn btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción
+            espontánea</a>
         <a class="btn btn-default" href="{{ path('mocion_new') }}">Nueva moción</a>
     {% endif %}
     <a class="btn btn-default pull-right" href="{{ path('mocion_index') }}">Volver a la lista de mociones</a>
@@ -138,4 +147,13 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        {% if not mocion.tiempoDeVotacionRestante is null %}
+        setTimeout(function () {
+            $.post('{{ path('mocion_resultados', {'id': mocion.id}) }}', function() {
+                document.location = document.location
+            })
+        }, {{ mocion.tiempoDeVotacionRestante * 1000 }})
+        {% endif %}
+    </script>
 {% endblock %}

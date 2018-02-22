@@ -16,12 +16,16 @@ function quorum() {
         io.emit('message', {
             type: 'quorum',
             data: {
-                quorum: q
+                quorum: q,
+                hayQuorum: q > 7,
+                ausentes: 14 - q
             }
         });
         console.log('quorum', q)
     })
 }
+
+setInterval(quorum, 5000);
 
 io.on('connection', function(socket) {
     const concejalId = socket.handshake.query.concejalId

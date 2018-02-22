@@ -23,11 +23,18 @@ class TipoMayoria extends BaseClass
     private $id;
 
     /**
-     * @var string
+     * @var string $nombre
      *
      * @ORM\Column(name="nombre", type="string", length=255)
      */
     private $nombre;
+
+    /**
+     * @var string $funcion
+     *
+     * @ORM\Column(name="funcion", type="string", length=255)
+     */
+    private $funcion;
 
     public function __toString()
     {
@@ -66,6 +73,41 @@ class TipoMayoria extends BaseClass
     public function getNombre()
     {
         return $this->nombre;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFuncion()
+    {
+        return $this->funcion;
+    }
+
+    /**
+     * @param string $funcion
+     */
+    public function setFuncion($funcion)
+    {
+        $this->funcion = $funcion;
+    }
+
+    /**
+     * @return array
+     */
+    public static function funciones()
+    {
+        return array(
+            'mayoriaSimple'
+        );
+    }
+
+    /**
+     * @param Mocion $mocion
+     * @return bool
+     */
+    public function mayoriaSimple(Mocion $mocion)
+    {
+        return ($mocion->getCuentaAfirmativos() > (intval($mocion->getCuentaTotal() / 2) / 2 + 1));
     }
 }
 

@@ -6,6 +6,7 @@ use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Votacion;
 use AppBundle\Entity\Voto;
+use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use UsuariosBundle\Entity\Usuario;
@@ -110,6 +111,111 @@ class VotacionManager
     /**
      * @param Mocion $mocion
      * @return Mocion|null
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function calcularResultados(Mocion $mocion)
+    {
+        if (!$mocion->enVotacion()) {
+            throw new \RuntimeException('No se puede calcular los resultados de esta moción');
+        }
+
+        $usuarioRepository = $this->entityManager->getRepository(Usuario::class);
+
+        $presentes = array_map(function ($id) use ($usuarioRepository) {
+            return $usuarioRepository->find($id);
+        }, $this->notificationsManager->hgetall('presentes'));
+
+        $dedup = array();
+        foreach ($presentes as $presente) {
+            $dedup[$presente->getId()] = $presente;
+        }
+        $presentes = $dedup;
+        unset($dedup);
+
+        $votos = $mocion->getVotos();
+
+        $noVotaron = array_filter($presentes, function ($presente) use ($votos) {
+            foreach ($votos as $voto) {
+                if ($voto->getCreadoPor()->getId() == $presente->getId()) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        foreach ($noVotaron as $nv) {
+            $voto = new Voto();
+            $voto->setConcejal($nv);
+            $voto->setValor(Voto::VOTO_ABSTENCION);
+            // $voto->setMocion($mocion);
+            $mocion->getVotos()->add($voto);
+
+            $this->entityManager->persist($voto);
+        }
+        $this->entityManager->flush();
+        $mocion = $this->entityManager->find(Mocion::class, $mocion->getId());
+
+        $total = 0;
+        $afirmativos = 0;
+        $negativos = 0;
+
+        $votos = $mocion->getVotos();
+        foreach ($votos as $voto) {
+            switch ($voto->getValor()) {
+                case Voto::VOTO_AFIRMATIVO:
+                    $total++;
+                    $afirmativos++;
+                    break;
+                case Voto::VOTO_NEGATIVO:
+                    $total++;
+                    $negativos++;
+                    break;
+            }
+        }
+
+        $abstenciones = count($noVotaron);
+        $total += count($noVotaron);
+
+        $mocion->setCuentaAfirmativos($afirmativos);
+        $mocion->setCuentaNegativos($negativos);
+        $mocion->setCuentaAbstenciones($abstenciones);
+        $mocion->setCuentaTotal($total);
+
+        $tipoMayoria = $mocion->getTipoMayoria();
+        $mocion->setAprobado($tipoMayoria->{$tipoMayoria->getFuncion()}($mocion));
+
+        $this->entityManager->persist($mocion);
+        $this->entityManager->flush();
+
+        $textoMocion = '';
+        if ($expediente = $mocion->getExpediente()) {
+            $textoMocion = 'Expediente '.$expediente.': '.$expediente->getExtracto();
+        }
+
+        $tipoMayoria = $mocion->getTipoMayoria();
+        if ($tipoMayoria) {
+            $tipoMayoria = 'Se aprueba con '.$tipoMayoria;
+        }
+        $this->notificationsManager->notify('votacion.resultados', array(
+            'mocion' => 'Moción Nº'.$mocion->__toString(),
+            'textoMocion' => $textoMocion,
+            'tipoMayoria' => $tipoMayoria,
+            'sesion' => $mocion->getSesion(),
+            'afirmativos' => $mocion->getCuentaAfirmativos(),
+            'negativos' => $mocion->getCuentaNegativos(),
+            'abstenciones' => $mocion->getCuentaAbstenciones(),
+            'total' => $mocion->getCuentaTotal(),
+            'aprobado' => $mocion->isAprobado(),
+        ));
+
+        return $mocion;
+    }
+
+    /**
+     * @param Mocion $mocion
+     * @return Mocion|null
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function finalizar(Mocion $mocion)
@@ -119,10 +225,11 @@ class VotacionManager
         }
 
         $mocion->setEstado($this->getEstado(Mocion::ESTADO_FINALIZADO));
-        // TODO calcular totales
 
         $this->entityManager->persist($mocion);
         $this->entityManager->flush();
+
+        $this->notificationsManager->notify('votacion.finalizada', array());
 
         return $mocion;
     }
@@ -153,12 +260,12 @@ class VotacionManager
             throw new Exception('La moción no se encuentra en votación en este momento');
         }
 
-        if (!in_array($valorVoto, array(Voto::VOTO_SI, Voto::VOTO_NO))) {
+        if (!in_array($valorVoto, array(Voto::VOTO_AFIRMATIVO, Voto::VOTO_NEGATIVO))) {
             throw new Exception('El valor del voto no es válido');
         }
 
-        foreach ($mocion->getVotos() as $valorVoto) {
-            if ($valorVoto->getCreadoPor()->getId() == $usuario->getId()) {
+        foreach ($mocion->getVotos() as $voto) {
+            if ($voto->getCreadoPor()->getId() == $usuario->getId()) {
                 throw new Exception('No se puede votar dos veces la misma moción');
             }
         }
@@ -167,6 +274,7 @@ class VotacionManager
         $voto->setValor($valorVoto);
         $voto->setMocion($mocion);
         $voto->setVotacion($votacion);
+        $voto->setConcejal($usuario);
 
         $this->entityManager->persist($voto);
         $this->entityManager->flush();
@@ -197,14 +305,12 @@ class VotacionManager
      */
     protected function notificar(Mocion $mocion, $duracion)
     {
-        $tipoMayoria = $mocion->getTipoMayoria();
-        $tipoMayoria = $tipoMayoria ? $tipoMayoria->__toString() : null;
-
         $textoMocion = '';
         if ($expediente = $mocion->getExpediente()) {
             $textoMocion = 'Expediente '.$expediente.': '.$expediente->getExtracto();
         }
 
+        $tipoMayoria = $mocion->getTipoMayoria();
         if ($tipoMayoria) {
             $tipoMayoria = 'Se aprueba con '.$tipoMayoria;
         }

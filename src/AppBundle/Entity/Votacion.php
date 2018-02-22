@@ -152,7 +152,8 @@ class Votacion extends BaseClass
      */
     public function finalizada()
     {
-        return $this->fechaCreacion->modify('+'.$this->getDuracion().' seconds') < new DateTime();
+        $fecha = clone $this->getFechaCreacion();
+        return $fecha->modify('+'.$this->getDuracion().' seconds') < new DateTime();
     }
 }
 

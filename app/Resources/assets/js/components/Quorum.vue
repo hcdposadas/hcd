@@ -1,5 +1,5 @@
 <template>
-    <div>{{ quorum }}</div>
+    <span>{{ quorum }}</span>
 </template>
 
 <script>

@@ -23,4 +23,12 @@ class DefaultController extends Controller
     {
         return $this->render(':default:concejal.html.twig');
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function displayAction()
+    {
+        return $this->render('default/display.html.twig');
+    }
 }

@@ -1,0 +1,19 @@
+<html>
+<head>
+    <script>
+        window.user = {id: {{ app.user.id }} };
+        window.baseUrl = '{{ path('app_homepage') }}';
+    </script>
+</head>
+<body>
+<div id="app">
+    <panel-display></panel-display>
+</div>
+
+<script src="{{ asset('build/app.js') }}"></script>
+</body>
+</html>
+
+
+
+

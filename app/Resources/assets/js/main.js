@@ -20,9 +20,11 @@ window.socket = io('http://' + document.location.host + ':3000', {
 });
 
 import PanelVotacion from './components/PanelVotacion';
+import PanelDisplay from './components/PanelDisplay';
 import Quorm from './components/Quorum';
 
 Vue.component('panel-votacion', PanelVotacion);
+Vue.component('panel-display', PanelDisplay);
 Vue.component('quorum', Quorm);
 
 window.app = new Vue({

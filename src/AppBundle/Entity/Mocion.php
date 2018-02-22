@@ -103,9 +103,17 @@ class Mocion extends BaseClass
      */
     private $votaciones;
 
+    /**
+     * @var ArrayCollection|Voto[]
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Voto", mappedBy="mocion")
+     */
+    private $votos;
+
     public function __construct()
     {
         $this->votaciones = new ArrayCollection();
+        $this->votos = new ArrayCollection();
     }
 
     /**
@@ -317,6 +325,22 @@ class Mocion extends BaseClass
     public function setVotaciones($votaciones)
     {
         $this->votaciones = $votaciones;
+    }
+
+    /**
+     * @return Voto[]|ArrayCollection
+     */
+    public function getVotos()
+    {
+        return $this->votos;
+    }
+
+    /**
+     * @param Voto[]|ArrayCollection $votos
+     */
+    public function setVotos($votos)
+    {
+        $this->votos = $votos;
     }
 
     /**

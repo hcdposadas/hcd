@@ -5,7 +5,10 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Votacion;
+use AppBundle\Entity\Voto;
 use Doctrine\ORM\EntityManager;
+use Exception;
+use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Services\NotificationsManager;
 
 class VotacionManager
@@ -125,6 +128,53 @@ class VotacionManager
     }
 
     /**
+     * @param Mocion $mocion
+     * @param Usuario $usuario
+     * @param $valorVoto
+     * @return Voto
+     * @throws Exception
+     */
+    public function votar(Mocion $mocion, Usuario $usuario, $valorVoto)
+    {
+        // TODO verificar que el usuario sea concejal
+
+        if (!$mocion->enVotacion()) {
+            throw new Exception('La moción no se encuentra en votación');
+        }
+
+        $votacion = null;
+        foreach ($mocion->getVotaciones() as $votacion) {
+            if (!$votacion->finalizada()) {
+                break;
+            }
+        }
+
+        if (!$votacion || $votacion->finalizada()) {
+            throw new Exception('La moción no se encuentra en votación en este momento');
+        }
+
+        if (!in_array($valorVoto, array(Voto::VOTO_SI, Voto::VOTO_NO))) {
+            throw new Exception('El valor del voto no es válido');
+        }
+
+        foreach ($mocion->getVotos() as $valorVoto) {
+            if ($valorVoto->getCreadoPor()->getId() == $usuario->getId()) {
+                throw new Exception('No se puede votar dos veces la misma moción');
+            }
+        }
+
+        $voto = new Voto();
+        $voto->setValor($valorVoto);
+        $voto->setMocion($mocion);
+        $voto->setVotacion($votacion);
+
+        $this->entityManager->persist($voto);
+        $this->entityManager->flush();
+
+        return $voto;
+    }
+
+    /**
      * @param $estado
      * @return Parametro|null
      */
@@ -150,8 +200,18 @@ class VotacionManager
         $tipoMayoria = $mocion->getTipoMayoria();
         $tipoMayoria = $tipoMayoria ? $tipoMayoria->__toString() : null;
 
+        $textoMocion = '';
+        if ($expediente = $mocion->getExpediente()) {
+            $textoMocion = 'Expediente '.$expediente.': '.$expediente->getExtracto();
+        }
+
+        if ($tipoMayoria) {
+            $tipoMayoria = 'Se aprueba con '.$tipoMayoria;
+        }
+
         $this->notificationsManager->notify('votacion.abierta', array(
-            'mocion' => $mocion->__toString(),
+            'mocion' => 'Moción Nº'.$mocion->__toString(),
+            'textoMocion' => $textoMocion,
             'tipoMayoria' => $tipoMayoria,
             'sesion' => $mocion->getSesion(),
             'duracion' => $duracion

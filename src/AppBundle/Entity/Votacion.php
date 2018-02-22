@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
 
@@ -44,6 +45,17 @@ class Votacion extends BaseClass
      */
     private $extension = false;
 
+    /**
+     * @var ArrayCollection|Voto[]
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Voto", mappedBy="votacion")
+     */
+    private $votos;
+
+    public function __construct()
+    {
+        $this->votos = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -117,6 +129,22 @@ class Votacion extends BaseClass
     public function setMocion($mocion)
     {
         $this->mocion = $mocion;
+    }
+
+    /**
+     * @return Voto[]|ArrayCollection
+     */
+    public function getVotos()
+    {
+        return $this->votos;
+    }
+
+    /**
+     * @param Voto[]|ArrayCollection $votos
+     */
+    public function setVotos($votos)
+    {
+        $this->votos = $votos;
     }
 
     /**

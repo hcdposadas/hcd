@@ -48,7 +48,10 @@
     {% block stylesheets %}{% endblock %}
     <!-- jQuery 2.2.3 -->
     <script src="{{ asset('bundles/theme/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
-    <script>window.user = { id: {{ app.user.id }} };</script>
+    <script>
+        window.user = { id: {{ app.user.id }} };
+        window.baseUrl = '{{ path('app_homepage') }}';
+    </script>
 </head>
 <body class="hold-transition skin-red sidebar-mini">
 <div class="wrapper" id="app">

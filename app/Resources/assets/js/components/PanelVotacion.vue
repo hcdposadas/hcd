@@ -8,16 +8,14 @@
          :style="{ display: display ? 'block' : 'none' }">
         <div class="box">
             <div class="box-body" style="height: 465px;">
-                <h4 style="background-color: #f7f7f7; font-size: 18px; text-transform: uppercase; padding: 5px;">Sesión
-                    Ordinaria Nº 32</h4>
-                <h1>Moción Nº4</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque debitis error molestias porro quasi
-                    reprehenderit. A aspernatur at corporis dignissimos hic in maiores minima pariatur rem suscipit?
-                    Autem recusandae, saepe.</p>
+                <h4 style="background-color: #f7f7f7; font-size: 18px; text-transform: uppercase; padding: 5px;">{{
+                    sesion }}</h4>
+                <h1>{{ mocion }}</h1>
+                <p>{{ textoMocion }}</p>
 
-                <div>
+                <div v-if="duracion">
                     <div class="clearfix">
-                        <span class="pull-left"></span>
+                        <span class="pull-left">{{ tipoMayoria }}</span>
                         <small class="pull-right">Restan {{ duracion - tiempo }} segundo{{ (duracion - tiempo) ===
                             1 ? '': 's' }}
                         </small>
@@ -32,14 +30,31 @@
                 </div>
 
                 <hr>
-                <button class="btn btn-app"
-                        style="height: 150px; font-size: 3em; width: 45%; color: #fff; background-color: #00a65a; border-color: #008d4c;">
-                    SI
-                </button>
-                <button class="btn btn-app btn-danger pull-right"
-                        style="height: 150px; font-size: 3em; width: 45%; color: #fff; background-color: #dd4b39; border-color: #d73925;">
-                    NO
-                </button>
+                <div>
+                    <div v-if="error" class="callout callout-danger">
+                        <p><b>Atención:</b> El voto no se registró.</p>
+                        <p>{{ error }}</p>
+                    </div>
+                    <div v-if="success" class="callout callout-success">
+                        <p>!El voto se registró correctamente!</p>
+                    </div>
+
+                    <div v-if="!yaVoto">
+                        <button class="btn btn-app"
+                                style="height: 150px; font-size: 3em; width: 45%; color: #fff; background-color: #00a65a; border-color: #008d4c;"
+                                @click="votarSi">SI
+                        </button>
+                        <button class="btn btn-app btn-danger pull-right"
+                                style="height: 150px; font-size: 3em; width: 45%; color: #fff; background-color: #dd4b39; border-color: #d73925;"
+                                @click="votarNo">NO
+                        </button>
+                    </div>
+                    <div v-else>
+                        <div class="callout callout-info">
+                            <p>Su voto fue emitido</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -50,16 +65,24 @@
         data() {
             return {
                 display: false,
-                tipoMayoria: 'Mayoría simple',
-                sesion: '3ª Sesión - Ordinaria',
-                fecha: '20/01/2019',
-                mocion: 'Moción 4',
+                tipoMayoria: '',
+                sesion: '',
+                fecha: '',
+                mocion: '',
+                textoMocion: '',
                 tiempo: 0,
-                duracion: 100
+                duracion: 0,
+                yaVoto: false,
+                voto: null,
+                error: null,
+                success: null
             }
         },
         computed: {
             porcentaje() {
+                if (!this.duracion) {
+                    return 0
+                }
                 return this.tiempo * 100 / this.duracion
             }
         },
@@ -74,24 +97,41 @@
                     $('body').removeClass('layout-top-nav');
                     $('.main-sidebar').show();
                     $('.sidebar-toggle').show();
+
+                    // this.mocion no se reinicia, porque se usa para saber si es la misma
+                    // moción que se extiende o es una nueva
+                    // this.mocion = ''
+                    this.duracion = 0
+                    this.tiempo = 0
+                    this.textoMocion = ''
+                    this.sesion = ''
+                    this.fecha = ''
+                    this.error = null
+                    this.success = null
                 }
             }
         },
         mounted() {
             socket.on('connect', function () {
-                console.log('socket.connect')
+                // console.log('socket.connect')
             });
             socket.on('disconnect', function () {
-                console.log('socket.disconnect')
+                // console.log('socket.disconnect')
             });
             socket.on('message', function (msg) {
-                console.log('socket.message', msg);
+                // console.log('socket.message', msg);
                 switch (msg.type) {
                     case 'votacion.abierta':
+                        if (this.mocion !== msg.data.mocion) {
+                            this.yaVoto = false
+                            this.success = null
+                            this.error = null
+                        }
+                        this.mocion = msg.data.mocion;
                         this.display = true;
                         this.sesion = msg.data.sesion;
                         this.tipoMayoria = msg.data.tipoMayoria;
-                        this.mocion = msg.data.mocion;
+                        this.textoMocion = msg.data.textoMocion;
                         this.duracion = msg.data.duracion;
                         this.tiempo = msg.data.tiempo;
                         break;
@@ -103,6 +143,42 @@
                         break;
                 }
             }.bind(this));
+        },
+        methods: {
+            votarSi() {
+                this.voto = 'si'
+                this.enviarVoto()
+            },
+            votarNo() {
+                this.voto = 'no'
+                this.enviarVoto()
+            },
+            enviarVoto() {
+                this.error = null
+
+                this.yaVoto = true
+                axios.post(window.baseUrl + 'votar', {
+                    voto: this.voto,
+                    user: window.user.id,
+                }).then(function (response) {
+                    if (!this.display) {
+                        return
+                    }
+
+                    let data = response.data;
+
+                    if (data.status === 'error') {
+                        this.error = data.message
+                        this.voto = null
+                        this.confirmarVoto = false
+                    } else {
+                        this.success = true
+                    }
+                }.bind(this)).catch(function (error) {
+                    this.error = error
+                    this.yaVoto = false
+                }.bind(this))
+            }
         }
     }
 </script>

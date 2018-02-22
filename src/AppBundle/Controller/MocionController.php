@@ -4,10 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
+use AppBundle\Entity\Voto;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Encoder\JsonEncode;
 
 /**
  * Mocion controller.
@@ -237,5 +238,53 @@ class MocionController extends Controller
         }
 
         return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function votoConcejalAction(Request $request)
+    {
+        try {
+            // TODO verificar que el usuario sea concejal
+
+//            /** @var Usuario $usuario */
+            $usuario = $this->getUser();
+
+
+
+            $mocion = $this->get('doctrine.orm.default_entity_manager')->getRepository(Mocion::class)->getEnVotacion();
+            if (!$mocion) {
+                throw new Exception('No hay una moción en votación en este momento');
+            }
+
+            $data = json_decode($request->getContent(), JSON_OBJECT_AS_ARRAY);
+            $valorVoto = $data['voto'];
+
+            if ($valorVoto == 'no') {
+                $valorVoto = Voto::VOTO_NO;
+            } else if ($valorVoto == 'si') {
+                $valorVoto = Voto::VOTO_SI;
+            } else {
+                throw new Exception('El valor del voto no es válido ('.$valorVoto.')');
+            }
+
+            $voto = $this->get('votacion.manager')->votar($mocion, $usuario, $valorVoto);
+
+            return JsonResponse::create(array(
+                'status' => 'success',
+                'data' => array(
+                    'voto' => array(
+                        'id' => $voto->getId(),
+                    ),
+                ),
+            ));
+        } catch (Exception $ex) {
+            return JsonResponse::create(array(
+                'status' => 'error',
+                'message' => $ex->getMessage(),
+            ));
+        }
     }
 }

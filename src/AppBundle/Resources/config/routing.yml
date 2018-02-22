@@ -33,3 +33,8 @@ app_sesion:
 app_concejal:
     path:     /concejal
     defaults: { _controller: AppBundle:Default:concejal }
+
+app_votar:
+    path:     /votar
+    defaults: { _controller: AppBundle:Mocion:votoConcejal }
+    methods:  POST

@@ -28,6 +28,7 @@ function quorum() {
 setInterval(quorum, 5000);
 
 io.on('connection', function(socket) {
+    console.log(socket.handshake.query)
     const concejalId = socket.handshake.query.concejalId
     console.log('EVENT connection', concejalId)
 

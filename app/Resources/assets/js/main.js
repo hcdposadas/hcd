@@ -15,8 +15,7 @@ global.axios.defaults.headers.common = {
 const io = require('socket.io-client')
 window.socket = io('http://' + document.location.host + ':3000', {
     transports: ['websocket'],
-    upgrade: true,
-    query: {concejalId: window.user.id}
+    upgrade: true
 });
 
 import PanelVotacion from './components/PanelVotacion';

@@ -61,6 +61,8 @@
 </template>
 
 <script>
+    const io = require('socket.io-client')
+
     export default {
         data() {
             return {
@@ -112,6 +114,12 @@
             }
         },
         mounted() {
+            let socket = io('http://' + document.location.host + ':3000', {
+                transports: ['websocket'],
+                upgrade: true,
+                query: {concejalId: window.user.id}
+            });
+
             socket.on('connect', function () {
                 // console.log('socket.connect')
             });

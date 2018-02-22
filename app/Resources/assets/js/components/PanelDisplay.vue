@@ -54,6 +54,8 @@
 </template>
 
 <script>
+    const io = require('socket.io-client')
+
     export default {
         data() {
             return {
@@ -80,6 +82,10 @@
             }
         },
         mounted() {
+            let socket = io('http://' + document.location.host + ':3000', {
+                transports: ['websocket'],
+                upgrade: true
+            });
             socket.on('message', function (msg) {
                 console.log(msg)
                 switch (msg.type) {

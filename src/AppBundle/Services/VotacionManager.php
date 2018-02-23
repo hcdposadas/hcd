@@ -202,7 +202,7 @@ class VotacionManager
             'mocion' => 'Moción Nº'.$mocion->__toString(),
             'textoMocion' => $textoMocion,
             'tipoMayoria' => $tipoMayoria,
-            'sesion' => $mocion->getSesion(),
+            'sesion' => $mocion->getSesion()->__toString(),
             'afirmativos' => $mocion->getCuentaAfirmativos(),
             'negativos' => $mocion->getCuentaNegativos(),
             'abstenciones' => $mocion->getCuentaAbstenciones(),
@@ -319,7 +319,7 @@ class VotacionManager
             'mocion' => 'Moción Nº'.$mocion->__toString(),
             'textoMocion' => $textoMocion,
             'tipoMayoria' => $tipoMayoria,
-            'sesion' => $mocion->getSesion(),
+            'sesion' => $mocion->getSesion()->__toString(),
             'duracion' => $duracion
         ));
 

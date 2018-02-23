@@ -25,6 +25,7 @@ easy_admin:
         form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
         menu:
             - { label: 'Sesión', entity: Sesion }
+            - Parametro
             - Expediente
             - { label: 'Tipo Expediente', entity: TipoExpediente }
             - { label: 'Tipo Proyecto', entity: TipoProyecto }

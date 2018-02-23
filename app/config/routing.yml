@@ -42,3 +42,16 @@ fos_user_resetting:
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
+    
+#sesion
+sesion:
+    path: /sesion
+    defaults: { _controller: "AppBundle:Sesion:index" }
+
+sesion_login:
+    path: /sesion/login
+    defaults: { _controller: "AppBundle:Sesion:login" }
+
+app_display:
+    path:     /pantalla
+    defaults: { _controller: AppBundle:Default:display }

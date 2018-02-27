@@ -1,19 +1,61 @@
-<html>
+<!doctype html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pantalla</title>
+
     <script>
         {#window.user = {id: {{ app.user.id }} };#}
         window.baseUrl = '{{ path('app_homepage') }}';
     </script>
+    <link rel="stylesheet" href="{{ asset('build/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/theme/css/custom.css') }}">
+    <style>
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+        }
+
+    </style>
 </head>
 <body>
+
 <div id="app">
     <panel-display></panel-display>
 </div>
 
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-6">
+        <img class="img-responsive" src="{{ asset('bundles/theme/img/logo-269x269.png') }}">
+    </div>
+    <div class="col-md-6">
+
+    </div>
+</div>
+</div>
+
+{#<footer class="footer">#}
+    {#<div class="container">#}
+        {#<div class="row">#}
+            {#<div class="col-md-6">#}
+                {#<img class="img-responsive" src="{{ asset('bundles/theme/img/logo-269x269.png') }}">#}
+            {#</div>#}
+            {#<div class="col-md-6">#}
+
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+{#</footer>#}
+
 <script src="{{ asset('build/app.js') }}"></script>
 </body>
 </html>
-
-
-
 

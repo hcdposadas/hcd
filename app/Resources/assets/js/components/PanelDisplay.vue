@@ -1,23 +1,106 @@
+<style scoped lang="scss">
+    $color-hcd-verde: #17a867;
+    .cuerpo {
+        background-color: #fff;
+        color: #333;
+        /*position: fixed;*/
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        font-family: Arial
+    }
+
+    .titulo {
+        text-align: center;
+        font-size: 2em;
+        /*height: 2em;*/
+        /*padding-top: 10px;*/
+        padding: 10px;
+        background-color: $color-hcd-verde;
+        color: #fff;
+    }
+
+    .panel-presentes-asistencia {
+        font-size: 6em;
+    }
+
+    .panel-quorum {
+        font-size: 4em;
+        text-align: center;
+        clear: both;
+        /*background-color: #333;*/
+        /*background-color: #17a867;*/
+        color: #fff;
+        padding: 20px;
+    }
+
+    .no-quorum {
+        background-color: #d44950;
+    }
+
+    .si-quorum {
+        background-color: #5cb85c;
+    }
+
+    .panel-votacion-sesion {
+        font-size: 4em;
+        text-align: center;
+        clear: both;
+        background-color: $color-hcd-verde;
+        color: #fff;
+        padding: 20px;
+    }
+
+    .panel-resultado-texto {
+        font-size: 6em;
+        clear: both;
+        /*background-color: #333;*/
+        color: #fff;
+        padding: 20px;
+    }
+
+    .texto-resultado {
+        font-size: 3em;
+        padding: 10px
+    }
+
+    .texto-resultado-sesion {
+        font-size: 4em;
+        text-align: center;
+        clear: both;
+        background-color: $color-hcd-verde;
+        /*background-color: #333;*/
+        color: #fff;
+        padding: 20px;
+    }
+</style>
 <template>
-    <div style="background-color: #fff; color: #333; position: fixed; top: 0; bottom: 0; left: 0; right: 0; font-family: Arial">
-        <div style="text-align: center; font-size: 2em; height: 2em; padding-top: 10px;">Honorable Concejo Deliberante de la Ciudad de Posadas</div>
+    <div class="cuerpo">
+        <div class="titulo">
+            <h1>
+                Honorable Concejo Deliberante de la Ciudad de Posadas
+            </h1>
+        </div>
         <div v-if="panel==='presentes'" style="width: 100%;">
             <div style="text-align: center; font-size: 6em; width: 50%; float: left">
                 <div>Presentes</div>
-                <div style="font-size: 6em;">{{ quorum.presentes }}</div>
+                <div class="panel-presentes-asistencia">{{ quorum.presentes }}</div>
             </div>
             <div style="text-align: center; font-size: 6em; width: 50%; float: right">
                 <div>Ausentes</div>
-                <div style="font-size: 6em;">{{ quorum.ausentes }}</div>
+                <div class="panel-presentes-asistencia">{{ quorum.ausentes }}</div>
             </div>
-            <div style="font-size: 4em; text-align: center; clear: both; background-color: #333; color: #fff; padding: 20px;">
-                <div v-if="quorum.hayQuorum" style="">Hay Quorum</div>
-                <div v-else style="">No Hay Quorum</div>
+            <div class="panel-quorum" :class="[quorum.hayQuorum ? 'si-quorum' : 'no-quorum']">
+                <span v-if="quorum.hayQuorum">Hay Quorum</span>
+                <span v-else>No Hay Quorum</span>
             </div>
         </div>
 
         <div v-if="panel==='votacion'" style="text-align: center;">
-            <div style="font-size: 4em; text-align: center; clear: both; background-color: #333; color: #fff; padding: 20px;">{{ sesion }}</div>
+            <div class="panel-votacion-sesion">
+                {{ sesion }}
+            </div>
             <div style="font-size: 5em; padding: 20px; font-weight: bold;">{{ mocion }}</div>
             <div style="font-size: 2em;">{{ textoMocion }}</div>
             <hr>
@@ -31,21 +114,25 @@
                 <div>Ausentes</div>
                 <div style="font-size: 3em;">{{ quorum.ausentes }}</div>
             </div>
-            <div v-if="tiempo" style="clear: both; background-color: #333; color: #fff; font-size: 2em; padding: 20px;">Restan {{ tiempo ? duracion - tiempo : '' }} segundos</div>
+            <div v-if="tiempo" style="clear: both; background-color: #333; color: #fff; font-size: 2em; padding: 20px;">
+                Restan {{ tiempo ? duracion - tiempo : '' }} segundos
+            </div>
         </div>
         <div v-if="panel==='resultados'" style="text-align: center;">
-            <div style="font-size: 4em; text-align: center; clear: both; background-color: #333; color: #fff; padding: 20px;">{{ sesion }}</div>
+            <div style="" class="texto-resultado-sesion">
+                {{ sesion }}
+            </div>
             <div style="font-size: 5em; padding: 20px; font-weight: bold;">{{ mocion }}</div>
             <div style="font-size: 2em;">{{ textoMocion }}</div>
             <hr>
             <div style="font-size: 3em;">{{ tipoMayoria }}</div>
             <hr>
             <div>
-                <div style="font-size: 3em; padding: 10px">Afirmativos: {{ resultados.afirmativos }}</div>
-                <div style="font-size: 3em; padding: 10px">Negativos: {{ resultados.negativos }}</div>
-                <div style="font-size: 3em; padding: 10px">Abstenciones: {{ resultados.abstenciones }}</div>
+                <div class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
+                <div class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
+                <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
             </div>
-            <div style="font-size: 6em; clear: both; background-color: #333; color: #fff; padding: 20px;">
+            <div class="panel-resultado-texto" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
                 {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
             </div>
 

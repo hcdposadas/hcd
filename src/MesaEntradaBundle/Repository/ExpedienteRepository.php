@@ -42,7 +42,7 @@ class ExpedienteRepository extends EntityRepository {
 
 	public function getQbExpedientesMesaEntrada() {
 		$qb = $this->getQbAll();
-		$qb->where('e.borrador is null');
+		$qb->where( 'e.borrador is null' );
 
 		return $qb;
 	}
@@ -118,13 +118,37 @@ class ExpedienteRepository extends EntityRepository {
 
 		$qb = $this->getQbAll();
 
-			$qb->join( 'e.iniciadores', 'iniciadores' )
-				->where('iniciadores.iniciador = :concejal');
+		$qb->join( 'e.iniciadores', 'iniciadores' )
+		   ->where( 'iniciadores.iniciador = :concejal' );
 
-			$qb->setParameter('concejal', $concejal);
+		$qb->setParameter( 'concejal', $concejal );
 
 
-			return $qb;
+		return $qb;
 
+	}
+
+	public function buscarExpedientesSesion( $data ) {
+		$qb = $this->createQueryBuilder( 'e' );
+
+		if ( $data['expediente'] ) {
+			$q = $data['expediente'];
+			$qb->andWhere( 'e.expediente = :expediente' )
+			   ->setParameter( 'expediente', $q );
+		}
+
+		if ( ( $data['anio'] ) ) {
+			$qb->andWhere( 'e.anio = :anio' );
+			$qb->setParameter( 'anio', $data['anio'] );
+		}
+
+		if ( $data['texto'] ) {
+			$q = $data['texto'];
+			$qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
+			   ->setParameter( 'texto', "%$q%" );
+		}
+
+
+		return $qb->getQuery()->getArrayResult();
 	}
 }

@@ -395,7 +395,11 @@ class Mocion extends BaseClass
      */
     public function puedeVotarse()
     {
-        return $this->getEstado()->getSlug() == self::ESTADO_PARA_VOTAR;
+    	if ($this->getEstado()){
+		    return $this->getEstado()->getSlug() == self::ESTADO_PARA_VOTAR;
+	    }
+	    return false;
+
     }
 
     /**

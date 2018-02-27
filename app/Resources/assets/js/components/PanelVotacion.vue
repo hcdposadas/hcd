@@ -1,59 +1,99 @@
 <style>
-    #cabecera {
-        background-color: pink !important;
+    /*.votacion {*/
+    /*z-index: 3000;*/
+    /*position: absolute;*/
+    /*left: 15px;*/
+    /*right: 15px;*/
+    /*top: 15px;*/
+    /*}*/
+
+    /*.box-body h4 {*/
+    /*background-color: #f7f7f7;*/
+    /*font-size: 18px;*/
+    /*text-transform: uppercase;*/
+    /*padding: 5px;*/
+    /*}*/
+
+    .btn-app {
+        height: 150px;
+        font-size: 3em;
+        width: 45%;
+        color: #fff;
+    }
+
+    .btn-app-afirmativo {
+        background-color: #00a65a;
+        border-color: #008d4c;
+    }
+
+    .btn-app-negativo {
+        background-color: #dd4b39;
+        border-color: #d73925;
     }
 </style>
 <template>
-    <div style="z-index: 3000; position: absolute; left: 15px; right: 15px; top: 15px;"
-         :style="{ display: display ? 'block' : 'none' }">
-        <div class="box">
-            <div class="box-body" style="height: 465px;">
-                <h4 style="background-color: #f7f7f7; font-size: 18px; text-transform: uppercase; padding: 5px;">{{
-                    sesion }}</h4>
-                <h1>{{ mocion }}</h1>
-                <p>{{ textoMocion }}</p>
+    <div id="modal-votacion" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+         data-backdrop="static" data-keyboard="false"
+         aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>{{ sesion }}</h4>
+                    <h1>{{ mocion }}</h1>
+                    <p>{{ textoMocion }}</p>
+                </div>
+                <div class="modal-body">
 
-                <div v-if="duracion">
-                    <div class="clearfix">
-                        <span class="pull-left">{{ tipoMayoria }}</span>
-                        <small class="pull-right">Restan {{ duracion - tiempo }} segundo{{ (duracion - tiempo) ===
-                            1 ? '': 's' }}
-                        </small>
-                    </div>
-                    <div class="progress xs">
-                        <div class="progress-bar" :class="{
+                    <div v-if="duracion" class="row">
+                        <div class="col-md-12">
+                            <div class="clearfix">
+                                <span class="pull-left">{{ tipoMayoria }}</span>
+                                <small class="pull-right">Restan {{ duracion - tiempo }} segundo{{ (duracion - tiempo)
+                                    ===
+                                    1 ? '': 's' }}
+                                </small>
+                            </div>
+                            <div class="progress xs">
+                                <div class="progress-bar" :class="{
                             'progress-bar-success': porcentaje < 60,
                             'progress-bar-warning': porcentaje >= 60 && porcentaje <= 80,
                             'progress-bar-danger': porcentaje > 80
                         }" :style="{width: porcentaje + '%'}"></div>
-                    </div>
-                </div>
-
-                <hr>
-                <div>
-                    <div v-if="error" class="callout callout-danger">
-                        <p><b>Atención:</b> El voto no se registró.</p>
-                        <p>{{ error }}</p>
-                    </div>
-                    <div v-if="success" class="callout callout-success">
-                        <p>!El voto se registró correctamente!</p>
-                    </div>
-
-                    <div v-if="!yaVoto">
-                        <button class="btn btn-app"
-                                style="height: 150px; font-size: 3em; width: 45%; color: #fff; background-color: #00a65a; border-color: #008d4c;"
-                                @click="votarSi">SI
-                        </button>
-                        <button class="btn btn-app btn-danger pull-right"
-                                style="height: 150px; font-size: 3em; width: 45%; color: #fff; background-color: #dd4b39; border-color: #d73925;"
-                                @click="votarNo">NO
-                        </button>
-                    </div>
-                    <div v-else>
-                        <div class="callout callout-info">
-                            <p>Su voto fue emitido</p>
+                            </div>
                         </div>
                     </div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div v-if="error" class="callout callout-danger">
+                                <p><b>Atención:</b> El voto no se registró.</p>
+                                <p>{{ error }}</p>
+                            </div>
+                            <div v-if="success" class="callout callout-success">
+                                <p>!El voto se registró correctamente!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div v-if="!yaVoto">
+                                <button class="btn btn-app btn-app-afirmativo"
+                                        @click="votarSi">SI
+                                </button>
+                                <button class="btn btn-app btn-danger btn-app-negativo pull-right"
+                                        @click="votarNo">NO
+                                </button>
+                            </div>
+                            <div v-else>
+                                <div class="callout callout-info">
+                                    <p>Su voto fue emitido</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -90,15 +130,11 @@
         },
         watch: {
             display: function (val) {
-                $('.main-header .navbar').css('margin-left', '230px');
                 if (val) {
-                    $('body').addClass('layout-top-nav');
-                    $('.main-sidebar').hide();
-                    $('.sidebar-toggle').hide();
+                    $('#modal-votacion').modal('toggle')
+
                 } else {
-                    $('body').removeClass('layout-top-nav');
-                    $('.main-sidebar').show();
-                    $('.sidebar-toggle').show();
+                    $('#modal-votacion').modal('toggle')
 
                     // this.mocion no se reinicia, porque se usa para saber si es la misma
                     // moción que se extiende o es una nueva
@@ -165,9 +201,9 @@
                 this.error = null
 
                 this.yaVoto = true
-                axios.post(window.baseUrl + 'votar', {
+                axios.post(window.baseUrl + 'sesion/votar', {
                     voto: this.voto,
-                    user: window.user.id,
+                    // user: window.user.id,
                 }).then(function (response) {
                     if (!this.display) {
                         return

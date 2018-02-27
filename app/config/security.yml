@@ -26,7 +26,9 @@ security:
                 check_path: /sesion/login
                 default_target_path: /sesion
                 csrf_token_generator: security.csrf.token_manager
-            logout:       true
+            logout:
+                path:   /sesion/logout
+                target: /sesion
             anonymous:    true
 
         main:
@@ -46,6 +48,6 @@ security:
         - { path: ^/pantalla, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/sesion/, role: ROLE_ADMIN }
+        - { path: ^/sesion/, role: [ROLE_CONCEJAL, ROLE_SECRETARIO] }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/, role: IS_AUTHENTICATED_FULLY }

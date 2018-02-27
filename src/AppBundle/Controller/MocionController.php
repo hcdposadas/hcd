@@ -267,10 +267,7 @@ class MocionController extends Controller
         try {
             // TODO verificar que el usuario sea concejal
 
-//            /** @var Usuario $usuario */
             $usuario = $this->getUser();
-
-
 
             $mocion = $this->get('doctrine.orm.default_entity_manager')->getRepository(Mocion::class)->getEnVotacion();
             if (!$mocion) {

@@ -14,7 +14,6 @@ app_ajax:
     resource: "ajax/ajax.yml"
     prefix:   /ajax
 
-
 app_mocion:
     resource: "@AppBundle/Resources/config/routing/mocion.yml"
     prefix:   /mocion
@@ -31,7 +30,7 @@ app_concejal:
 #    path:     /display
 #    defaults: { _controller: AppBundle:Default:display }
 
-app_votar:
-    path:     /votar
-    defaults: { _controller: AppBundle:Mocion:votoConcejal }
-    methods:  POST
+#app_votar:
+#    path:     /votar
+#    defaults: { _controller: AppBundle:Mocion:votoConcejal }
+#    methods:  POST

@@ -23,7 +23,8 @@
     <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/AdminLTE.min.css') }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/skins/_all-skins.min.css') }}">
+    {#<link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/skins/_all-skins.min.css') }}">#}
+    <link rel="stylesheet" href="{{ asset('bundles/theme/css/skin-green-hcd.css') }}">
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('bundles/theme/plugins/iCheck/flat/blue.css') }}">
     <!-- jvectormap -->
@@ -49,11 +50,11 @@
     <!-- jQuery 2.2.3 -->
     <script src="{{ asset('bundles/theme/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
     <script>
-        window.user = { id: {{ app.user.id }} };
+        {#window.user = { id: {{ app.user.id }} };#}
         window.baseUrl = '{{ path('app_homepage') }}';
     </script>
 </head>
-<body class="hold-transition skin-red sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper" id="app">
 
     <header class="main-header">

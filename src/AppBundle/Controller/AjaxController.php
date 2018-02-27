@@ -208,8 +208,8 @@ class AjaxController extends Controller {
 
 		$em = $this->getDoctrine();
 
-		$value = $request->get( 'q' );
-		$limit = $request->get( 'page_limit' );
+		$value    = $request->get( 'q' );
+		$limit    = $request->get( 'page_limit' );
 		$entities = $em->getRepository( 'MesaEntradaBundle:Iniciador' )->getACargosPorNombre( $value, $limit );
 
 		$json = array();
@@ -232,6 +232,23 @@ class AjaxController extends Controller {
 
 			}
 		}
+
+		return new JsonResponse( $json );
+	}
+
+	public function getUltimaSesionAction() {
+
+		$json = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findUltimaSesion();
+
+		return new JsonResponse( $json[0] );
+	}
+
+	public function buscarExpedienteAction( Request $request ) {
+
+		$data = $request->get( 'data' );
+		$data = json_decode( $data, true );
+
+		$json = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->buscarExpedientesSesion( $data );
 
 		return new JsonResponse( $json );
 	}

@@ -125,7 +125,7 @@ class VotacionManager
 
         $presentes = array_map(function ($id) use ($usuarioRepository) {
             return $usuarioRepository->find($id);
-        }, $this->notificationsManager->hgetall('presentes'));
+        }, array_keys($this->notificationsManager->hgetall('presentes')));
 
         $dedup = array();
         foreach ($presentes as $presente) {

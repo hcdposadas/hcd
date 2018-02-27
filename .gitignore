@@ -16,6 +16,7 @@
 /vendor/
 /web/bundles/
 /node_modules/
+env.json
 
 # -- uploads
 /web/uploads/expedientes/internos/*

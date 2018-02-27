@@ -1,5 +1,11 @@
 // We need bootstrap for bootstrap-webpack
-require('bootstrap');
+// require('bootstrap');
+const $ = require('jquery');
+
+// create global $ and jQuery variables
+global.$ = global.jQuery = $;
+
+require('bootstrap-sass');
 
 import Vue from 'vue';
 // const Vue = require('vue');
@@ -19,12 +25,27 @@ window.socket = io('http://' + document.location.host + ':3000', {
 });
 
 import PanelVotacion from './components/PanelVotacion';
+import Concejal from './components/Concejal';
+import ConsultarExpediente from './components/ConsultarExpediente';
 import PanelDisplay from './components/PanelDisplay';
 import Quorm from './components/Quorum';
 
 Vue.component('panel-votacion', PanelVotacion);
+Vue.component('panel-concejal', Concejal);
+Vue.component('consultar-expediente', ConsultarExpediente);
 Vue.component('panel-display', PanelDisplay);
 Vue.component('quorum', Quorm);
+
+const moment = require('moment')
+require('moment/locale/es')
+
+Vue.use(require('vue-moment'), {
+    moment
+})
+
+import VueContentPlaceholders from 'vue-content-placeholders'
+
+Vue.use(VueContentPlaceholders)
 
 window.app = new Vue({
     delimiters: ['[[', ']]'],

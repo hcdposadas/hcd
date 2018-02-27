@@ -21,7 +21,7 @@ easy_admin:
 #            class: Matudelatower\UbicacionBundle\Entity\Localidad
 
     design:
-        brand_color: '#FF3300'
+        brand_color: '#17a867'
         form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
         menu:
             - { label: 'Sesión', entity: Sesion }

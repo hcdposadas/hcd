@@ -19,9 +19,12 @@ class SesionController extends Controller {
 
 		$sesions = $em->getRepository( 'AppBundle:Sesion' )->findAll();
 
+		$concejal = $this->getUser()->getPersona();
+
 		return $this->render( 'sesion/index.html.twig',
 			array(
 				'sesions' => $sesions,
+				'concejal' => $concejal,
 			) );
 	}
 

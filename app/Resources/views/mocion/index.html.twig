@@ -1,8 +1,9 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
+{% extends 'sesion/secretario.html.twig' %}
 
-{% block title %}
-    Mociones
-{% endblock title %}
+{#{% block title %}#}
+    {#Mociones#}
+{#{% endblock title %}#}
 {% block body %}
     <div class="box">
         <div class="box-header with-border">
@@ -40,7 +41,6 @@
                                         <span class="label label-danger">No Aprobado</span>
                                     {% endif %}
                                 </td>
-                                <td></td>
                                 <td class="text-right">
                                     <a class="btn btn-default" href="{{ path('mocion_show', { 'id': mocion.id }) }}">
                                         <i class="fa fa-search"></i>

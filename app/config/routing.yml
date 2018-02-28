@@ -71,3 +71,5 @@ get_ultima_sesion:
 get_buscar_expediente:
     path: /sesion/buscar-expediente
     defaults: { _controller: "AppBundle:Ajax:buscarExpediente" }
+
+#sesion secretario

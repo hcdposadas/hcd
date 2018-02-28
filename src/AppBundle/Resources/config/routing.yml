@@ -16,7 +16,7 @@ app_ajax:
 
 app_mocion:
     resource: "@AppBundle/Resources/config/routing/mocion.yml"
-    prefix:   /mocion
+    prefix:   /sesion/mocion
 
 app_tipomayoria:
     resource: "@AppBundle/Resources/config/routing/tipomayoria.yml"

@@ -21,6 +21,7 @@ easy_admin:
                       { 'ROLE_USER': 'ROLE_USER',
                         'ROLE_ADMIN': 'ROLE_ADMIN',
                         'ROLE_CONCEJAL': 'ROLE_CONCEJAL',
+                        'ROLE_SECRETARIO': 'ROLE_SECRETARIO',
                         'ROLE_MESA_ENTRADA': 'ROLE_MESA_ENTRADA',
                         'ROLE_PERSONAL': 'ROLE_PERSONAL',
                       }

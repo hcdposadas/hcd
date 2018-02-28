@@ -9,12 +9,21 @@ namespace AppBundle\Repository;
  * repository methods below.
  */
 class SesionRepository extends \Doctrine\ORM\EntityRepository {
-	public function findUltimaSesion() {
+
+	public function findQbUltimaSesion() {
 		$qb = $this->createQueryBuilder( 's' );
 
 		$qb->orderBy( 's.id', 'DESC' )
 		   ->setMaxResults( 1 );
 
+		return $qb;
+	}
+
+	public function findUltimaSesion() {
+		$qb = $this->findQbUltimaSesion();
+
 		return $qb->getQuery()->getScalarResult();
 	}
+
+
 }

@@ -14,292 +14,302 @@ use Symfony\Component\HttpFoundation\Request;
  * Mocion controller.
  *
  */
-class MocionController extends Controller
-{
-    /**
-     * Lists all mocion entities.
-     *
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
+class MocionController extends Controller {
+	/**
+	 * Lists all mocion entities.
+	 *
+	 */
+	public function indexAction( Request $request ) {
+		$em = $this->getDoctrine()->getManager();
 
-        $mocions = $em->getRepository('AppBundle:Mocion')->findAll();
+		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-        return $this->render('mocion/index.html.twig', array(
-            'mocions' => $mocions,
-        ));
-    }
+		$mocions = $em->getRepository( 'AppBundle:Mocion' )->findBySesion( $sesion );
 
-    /**
-     * Creates a new mocion entity.
-     *
-     */
-    public function newAction(Request $request)
-    {
-        $mocion = new Mocion();
+		return $this->render( 'mocion/index.html.twig',
+			array(
+				'mocions' => $mocions,
+				'sesion'  => $sesion,
+			) );
+	}
 
-        if ($request->get('tipo') === 'mocion-tipo-espontanea') {
-            $mocion->setTipo($this->get('doctrine.orm.default_entity_manager')
-                    ->getRepository(Parametro::class)
-                    ->getBySlug(Mocion::TIPO_ESPONTANEA));
-        }
+	/**
+	 * Creates a new mocion entity.
+	 *
+	 */
+	public function newAction( Request $request ) {
+		$mocion = new Mocion();
+		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-        $form = $this->createForm('AppBundle\Form\MocionType', $mocion);
-        $form->handleRequest($request);
+		if ( $request->get( 'tipo' ) === 'mocion-tipo-espontanea' ) {
+			$mocion->setTipo( $this->get( 'doctrine.orm.default_entity_manager' )
+			                       ->getRepository( Parametro::class )
+			                       ->getBySlug( Mocion::TIPO_ESPONTANEA ) );
+		}
 
-        if ($form->isSubmitted() && $form->isValid()) {
+		$form = $this->createForm( 'AppBundle\Form\MocionType', $mocion );
+		$form->handleRequest( $request );
 
-            $this->get('votacion.manager')->crear($mocion);
+		if ( $form->isSubmitted() && $form->isValid() ) {
 
-            if ($request->get('guardar-y-lanzar')) {
-                try {
-                    $this->get('votacion.manager')->lanzar($mocion);
-                } catch (\Exception $ex) {
-                    $this->addFlash(
-                        'error',
-                        $ex->getMessage()
-                    );
-                }
+			$this->get( 'votacion.manager' )->crear( $mocion );
 
-                return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
-            }
+			if ( $request->get( 'guardar-y-lanzar' ) ) {
+				try {
+					$this->get( 'votacion.manager' )->lanzar( $mocion );
+				} catch ( \Exception $ex ) {
+					$this->addFlash(
+						'error',
+						$ex->getMessage()
+					);
+				}
 
-            return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
-        }
+				return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
+			}
 
-        return $this->render('mocion/new.html.twig', array(
-            'mocion' => $mocion,
-            'form' => $form->createView(),
-        ));
-    }
+			return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
+		}
 
-    /**
-     * Finds and displays a mocion entity.
-     *
-     */
-    public function showAction(Request $request, Mocion $mocion)
-    {
-        $deleteForm = $this->createDeleteForm($mocion);
+		return $this->render( 'mocion/new.html.twig',
+			array(
+				'mocion' => $mocion,
+				'sesion' => $sesion,
+				'form'   => $form->createView(),
+			) );
+	}
 
-        return $this->render('mocion/show.html.twig', array(
-            'mocion' => $mocion,
-            'segundos' => 15,
-            'votar' => false,
-            'lanzar' => false,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+	/**
+	 * Finds and displays a mocion entity.
+	 *
+	 */
+	public function showAction( Request $request, Mocion $mocion ) {
+		$deleteForm = $this->createDeleteForm( $mocion );
+		$sesion     = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-    /**
-     * Finds and displays a mocion entity.
-     *
-     */
-    public function votarAction(Request $request, Mocion $mocion)
-    {
-        $deleteForm = $this->createDeleteForm($mocion);
+		return $this->render( 'mocion/show.html.twig',
+			array(
+				'sesion'      => $sesion,
+				'mocion'      => $mocion,
+				'segundos'    => 15,
+				'votar'       => false,
+				'lanzar'      => false,
+				'delete_form' => $deleteForm->createView(),
+			) );
+	}
 
-        $enVotacion = $this->get('doctrine.orm.default_entity_manager')
-            ->getRepository(Mocion::class)
-            ->getEnVotacion();
+	/**
+	 * Finds and displays a mocion entity.
+	 *
+	 */
+	public function votarAction( Request $request, Mocion $mocion ) {
+		$deleteForm = $this->createDeleteForm( $mocion );
 
-        if ($enVotacion) {
-            $this->addFlash(
-                'error',
-                'No se puede votar esta moción porque la Moción Nº'.$enVotacion.' se encuentra en votación.'
-            );
-            return $this->redirectToRoute('mocion_show', array(
-                'id' => $mocion->getId()
-            ));
-        }
+		$enVotacion = $this->get( 'doctrine.orm.default_entity_manager' )
+		                   ->getRepository( Mocion::class )
+		                   ->getEnVotacion();
 
-        return $this->render('mocion/show.html.twig', array(
-            'mocion' => $mocion,
-            'segundos' => 15,
-            'votar' => true,
-            'lanzar' => false,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+		if ( $enVotacion ) {
+			$this->addFlash(
+				'error',
+				'No se puede votar esta moción porque la Moción Nº' . $enVotacion . ' se encuentra en votación.'
+			);
 
-    /**
-     * Displays a form to edit an existing mocion entity.
-     *
-     */
-    public function editAction(Request $request, Mocion $mocion)
-    {
-        $deleteForm = $this->createDeleteForm($mocion);
-        $editForm = $this->createForm('AppBundle\Form\MocionType', $mocion);
-        $editForm->handleRequest($request);
+			return $this->redirectToRoute( 'mocion_show',
+				array(
+					'id' => $mocion->getId()
+				) );
+		}
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-            return $this->redirectToRoute('mocion_edit', array('id' => $mocion->getId()));
-        }
+		return $this->render( 'mocion/show.html.twig',
+			array(
+				'mocion'      => $mocion,
+				'sesion'      => $sesion,
+				'segundos'    => 15,
+				'votar'       => true,
+				'lanzar'      => false,
+				'delete_form' => $deleteForm->createView(),
+			) );
+	}
 
-        return $this->render('mocion/edit.html.twig', array(
-            'mocion' => $mocion,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+	/**
+	 * Displays a form to edit an existing mocion entity.
+	 *
+	 */
+	public function editAction( Request $request, Mocion $mocion ) {
+		$deleteForm = $this->createDeleteForm( $mocion );
+		$editForm   = $this->createForm( 'AppBundle\Form\MocionType', $mocion );
+		$editForm->handleRequest( $request );
+		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-    /**
-     * Deletes a mocion entity.
-     *
-     */
-    public function deleteAction(Request $request, Mocion $mocion)
-    {
-        $form = $this->createDeleteForm($mocion);
-        $form->handleRequest($request);
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+			$this->getDoctrine()->getManager()->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($mocion);
-            $em->flush();
-        }
+			return $this->redirectToRoute( 'mocion_edit', array( 'id' => $mocion->getId() ) );
+		}
 
-        return $this->redirectToRoute('mocion_index');
-    }
+		return $this->render( 'mocion/edit.html.twig',
+			array(
+				'sesion'      => $sesion,
+				'mocion'      => $mocion,
+				'edit_form'   => $editForm->createView(),
+				'delete_form' => $deleteForm->createView(),
+			) );
+	}
 
-    /**
-     * Creates a form to delete a mocion entity.
-     *
-     * @param Mocion $mocion The mocion entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Mocion $mocion)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('mocion_delete', array('id' => $mocion->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
+	/**
+	 * Deletes a mocion entity.
+	 *
+	 */
+	public function deleteAction( Request $request, Mocion $mocion ) {
+		$form = $this->createDeleteForm( $mocion );
+		$form->handleRequest( $request );
 
-    /**
-     * @param Mocion $mocion
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function lanzarVotacionAction(Mocion $mocion)
-    {
-        try {
-            $votacion = $this->get('votacion.manager')->lanzar($mocion);
-        } catch (\Exception $ex) {
-            $this->addFlash(
-                'error',
-                $ex->getMessage()
-            );
-        }
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$em->remove( $mocion );
+			$em->flush();
+		}
 
-        return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
-    }
+		return $this->redirectToRoute( 'mocion_index' );
+	}
 
-    /**
-     * @param Mocion $mocion
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function extenderVotacionAction(Mocion $mocion)
-    {
-        try {
-            $votacion = $this->get('votacion.manager')->extender($mocion);
-        } catch (\Exception $ex) {
-            $this->addFlash(
-                'error',
-                $ex->getMessage()
-            );
-        }
+	/**
+	 * Creates a form to delete a mocion entity.
+	 *
+	 * @param Mocion $mocion The mocion entity
+	 *
+	 * @return \Symfony\Component\Form\Form The form
+	 */
+	private function createDeleteForm( Mocion $mocion ) {
+		return $this->createFormBuilder()
+		            ->setAction( $this->generateUrl( 'mocion_delete', array( 'id' => $mocion->getId() ) ) )
+		            ->setMethod( 'DELETE' )
+		            ->getForm();
+	}
 
-        return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
-    }
+	/**
+	 * @param Mocion $mocion
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 * @throws \Doctrine\ORM\OptimisticLockException
+	 */
+	public function lanzarVotacionAction( Mocion $mocion ) {
+		try {
+			$votacion = $this->get( 'votacion.manager' )->lanzar( $mocion );
+		} catch ( \Exception $ex ) {
+			$this->addFlash(
+				'error',
+				$ex->getMessage()
+			);
+		}
 
-    /**
-     * @param Mocion $mocion
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function resultadosVotacionAction(Mocion $mocion)
-    {
-        try {
-            $votacion = $this->get('votacion.manager')->calcularResultados($mocion);
-        } catch (\Exception $ex) {
-            $this->addFlash(
-                'error',
-                $ex->getMessage()
-            );
-        }
+		return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
+	}
 
-        return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
-    }
+	/**
+	 * @param Mocion $mocion
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	public function extenderVotacionAction( Mocion $mocion ) {
+		try {
+			$votacion = $this->get( 'votacion.manager' )->extender( $mocion );
+		} catch ( \Exception $ex ) {
+			$this->addFlash(
+				'error',
+				$ex->getMessage()
+			);
+		}
 
-    /**
-     * @param Mocion $mocion
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function finalizarVotacionAction(Mocion $mocion)
-    {
-        try {
-            $this->get('votacion.manager')->finalizar($mocion);
+		return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
+	}
 
-            $this->addFlash(
-                'success',
-                'La votación finalizó correctamente'
-            );
-        } catch (\Exception $ex) {
-            $this->addFlash(
-                'error',
-                $ex->getMessage()
-            );
-        }
+	/**
+	 * @param Mocion $mocion
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	public function resultadosVotacionAction( Mocion $mocion ) {
+		try {
+			$votacion = $this->get( 'votacion.manager' )->calcularResultados( $mocion );
+		} catch ( \Exception $ex ) {
+			$this->addFlash(
+				'error',
+				$ex->getMessage()
+			);
+		}
 
-        return $this->redirectToRoute('mocion_show', array('id' => $mocion->getId()));
-    }
+		return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
+	}
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function votoConcejalAction(Request $request)
-    {
-        try {
-            // TODO verificar que el usuario sea concejal
+	/**
+	 * @param Mocion $mocion
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 * @throws \Doctrine\ORM\OptimisticLockException
+	 */
+	public function finalizarVotacionAction( Mocion $mocion ) {
+		try {
+			$this->get( 'votacion.manager' )->finalizar( $mocion );
 
-            $usuario = $this->getUser();
+			$this->addFlash(
+				'success',
+				'La votación finalizó correctamente'
+			);
+		} catch ( \Exception $ex ) {
+			$this->addFlash(
+				'error',
+				$ex->getMessage()
+			);
+		}
 
-            $mocion = $this->get('doctrine.orm.default_entity_manager')->getRepository(Mocion::class)->getEnVotacion();
-            if (!$mocion) {
-                throw new Exception('No hay una moción en votación en este momento');
-            }
+		return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
+	}
 
-            $data = json_decode($request->getContent(), JSON_OBJECT_AS_ARRAY);
-            $valorVoto = $data['voto'];
+	/**
+	 * @param Request $request
+	 *
+	 * @return JsonResponse
+	 */
+	public function votoConcejalAction( Request $request ) {
+		try {
+			// TODO verificar que el usuario sea concejal
 
-            if ($valorVoto == 'no') {
-                $valorVoto = Voto::VOTO_NEGATIVO;
-            } else if ($valorVoto == 'si') {
-                $valorVoto = Voto::VOTO_AFIRMATIVO;
-            } else {
-                throw new Exception('El valor del voto no es válido ('.$valorVoto.')');
-            }
+			$usuario = $this->getUser();
 
-            $voto = $this->get('votacion.manager')->votar($mocion, $usuario, $valorVoto);
+			$mocion = $this->get( 'doctrine.orm.default_entity_manager' )->getRepository( Mocion::class )->getEnVotacion();
+			if ( ! $mocion ) {
+				throw new Exception( 'No hay una moción en votación en este momento' );
+			}
 
-            return JsonResponse::create(array(
-                'status' => 'success',
-                'data' => array(
-                    'voto' => array(
-                        'id' => $voto->getId(),
-                    ),
-                ),
-            ));
-        } catch (Exception $ex) {
-            return JsonResponse::create(array(
-                'status' => 'error',
-                'message' => $ex->getMessage(),
-            ));
-        }
-    }
+			$data      = json_decode( $request->getContent(), JSON_OBJECT_AS_ARRAY );
+			$valorVoto = $data['voto'];
+
+			if ( $valorVoto == 'no' ) {
+				$valorVoto = Voto::VOTO_NEGATIVO;
+			} else if ( $valorVoto == 'si' ) {
+				$valorVoto = Voto::VOTO_AFIRMATIVO;
+			} else {
+				throw new Exception( 'El valor del voto no es válido (' . $valorVoto . ')' );
+			}
+
+			$voto = $this->get( 'votacion.manager' )->votar( $mocion, $usuario, $valorVoto );
+
+			return JsonResponse::create( array(
+				'status' => 'success',
+				'data'   => array(
+					'voto' => array(
+						'id' => $voto->getId(),
+					),
+				),
+			) );
+		} catch ( Exception $ex ) {
+			return JsonResponse::create( array(
+				'status'  => 'error',
+				'message' => $ex->getMessage(),
+			) );
+		}
+	}
 }

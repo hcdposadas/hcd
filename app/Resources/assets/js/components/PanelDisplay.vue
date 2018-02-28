@@ -11,9 +11,15 @@
         font-family: Arial
     }
 
+    .img-logo {
+        position: absolute;
+        width: 10%;
+    }
+
     .titulo {
         text-align: center;
         font-size: 2em;
+        height: 10rem;
         /*height: 2em;*/
         /*padding-top: 10px;*/
         padding: 10px;
@@ -60,6 +66,23 @@
         padding: 20px;
     }
 
+    .texto-tipo-mayoria {
+        font-size: 4em;
+        padding: 20px;
+        font-weight: bold;
+        color: #31708f;
+
+    }
+
+    .texto-mocion {
+        font-size: 5em;
+        padding: 20px;
+        font-weight: bold;
+    }
+    .texto-texto-mocion {
+        font-size: 2em;
+    }
+
     .texto-resultado {
         font-size: 3em;
         padding: 10px
@@ -78,6 +101,7 @@
 <template>
     <div class="cuerpo">
         <div class="titulo">
+            <img class="img-responsive img-logo" :src="logoSrc">
             <h1>
                 Honorable Concejo Deliberante de la Ciudad de Posadas
             </h1>
@@ -122,18 +146,22 @@
             <div style="" class="texto-resultado-sesion">
                 {{ sesion }}
             </div>
-            <div style="font-size: 5em; padding: 20px; font-weight: bold;">{{ mocion }}</div>
-            <div style="font-size: 2em;">{{ textoMocion }}</div>
+            <div class="texto-mocion">{{ mocion }}</div>
+            <div class="texto-texto-mocion">{{ textoMocion }}</div>
             <hr>
-            <div style="font-size: 3em;">{{ tipoMayoria }}</div>
+            <div class="texto-tipo-mayoria">{{ tipoMayoria }}</div>
             <hr>
             <div>
                 <div class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
+                <span class="texto-resultado" v-for="concejal in resultados.votaronPositivo">{{ concejal }}&nbsp;</span>
                 <div class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
+                <span class="texto-resultado" v-for="concejal in resultados.votaronNegativo">{{ concejal }}&nbsp;</span>
                 <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
+                <span class="texto-resultado" v-for="concejal in resultados.seAbstuvieron">{{ concejal }}&nbsp;</span>
             </div>
             <div class="panel-resultado-texto" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
                 {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
+
             </div>
 
         </div>
@@ -144,6 +172,9 @@
     const io = require('socket.io-client')
 
     export default {
+        props: [
+            'logoSrc'
+        ],
         data() {
             return {
                 quorum: {
@@ -163,7 +194,11 @@
                     negativos: null,
                     abstenciones: null,
                     total: null,
-                    aprobado: null
+                    aprobado: null,
+                    votaronNegativo: [],
+                    votaronPositivo: [],
+                    seAbstuvieron: []
+
                 },
                 panel: 'presentes'
             }
@@ -208,6 +243,9 @@
                         this.resultados.abstenciones = msg.data.abstenciones
                         this.resultados.total = msg.data.total
                         this.resultados.aprobado = msg.data.aprobado
+                        this.resultados.votaronNegativo = msg.data.votaronNegativo
+                        this.resultados.votaronPositivo = msg.data.votaronPositivo
+                        this.resultados.seAbstuvieron = msg.data.seAbstuvieron
 
                         this.panel = 'resultados';
                         break;

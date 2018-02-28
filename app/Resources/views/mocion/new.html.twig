@@ -1,8 +1,9 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
+{% extends 'sesion/secretario.html.twig' %}
 
-{% block title %}
-Mocion
-{% endblock title %}
+{#{% block title %}#}
+{#Mocion#}
+{#{% endblock title %}#}
 {% block body %}
     <div class="box">
     <div class="box-header">
@@ -27,6 +28,6 @@ Mocion
     </div>
 
 
-<a class="btn btn-default pull-right" href="{{ path('mocion_index') }}">Volver a la lista de mociones</a>
+<a class="btn btn-default pull-right" href="{{ path('mocion_index', {'sesion': sesion.id} ) }}">Volver a la lista de mociones</a>
 
 {% endblock %}

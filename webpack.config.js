@@ -35,6 +35,10 @@ Encore
         'window.jQuery': 'jquery',
     })
 
+    .configureDefinePlugin((options) => {
+        options.nodeHost = JSON.stringify(env.nodeHost);
+    })
+
     .enableSourceMaps(!Encore.isProduction())
 
     // empty the outputPath dir before each build

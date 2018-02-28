@@ -204,7 +204,7 @@
             }
         },
         mounted() {
-            let socket = io('http://' + document.location.host + ':3000', {
+            let socket = io('http://' + nodeHost + ':3000', {
                 transports: ['websocket'],
                 upgrade: true
             });

@@ -19,7 +19,7 @@ global.axios.defaults.headers.common = {
 };
 
 const io = require('socket.io-client')
-window.socket = io('http://' + document.location.host + ':3000', {
+window.socket = io('http://' + nodeHost + ':3000', {
     transports: ['websocket'],
     upgrade: true
 });

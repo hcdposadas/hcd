@@ -31,7 +31,7 @@
                                 OD
                             </button>
                             <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
-                                    @click="verOd">
+                                    @click="verCartaOrganica">
                                 <i class="fa fa-file-o" aria-hidden="true"></i><br>
                                 <span style="font-size: 12px">Carga Orgánica</span>
                             </button>
@@ -55,12 +55,17 @@
                     </div>
                     <div class="row m-t-1">
                         <div class="col-md-12">
-                            <div v-html="texto" v-show="!showConsultarExpte" data-spy="scroll"
+                            <div v-html="texto" v-show="showTexto" data-spy="scroll"
                                  data-target="#navbar-example2" data-offset="0">
 
                             </div>
 
-                            <consultar-expediente v-if="showConsultarExpte"></consultar-expediente>
+                            <div class="embed-responsive embed-responsive-16by9" v-show="showCartaOrganica">
+                                <embed class="embed-responsive-item"
+                                       :src="pathCartaOrganica">
+                            </div>
+
+                            <consultar-expediente v-show="showConsultarExpte"></consultar-expediente>
 
                             <panel-votacion></panel-votacion>
                         </div>
@@ -76,6 +81,7 @@
     export default {
         props: [
             'pathLogout',
+            'pathCartaOrganica',
             'concejal'
         ],
         data() {
@@ -83,7 +89,9 @@
                 loading: true,
                 ae: null,
                 od: null,
+                showTexto: false,
                 showConsultarExpte: false,
+                showCartaOrganica: false,
                 titulo: null,
                 fecha: null,
                 texto: null
@@ -92,15 +100,26 @@
         methods: {
             verAe() {
                 this.showConsultarExpte = false
+                this.showCartaOrganica = false
+                this.showTexto = true
                 this.texto = this.ae;
             },
             verOd() {
                 this.showConsultarExpte = false
+                this.showCartaOrganica = false
+                this.showTexto = true
                 this.texto = this.od;
             },
-            consultarExpte() {
+            verCartaOrganica() {
+                this.showCartaOrganica = true
+                this.showConsultarExpte = false
+                this.showTexto = false
 
+            },
+            consultarExpte() {
                 this.showConsultarExpte = true
+                this.showCartaOrganica = false
+                this.showTexto = false
 
             }
         },

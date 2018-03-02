@@ -40,7 +40,7 @@
     <div class="row">
         {% if is_granted('ROLE_CONCEJAL') %}
             <div id="app">
-            <panel-concejal path-logout="{{ path('sesion_logout') }}" concejal="{{ concejal }}"></panel-concejal>
+            <panel-concejal path-logout="{{ path('sesion_logout') }}" path-carta-organica="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}" concejal="{{ concejal }}"></panel-concejal>
             </div>
         {% endif %}
         {% if is_granted('ROLE_SECRETARIO') %}

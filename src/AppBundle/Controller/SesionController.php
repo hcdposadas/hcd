@@ -36,6 +36,7 @@ class SesionController extends Controller {
 		return $this->render( 'sesion/index.html.twig',
 			array(
 				'concejal' => $personaUsuario,
+				'cartaOrganica' => $cartaOrganica,
 			) );
 	}
 

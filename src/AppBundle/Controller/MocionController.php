@@ -20,16 +20,22 @@ class MocionController extends Controller {
 	 *
 	 */
 	public function indexAction( Request $request ) {
+		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ) {
+			throw $this->createAccessDeniedException( 'Solo el Secretario puede lanzar mociones' );
+		}
 		$em = $this->getDoctrine()->getManager();
 
 		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-		$mocions = $em->getRepository( 'AppBundle:Mocion' )->findBySesion( $sesion );
+		$mocions = $em->getRepository( 'AppBundle:Mocion' )->findByUltimaSesion( $sesion );
+
+		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
 		return $this->render( 'mocion/index.html.twig',
 			array(
-				'mocions' => $mocions,
-				'sesion'  => $sesion,
+				'mocions'       => $mocions,
+				'sesion'        => $sesion,
+				'cartaOrganica' => $cartaOrganica,
 			) );
 	}
 
@@ -70,11 +76,20 @@ class MocionController extends Controller {
 			return $this->redirectToRoute( 'mocion_show', array( 'id' => $mocion->getId() ) );
 		}
 
+		$enVotacion = $this->getDoctrine()->getRepository( Mocion::class )->getEnVotacion();
+
+		if ( $enVotacion ) {
+			$this->addFlash( 'warning', 'La moción Nº ' . $enVotacion . ' no está finalizada' );
+		}
+
+		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
+
 		return $this->render( 'mocion/new.html.twig',
 			array(
-				'mocion' => $mocion,
-				'sesion' => $sesion,
-				'form'   => $form->createView(),
+				'mocion'        => $mocion,
+				'sesion'        => $sesion,
+				'cartaOrganica' => $cartaOrganica,
+				'form'          => $form->createView(),
 			) );
 	}
 
@@ -83,17 +98,19 @@ class MocionController extends Controller {
 	 *
 	 */
 	public function showAction( Request $request, Mocion $mocion ) {
-		$deleteForm = $this->createDeleteForm( $mocion );
-		$sesion     = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		$deleteForm    = $this->createDeleteForm( $mocion );
+		$sesion        = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
 		return $this->render( 'mocion/show.html.twig',
 			array(
-				'sesion'      => $sesion,
-				'mocion'      => $mocion,
-				'segundos'    => 15,
-				'votar'       => false,
-				'lanzar'      => false,
-				'delete_form' => $deleteForm->createView(),
+				'sesion'        => $sesion,
+				'mocion'        => $mocion,
+				'cartaOrganica' => $cartaOrganica,
+				'segundos'      => 15,
+				'votar'         => false,
+				'lanzar'        => false,
+				'delete_form'   => $deleteForm->createView(),
 			) );
 	}
 
@@ -104,15 +121,23 @@ class MocionController extends Controller {
 	public function votarAction( Request $request, Mocion $mocion ) {
 		$deleteForm = $this->createDeleteForm( $mocion );
 
-		$enVotacion = $this->get( 'doctrine.orm.default_entity_manager' )
+		$enVotacion = $this->getDoctrine()
 		                   ->getRepository( Mocion::class )
-		                   ->getEnVotacion();
+		                   ->getAllEnVotacion();
 
 		if ( $enVotacion ) {
-			$this->addFlash(
-				'error',
-				'No se puede votar esta moción porque la Moción Nº' . $enVotacion . ' se encuentra en votación.'
-			);
+
+			foreach ( $enVotacion as $item ) {
+
+				$urlToShow = $this->generateUrl( 'mocion_show', [ 'id' => $item->getId() ] );
+
+				$mensaje = '<a href="' . $urlToShow . '">Nº ' . $item->getNumero() . '</a>';
+
+				$this->addFlash(
+					'error',
+					'No se puede votar esta moción porque la Moción ' . $mensaje . ' se encuentra en votación.'
+				);
+			}
 
 			return $this->redirectToRoute( 'mocion_show',
 				array(
@@ -122,14 +147,17 @@ class MocionController extends Controller {
 
 		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
+		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
+
 		return $this->render( 'mocion/show.html.twig',
 			array(
-				'mocion'      => $mocion,
-				'sesion'      => $sesion,
-				'segundos'    => 15,
-				'votar'       => true,
-				'lanzar'      => false,
-				'delete_form' => $deleteForm->createView(),
+				'mocion'        => $mocion,
+				'sesion'        => $sesion,
+				'cartaOrganica' => $cartaOrganica,
+				'segundos'      => 15,
+				'votar'         => true,
+				'lanzar'        => false,
+				'delete_form'   => $deleteForm->createView(),
 			) );
 	}
 
@@ -138,8 +166,9 @@ class MocionController extends Controller {
 	 *
 	 */
 	public function editAction( Request $request, Mocion $mocion ) {
-		$deleteForm = $this->createDeleteForm( $mocion );
-		$editForm   = $this->createForm( 'AppBundle\Form\MocionType', $mocion );
+		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
+		$deleteForm    = $this->createDeleteForm( $mocion );
+		$editForm      = $this->createForm( 'AppBundle\Form\MocionType', $mocion );
 		$editForm->handleRequest( $request );
 		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
@@ -151,10 +180,11 @@ class MocionController extends Controller {
 
 		return $this->render( 'mocion/edit.html.twig',
 			array(
-				'sesion'      => $sesion,
-				'mocion'      => $mocion,
-				'edit_form'   => $editForm->createView(),
-				'delete_form' => $deleteForm->createView(),
+				'sesion'        => $sesion,
+				'mocion'        => $mocion,
+				'cartaOrganica' => $cartaOrganica,
+				'edit_form'     => $editForm->createView(),
+				'delete_form'   => $deleteForm->createView(),
 			) );
 	}
 
@@ -274,9 +304,15 @@ class MocionController extends Controller {
 	 * @return JsonResponse
 	 */
 	public function votoConcejalAction( Request $request ) {
-		try {
-			// TODO verificar que el usuario sea concejal
 
+		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+			return JsonResponse::create( array(
+				'status'  => 'error',
+				'message' => 'Solo los concejales pueden votar',
+			) );
+		}
+
+		try {
 			$usuario = $this->getUser();
 
 			$mocion = $this->get( 'doctrine.orm.default_entity_manager' )->getRepository( Mocion::class )->getEnVotacion();

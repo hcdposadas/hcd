@@ -39,7 +39,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4>{{ sesion }}</h4>
-                    <h1>{{ mocion }}</h1>
+                    <h1>{{ mocion }} - Sírvase Expresar su voto</h1>
                     <p>{{ textoMocion }}</p>
                 </div>
                 <div class="modal-body">

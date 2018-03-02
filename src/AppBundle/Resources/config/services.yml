@@ -16,4 +16,5 @@ services:
 
     votacion.manager:
             class: AppBundle\Services\VotacionManager
-            arguments: ["@doctrine.orm.default_entity_manager", "@notifications.manager"]
+#            arguments: ["@doctrine.orm.default_entity_manager", "@notifications.manager"]
+            autowire: true

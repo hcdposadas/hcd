@@ -22,9 +22,10 @@ easy_admin:
 
     design:
         brand_color: '#17a867'
-        form_theme: ['horizontal', 'VichUploaderBundle:Form:fields.html.twig']
+        form_theme: ['horizontal']
         menu:
             - { label: 'Sesión', entity: Sesion }
+            - Documento
             - Parametro
             - Expediente
             - { label: 'Tipo Expediente', entity: TipoExpediente }

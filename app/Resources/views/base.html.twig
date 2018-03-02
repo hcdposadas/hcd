@@ -74,8 +74,6 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    {# TODO: condicionar esto a que sea el secretario #}
-                    <li><a href="#">Presentes: <quorum></quorum></a></li>
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -153,14 +151,14 @@
 
         <!-- Main content -->
         <section class="content" style="position: relative;">
-            {% for flashMessage in app.session.flashbag.get('success') %}
+            {% for flashMessage in app.flashes('success') %}
                 <div class="alert alert-dismissable alert-success">
                     <i class="fa fa-check"></i>
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            {% for flashMessage in app.session.flashbag.get('error') %}
+            {% for flashMessage in app.flashes('error') %}
                 <div class="alert alert-dismissable alert-danger">
                     <i class="fa fa-ban"></i>
                     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -169,7 +167,7 @@
 
             {% endfor %}
 
-            {% for flashMessage in app.session.flashbag.get('warning') %}
+            {% for flashMessage in app.flashes('warning') %}
                 <div class="alert alert-dismissable alert-warning">
                     <i class="fa fa-warning"></i>
                     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -177,7 +175,7 @@
                 </div>
 
             {% endfor %}
-            {% for flashMessage in app.session.flashbag.get('info') %}
+            {% for flashMessage in app.flashes('info') %}
                 <div class="alert alert-info alert-dismissable">
                     <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
                     <h4>

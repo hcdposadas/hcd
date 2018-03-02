@@ -14,6 +14,7 @@
     .img-logo {
         position: absolute;
         width: 10%;
+        z-index: 1;
     }
 
     .titulo {
@@ -31,14 +32,20 @@
         font-size: 6em;
     }
 
+    .panel-presentes-asistencia-numero {
+        font-size: 17rem;
+        font-weight: bold;
+    }
+
     .panel-quorum {
         font-size: 4em;
-        text-align: center;
-        clear: both;
+        /*text-align: center;*/
+        /*clear: both;*/
         /*background-color: #333;*/
         /*background-color: #17a867;*/
         color: #fff;
-        padding: 20px;
+        /*padding: 20px;*/
+        padding: 1rem;
     }
 
     .no-quorum {
@@ -67,7 +74,7 @@
     }
 
     .texto-tipo-mayoria {
-        font-size: 4em;
+        font-size: 3em;
         padding: 20px;
         font-weight: bold;
         color: #31708f;
@@ -79,13 +86,18 @@
         padding: 20px;
         font-weight: bold;
     }
+
     .texto-texto-mocion {
         font-size: 2em;
     }
 
     .texto-resultado {
-        font-size: 3em;
+        font-size: 4em;
         padding: 10px
+    }
+
+    .bold{
+        font-weight: bold;
     }
 
     .texto-resultado-sesion {
@@ -99,25 +111,36 @@
     }
 </style>
 <template>
-    <div class="cuerpo">
-        <div class="titulo">
-            <img class="img-responsive img-logo" :src="logoSrc">
-            <h1>
-                Honorable Concejo Deliberante de la Ciudad de Posadas
-            </h1>
+    <div class="container-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="titulo">
+                    <img class="img-responsive img-logo" :src="logoSrc">
+                    <h1>
+                        Honorable Concejo Deliberante de la Ciudad de Posadas
+                    </h1>
+                </div>
+            </div>
         </div>
-        <div v-if="panel==='presentes'" style="width: 100%;">
-            <div style="text-align: center; font-size: 6em; width: 50%; float: left">
-                <div>Presentes</div>
-                <div class="panel-presentes-asistencia">{{ quorum.presentes }}</div>
-            </div>
-            <div style="text-align: center; font-size: 6em; width: 50%; float: right">
-                <div>Ausentes</div>
-                <div class="panel-presentes-asistencia">{{ quorum.ausentes }}</div>
-            </div>
-            <div class="panel-quorum" :class="[quorum.hayQuorum ? 'si-quorum' : 'no-quorum']">
-                <span v-if="quorum.hayQuorum">Hay Quorum</span>
-                <span v-else>No Hay Quorum</span>
+
+        <div v-if="panel==='presentes'" class="row">
+            <div class="col-lg-12">
+                <div class="row panel-presentes-asistencia">
+                    <div class="col-lg-6 text-center">
+                        <div>Presentes</div>
+                        <div class="panel-presentes-asistencia-numero">{{ quorum.presentes }}</div>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <div>Ausentes</div>
+                        <div class="panel-presentes-asistencia-numero">{{ quorum.ausentes }}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 panel-quorum text-center" :class="[quorum.hayQuorum ? 'si-quorum' : 'no-quorum']">
+                        <span v-if="quorum.hayQuorum">Hay Quorum</span>
+                        <span v-else>No Hay Quorum</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -142,25 +165,28 @@
                 Restan {{ tiempo ? duracion - tiempo : '' }} segundos
             </div>
         </div>
-        <div v-if="panel==='resultados'" style="text-align: center;">
-            <div style="" class="texto-resultado-sesion">
-                {{ sesion }}
-            </div>
-            <div class="texto-mocion">{{ mocion }}</div>
-            <div class="texto-texto-mocion">{{ textoMocion }}</div>
-            <hr>
-            <div class="texto-tipo-mayoria">{{ tipoMayoria }}</div>
-            <hr>
-            <div>
-                <div class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
-                <span class="texto-resultado" v-for="concejal in resultados.votaronPositivo">{{ concejal }}&nbsp;</span>
-                <div class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
-                <span class="texto-resultado" v-for="concejal in resultados.votaronNegativo">{{ concejal }}&nbsp;</span>
-                <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
-                <span class="texto-resultado" v-for="concejal in resultados.seAbstuvieron">{{ concejal }}&nbsp;</span>
-            </div>
-            <div class="panel-resultado-texto" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
-                {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
+        <div v-if="panel==='resultados'" class="row text-center">
+            <div class="col-lg-12">
+
+                <div class="row texto-resultado-sesion">
+                    {{ sesion }}
+                </div>
+                <div class="row texto-mocion">{{ mocion }}</div>
+                <div class="row texto-texto-mocion">{{ textoMocion }}</div>
+                <!--<hr>-->
+                <div class="row texto-tipo-mayoria">{{ tipoMayoria }}</div>
+                <!--<hr>-->
+                <div class="row">
+                    <div class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
+                    <span class="texto-resultado bold" v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
+                    <div class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
+                    <span class="texto-resultado bold" v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
+                    <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
+                    <span class="texto-resultado bold" v-for="concejal in resultados.seAbstuvieron">{{ concejal }}.-</span>
+                </div>
+                <div class="col-lg-12 panel-quorum text-center" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
+                    {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
+                </div>
 
             </div>
 

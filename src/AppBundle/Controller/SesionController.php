@@ -16,21 +16,26 @@ class SesionController extends Controller {
 	 */
 	public function indexAction() {
 
-		$concejal = $this->getUser()->getPersona();
+		$personaUsuario = $this->getUser()->getPersona();
+		$cartaOrganica  = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
-		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ) {
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' )
+		) {
 			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-			return $this->render( 'sesion/secretario.html.twig',
+			return $this->render( 'sesion/autoridades.html.twig',
 				array(
-					'sesion'   => $sesion,
-					'concejal' => $concejal,
+					'sesion'        => $sesion,
+					'concejal'      => $personaUsuario,
+					'cartaOrganica' => $cartaOrganica,
 				) );
 		}
 
 		return $this->render( 'sesion/index.html.twig',
 			array(
-				'concejal' => $concejal,
+				'concejal' => $personaUsuario,
 			) );
 	}
 

@@ -1,5 +1,5 @@
 {#{% extends 'base.html.twig' %}#}
-{% extends 'sesion/secretario.html.twig' %}
+{% extends ':sesion:autoridades.html.twig' %}
 
 {#{% block title %}#}
     {#Mociones#}
@@ -10,10 +10,11 @@
             <h3 class="box-title">Mociones</h3>
         </div>
         <div class="box-body">
-            <div>
-                <a class="btn btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción espontánea</a>
-                <a class="btn btn-default" href="{{ path('mocion_new') }}">Nueva moción</a>
-                <br><br>
+            <div class="row m-b-1">
+                <div class="col-md-12">
+                    <a class="btn btn-lg pull-right btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción espontánea</a>
+                    <a class="btn btn-lg btn-default" href="{{ path('mocion_new') }}">Nueva moción</a>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -33,7 +34,7 @@
                                 <td><a href="{{ path('mocion_show', { 'id': mocion.id }) }}">{{ mocion.numero }}</a>
                                 </td>
                                 <td>{{ mocion.sesion }}</td>
-                                <td><span class="label label-primary">{{ mocion.estado }}</span></td>
+                                <td><span class="label label-{% if mocion.estado.slug == 'mocion-estados-para-votar' %}warning{% elseif mocion.estado.slug == 'mocion-estados-en-votacion' %}info{% else %}primary{% endif %}">{{ mocion.estado }}</span></td>
                                 <td>
                                     {% if mocion.aprobado %}
                                         <span class="label label-success">Aprobado</span>

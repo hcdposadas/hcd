@@ -63,6 +63,14 @@ class Sesion extends BaseClass
 	 */
 	private $mociones;
 
+	/**
+	 * @var $tipoSesion
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
+	 * @ORM\JoinColumn(name="tipo_sesion_id", referencedColumnName="id", nullable=true)
+	 */
+	private $tipoSesion;
+
     /**
      * @return string
      */
@@ -255,5 +263,70 @@ class Sesion extends BaseClass
         $this->actualizadoPor = $actualizadoPor;
 
         return $this;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->mociones = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add mocione
+     *
+     * @param \AppBundle\Entity\Mocion $mocione
+     *
+     * @return Sesion
+     */
+    public function addMocione(\AppBundle\Entity\Mocion $mocione)
+    {
+        $this->mociones[] = $mocione;
+
+        return $this;
+    }
+
+    /**
+     * Remove mocione
+     *
+     * @param \AppBundle\Entity\Mocion $mocione
+     */
+    public function removeMocione(\AppBundle\Entity\Mocion $mocione)
+    {
+        $this->mociones->removeElement($mocione);
+    }
+
+    /**
+     * Get mociones
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMociones()
+    {
+        return $this->mociones;
+    }
+
+    /**
+     * Set tipoSesion
+     *
+     * @param \AppBundle\Entity\Parametro $tipoSesion
+     *
+     * @return Sesion
+     */
+    public function setTipoSesion(\AppBundle\Entity\Parametro $tipoSesion = null)
+    {
+        $this->tipoSesion = $tipoSesion;
+
+        return $this;
+    }
+
+    /**
+     * Get tipoSesion
+     *
+     * @return \AppBundle\Entity\Parametro
+     */
+    public function getTipoSesion()
+    {
+        return $this->tipoSesion;
     }
 }

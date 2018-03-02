@@ -30,6 +30,7 @@ security:
                 path:   /sesion/logout
                 target: /sesion
             anonymous:    true
+            logout_on_user_change: true
 
         main:
             pattern: ^/
@@ -41,6 +42,7 @@ security:
 
             logout:       true
             anonymous:    true
+            logout_on_user_change: true
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }

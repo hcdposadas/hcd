@@ -30,6 +30,11 @@
                                 <i class="fa fa-file-o" aria-hidden="true"></i><br>
                                 OD
                             </button>
+                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                    @click="verOd">
+                                <i class="fa fa-file-o" aria-hidden="true"></i><br>
+                                <span style="font-size: 12px">Carga Orgánica</span>
+                            </button>
                             <a class="btn btn-danger btn-lg pull-right" :href="pathLogout"> Salir
                                 <span class="glyphicon glyphicon-log-out"></span>
                             </a>

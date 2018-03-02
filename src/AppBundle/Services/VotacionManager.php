@@ -9,6 +9,7 @@ use AppBundle\Entity\Voto;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManager;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Services\NotificationsManager;
 
@@ -23,9 +24,13 @@ class VotacionManager {
 	 */
 	protected $notificationsManager;
 
-	public function __construct( EntityManager $entityManager, NotificationsManager $notificationsManager ) {
+	protected $router;
+
+	public function __construct( EntityManager $entityManager, NotificationsManager $notificationsManager,
+		Router $router) {
 		$this->entityManager        = $entityManager;
 		$this->notificationsManager = $notificationsManager;
+		$this->router = $router;
 	}
 
 	/**
@@ -62,7 +67,9 @@ class VotacionManager {
 
 		$enVotacion = $this->entityManager->getRepository( Mocion::class )->getEnVotacion();
 		if ( $enVotacion ) {
-			throw new \RuntimeException( 'No se puede lanzar la votación porque la Moción Nº' . $enVotacion . ' se encuentra en votación.' );
+			$urlToShow = $this->router->generate( 'mocion_show', [ 'id' => $enVotacion->getId() ] );
+			$mensaje = '<a href="' . $urlToShow . '">Nº ' . $enVotacion->getNumero() . '</a>';
+			throw new \RuntimeException( 'No se puede lanzar la votación porque la Moción ' . $mensaje . ' se encuentra en votación.' );
 		}
 
 		$duracion = 15;

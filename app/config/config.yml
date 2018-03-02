@@ -15,7 +15,9 @@ parameters:
     locale: es
     app.path.expedientes_internos: /uploads/expedientes/internos
     app.path.expedientes_externos: /uploads/expedientes/externos
-    app.path.dictamenes: /uploads/dictamenes/
+    app.path.dictamenes: /uploads/dictamenes
+    app.path.sanciones: /uploads/sanciones
+    app.path.documentos: /uploads/documentos
 
 framework:
     ide: "%ide%"
@@ -37,6 +39,8 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id: ~
+        cookie_lifetime: 21600
+        gc_maxlifetime: 21600
     fragments: ~
     http_method_override: true
 
@@ -93,6 +97,12 @@ vich_uploader:
         dictamen:
             uri_prefix: "%app.path.dictamenes%"
             upload_destination: "%kernel.root_dir%/../web/uploads/dictamenes"
+        sanciones:
+            uri_prefix: "%app.path.sanciones%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/sanciones"
+        documentos:
+            uri_prefix: "%app.path.documentos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/documentos"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

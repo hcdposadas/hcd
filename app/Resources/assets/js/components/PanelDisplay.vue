@@ -29,11 +29,13 @@
     }
 
     .panel-presentes-asistencia {
-        font-size: 6em;
+        /*font-size: 6em;*/
+        font-size: 12em;
     }
 
     .panel-presentes-asistencia-numero {
-        font-size: 17rem;
+        /*font-size: 17rem;*/
+        font-size: 5em;
         font-weight: bold;
     }
 

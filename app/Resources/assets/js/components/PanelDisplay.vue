@@ -68,7 +68,7 @@
     }
 
     .panel-resultado-aprobado-no-aprobado {
-        font-size: 5em;
+        font-size: 10em;
         /*text-align: center;*/
         /*clear: both;*/
         /*background-color: #333;*/

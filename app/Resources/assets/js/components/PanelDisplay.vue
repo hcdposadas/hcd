@@ -187,10 +187,10 @@
                 </div>
                 <!--<hr>-->
                 <div class="row">
-                    <div v-if="resultados.aprobado == 'No Aprobado'" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
-                    <span v-if="resultados.aprobado == 'No Aprobado'" class="texto-resultado bold" v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
-                    <div v-if="resultados.aprobado == 'Aprobado'" class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
-                    <span v-if="resultados.aprobado == 'Aprobado'" class="texto-resultado bold" v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
+                    <div v-if="!resultados.aprobado" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
+                    <span v-if="!resultados.aprobado" class="texto-resultado bold" v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
+                    <div v-if="resultados.aprobado" class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
+                    <span v-if="resultados.aprobado" class="texto-resultado bold" v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
                     <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
                     <span class="texto-resultado bold" v-for="concejal in resultados.seAbstuvieron">{{ concejal }}.-</span>
                 </div>

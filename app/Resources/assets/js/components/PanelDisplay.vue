@@ -67,6 +67,17 @@
         padding: 20px;
     }
 
+    .panel-resultado-aprobado-no-aprobado {
+        font-size: 5em;
+        /*text-align: center;*/
+        /*clear: both;*/
+        /*background-color: #333;*/
+        /*background-color: #17a867;*/
+        color: #fff;
+        /*padding: 20px;*/
+        padding: 3rem;
+    }
+
     .panel-resultado-texto {
         font-size: 6em;
         clear: both;
@@ -171,15 +182,15 @@
             <div class="col-lg-12">
                 <div class="row texto-mocion">{{ mocion }}</div>
 
-                <div class="col-lg-12 panel-quorum text-center" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
+                <div class="col-lg-12 panel-resultado-aprobado-no-aprobado text-center" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
                     {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
                 </div>
                 <!--<hr>-->
                 <div class="row">
-                    <div v-if="resultados.aprobado == 'Aprobado'" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
-                    <span v-if="resultados.aprobado == 'Aprobado'" class="texto-resultado bold" v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
-                    <div v-if="resultados.aprobado == 'No Aprobado'" class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
-                    <span v-if="resultados.aprobado == 'No Aprobado'" class="texto-resultado bold" v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
+                    <div v-if="resultados.aprobado == 'No Aprobado'" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
+                    <span v-if="resultados.aprobado == 'No Aprobado'" class="texto-resultado bold" v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
+                    <div v-if="resultados.aprobado == 'Aprobado'" class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
+                    <span v-if="resultados.aprobado == 'Aprobado'" class="texto-resultado bold" v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
                     <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
                     <span class="texto-resultado bold" v-for="concejal in resultados.seAbstuvieron">{{ concejal }}.-</span>
                 </div>

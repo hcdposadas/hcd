@@ -42,22 +42,54 @@ class Builder implements ContainerAwareInterface {
 			     ->setExtra( 'icon', 'fa fa-exchange' )
 			     ->setAttribute( 'class', 'treeview' );
 
+//			$menu[ $keyEmpresa ]
+//				->addChild(
+//					'Expedientes',
+//					array(
+//						'route' => 'expediente_index',
+//					)
+//				);
+
 			$menu[ $keyEmpresa ]
 				->addChild(
-					'Expedientes',
+					'Expedientes Legislativos',
 					array(
-						'route' => 'expediente_index',
+						'route' => 'expedientes_legislativos_index',
+					)
+				);
+
+			$menu[ $keyEmpresa ]
+				->addChild(
+					'Expedientes Administrativos',
+					array(
+						'route' => 'expedientes_administrativos_index',
+					)
+				);
+
+			$menu[ $keyEmpresa ]
+				->addChild(
+					'Expedientes Legislativos Externos',
+					array(
+						'route' => 'expedientes_administrativos_index',
+					)
+				);
+
+			$menu[ $keyEmpresa ]
+				->addChild(
+					'Expedientes Administrativos Externos',
+					array(
+						'route' => 'expedientes_administrativos_index',
 					)
 				);
 
 			//Dependencia
-            $menu[ $keyEmpresa ]
-                ->addChild(
-                    'Dependencias',
-                    array(
-                        'route' => 'dependencia_index',
-                    )
-                );
+			$menu[ $keyEmpresa ]
+				->addChild(
+					'Dependencias',
+					array(
+						'route' => 'dependencia_index',
+					)
+				);
 
 		}
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_PERSONAL' ) ) {
@@ -83,7 +115,8 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
-		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
 
 			$keyPersonal = 'PROYECTOS';
 			$menu->addChild(
@@ -113,6 +146,30 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+
+			$keyPersonal = 'PROYECTOS';
+			$menu->addChild(
+				$keyPersonal,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-folder-open' )
+			     ->setAttribute( 'class', 'treeview' );
+
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Listado',
+					array(
+						'route' => 'expedientes_legislativos_index',
+					)
+				);
+		}
+
 
 		$keyPersonal = 'DOCUMENTOS';
 		$menu->addChild(
@@ -130,17 +187,17 @@ class Builder implements ContainerAwareInterface {
 			->addChild(
 				'Carta Orgánica',
 				array(
-					'route' => 'persona_index',
+					'route' => 'documento_carta_organica',
 				)
 			);
 
-		$menu[ $keyPersonal ]
-			->addChild(
-				'Reglamento Interno',
-				array(
-					'route' => 'persona_index',
-				)
-			);
+//		$menu[ $keyPersonal ]
+//			->addChild(
+//				'Reglamento Interno',
+//				array(
+//					'route' => 'documento_reglamento_interno',
+//				)
+//			);
 
 //		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_EMPRESA' ) ) {
 //

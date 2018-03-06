@@ -55,7 +55,7 @@
     </script>
 </head>
 <body class="hold-transition skin-green sidebar-mini">
-<div class="wrapper" id="app">
+<div class="wrapper">
 
     <header class="main-header">
         <!-- Logo -->
@@ -76,9 +76,13 @@
                 <ul class="nav navbar-nav">
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
+                        {% set nombreusuario = app.user %}
+                        {% if app.user.persona %}
+                            {% set nombreusuario = app.user.persona %}
+                        {% endif %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="{{ asset('bundles/theme/img/avatar.png') }}" class="user-image" alt="User Image">
-                            <span class="hidden-xs">{{ app.user }}</span>
+                            <span class="hidden-xs">{{ nombreusuario }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
@@ -87,8 +91,17 @@
                                      alt="User Image">
 
                                 <p>
-                                    {{ app.user }} - Web Developer
-                                    <small>Activo desde -</small>
+                                    {{ nombreusuario }}
+                                    {% if is_granted('ROLE_CONCEJAL') %}
+                                        - Concejal
+                                    {% elseif is_granted('ROLE_SECRETARIO') %}
+                                        - Secretario
+                                    {% elseif is_granted('ROLE_LEGISLATIVO') %}
+                                        - Legislativo
+                                    {% else %}
+                                        - Agente
+                                    {% endif %}
+                                    {#<small>Activo desde -</small>#}
                                 </p>
                             </li>
 

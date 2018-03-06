@@ -39,9 +39,22 @@ expediente_imprimir_giro:
     path:     /{id}/{giroId}/expediente_imprimir_giro
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirGiro" }
 
+expedientes_administrativos_index:
+    path: /expedientes_administrativos_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesAdministrativosIndex" }
+
+expedientes_legislativos_index:
+    path: /expedientes_legislativos_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesLegislativosIndex" }
+
 proyectos_index:
     path:     /proyectos
     defaults: { _controller: "MesaEntradaBundle:Expediente:proyectosIndex" }
+    methods:  GET
+
+proyecto_show:
+    path:     /{id}/proyecto-ver
+    defaults: { _controller: "MesaEntradaBundle:Expediente:showProyecto" }
     methods:  GET
 
 proyecto_new:
@@ -53,3 +66,7 @@ proyecto_edit:
     path:     /{id}/proyecto-edit
     defaults: { _controller: "MesaEntradaBundle:Expediente:editProyecto" }
     methods:  [GET, POST]
+
+expediente_imprimir_proyecto:
+    path: /expediente_imprimir_proyecto/{id}
+    defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirProyecto" }

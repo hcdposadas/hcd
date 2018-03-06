@@ -60,6 +60,105 @@ class ExpedienteController extends Controller {
 			) );
 	}
 
+	public function expedientesAdministrativosIndexAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'interno'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
+				$tipoExpediente );
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/expedientes_administrativos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
+	}
+
+	public function expedientesLegislativosIndexAction( Request $request ) {
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'externo'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
+				$tipoExpediente );
+
+
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
+		}
+
+//		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+//			$expedientes = $expedientes->andWhere( 'e.expediente is null' );
+//		}
+
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			$expedientes = $expedientes->innerJoin( 'e.giros', 'giros' );
+
+//				$expedientes->join( 'e.giros', 'giros' )->where('count(giros) > 0');
+//			$sq = $this->getDoctrine()->getRepository('MesaEntradaBundle:Giro')->createQueryBuilder('giros')
+//			                                                                   ->where('giros.expediente = e');
+//
+//			$expedientes->andWhere($expedientes->expr()->not($expedientes->expr()->exists($sq->getDQL())));
+
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/expedientes_legislativos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
+	}
+
 	/**
 	 * Creates a new expediente entity.
 	 *
@@ -109,7 +208,7 @@ class ExpedienteController extends Controller {
 	 *
 	 */
 	public function editAction( Request $request, Expediente $expediente ) {
-		$deleteForm = $this->createDeleteForm( $expediente );
+
 
 		$iniciadoresOriginales = new ArrayCollection();
 
@@ -153,9 +252,8 @@ class ExpedienteController extends Controller {
 
 		return $this->render( 'expediente/edit.html.twig',
 			array(
-				'expediente'  => $expediente,
-				'edit_form'   => $editForm->createView(),
-				'delete_form' => $deleteForm->createView(),
+				'expediente' => $expediente,
+				'edit_form'  => $editForm->createView(),
 			) );
 	}
 
@@ -295,11 +393,12 @@ class ExpedienteController extends Controller {
 	public function proyectosIndexAction( Request $request ) {
 
 
-		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
 
-			$concejal = $this->getUser()->getPersona()->getCargoPersona()->first()->getIniciador();
+			$autor = $this->getUser()->getPersona()->getCargoPersona()->first()->getIniciador();
 
-			$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $concejal );
+			$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor );
 
 
 			$paginator = $this->get( 'knp_paginator' );
@@ -321,22 +420,30 @@ class ExpedienteController extends Controller {
 
 	}
 
+	public function showProyectoAction( Expediente $expediente ) {
+
+		return $this->render( 'expediente/proyecto_show.html.twig',
+			array(
+				'expediente' => $expediente,
+			) );
+
+	}
+
 	public function newProyectoAction( Request $request ) {
 
 		$em = $this->getDoctrine()->getManager();
 
-		$iniciarComo = [];
-
-		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
-			if ( $cargoPersona->getIniciador() ) {
-				$iniciarComo[] = $cargoPersona->getIniciador()->first();
-			}
-		}
+//		$iniciarComo = [];
+//
+//		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
+//			if ( $cargoPersona->getIniciador() ) {
+//				$iniciarComo[] = $cargoPersona->getIniciador()->first();
+//			}
+//		}
 
 		$expediente = new Expediente();
 		$form       = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType',
-			$expediente,
-			[ 'iniciarComo' => $iniciarComo ] );
+			$expediente );
 
 		$form->handleRequest( $request );
 
@@ -359,6 +466,7 @@ class ExpedienteController extends Controller {
 				] );
 				$giroAdministrativo->setAreaDestino( $areaDestino );
 				$giroAdministrativo->setExpediente( $expediente );
+				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
 
 
 				$expediente->addGiroAdministrativo( $giroAdministrativo );
@@ -366,13 +474,38 @@ class ExpedienteController extends Controller {
 
 			}
 
+			$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+				'slug' => 'externo'
+			] );
+
+			$expediente->setTipoExpediente( $tipoExpediente );
+
+			$periodoLegislativo = $em->getRepository( 'AppBundle:PeriodoLegislativo' )->findOneBy( [
+				'anio' => $expediente->getFecha()->format( 'Y' )
+			] );
+
+			if ( ! $periodoLegislativo ) {
+				$this->get( 'session' )->getFlashBag()->add(
+					'warning',
+					'No existe periodo legislativo creado. Contacte con el Administrador'
+				);
+
+				return $this->render( 'expediente/proyecto_new.html.twig',
+					array(
+						'expediente' => $expediente,
+						'form'       => $form->createView(),
+					) );
+			}
+
+			$expediente->setPeriodoLegislativo( $periodoLegislativo );
 
 			$iniciadorExpediente = new IniciadorExpediente();
 
 			$iniciadorExpediente->setExpediente( $expediente );
 
-			$iniciarComoData = $form->get( "iniciarComo" )->getData();
-			$iniciadorExpediente->setIniciador( $iniciarComoData );
+			$autor = $this->getUser()->getPersona()->getCargoPersona()->first()->getIniciador()->first();
+			$iniciadorExpediente->setIniciador( $autor );
+			$iniciadorExpediente->setAutor( true );
 
 			$expediente->addIniciadore( $iniciadorExpediente );
 
@@ -391,9 +524,9 @@ class ExpedienteController extends Controller {
 
 		return $this->render( 'expediente/proyecto_new.html.twig',
 			array(
-				'expediente'  => $expediente,
-				'iniciarComo' => $iniciarComo,
-				'form'        => $form->createView(),
+				'expediente' => $expediente,
+//				'iniciarComo' => $iniciarComo,
+				'form'       => $form->createView(),
 			) );
 	}
 
@@ -401,19 +534,46 @@ class ExpedienteController extends Controller {
 
 		$em = $this->getDoctrine()->getManager();
 
-		$iniciarComo = [];
-
-		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
-			if ( $cargoPersona->getIniciador() ) {
-				$iniciarComo[] = $cargoPersona->getIniciador()->first();
-			}
-		}
+//		$iniciarComo = [];
+//
+//		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
+//			if ( $cargoPersona->getIniciador() ) {
+//				$iniciarComo[] = $cargoPersona->getIniciador()->first();
+//			}
+//		}
 
 		$editForm = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType', $expediente );
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 
+			$toRoute = 'proyecto_edit';
+
+			if ( $editForm->get( 'guardar' )->isClicked() ) {
+				if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+					$expediente->setBorrador( true );
+				}
+			}
+
+			if ( $editForm->get( 'guardarYEnviar' )->isClicked() ) {
+				$expediente->setBorrador( false );
+
+//				Departamento de Mesa de Entradas y Salidas
+
+				$giroAdministrativo = new GiroAdministrativo();
+				$areaDestino        = $em->getRepository( 'AppBundle:AreaAdministrativa' )->findOneBy( [
+					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
+				] );
+				$giroAdministrativo->setAreaDestino( $areaDestino );
+				$giroAdministrativo->setExpediente( $expediente );
+				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+
+
+				$expediente->addGiroAdministrativo( $giroAdministrativo );
+				$em->persist( $giroAdministrativo );
+				$toRoute = 'proyecto_show';
+
+			}
 
 			$em->flush();
 			$this->get( 'session' )->getFlashBag()->add(
@@ -421,15 +581,58 @@ class ExpedienteController extends Controller {
 				'Proyecto modificado correctamente'
 			);
 
-			return $this->redirectToRoute( 'proyecto_edit', array( 'id' => $expediente->getId() ) );
+			return $this->redirectToRoute( $toRoute, array( 'id' => $expediente->getId() ) );
 		}
 
 		return $this->render( 'expediente/proyecto_edit.html.twig',
 			array(
-				'expediente'  => $expediente,
-				'iniciarComo' => $iniciarComo,
-				'edit_form'   => $editForm->createView(),
+				'expediente' => $expediente,
+				'edit_form'  => $editForm->createView(),
 			) );
+	}
+
+	public function imprimirProyectoAction( $id ) {
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+		$title      = 'Proyecto';
+
+		$header = $this->renderView( ':default:membrete.pdf.twig',
+			[
+				"periodo"      => $expediente->getPeriodoLegislativo(),
+				'dataToEncode' => $expediente->getId()
+			] );
+
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( 'expediente/proyecto.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+//					'margin-left'    => "3cm",
+//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+//					'header-spacing' => 10,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+//                    'margin-bottom' => "1cm"
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			)
+		);
+
 	}
 
 

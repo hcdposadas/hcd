@@ -42,17 +42,32 @@ class ExpedienteRepository extends EntityRepository {
 
 	public function getQbExpedientesMesaEntrada() {
 		$qb = $this->getQbAll();
-		$qb->where( 'e.borrador is null' );
+		$qb->where( 'e.borrador is null' )
+		   ->orWhere( 'e.borrador = false' );
 
 		return $qb;
 	}
 
-	public function getQbBuscar( $data ) {
+	public function getQbExpedientesMesaEntradaTipo( $tipoExpediente ) {
+		$qb = $this->getQbAll();
+		$qb->where( 'e.borrador is null' )
+		   ->orWhere( 'e.borrador = false' )
+		   ->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+		   ->setParameter( 'tipoExpediente', $tipoExpediente );
+
+		return $qb;
+	}
+
+	public function getQbBuscar( $data, $tipoExpediente = null ) {
 		$qb = $this->getQbExpedientesMesaEntrada();
 
 		if ( isset( $data['tipoExpediente'] ) ) {
 			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
 			   ->setParameter( 'tipoExpediente', $data['tipoExpediente'] );
+		}
+		if ( $tipoExpediente ) {
+			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			   ->setParameter( 'tipoExpediente', $tipoExpediente );
 		}
 		if ( $data['textoDefinitivo'] ) {
 			$q = $data['textoDefinitivo'];

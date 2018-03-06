@@ -54,7 +54,8 @@
                         </tr>
                         <tr>
                             <th>Activo</th>
-                            <td>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span class="label label-danger">No</span>{% endif %}</td>
+                            <td>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                        class="label label-danger">No</span>{% endif %}</td>
                         </tr>
                         <tr>
                             <th>Fecha creacion</th>
@@ -70,8 +71,13 @@
                 <div class="box-footer">
                     <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
                     <a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>
-                    <a class="btn btn-default" target="_blank"                                                                                                                          href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
                         <i class="fa fa-print"></i> Imprimir Carátula
+                    </a>
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto
                     </a>
 
                 </div>

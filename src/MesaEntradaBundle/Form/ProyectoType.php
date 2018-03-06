@@ -23,8 +23,9 @@ class ProyectoType extends AbstractType {
 			->add( 'tipoProyecto',
 				null,
 				[
-					'required' => true,
-					'attr'     => [ 'class' => 'tipo-proyecto select2' ]
+					'required'    => true,
+					'placeholder' => 'Seleccionar',
+					'attr'        => [ 'class' => 'tipo-proyecto select2' ]
 				] )
 			->add( 'texto',
 				CKEditorType::class,
@@ -36,14 +37,14 @@ class ProyectoType extends AbstractType {
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
-			->add( 'iniciarComo',
-				EntityType::class,
-				[
-					'class'    => 'MesaEntradaBundle\Entity\Iniciador',
-					'required' => true,
-					'mapped'   => false,
-					'choices'  => $options['iniciarComo'],
-				] )
+//			->add( 'iniciarComo',
+//				EntityType::class,
+//				[
+//					'class'    => 'MesaEntradaBundle\Entity\Iniciador',
+//					'required' => true,
+//					'mapped'   => false,
+//					'choices'  => $options['iniciarComo'],
+//				] )
 			->add( 'iniciadores',
 				BootstrapCollectionType::class,
 				[
@@ -51,6 +52,7 @@ class ProyectoType extends AbstractType {
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,
+//					'display_history' => false,
 					'label'        => 'Acompañantes'
 				] )
 			->add( 'fecha',
@@ -62,6 +64,15 @@ class ProyectoType extends AbstractType {
 						'class' => 'datepicker',
 					),
 				) )
+
+			->add( 'giros',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
 			->add( 'guardar',
 				SubmitType::class,
 				array(
@@ -79,8 +90,7 @@ class ProyectoType extends AbstractType {
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class'  => 'MesaEntradaBundle\Entity\Expediente',
-			'iniciarComo' => null
+			'data_class' => 'MesaEntradaBundle\Entity\Expediente',
 		) );
 	}
 

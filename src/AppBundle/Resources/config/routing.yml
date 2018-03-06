@@ -26,6 +26,10 @@ app_concejal:
     path:     /concejal
     defaults: { _controller: AppBundle:Default:concejal }
 
+documento_carta_organica:
+    path:     /documento_carta_organica
+    defaults: { _controller: AppBundle:Default:cartaOrganica }
+
 #app_display:
 #    path:     /display
 #    defaults: { _controller: AppBundle:Default:display }

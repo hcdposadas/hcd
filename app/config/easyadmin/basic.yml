@@ -25,6 +25,7 @@ easy_admin:
         form_theme: ['horizontal']
         menu:
             - { label: 'Sesión', entity: Sesion }
+            - { label: 'Periodo Legislativo', entity: PeriodoLegislativo }
             - Documento
             - Parametro
             - Expediente

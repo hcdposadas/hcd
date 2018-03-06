@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyecto
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Proyecto</h3>
+                </div>
+                <div class="box-body">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <th>Expediente</th>
+                            <td>{{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.anio }}</td>
+                        </tr>
+                        <tr>
+                            <th>Texto definitivo</th>
+                            <td>{{ expediente.textoDefinitivo }}</td>
+                        </tr>
+                        <tr>
+                            <th>Extracto</th>
+                            <td>{{ expediente.extracto }}</td>
+                        </tr>
+                        <tr>
+                            <th>Texto</th>
+                            <td>{{ expediente.texto | raw }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Fecha</th>
+                            <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
+                    {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
+                    {#<a class="btn btn-default" target="_blank"#}
+                    {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}
+                    {#<i class="fa fa-print"></i> Imprimir Carátula#}
+                    {#</a>#}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

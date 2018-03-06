@@ -196,7 +196,10 @@
 
 <script>
     const io = require('socket.io-client')
-
+// TODO aprobado en grande y primero, sacar tipo de mayoria, y numero de aprobados
+//     lo que gana no mostrar nombres porcentaje
+//     aprobados: total de votos,
+//   abstuvo: total, detalle
     export default {
         props: [
             'logoSrc'

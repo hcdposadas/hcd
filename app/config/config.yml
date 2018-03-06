@@ -18,6 +18,7 @@ parameters:
     app.path.dictamenes: /uploads/dictamenes
     app.path.sanciones: /uploads/sanciones
     app.path.documentos: /uploads/documentos
+    app.path.varios: /uploads/varios
 
 framework:
     ide: "%ide%"
@@ -103,6 +104,9 @@ vich_uploader:
         documentos:
             uri_prefix: "%app.path.documentos%"
             upload_destination: "%kernel.root_dir%/../web/uploads/documentos"
+        varios:
+            uri_prefix: "%app.path.varios%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/varios"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

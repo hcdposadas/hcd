@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    Proyectos
+    Expedientes Legislativos
 {% endblock title %}
 {% block body %}
 
@@ -14,36 +14,30 @@
                         </button>
                     </div>
                 </div>
-                {#{{ form_start(filter_type) }}#}
-                {#<div class="box-body">#}
-                {#<div class="col-md-6">#}
-                {#{{ form_row(filter_type.tipoExpediente) }}#}
-                {#{{ form_row(filter_type.textoDefinitivo) }}#}
-                {#{{ form_row(filter_type.extracto) }}#}
-                {#{{ form_row(filter_type.expediente) }}#}
-                {#{{ form_row(filter_type.anio) }}#}
-                {#</div>#}
-                {#<div class="col-md-6">#}
-                {#{{ form_row(filter_type.letra) }}#}
-                {#{{ form_row(filter_type.fecha) }}#}
-                {#{{ form_row(filter_type.registroMunicipal) }}#}
-                {#{{ form_row(filter_type.iniciador) }}#}
-                {#{{ form_row(filter_type.iniciadorParticular) }}#}
-                {#{{ form_row(filter_type.dependencia) }}#}
-                {#</div>#}
-                {#</div>#}
-                {#<div class="box-footer">#}
-                {#{{ form_widget(filter_type.buscar) }}#}
-                {#{{ form_widget(filter_type.limpiar) }}#}
-                {#</div>#}
-                {#{{ form_end(filter_type) }}#}
+                {{ form_start(filter_type) }}
+                <div class="box-body">
+                    <div class="col-md-6">
+                        {#{{ form_row(filter_type.tipoExpediente) }}#}
+                        {{ form_row(filter_type.textoDefinitivo) }}
+                        {{ form_row(filter_type.extracto) }}
+                        {{ form_row(filter_type.expediente) }}
+                        {{ form_row(filter_type.anio) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.letra) }}
+                        {{ form_row(filter_type.fecha) }}
+                        {{ form_row(filter_type.registroMunicipal) }}
+                        {{ form_row(filter_type.iniciador) }}
+                        {{ form_row(filter_type.iniciadorParticular) }}
+                        {{ form_row(filter_type.dependencia) }}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                {{ form_end(filter_type) }}
             </div>
-        </div>
-    </div>
-
-    <div class="row m-b-1">
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('proyecto_new') }}">Nuevo Proyecto</a>
         </div>
     </div>
 
@@ -51,7 +45,7 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Expedientes</h3>
+                    <h3 class="box-title">Expedientes Legislativos</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-bordered table-striped data-table">
@@ -68,7 +62,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for expediente in proyectos %}
+                        {% for expediente in expedientes %}
                             <tr>
                                 <td>
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
@@ -94,17 +88,26 @@
 
                                 <td>
                                     <a class="btn btn-default"
-                                       href="{{ path('proyecto_show',{'id': expediente.id}) }}">
+                                       href="{{ path('expediente_show', { 'id': expediente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if expediente.borrador == true %}
-                                    <a class="btn btn-default"
-                                       href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% else %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('expediente_edit', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
                                     {% endif %}
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_timeline', {id: expediente.id}) }}">
+                                        <i class="fa fa-road"></i>
+                                    </a>
                                     <a class="btn btn-default" target="_blank"
-                                       href="#">
+                                       href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
                                         <i class="fa fa-print"></i>
                                     </a>
                                 </td>
@@ -119,8 +122,7 @@
     {# display navigation #}
     <div class="col-md-12 text-center">
         <div class="navigation">
-            {{ knp_pagination_render(proyectos) }}
+            {{ knp_pagination_render(expedientes) }}
         </div>
     </div>
-    <a class="btn btn-primary" href="{{ path('proyecto_new') }}">Nuevo Proyecto</a>
 {% endblock %}

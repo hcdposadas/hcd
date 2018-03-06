@@ -50,9 +50,9 @@
             {% endif %}
 
             <form action="{{ path("sesion_login") }}" method="post">
-                <input type="hidden" name="_csrf_token"
-                       value="{{ csrf_token('authenticate') }}"
-                >
+                {#<input type="hidden" name="_csrf_token"#}
+                       {#value="{{ csrf_token('authenticate') }}"#}
+                {#>#}
 
                 <div class="form-group has-feedback">
                     <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}"

@@ -86,6 +86,14 @@ class Expediente extends BaseClass {
 	private $tipoExpediente;
 
 	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PeriodoLegislativo")
+	 * @ORM\JoinColumn(name="periodo_legislativo_id", referencedColumnName="id")
+	 */
+	private $periodoLegislativo;
+
+	/**
 	 * @var string
 	 *
 	 * @ORM\Column(name="numero_nota", type="text", nullable=true)
@@ -826,4 +834,28 @@ class Expediente extends BaseClass {
 	public function getBorrador() {
 		return $this->borrador;
 	}
+
+    /**
+     * Set periodoLegislativo
+     *
+     * @param \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo
+     *
+     * @return Expediente
+     */
+    public function setPeriodoLegislativo(\AppBundle\Entity\PeriodoLegislativo $periodoLegislativo = null)
+    {
+        $this->periodoLegislativo = $periodoLegislativo;
+
+        return $this;
+    }
+
+    /**
+     * Get periodoLegislativo
+     *
+     * @return \AppBundle\Entity\PeriodoLegislativo
+     */
+    public function getPeriodoLegislativo()
+    {
+        return $this->periodoLegislativo;
+    }
 }

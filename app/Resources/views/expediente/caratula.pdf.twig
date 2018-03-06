@@ -95,11 +95,29 @@
                             {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.apellido | upper }}
                         {% endif %}
                     {% elseif expediente.iniciadores.count > 1 and expediente.iniciadores.count < 3 %}
-                        {% for iniciador in expediente.iniciadores %}
-                            {{ iniciador.iniciador.cargoPersona.cargo | upper }}
-                            {{ iniciador.iniciador.cargoPersona.persona.nombre | upper }}
-                            {{ iniciador.iniciador.cargoPersona.persona.apellido | upper }} .-
+
+                        {% set autor = null %}
+                        {% set acompaniantes = [] %}
+
+                        {% for acompaniante in expediente.iniciadores %}
+                            {% if acompaniante.autor %}
+                                {% set autor = acompaniante %}
+                            {% else %}
+                                {#{% set acompaniantes[]= acompaniante %}#}
+                                {% set acompaniantes = acompaniantes|merge([acompaniante]) %}
+                            {% endif %}
                         {% endfor %}
+
+                        {{ autor.iniciador.cargoPersona | upper}}.-
+                        {% for acompaniante in acompaniantes %}
+                            {{ acompaniante.iniciador.cargoPersona | upper}}.-
+                        {% endfor %}
+
+                        {#{% for iniciador in expediente.iniciadores %}#}
+                            {#{{ iniciador.iniciador.cargoPersona.cargo | upper }}#}
+                            {#{{ iniciador.iniciador.cargoPersona.persona.nombre | upper }}#}
+                            {#{{ iniciador.iniciador.cargoPersona.persona.apellido | upper }} .-#}
+                        {#{% endfor %}#}
                     {% elseif expediente.iniciadores.count >= 3 %}
                         CONCEJALES DEL HCD
                     {% elseif expediente.iniciadorParticular %}

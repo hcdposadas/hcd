@@ -56,16 +56,17 @@
     }
 
     .panel-votacion-sesion {
-        font-size: 4em;
+        font-size: 8em;
         text-align: center;
         clear: both;
         background-color: $color-hcd-verde;
         color: #fff;
-        padding: 20px;
+        /*padding: 20px;*/
+        padding: 1rem;
     }
 
     .panel-votacion-sesion-presentes-ausentes {
-        font-size: 3em;
+        font-size: 4em;
     }
 
     .panel-votacion-sesion-tiempo {
@@ -160,8 +161,8 @@
                 <div class="row">
                     <div class="col-lg-12 panel-quorum text-center"
                          :class="[quorum.hayQuorum ? 'si-quorum' : 'no-quorum']">
-                        <span v-if="quorum.hayQuorum">Hay Quorum</span>
-                        <span v-else>No Hay Quorum</span>
+                        <span v-if="quorum.hayQuorum">Hay Quórum</span>
+                        <span v-else>No Hay Quórum</span>
                     </div>
                 </div>
             </div>
@@ -174,19 +175,19 @@
             <div style="font-size: 5em; padding: 20px; font-weight: bold;">
                 {{ mocion }}
             </div>
-            <div style="font-size: 2em;">{{ textoMocion }} {{ tipoMayoria }}</div>
+            <div style="font-size: 3em;">{{ textoMocion }} {{ tipoMayoria }}</div>
             <hr>
             <!--<div style="text-align: center; font-size: 3em; width: 50%; float: left">-->
             <div class="row">
                 <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
                     <div>Presentes</div>
-                    <div style="font-size: 4em;">{{ quorum.presentes }}</div>
+                    <div style="font-size: 6em;">{{ quorum.presentes }}</div>
                 </div>
 
                 <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
                     <!--<div style="text-align: center; font-size: 3em; width: 50%; float: right">-->
                     <div>Ausentes</div>
-                    <div style="font-size: 4em;">{{ quorum.ausentes }}</div>
+                    <div style="font-size: 6em;">{{ quorum.ausentes }}</div>
                 </div>
             </div>
             <div class="row">
@@ -200,7 +201,7 @@
             </div>
 
         </div>
-        <div v-if="panel==='resultados'" class="row text-center">
+        <div v-if="panel==='resultados'" class="row text-center m-t-5">
             <div class="col-lg-12">
                 <div class="row texto-mocion">{{ mocion }}</div>
 
@@ -210,13 +211,13 @@
                 </div>
                 <!--<hr>-->
                 <div class="row">
-                    <div v-if="!resultados.aprobado" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}
+                    <div class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}
                     </div>
-                    <span v-if="!resultados.aprobado" class="texto-resultado bold text-uppercase"
+                    <span class="texto-resultado bold text-uppercase"
                           v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
 
-                    <div v-if="resultados.aprobado" class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
-                    <span v-if="resultados.aprobado" class="texto-resultado bold text-uppercase"
+                    <div class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
+                    <span class="texto-resultado bold text-uppercase"
                           v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
 
                     <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>

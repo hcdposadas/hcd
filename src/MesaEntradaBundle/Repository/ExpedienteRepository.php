@@ -162,7 +162,7 @@ class ExpedienteRepository extends EntityRepository {
 		}
 
 		if ( isset( $data['letra'] ) ) {
-			$qb->andWhere( 'e.letra = :letra' );
+			$qb->andWhere( 'UPPER(e.letra) = UPPER(:letra)' );
 			$qb->setParameter( 'letra', $data['letra'] );
 		}
 

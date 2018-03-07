@@ -26,11 +26,14 @@ class VotacionManager {
 
 	protected $router;
 
-	public function __construct( EntityManager $entityManager, NotificationsManager $notificationsManager,
-		Router $router) {
+	public function __construct(
+		EntityManager $entityManager,
+		NotificationsManager $notificationsManager,
+		Router $router
+	) {
 		$this->entityManager        = $entityManager;
 		$this->notificationsManager = $notificationsManager;
-		$this->router = $router;
+		$this->router               = $router;
 	}
 
 	/**
@@ -68,7 +71,7 @@ class VotacionManager {
 		$enVotacion = $this->entityManager->getRepository( Mocion::class )->getEnVotacion();
 		if ( $enVotacion ) {
 			$urlToShow = $this->router->generate( 'mocion_show', [ 'id' => $enVotacion->getId() ] );
-			$mensaje = '<a href="' . $urlToShow . '">Nº ' . $enVotacion->getNumero() . '</a>';
+			$mensaje   = '<a href="' . $urlToShow . '">Nº ' . $enVotacion->getNumero() . '</a>';
 			throw new \RuntimeException( 'No se puede lanzar la votación porque la Moción ' . $mensaje . ' se encuentra en votación.' );
 		}
 
@@ -162,7 +165,7 @@ class VotacionManager {
 			$mocion->getVotos()->add( $voto );
 
 			$this->entityManager->persist( $voto );
-			$aNoVotaron []= strtoupper($nv->getPersona()->getApellido());
+			$aNoVotaron [] = strtoupper( $nv->getPersona()->getApellido() );
 		}
 		$this->entityManager->flush();
 		$mocion = $this->entityManager->find( Mocion::class, $mocion->getId() );
@@ -171,7 +174,7 @@ class VotacionManager {
 		$afirmativos = 0;
 		$negativos   = 0;
 
-		$votos = $mocion->getVotos();
+		$votos           = $mocion->getVotos();
 		$votaronPositivo = [];
 		$votaronNegativo = [];
 
@@ -180,12 +183,12 @@ class VotacionManager {
 				case Voto::VOTO_AFIRMATIVO:
 					$total ++;
 					$afirmativos ++;
-					$votaronPositivo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+					$votaronPositivo[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
 					break;
 				case Voto::VOTO_NEGATIVO:
 					$total ++;
 					$negativos ++;
-					$votaronNegativo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+					$votaronNegativo[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
 					break;
 			}
 		}
@@ -201,6 +204,10 @@ class VotacionManager {
 		$tipoMayoria = $mocion->getTipoMayoria();
 		$mocion->setAprobado( $tipoMayoria->{$tipoMayoria->getFuncion()}( $mocion ) );
 
+//		if ( $negativos == $afirmativos ) {
+//			$mocion->setAprobado();
+//		}
+
 		$this->entityManager->persist( $mocion );
 		$this->entityManager->flush();
 
@@ -213,6 +220,7 @@ class VotacionManager {
 		if ( $tipoMayoria ) {
 			$tipoMayoria = 'Se aprueba con ' . $tipoMayoria;
 		}
+
 		$this->notificationsManager->notify( 'votacion.resultados',
 			array(
 				'mocion'          => 'Moción Nº' . $mocion->__toString(),

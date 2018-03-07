@@ -53,7 +53,7 @@
                             </b>
                         </div>
                     </div>
-                    <div class="row m-t-1">
+                    <div class="row m-t-5">
                         <div class="col-md-12">
                             <div v-html="texto" v-show="showTexto" data-spy="scroll"
                                  data-target="#navbar-example2" data-offset="0">

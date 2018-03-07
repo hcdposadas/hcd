@@ -38,7 +38,10 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" @click="buscarExpediente">
+                    <button type="button" class="btn btn-primary" @click="buscarExpediente" v-show="buscando" disabled>
+                        <i class="fa fa-spinner fa-spin"></i> Buscar Expediente
+                    </button>
+                    <button type="button" class="btn btn-primary" @click="buscarExpediente" v-show="!buscando">
                         Buscar Expediente
                     </button>
                 </div>
@@ -91,11 +94,13 @@
                 numero: null,
                 tema: null,
                 contenido: null,
-                expedientes: []
+                expedientes: [],
+                buscando: false
             }
         },
         methods: {
             buscarExpediente() {
+                this.buscando = true;
                 console.log(this.numero);
 
                 let params = {
@@ -111,6 +116,7 @@
                 axios.get(window.baseUrl + 'sesion/buscar-expediente', params).then(response => {
                     console.log('response expte', response);
                     this.expedientes = response.data;
+                    this.buscando = false;
                 })
             }
         },

@@ -7,6 +7,7 @@ use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Sesion;
 use AppBundle\Entity\TipoMayoria;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use MesaEntradaBundle\Entity\Expediente;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -40,6 +41,13 @@ class MocionType extends AbstractType
                 'label' => 'Sesión',
                 'class' => Sesion::class,
                 'data' => $sesion,
+                'query_builder' => function (EntityRepository $er) {
+	                return $er->createQueryBuilder( 's' );
+
+	                $er->orderBy( 's.id', 'DESC' )
+	                   ->setMaxResults( 1 );
+                },
+
             ))
             ->add('numero', IntegerType::class, array(
                 'disabled' => true,

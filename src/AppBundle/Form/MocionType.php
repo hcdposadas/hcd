@@ -42,9 +42,8 @@ class MocionType extends AbstractType
                 'class' => Sesion::class,
                 'data' => $sesion,
                 'query_builder' => function (EntityRepository $er) {
-	                return $er->createQueryBuilder( 's' );
-
-	                $er->orderBy( 's.id', 'DESC' )
+	                return $er->createQueryBuilder( 's' )
+	                   ->where( 's.activo = true' )
 	                   ->setMaxResults( 1 );
                 },
 
@@ -70,7 +69,7 @@ class MocionType extends AbstractType
             ))
         ;
     }
-    
+
     /**
      * {@inheritdoc}
      */

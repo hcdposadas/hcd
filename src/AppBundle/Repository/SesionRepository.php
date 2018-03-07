@@ -14,6 +14,7 @@ class SesionRepository extends \Doctrine\ORM\EntityRepository {
 		$qb = $this->createQueryBuilder( 's' );
 
 		$qb->orderBy( 's.id', 'DESC' )
+		   ->andWhere( 's.activo = true' )
 		   ->setMaxResults( 1 );
 
 		return $qb;

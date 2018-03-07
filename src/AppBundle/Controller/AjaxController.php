@@ -248,6 +248,20 @@ class AjaxController extends Controller {
 		$data = $request->get( 'data' );
 		$data = json_decode( $data, true );
 
+		if ( $data['expediente'] ) {
+			$expediente = explode( ' ', $data['expediente'] );
+			if ( count( $expediente ) == 3 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+				$data['anio']       = $expediente[2];
+			} else if ( count( $expediente ) == 2 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+			} else if ( count( $expediente ) == 1 ) {
+				$data['expediente'] = $expediente[0];
+			}
+		}
+
 		$json = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->buscarExpedientesSesion( $data );
 
 		return new JsonResponse( $json );

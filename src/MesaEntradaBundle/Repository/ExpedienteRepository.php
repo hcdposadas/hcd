@@ -146,15 +146,24 @@ class ExpedienteRepository extends EntityRepository {
 	public function buscarExpedientesSesion( $data ) {
 		$qb = $this->createQueryBuilder( 'e' );
 
+		$qb->innerJoin( 'e.tipoExpediente', 'te' )
+		   ->where( 'te.slug = :teSlug' )
+		   ->setParameter( 'teSlug', 'externo' );
+
 		if ( $data['expediente'] ) {
 			$q = $data['expediente'];
 			$qb->andWhere( 'e.expediente = :expediente' )
 			   ->setParameter( 'expediente', $q );
 		}
 
-		if ( ( $data['anio'] ) ) {
+		if ( isset( $data['anio'] ) ) {
 			$qb->andWhere( 'e.anio = :anio' );
 			$qb->setParameter( 'anio', $data['anio'] );
+		}
+
+		if ( isset( $data['letra'] ) ) {
+			$qb->andWhere( 'e.letra = :letra' );
+			$qb->setParameter( 'letra', $data['letra'] );
 		}
 
 		if ( $data['texto'] ) {
@@ -162,6 +171,14 @@ class ExpedienteRepository extends EntityRepository {
 			$qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
 			   ->setParameter( 'texto', "%$q%" );
 		}
+
+		if ( isset($data['tema']) ) {
+			$q = $data['tema'];
+			$qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
+			   ->setParameter( 'extracto', "%$q%" );
+		}
+
+		$qb->andWhere('e.borrador = false');
 
 
 		return $qb->getQuery()->getArrayResult();

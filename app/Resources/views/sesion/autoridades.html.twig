@@ -39,7 +39,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="app">
     <div class="row">
         <div data-spy="scroll" data-target=".navbar" data-offset="50">
 
@@ -141,20 +141,20 @@
                     <div class="col-md-12">
                         <div data-spy="scroll"
                              data-target="#navbar-example2" data-offset="0">
-                            <div class="ae">
+                            <div class="ae" style="display: none;">
                                 {{ sesion.asuntosEntrados | raw }}
                             </div>
-                            <div class="consultar-expedientes" id="app">
+                            <div class="consultar-expedientes" style="display: none;">
                                 <consultar-expediente></consultar-expediente>
                             </div>
                             <div class="mociones">
                                 {% block body %}
                                 {% endblock body %}
                             </div>
-                            <div class="od">
+                            <div class="od" style="display: none;">
                                 {{ sesion.ordenDelDia | raw }}
                             </div>
-                            <div class="carta-organica">
+                            <div class="carta-organica" style="display: none;">
                                 <div class="embed-responsive embed-responsive-16by9">
                                     <embed class="embed-responsive-item"
                                            src="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}">

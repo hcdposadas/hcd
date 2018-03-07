@@ -15,15 +15,15 @@
                         <input class="form-control" type="text" id="numero" name="numero"
                                @keyup.enter="buscarExpediente"
                                v-model="numero"
-                               placeholder="Nro Expediente..."/>
+                               placeholder="Nro Expediente (99999 C 2018)"/>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group has-feedback">
-                        <input class="form-control" type="text" id="anio" name="anio"
+                        <input class="form-control" type="text" id="tema" name="tema"
                                @keyup.enter="buscarExpediente"
-                               v-model="anio"
-                               placeholder="Año..."/>
+                               v-model="tema"
+                               placeholder="Tema..."/>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -89,7 +89,7 @@
         data() {
             return {
                 numero: null,
-                anio: null,
+                tema: null,
                 contenido: null,
                 expedientes: []
             }
@@ -102,7 +102,7 @@
                     params: {
                         data: {
                             expediente: this.numero,
-                            anio: this.anio,
+                            tema: this.tema,
                             texto: this.contenido,
                         }
                     }

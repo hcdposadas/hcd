@@ -101,7 +101,50 @@ class TipoMayoria extends BaseClass {
 	 * @return bool
 	 */
 	public function mayoriaSimple( Mocion $mocion ) {
-		return ( $mocion->getCuentaAfirmativos() > ( intval( $mocion->getCuentaTotal() / 2 ) / 2 + 1 ) );
+//		return ( $mocion->getCuentaAfirmativos() > ( intval( $mocion->getCuentaTotal() / 2 ) / 2 + 1 ) );
+		$return = false;
+		switch ( $mocion->getCuentaTotal() ) {
+			case 14:
+				if ( $mocion->getCuentaAfirmativos() >= 8 ) {
+					$return = true;
+				}
+				break;
+			case 13:
+				if ( $mocion->getCuentaAfirmativos() >= 7 ) {
+					$return = true;
+				}
+				break;
+			case 12:
+				if ( $mocion->getCuentaAfirmativos() >= 7 ) {
+					$return = true;
+				}
+				break;
+			case 11:
+				if ( $mocion->getCuentaAfirmativos() >= 6 ) {
+					$return = true;
+				}
+				break;
+			case 10:
+				if ( $mocion->getCuentaAfirmativos() >= 6 ) {
+					$return = true;
+				}
+				break;
+			case 9:
+				if ( $mocion->getCuentaAfirmativos() >= 5 ) {
+					$return = true;
+				}
+				break;
+			case 8:
+				if ( $mocion->getCuentaAfirmativos() >= 5 ) {
+					$return = true;
+				}
+				break;
+			default:
+				$return = false;
+
+		}
+
+		return $return;
 	}
 
 	/**

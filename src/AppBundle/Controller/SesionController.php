@@ -19,6 +19,14 @@ class SesionController extends Controller {
 		$personaUsuario = $this->getUser()->getPersona();
 		$cartaOrganica  = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+			return $this->render( 'sesion/index.html.twig',
+				array(
+					'concejal'      => $personaUsuario,
+					'cartaOrganica' => $cartaOrganica,
+				) );
+		}
+
 		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ||
 		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ||
 		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' )
@@ -33,11 +41,7 @@ class SesionController extends Controller {
 				) );
 		}
 
-		return $this->render( 'sesion/index.html.twig',
-			array(
-				'concejal' => $personaUsuario,
-				'cartaOrganica' => $cartaOrganica,
-			) );
+		return $this->redirectToRoute( 'sesion_logout' );
 	}
 
 	public function loginAction( Request $request ) {

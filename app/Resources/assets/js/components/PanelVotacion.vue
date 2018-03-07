@@ -1,4 +1,4 @@
-<style>
+<style scoped lang="scss">
     /*.votacion {*/
     /*z-index: 3000;*/
     /*position: absolute;*/
@@ -24,6 +24,10 @@
     .btn-app-afirmativo {
         background-color: #00a65a;
         border-color: #008d4c;
+    }
+
+    .callout-success {
+        color: #00a65a;
     }
 
     .btn-app-negativo {

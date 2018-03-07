@@ -31,6 +31,7 @@
     .panel-presentes-asistencia {
         /*font-size: 6em;*/
         font-size: 10em;
+        margin-top: 3%;
     }
 
     .panel-presentes-asistencia-numero {
@@ -40,13 +41,9 @@
     }
 
     .panel-quorum {
-        font-size: 4em;
-        /*text-align: center;*/
-        /*clear: both;*/
-        /*background-color: #333;*/
-        /*background-color: #17a867;*/
+        /*font-size: 4em;*/
+        font-size: 10em;
         color: #fff;
-        /*padding: 20px;*/
         padding: 1rem;
     }
 
@@ -64,6 +61,18 @@
         clear: both;
         background-color: $color-hcd-verde;
         color: #fff;
+        padding: 20px;
+    }
+
+    .panel-votacion-sesion-presentes-ausentes {
+        font-size: 3em;
+    }
+
+    .panel-votacion-sesion-tiempo {
+        clear: both;
+        background-color: #333;
+        color: #fff;
+        font-size: 3em;
         padding: 20px;
     }
 
@@ -106,10 +115,10 @@
 
     .texto-resultado {
         font-size: 4em;
-        padding: 10px
+        padding: 10px;
     }
 
-    .bold{
+    .bold {
         font-weight: bold;
     }
 
@@ -149,7 +158,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12 panel-quorum text-center" :class="[quorum.hayQuorum ? 'si-quorum' : 'no-quorum']">
+                    <div class="col-lg-12 panel-quorum text-center"
+                         :class="[quorum.hayQuorum ? 'si-quorum' : 'no-quorum']">
                         <span v-if="quorum.hayQuorum">Hay Quorum</span>
                         <span v-else>No Hay Quorum</span>
                     </div>
@@ -157,42 +167,61 @@
             </div>
         </div>
 
-        <div v-if="panel==='votacion'" style="text-align: center;">
+        <div v-if="panel==='votacion'" class="text-center">
             <div class="panel-votacion-sesion">
                 {{ sesion }}
             </div>
-            <div style="font-size: 5em; padding: 20px; font-weight: bold;">{{ mocion }}</div>
-            <div style="font-size: 2em;">{{ textoMocion }}</div>
+            <div style="font-size: 5em; padding: 20px; font-weight: bold;">
+                {{ mocion }}
+            </div>
+            <div style="font-size: 2em;">{{ textoMocion }} {{ tipoMayoria }}</div>
             <hr>
-            <div style="font-size: 3em;">{{ tipoMayoria }}</div>
-            <hr>
-            <div style="text-align: center; font-size: 3em; width: 50%; float: left">
-                <div>Presentes</div>
-                <div style="font-size: 3em;">{{ quorum.presentes }}</div>
+            <!--<div style="text-align: center; font-size: 3em; width: 50%; float: left">-->
+            <div class="row">
+                <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
+                    <div>Presentes</div>
+                    <div style="font-size: 4em;">{{ quorum.presentes }}</div>
+                </div>
+
+                <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
+                    <!--<div style="text-align: center; font-size: 3em; width: 50%; float: right">-->
+                    <div>Ausentes</div>
+                    <div style="font-size: 4em;">{{ quorum.ausentes }}</div>
+                </div>
             </div>
-            <div style="text-align: center; font-size: 3em; width: 50%; float: right">
-                <div>Ausentes</div>
-                <div style="font-size: 3em;">{{ quorum.ausentes }}</div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div v-if="tiempo" class="panel-votacion-sesion-tiempo"
+                    >
+                        Restan {{ tiempo ? duracion - tiempo : '' }} segundos
+                    </div>
+                </div>
+
             </div>
-            <div v-if="tiempo" style="clear: both; background-color: #333; color: #fff; font-size: 2em; padding: 20px;">
-                Restan {{ tiempo ? duracion - tiempo : '' }} segundos
-            </div>
+
         </div>
         <div v-if="panel==='resultados'" class="row text-center">
             <div class="col-lg-12">
                 <div class="row texto-mocion">{{ mocion }}</div>
 
-                <div class="col-lg-12 panel-resultado-aprobado-no-aprobado text-center" :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
+                <div class="col-lg-12 panel-resultado-aprobado-no-aprobado text-center"
+                     :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
                     {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
                 </div>
                 <!--<hr>-->
                 <div class="row">
-                    <div v-if="!resultados.aprobado" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}</div>
-                    <span v-if="!resultados.aprobado" class="texto-resultado bold" v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
+                    <div v-if="!resultados.aprobado" class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}
+                    </div>
+                    <span v-if="!resultados.aprobado" class="texto-resultado bold text-uppercase"
+                          v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
+
                     <div v-if="resultados.aprobado" class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
-                    <span v-if="resultados.aprobado" class="texto-resultado bold" v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
+                    <span v-if="resultados.aprobado" class="texto-resultado bold text-uppercase"
+                          v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
+
                     <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
-                    <span class="texto-resultado bold" v-for="concejal in resultados.seAbstuvieron">{{ concejal }}.-</span>
+                    <span class="texto-resultado bold text-uppercase"
+                          v-for="concejal in resultados.seAbstuvieron">{{ concejal }}.-</span>
                 </div>
 
 
@@ -204,10 +233,10 @@
 
 <script>
     const io = require('socket.io-client')
-// TODO aprobado en grande y primero, sacar tipo de mayoria, y numero de aprobados
-//     lo que gana no mostrar nombres porcentaje
-//     aprobados: total de votos,
-//   abstuvo: total, detalle
+    // TODO aprobado en grande y primero, sacar tipo de mayoria, y numero de aprobados
+    //     lo que gana no mostrar nombres porcentaje
+    //     aprobados: total de votos,
+    //   abstuvo: total, detalle
     export default {
         props: [
             'logoSrc'

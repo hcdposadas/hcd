@@ -147,7 +147,7 @@ tetranz_select2_entity:
 knp_snappy:
     pdf:
         enabled:    true
-        binary:     "%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64"
+        binary:     '%knp_snappy_binary%'
 
 #KNPpaginator
 knp_paginator:

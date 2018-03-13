@@ -114,33 +114,33 @@ class Builder implements ContainerAwareInterface {
 		}
 
 
-		$keyPersonal = 'DOCUMENTOS';
-		$menu->addChild(
-			$keyPersonal,
-			array(
-				'childrenAttributes' => array(
-					'class' => 'treeview-menu',
-				),
-			)
-		)
-		     ->setUri( '#' )
-		     ->setExtra( 'icon', 'fa fa-file-text-o' )
-		     ->setAttribute( 'class', 'treeview' );
-		$menu[ $keyPersonal ]
-			->addChild(
-				'Carta Orgánica',
-				array(
-					'route' => 'persona_index',
-				)
-			);
-
-		$menu[ $keyPersonal ]
-			->addChild(
-				'Reglamento Interno',
-				array(
-					'route' => 'persona_index',
-				)
-			);
+//		$keyPersonal = 'DOCUMENTOS';
+//		$menu->addChild(
+//			$keyPersonal,
+//			array(
+//				'childrenAttributes' => array(
+//					'class' => 'treeview-menu',
+//				),
+//			)
+//		)
+//		     ->setUri( '#' )
+//		     ->setExtra( 'icon', 'fa fa-file-text-o' )
+//		     ->setAttribute( 'class', 'treeview' );
+//		$menu[ $keyPersonal ]
+//			->addChild(
+//				'Carta Orgánica',
+//				array(
+//					'route' => 'persona_index',
+//				)
+//			);
+//
+//		$menu[ $keyPersonal ]
+//			->addChild(
+//				'Reglamento Interno',
+//				array(
+//					'route' => 'persona_index',
+//				)
+//			);
 
 //		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_EMPRESA' ) ) {
 //

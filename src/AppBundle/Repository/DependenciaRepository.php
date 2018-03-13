@@ -23,4 +23,12 @@ class DependenciaRepository extends \Doctrine\ORM\EntityRepository {
 			return $qb->getQuery()->getResult();
 		}
 	}
+
+    public function getQbAll()
+    {
+        $qb = $this->createQueryBuilder('d');
+
+
+        return $qb;
+	}
 }

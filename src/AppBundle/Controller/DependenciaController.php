@@ -16,11 +16,18 @@ class DependenciaController extends Controller
      * Lists all dependencium entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $dependencias = $em->getRepository('AppBundle:Dependencia')->findAll();
+        $dependencias = $em->getRepository('AppBundle:Dependencia')->getQbAll();
+
+        $paginator = $this->get( 'knp_paginator' );
+        $dependencias  = $paginator->paginate(
+            $dependencias,
+            $request->query->get( 'page', 1 )/* page number */,
+            10/* limit per page */
+        );
 
         return $this->render('dependencia/index.html.twig', array(
             'dependencias' => $dependencias,

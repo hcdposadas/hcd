@@ -183,4 +183,23 @@ class ExpedienteRepository extends EntityRepository {
 
 		return $qb->getQuery()->getArrayResult();
 	}
+
+	public function getQbExpedientesLegislativosExternos(  ) {
+		$qb = $this->getQbAll();
+
+//		$qb->join('e.iniciadores', 'iniciadores')
+//		   ->where('iniciadores is null');
+
+		return $qb;
+	}
+
+	public function getQbBuscarExpedientesLegislativosExternos(  ) {
+		$qb = $this->getQbAll();
+
+//		$qb->join('e.iniciadores', 'iniciadores')
+//		   ->where('iniciadores is null');
+
+
+		return $qb;
+	}
 }

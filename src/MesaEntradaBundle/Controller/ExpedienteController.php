@@ -6,6 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\GiroAdministrativo;
 use MesaEntradaBundle\Entity\IniciadorExpediente;
+use MesaEntradaBundle\Form\ExpedienteAdministrativoExternoType;
+use MesaEntradaBundle\Form\ExpedienteAdministrativoType;
+use MesaEntradaBundle\Form\ExpedienteLegislativoExternoType;
 use MesaEntradaBundle\Form\Filter\ExpedienteFilterType;
 use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -60,105 +63,6 @@ class ExpedienteController extends Controller {
 			) );
 	}
 
-	public function expedientesAdministrativosIndexAction( Request $request ) {
-
-		$em = $this->getDoctrine()->getManager();
-
-		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
-			'slug' => 'interno'
-		] );
-
-		$filterType = $this->createForm( ExpedienteFilterType::class,
-			null,
-			[
-				'method' => 'GET'
-			] );
-
-		$filterType->handleRequest( $request );
-
-		if ( $filterType->get( 'buscar' )->isClicked() ) {
-
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
-				$tipoExpediente );
-		} else {
-
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
-		}
-
-
-		$paginator = $this->get( 'knp_paginator' );
-
-		$expedientes = $paginator->paginate(
-			$expedientes,
-			$request->query->get( 'page', 1 )/* page number */,
-			10/* limit per page */
-		);
-
-		return $this->render( 'expediente/expedientes_administrativos_index.html.twig',
-			array(
-				'expedientes' => $expedientes,
-				'filter_type' => $filterType->createView()
-			) );
-	}
-
-	public function expedientesLegislativosIndexAction( Request $request ) {
-		$em = $this->getDoctrine()->getManager();
-
-		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
-			'slug' => 'externo'
-		] );
-
-		$filterType = $this->createForm( ExpedienteFilterType::class,
-			null,
-			[
-				'method' => 'GET'
-			] );
-
-		$filterType->handleRequest( $request );
-
-
-		if ( $filterType->get( 'buscar' )->isClicked() ) {
-
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
-				$tipoExpediente );
-
-
-		} else {
-
-			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
-		}
-
-//		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
-//			$expedientes = $expedientes->andWhere( 'e.expediente is null' );
-//		}
-
-		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
-			$expedientes = $expedientes->innerJoin( 'e.giros', 'giros' );
-
-//				$expedientes->join( 'e.giros', 'giros' )->where('count(giros) > 0');
-//			$sq = $this->getDoctrine()->getRepository('MesaEntradaBundle:Giro')->createQueryBuilder('giros')
-//			                                                                   ->where('giros.expediente = e');
-//
-//			$expedientes->andWhere($expedientes->expr()->not($expedientes->expr()->exists($sq->getDQL())));
-
-		}
-
-
-		$paginator = $this->get( 'knp_paginator' );
-
-		$expedientes = $paginator->paginate(
-			$expedientes,
-			$request->query->get( 'page', 1 )/* page number */,
-			10/* limit per page */
-		);
-
-		return $this->render( 'expediente/expedientes_legislativos_index.html.twig',
-			array(
-				'expedientes' => $expedientes,
-				'filter_type' => $filterType->createView()
-			) );
-	}
-
 	/**
 	 * Creates a new expediente entity.
 	 *
@@ -193,13 +97,16 @@ class ExpedienteController extends Controller {
 	 * Finds and displays a expediente entity.
 	 *
 	 */
-	public function showAction( Expediente $expediente ) {
-		$deleteForm = $this->createDeleteForm( $expediente );
+	public function showAction( Request $request, Expediente $expediente ) {
+
+
+		$referer = $request->headers
+			->get( 'referer' );
 
 		return $this->render( 'expediente/show.html.twig',
 			array(
-				'expediente'  => $expediente,
-				'delete_form' => $deleteForm->createView(),
+				'expediente' => $expediente,
+				'referer'    => $referer
 			) );
 	}
 
@@ -313,9 +220,13 @@ class ExpedienteController extends Controller {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
 
+		$referer = $request->headers
+			->get( 'referer' );
+
 		return $this->render( 'expediente/timeline.html.twig',
 			array(
-				'expediente' => $expediente
+				'expediente' => $expediente,
+				'referer'    => $referer
 			) );
 
 	}
@@ -388,6 +299,66 @@ class ExpedienteController extends Controller {
 				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
 			)
 		);
+	}
+
+//	EXPEDIENTES LEGISLATIVOS
+
+	public function expedientesLegislativosIndexAction( Request $request ) {
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'externo'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
+				$tipoExpediente );
+
+
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
+		}
+
+//		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+//			$expedientes = $expedientes->andWhere( 'e.expediente is null' );
+//		}
+
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			$expedientes = $expedientes->innerJoin( 'e.giros', 'giros' );
+
+//				$expedientes->join( 'e.giros', 'giros' )->where('count(giros) > 0');
+//			$sq = $this->getDoctrine()->getRepository('MesaEntradaBundle:Giro')->createQueryBuilder('giros')
+//			                                                                   ->where('giros.expediente = e');
+//
+//			$expedientes->andWhere($expedientes->expr()->not($expedientes->expr()->exists($sq->getDQL())));
+
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/expedientes_legislativos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
 	}
 
 	public function proyectosIndexAction( Request $request ) {
@@ -594,12 +565,19 @@ class ExpedienteController extends Controller {
 	public function imprimirProyectoAction( $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
-		$title      = 'Proyecto';
+
+
+		$dataToEncode = $expediente->getId();
+		if ( $expediente->getBorrador() ) {
+			$dataToEncode = null;
+		}
+
+		$title = 'Proyecto';
 
 		$header = $this->renderView( ':default:membrete.pdf.twig',
 			[
 				"periodo"      => $expediente->getPeriodoLegislativo(),
-				'dataToEncode' => $expediente->getId()
+				'dataToEncode' => $dataToEncode
 			] );
 
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
@@ -635,5 +613,432 @@ class ExpedienteController extends Controller {
 
 	}
 
+	public function recibirProyectoAction( Request $request ) {
 
+		$expediente = null;
+		$form       = null;
+
+		if ( $request->getMethod() == 'POST' ) {
+			$em         = $this->getDoctrine()->getManager();
+			$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $request->get( 'id' ) );
+			if ( ! $expediente ) {
+				$this->get( 'session' )->getFlashBag()->add(
+					'error',
+					'El Proyecto no existe o el código no es válido'
+				);
+			}
+
+			if ( $expediente->getExpediente() && $expediente->getLetra() ) {
+				$this->get( 'session' )->getFlashBag()->add(
+					'info',
+					'El Proyecto ya tiene asignado un Número y una Letra'
+				);
+
+				return $this->render( 'expediente/recibir.html.twig',
+					array(
+						'expediente' => $expediente
+					) );
+			}
+
+			$form = $this->createForm( 'MesaEntradaBundle\Form\AsignarNumeroType',
+				$expediente,
+				[
+					'action' => $this->generateUrl( 'expediente_asignar_numero', [ 'id' => $expediente->getId() ] )
+				] );
+
+			return $this->render( 'expediente/recibir.html.twig',
+				array(
+					'expediente' => $expediente,
+					'form'       => $form->createView()
+				) );
+		}
+
+		return $this->render( 'expediente/recibir.html.twig',
+			array(
+				'expediente' => $expediente
+			) );
+	}
+
+	public function asignarNumeroExpedienteAction( Request $request, $id ) {
+		$em = $this->getDoctrine()->getManager();
+
+		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+
+		$form = $this->createForm( 'MesaEntradaBundle\Form\AsignarNumeroType',
+			$expediente,
+			[
+				'action' => $this->generateUrl( 'expediente_asignar_numero', [ 'id' => $expediente->getId() ] )
+			] );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+//			Prosecretaria Legislativa
+
+			$giroAdministrativo = new GiroAdministrativo();
+			$areaDestino        = $em->getRepository( 'AppBundle:AreaAdministrativa' )->findOneBy( [
+				'nombre' => 'Prosecretaria Legislativas'
+			] );
+			$giroAdministrativo->setAreaDestino( $areaDestino );
+			$giroAdministrativo->setExpediente( $expediente );
+			$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+
+
+			$expediente->addGiroAdministrativo( $giroAdministrativo );
+			$em->persist( $giroAdministrativo );
+
+			$em->persist( $expediente );
+			$em->flush();
+
+			return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
+		}
+
+		return $this->render( 'expediente/recibir.html.twig',
+			array(
+				'expediente' => $expediente,
+				'form'       => $form->createView()
+			) );
+	}
+
+	public function expedienteImprimirEtiquetaAction( Request $request, $id ) {
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+
+		$html = $this->renderView( 'expediente/etiqueta.pdf.twig',
+			[
+				'expediente' => $expediente,
+			] );
+
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+					'margin-left'   => "0mm",
+					'margin-right'  => "0mm",
+					'margin-top'    => "1mm",
+					'margin-bottom' => "0mm",
+					'page-width'    => '5cm',
+					'page-height'   => '2.5cm'
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="etiqueta.pdf"'
+			)
+		);
+	}
+
+//  EXPEDIENTES ADMINISTRATIVOS
+
+	public function expedientesAdministrativosIndexAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'interno'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
+				$tipoExpediente );
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/expedientes_administrativos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
+	}
+
+	public function nuevoExpedienteAdministrativoAction( Request $request ) {
+
+		$em             = $this->getDoctrine();
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'interno'
+		] );
+
+		$expediente = new Expediente();
+		$expediente->setTipoExpediente( $tipoExpediente );
+
+		$form = $this->createForm( ExpedienteAdministrativoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente creado correctamente'
+			);
+
+		}
+
+		return $this->render( 'expediente/new_administrativo.html.twig',
+			[
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			] );
+	}
+
+	public function editarExpedienteAdministrativoAction( Request $request, Expediente $expediente ) {
+
+		$form = $this->createForm( ExpedienteAdministrativoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente modificado correctamente'
+			);
+
+		}
+
+		return $this->render( 'expediente/new_administrativo.html.twig',
+			[
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			] );
+	}
+
+	//  EXPEDIENTES LEGISLATIVOS EXTERNOS
+
+	public function expedientesLegislativoExternosIndexAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'externo'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscarExpedientesLegislativosExternos( $filterType->getData(),
+				$tipoExpediente );
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesLegislativosExternos( $tipoExpediente );
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/expedientes_legislativos_externos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
+	}
+
+	public function nuevoExpedienteLegislativoExternoAction( Request $request ) {
+
+		$em             = $this->getDoctrine()->getManager();
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'externo'
+		] );
+
+		$expediente = new Expediente();
+		$expediente->setTipoExpediente( $tipoExpediente );
+
+		$form = $this->createForm( ExpedienteLegislativoExternoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$expediente->setBorrador( false );
+
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente creado correctamente'
+			);
+
+			return $this->redirectToRoute( 'expediente_legislativo_externo_editar', [ 'id' => $expediente->getId() ] );
+		}
+
+		return $this->render( 'expediente/new_legislativo_externo.html.twig',
+			[
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			] );
+	}
+
+	public function editarExpedienteLegislativoExternoAction( Request $request, Expediente $expediente ) {
+
+		$form = $this->createForm( ExpedienteLegislativoExternoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente modificado correctamente'
+			);
+
+		}
+
+		return $this->render( 'expediente/new_legislativo_externo.html.twig',
+			[
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			] );
+	}
+
+	//  EXPEDIENTES ADMINISTRATIVOS EXTERNOS
+
+	public function expedientesAdministrativoExternosIndexAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'interno'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
+				$tipoExpediente );
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/expedientes_administrativos_externos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
+	}
+
+	public function nuevoExpedienteAdministrativoExternoAction( Request $request ) {
+
+		$em             = $this->getDoctrine()->getManager();
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'interno'
+		] );
+
+		$expediente = new Expediente();
+		$expediente->setTipoExpediente( $tipoExpediente );
+
+		$form = $this->createForm( ExpedienteAdministrativoExternoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$expediente->setBorrador( false );
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente creado correctamente'
+			);
+
+			return $this->redirectToRoute( 'expediente_administrativo_externo_editar',
+				[ 'id' => $expediente->getId() ] );
+
+		}
+
+		return $this->render( 'expediente/new_administrativo_externo.html.twig',
+			[
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			] );
+	}
+
+	public function editarExpedienteAdministrativoExternoAction( Request $request, Expediente $expediente ) {
+
+		$form = $this->createForm( ExpedienteAdministrativoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$em->persist( $expediente );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente modificado correctamente'
+			);
+
+			return $this->redirectToRoute( 'expediente_administrativo_externo_editar',
+				[ 'id' => $expediente->getId() ] );
+
+		}
+
+		return $this->render( 'expediente/new_administrativo_externo.html.twig',
+			[
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			] );
+	}
 }

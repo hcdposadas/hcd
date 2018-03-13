@@ -10,16 +10,6 @@ easy_admin:
             - { name: 'edit', icon: 'pencil', label: '' }
 #            - { name: 'delete', icon: 'trash', label: '' }
 
-#    entities:
-#        Pais:
-#            class: Matudelatower\UbicacionBundle\Entity\Pais
-#        Provincia:
-#            class: Matudelatower\UbicacionBundle\Entity\Provincia
-#        Departamento:
-#            class: Matudelatower\UbicacionBundle\Entity\Departamento
-#        Localidad:
-#            class: Matudelatower\UbicacionBundle\Entity\Localidad
-
     design:
         brand_color: '#17a867'
         form_theme: ['horizontal']

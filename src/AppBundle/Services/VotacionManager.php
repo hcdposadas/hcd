@@ -6,10 +6,10 @@ use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Votacion;
 use AppBundle\Entity\Voto;
-use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Services\NotificationsManager;
 
@@ -27,9 +27,9 @@ class VotacionManager {
 	protected $router;
 
 	public function __construct(
-		EntityManager $entityManager,
+		EntityManagerInterface $entityManager,
 		NotificationsManager $notificationsManager,
-		Router $router
+		UrlGeneratorInterface $router
 	) {
 		$this->entityManager        = $entityManager;
 		$this->notificationsManager = $notificationsManager;

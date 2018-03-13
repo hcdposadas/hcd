@@ -52,8 +52,6 @@
                         <tr>
                             <th>Id</th>
                             <th>Expediente</th>
-                            <th>Año</th>
-                            <th>Letra</th>
                             <th>Fecha</th>
                             <th>Registro municipal</th>
                             <th>Iniciador</th>
@@ -66,9 +64,7 @@
                                 <td>
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>
-                                <td>{{ expediente.expediente }}</td>
-                                <td>{{ expediente.anio }}</td>
-                                <td>{{ expediente.letra }}</td>
+                                <td>{{ expediente.expediente }}-{{ expediente.letra }}-{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ expediente.registroMunicipal }}</td>
                                 <td>
@@ -91,7 +87,7 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     <a class="btn btn-default"
-                                       href="{{ path('expediente_edit', { 'id': expediente.id }) }}">
+                                       href="{{ path('expediente_administrativo_editar', { 'id': expediente.id }) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a class="btn btn-default"
@@ -117,5 +113,5 @@
             {{ knp_pagination_render(expedientes) }}
         </div>
     </div>
-    <a class="btn btn-primary" href="{{ path('expediente_new') }}">Nuevo Expediente</a>
+    <a class="btn btn-primary" href="{{ path('expediente_administrativo_nuevo') }}">Nuevo Expediente</a>
 {% endblock %}

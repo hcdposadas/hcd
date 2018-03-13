@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyecto
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Proyecto</h3>
+                </div>
+                <div class="box-body">
+                    <form method="post">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="id" autofocus>
+                            <span class="input-group-addon"><i class="fa fa-qrcode"></i></span>
+                        </div>
+                    </form>
+                </div>
+                {#<div class="box-footer">#}
+                {#<a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>#}
+                {#</div>#}
+            </div>
+        </div>
+    </div>
+
+    {% if expediente %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-body">
+                        {{ expediente.texto | raw }}
+                    </div>
+                </div>
+                {% if form is defined and form is not null %}
+                    <div class="box">
+                        <div class="box-body">
+                            {{ form_start(form) }}
+
+                            <div class="col-md-4">
+                                {{ form_row(form.expediente) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.letra) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.periodoLegislativo) }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Asignar
+                            </button>
+                            {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    {% endif %}
+
+
+
+
+
+{% endblock %}

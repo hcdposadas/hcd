@@ -186,15 +186,11 @@
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ flashMessage }}
                 </div>
-
             {% endfor %}
             {% for flashMessage in app.flashes('info') %}
                 <div class="alert alert-info alert-dismissable">
-                    <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
-                    <h4>
-                        <i class="icon fa fa-info"></i>
-                        Info!
-                    </h4>
+                    <i class="fa fa-info"></i>
+                    <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ flashMessage }}
                 </div>
 

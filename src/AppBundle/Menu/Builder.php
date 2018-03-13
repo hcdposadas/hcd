@@ -52,6 +52,14 @@ class Builder implements ContainerAwareInterface {
 
 			$menu[ $keyEmpresa ]
 				->addChild(
+					'Recibir Proyecto',
+					array(
+						'route' => 'expediente_recibir_proyecto',
+					)
+				);
+
+			$menu[ $keyEmpresa ]
+				->addChild(
 					'Expedientes Legislativos',
 					array(
 						'route' => 'expedientes_legislativos_index',
@@ -70,7 +78,7 @@ class Builder implements ContainerAwareInterface {
 				->addChild(
 					'Expedientes Legislativos Externos',
 					array(
-						'route' => 'expedientes_administrativos_index',
+						'route' => 'expediente_legislativo_externo_index',
 					)
 				);
 
@@ -78,7 +86,7 @@ class Builder implements ContainerAwareInterface {
 				->addChild(
 					'Expedientes Administrativos Externos',
 					array(
-						'route' => 'expedientes_administrativos_index',
+						'route' => 'expediente_administrativo_externo_index',
 					)
 				);
 

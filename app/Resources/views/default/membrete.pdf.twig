@@ -32,7 +32,7 @@
     </div>
 </div>
 <div class="row">
-    {% if dataToEncode is defined %}
+    {% if dataToEncode is defined and dataToEncode is not null %}
     <div class="col" style="float: left;">
         <img style="max-width: 100%; height: auto; width: 65px"
              src="{{ qrcode_data_uri(dataToEncode, { writer: 'png' }) }}"/>

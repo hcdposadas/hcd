@@ -11,7 +11,7 @@
             <h3 class="box-title">Proyecto</h3>
         </div>
         <div class="box-body">
-            {% if expediente.borrador == false %}
+            {% if expediente.borrador == false and is_granted('ROLE_CONCEJAL') %}
             <div class="row">
                 <div class="col-md-6">
                     <div class="progress active">
@@ -23,6 +23,7 @@
                 </div>
             </div>
             {% endif %}
+
             {{ form_start(edit_form) }}
             <div class="row">
                 <div class="col-md-3">
@@ -129,12 +130,12 @@
                     {% if expediente.borrador == true %}
                         {{ form_widget(edit_form.guardarYEnviar) }}
                     {% endif %}
-                    {% if expediente.borrador == false %}
+
                         <a class="btn btn-default" target="_blank"
                            href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
-                            <i class="fa fa-print"></i> Imprimir
+                            <i class="fa fa-print"></i> {% if expediente.borrador == false %}Imprimir{% else %}Vista Previa{% endif %}
                         </a>
-                    {% endif %}
+
                 </div>
             </div>
 

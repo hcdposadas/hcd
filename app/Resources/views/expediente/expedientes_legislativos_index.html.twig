@@ -53,8 +53,8 @@
                         <tr>
                             <th>Id</th>
                             <th>Expediente</th>
-                            <th>Año</th>
-                            <th>Letra</th>
+                            {#<th>Año</th>#}
+                            {#<th>Letra</th>#}
                             <th>Fecha</th>
                             <th>Registro municipal</th>
                             <th>Iniciador</th>
@@ -67,9 +67,8 @@
                                 <td>
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>
-                                <td>{{ expediente.expediente }}</td>
-                                <td>{{ expediente.anio }}</td>
-                                <td>{{ expediente.letra }}</td>
+                                <td>{{ expediente.expediente }}-{{ expediente.letra }}-{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
+
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ expediente.registroMunicipal }}</td>
                                 <td>
@@ -91,25 +90,25 @@
                                        href="{{ path('expediente_show', { 'id': expediente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                    {% if is_granted('ROLE_LEGISLATIVO') and expediente.giros.count < 1 %}
                                         <a class="btn btn-default"
                                            href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                    {% else %}
-                                        <a class="btn btn-default"
-                                           href="{{ path('expediente_edit', { 'id': expediente.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
+                                        {#{% else %}#}
+                                        {#<a class="btn btn-default"#}
+                                        {#href="{{ path('expediente_edit', { 'id': expediente.id }) }}">#}
+                                        {#<i class="fa fa-edit"></i>#}
+                                        {#</a>#}
                                     {% endif %}
                                     <a class="btn btn-default"
                                        href="{{ path('expediente_timeline', {id: expediente.id}) }}">
                                         <i class="fa fa-road"></i>
                                     </a>
-                                    <a class="btn btn-default" target="_blank"
-                                       href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
-                                        <i class="fa fa-print"></i>
-                                    </a>
+                                    {#<a class="btn btn-default" target="_blank"#}
+                                    {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}
+                                    {#<i class="fa fa-print"></i>#}
+                                    {#</a>#}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -119,10 +118,12 @@
             </div>
         </div>
     </div>
-    {# display navigation #}
-    <div class="col-md-12 text-center">
-        <div class="navigation">
-            {{ knp_pagination_render(expedientes) }}
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(expedientes) }}
+            </div>
         </div>
     </div>
 {% endblock %}

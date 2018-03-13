@@ -14,7 +14,11 @@ services:
             arguments: ['@doctrine.orm.entity_manager']
             tags: [form.type]
 
+
+    AppBundle\Services\VotacionManager:
+        public: false
+        autowire: true
+
     votacion.manager:
-            class: AppBundle\Services\VotacionManager
-#            arguments: ["@doctrine.orm.default_entity_manager", "@notifications.manager"]
-            autowire: true
+            alias: AppBundle\Services\VotacionManager
+            public: true

@@ -49,7 +49,8 @@ class ProyectoType extends AbstractType {
 			->add( 'extracto',
 				TextareaType::class,
 				[
-					'attr' => [ 'rows' => 5 ]
+					'attr'     => [ 'rows' => 5 ],
+					'required' => false
 				] )
 			->add( 'iniciadores',
 				BootstrapCollectionType::class,
@@ -67,7 +68,6 @@ class ProyectoType extends AbstractType {
 					'widget' => 'single_text',
 					'html5'  => true
 				) )
-
 			->add( 'giros',
 				BootstrapCollectionType::class,
 				[

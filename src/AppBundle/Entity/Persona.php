@@ -340,7 +340,7 @@ class Persona extends BaseClass {
     /**
      * Get cargoPersona
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return CargoPersona[]|\Doctrine\Common\Collections\Collection
      */
     public function getCargoPersona()
     {

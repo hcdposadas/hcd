@@ -1,12 +1,12 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-<div class="login-box">
-    <div class="login-logo">
-        <img class="img-responsive" src="{{ asset('bundles/theme/img/logotipo.png') }}">
+{#<div class="login-box">#}
+    {#<div class="login-logo">#}
+        {#<img class="img-responsive" src="{{ asset('bundles/theme/img/logotipo.png') }}">#}
         {#<a href="#"><b>HCD</b> Posadas</a>#}
-    </div>
-    <!-- /.login-logo -->
-    <div class="login-box-body">
+    {#</div>#}
+    {#<!-- /.login-logo -->#}
+    {#<div class="login-box-body">#}
         <p class="login-box-msg">Inicie Sesión</p>
 
         {% if error %}
@@ -51,6 +51,11 @@
                 </div>
                 <!-- /.col -->
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="{{ path('fos_user_resetting_request') }}">Olvidé mi contraseña</a><br>
+                </div>
+            </div>
         </form>
-    </div>
-</div>
+    {#</div>#}
+{#</div>#}

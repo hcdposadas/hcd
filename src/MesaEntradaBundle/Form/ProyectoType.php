@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\BootstrapCollectionType;
@@ -45,6 +46,11 @@ class ProyectoType extends AbstractType {
 //					'mapped'   => false,
 //					'choices'  => $options['iniciarComo'],
 //				] )
+			->add( 'extracto',
+				TextareaType::class,
+				[
+					'attr' => [ 'rows' => 5 ]
+				] )
 			->add( 'iniciadores',
 				BootstrapCollectionType::class,
 				[
@@ -59,10 +65,7 @@ class ProyectoType extends AbstractType {
 				DateType::class,
 				array(
 					'widget' => 'single_text',
-					'format' => 'dd/MM/yyyy',
-					'attr'   => array(
-						'class' => 'datepicker',
-					),
+					'html5'  => true
 				) )
 
 			->add( 'giros',

@@ -113,8 +113,17 @@ fos_user:
     firewall_name: main
     user_class: UsuariosBundle\Entity\Usuario
     from_email:
-        address: "%mailer_user%"
-        sender_name: "%mailer_user%"
+        address:        '%mailer_user%'
+        sender_name:    '%mailer_sender%'
+    resetting:
+        token_ttl: 86400
+        email:
+            from_email: # Use this node only if you don't want the global email address for the resetting email
+                address:        '%mailer_sender_as%'
+                sender_name:    '%mailer_sender%'
+            template:   'UsuariosBundle:Resetting:email.txt.twig'
+    service:
+        mailer: fos_user.mailer.default
 
 
 #doctrine extentions

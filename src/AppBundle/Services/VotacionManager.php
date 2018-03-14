@@ -13,342 +13,349 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Services\NotificationsManager;
 
-class VotacionManager {
-	/**
-	 * @var EntityManager
-	 */
-	protected $entityManager;
+class VotacionManager
+{
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
 
-	/**
-	 * @var NotificationsManager
-	 */
-	protected $notificationsManager;
+    /**
+     * @var NotificationsManager
+     */
+    protected $notificationsManager;
 
-	protected $router;
+    protected $router;
 
-	public function __construct(
-		EntityManagerInterface $entityManager,
-		NotificationsManager $notificationsManager,
-		UrlGeneratorInterface $router
-	) {
-		$this->entityManager        = $entityManager;
-		$this->notificationsManager = $notificationsManager;
-		$this->router               = $router;
-	}
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        NotificationsManager $notificationsManager,
+        UrlGeneratorInterface $router
+    )
+    {
+        $this->entityManager = $entityManager;
+        $this->notificationsManager = $notificationsManager;
+        $this->router = $router;
+    }
 
-	/**
-	 * @param Mocion $mocion
-	 *
-	 * @return Mocion
-	 * @throws \Doctrine\ORM\OptimisticLockException
-	 */
-	public function crear( Mocion $mocion ) {
-		$mocion->setNumero( $this->getSiguienteNumero() );
-		$mocion->setEstado( $this->getEstado( Mocion::ESTADO_PARA_VOTAR ) );
-		$this->entityManager->persist( $mocion );
-		$this->entityManager->flush();
+    /**
+     * @param Mocion $mocion
+     *
+     * @return Mocion
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function crear(Mocion $mocion)
+    {
+        $mocion->setNumero($this->getSiguienteNumero());
+        $mocion->setEstado($this->getEstado(Mocion::ESTADO_PARA_VOTAR));
+        $this->entityManager->persist($mocion);
+        $this->entityManager->flush();
 
-		return $mocion;
-	}
+        return $mocion;
+    }
 
-	/**
-	 * @param Mocion $mocion
-	 *
-	 * @return Votacion|null
-	 * @throws \Doctrine\ORM\OptimisticLockException
-	 */
-	public function lanzar( Mocion $mocion ) {
-		if ( ! $mocion->puedeVotarse() ) {
-			if ( $mocion->enVotacion() ) {
-				throw new \RuntimeException( 'No se puede lanzar la votación porque la moción ya se encuentra en votación' );
-			} elseif ( $mocion->finalizada() ) {
-				throw new \RuntimeException( 'No se puede lanzar la votación porque la moción ya fue finalizada' );
-			} else {
-				throw new \RuntimeException( 'No se puede lanzar votación' );
-			}
-		}
+    /**
+     * @param Mocion $mocion
+     *
+     * @return Votacion|null
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function lanzar(Mocion $mocion)
+    {
+        if (!$mocion->puedeVotarse()) {
+            if ($mocion->enVotacion()) {
+                throw new \RuntimeException('No se puede lanzar la votación porque la moción ya se encuentra en votación');
+            } elseif ($mocion->finalizada()) {
+                throw new \RuntimeException('No se puede lanzar la votación porque la moción ya fue finalizada');
+            } else {
+                throw new \RuntimeException('No se puede lanzar votación');
+            }
+        }
 
-		$enVotacion = $this->entityManager->getRepository( Mocion::class )->getEnVotacion();
-		if ( $enVotacion ) {
-			$urlToShow = $this->router->generate( 'mocion_show', [ 'id' => $enVotacion->getId() ] );
-			$mensaje   = '<a href="' . $urlToShow . '">Nº ' . $enVotacion->getNumero() . '</a>';
-			throw new \RuntimeException( 'No se puede lanzar la votación porque la Moción ' . $mensaje . ' se encuentra en votación.' );
-		}
+        $enVotacion = $this->entityManager->getRepository(Mocion::class)->getEnVotacion();
+        if ($enVotacion) {
+            $urlToShow = $this->router->generate('mocion_show', ['id' => $enVotacion->getId()]);
+            $mensaje = '<a href="' . $urlToShow . '">Nº ' . $enVotacion->getNumero() . '</a>';
+            throw new \RuntimeException('No se puede lanzar la votación porque la Moción ' . $mensaje . ' se encuentra en votación.');
+        }
 
-		$duracion = 15;
+        $duracion = 15;
 
-		$mocion->setEstado( $this->getEstado( Mocion::ESTADO_EN_VOTACION ) );
-		$votacion = new Votacion();
-		$votacion->setMocion( $mocion );
-		$votacion->setDuracion( $duracion );
+        $mocion->setEstado($this->getEstado(Mocion::ESTADO_EN_VOTACION));
+        $votacion = new Votacion();
+        $votacion->setMocion($mocion);
+        $votacion->setDuracion($duracion);
 
-		$this->entityManager->persist( $votacion );
-		$this->entityManager->persist( $mocion );
-		$this->entityManager->flush();
+        $this->entityManager->persist($votacion);
+        $this->entityManager->persist($mocion);
+        $this->entityManager->flush();
 
-		$this->notificar( $mocion, $duracion );
+        $this->notificar($mocion, $duracion);
 
-		return $votacion;
-	}
+        return $votacion;
+    }
 
-	/**
-	 * @param Mocion $mocion
-	 *
-	 * @return Votacion|null
-	 * @throws \Doctrine\ORM\OptimisticLockException
-	 */
-	public function extender( Mocion $mocion ) {
-		if ( ! $mocion->enVotacion() ) {
-			throw new \RuntimeException( 'No se puede extender votación de la moción' );
-		}
+    /**
+     * @param Mocion $mocion
+     *
+     * @return Votacion|null
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function extender(Mocion $mocion)
+    {
+        if (!$mocion->enVotacion()) {
+            throw new \RuntimeException('No se puede extender votación de la moción');
+        }
 
-		$duracion = 10;
+        $duracion = 10;
 
-		$votacion = new Votacion();
-		$votacion->setMocion( $mocion );
-		$votacion->setDuracion( $duracion );
+        $votacion = new Votacion();
+        $votacion->setMocion($mocion);
+        $votacion->setDuracion($duracion);
 
-		$this->entityManager->persist( $votacion );
-		$this->entityManager->flush();
+        $this->entityManager->persist($votacion);
+        $this->entityManager->flush();
 
-		$this->notificar( $mocion, $duracion );
+        $this->notificar($mocion, $duracion);
 
-		return $votacion;
-	}
+        return $votacion;
+    }
 
-	/**
-	 * @param Mocion $mocion
-	 *
-	 * @return Mocion|null
-	 * @throws \Doctrine\ORM\ORMException
-	 * @throws \Doctrine\ORM\OptimisticLockException
-	 * @throws \Doctrine\ORM\TransactionRequiredException
-	 */
-	public function calcularResultados( Mocion $mocion ) {
-		if ( ! $mocion->enVotacion() ) {
-			throw new \RuntimeException( 'No se puede calcular los resultados de esta moción' );
-		}
+    /**
+     * @param Mocion $mocion
+     *
+     * @return Mocion|null
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function calcularResultados(Mocion $mocion)
+    {
+        if (!$mocion->enVotacion()) {
+            throw new \RuntimeException('No se puede calcular los resultados de esta moción');
+        }
 
-		$usuarioRepository = $this->entityManager->getRepository( Usuario::class );
+        $usuarioRepository = $this->entityManager->getRepository(Usuario::class);
 
-		$presentes = array_map( function ( $id ) use ( $usuarioRepository ) {
+        $presentes = array_map( function ( $id ) use ( $usuarioRepository ) {
 			return $usuarioRepository->find( $id );
 		},
 			array_keys( $this->notificationsManager->hgetall( 'presentes' ) ) );
 
-		$dedup = array();
-		foreach ( $presentes as $presente ) {
-			$dedup[ $presente->getId() ] = $presente;
-		}
-		$presentes = $dedup;
-		unset( $dedup );
+        $dedup = array();
+        foreach ($presentes as $presente) {
+            $dedup[$presente->getId()] = $presente;
+        }
+        $presentes = $dedup;
+        unset($dedup);
 
-		$votos = $mocion->getVotos();
+        $votos = $mocion->getVotos();
 
-		$noVotaron = array_filter( $presentes,
-			function ( $presente ) use ( $votos ) {
-				foreach ( $votos as $voto ) {
-					if ( $voto->getCreadoPor()->getId() == $presente->getId() ) {
-						return false;
-					}
-				}
+        $noVotaron = array_filter($presentes,
+            function ($presente) use ($votos) {
+                foreach ($votos as $voto) {
+                    if ($voto->getCreadoPor()->getId() == $presente->getId()) {
+                        return false;
+                    }
+                }
 
-				return true;
-			} );
+                return true;
+            });
 
-		$aNoVotaron = [];
-		foreach ( $noVotaron as $nv ) {
-			$voto = new Voto();
-			$voto->setConcejal( $nv );
-			$voto->setValor( Voto::VOTO_ABSTENCION );
-			// $voto->setMocion($mocion);
-			$mocion->getVotos()->add( $voto );
+        $aNoVotaron = [];
+        foreach ($noVotaron as $nv) {
+            $voto = new Voto();
+            $voto->setConcejal($nv);
+            $voto->setValor(Voto::VOTO_ABSTENCION);
+            // $voto->setMocion($mocion);
+            $mocion->getVotos()->add($voto);
 
-			$this->entityManager->persist( $voto );
-			$aNoVotaron [] = strtoupper( $nv->getPersona()->getApellido() );
-		}
-		$this->entityManager->flush();
-		$mocion = $this->entityManager->find( Mocion::class, $mocion->getId() );
+            $this->entityManager->persist($voto);
+            $aNoVotaron [] = strtoupper($nv->getPersona()->getApellido());
+        }
+        $this->entityManager->flush();
+        $mocion = $this->entityManager->find(Mocion::class, $mocion->getId());
 
-		$total       = 0;
-		$afirmativos = 0;
-		$negativos   = 0;
+        $total = 0;
+        $afirmativos = 0;
+        $negativos = 0;
 
-		$votos           = $mocion->getVotos();
-		$votaronPositivo = [];
-		$votaronNegativo = [];
+        $votos = $mocion->getVotos();
+        $votaronPositivo = [];
+        $votaronNegativo = [];
 
-		foreach ( $votos as $voto ) {
-			switch ( $voto->getValor() ) {
-				case Voto::VOTO_AFIRMATIVO:
-					$total ++;
-					$afirmativos ++;
-					$votaronPositivo[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
-					break;
-				case Voto::VOTO_NEGATIVO:
-					$total ++;
-					$negativos ++;
-					$votaronNegativo[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
-					break;
-			}
-		}
+        foreach ($votos as $voto) {
+            switch ($voto->getValor()) {
+                case Voto::VOTO_AFIRMATIVO:
+                    $total++;
+                    $afirmativos++;
+                    $votaronPositivo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+                    break;
+                case Voto::VOTO_NEGATIVO:
+                    $total++;
+                    $negativos++;
+                    $votaronNegativo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+                    break;
+            }
+        }
 
-		$abstenciones = count( $noVotaron );
-		$total        += count( $noVotaron );
+        $abstenciones = count($noVotaron);
+        $total += count($noVotaron);
 
-		$mocion->setCuentaAfirmativos( $afirmativos );
-		$mocion->setCuentaNegativos( $negativos );
-		$mocion->setCuentaAbstenciones( $abstenciones );
-		$mocion->setCuentaTotal( $total );
+        $mocion->setCuentaAfirmativos($afirmativos);
+        $mocion->setCuentaNegativos($negativos);
+        $mocion->setCuentaAbstenciones($abstenciones);
+        $mocion->setCuentaTotal($total);
 
-		$tipoMayoria = $mocion->getTipoMayoria();
-		$mocion->setAprobado( $tipoMayoria->{$tipoMayoria->getFuncion()}( $mocion ) );
+        $tipoMayoria = $mocion->getTipoMayoria();
+        $mocion->setAprobado($tipoMayoria->{$tipoMayoria->getFuncion()}($mocion));
 
-//		if ( $negativos == $afirmativos ) {
-//			$mocion->setAprobado();
-//		}
+        $this->entityManager->persist($mocion);
+        $this->entityManager->flush();
 
-		$this->entityManager->persist( $mocion );
-		$this->entityManager->flush();
+        $textoMocion = '';
+        if ($expediente = $mocion->getExpediente()) {
+            $textoMocion = 'Expediente ' . $expediente . ': ' . $expediente->getExtracto();
+        }
 
-		$textoMocion = '';
-		if ( $expediente = $mocion->getExpediente() ) {
-			$textoMocion = 'Expediente ' . $expediente . ': ' . $expediente->getExtracto();
-		}
+        $tipoMayoria = $mocion->getTipoMayoria();
+        if ($tipoMayoria) {
+            $tipoMayoria = 'Se aprueba con ' . $tipoMayoria;
+        }
 
-		$tipoMayoria = $mocion->getTipoMayoria();
-		if ( $tipoMayoria ) {
-			$tipoMayoria = 'Se aprueba con ' . $tipoMayoria;
-		}
+        $this->notificationsManager->notify('votacion.resultados',
+            array(
+                'mocion' => 'Moción Nº' . $mocion->__toString(),
+                'textoMocion' => $textoMocion,
+                'tipoMayoria' => $tipoMayoria,
+                'sesion' => $mocion->getSesion()->__toString(),
+                'afirmativos' => $mocion->getCuentaAfirmativos(),
+                'negativos' => $mocion->getCuentaNegativos(),
+                'abstenciones' => $mocion->getCuentaAbstenciones(),
+                'total' => $mocion->getCuentaTotal(),
+                'aprobado' => $mocion->isAprobado(),
+                'votaronNegativo' => $votaronNegativo,
+                'votaronPositivo' => $votaronPositivo,
+                'seAbstuvieron' => $aNoVotaron,
+            ));
 
-		$this->notificationsManager->notify( 'votacion.resultados',
-			array(
-				'mocion'          => 'Moción Nº' . $mocion->__toString(),
-				'textoMocion'     => $textoMocion,
-				'tipoMayoria'     => $tipoMayoria,
-				'sesion'          => $mocion->getSesion()->__toString(),
-				'afirmativos'     => $mocion->getCuentaAfirmativos(),
-				'negativos'       => $mocion->getCuentaNegativos(),
-				'abstenciones'    => $mocion->getCuentaAbstenciones(),
-				'total'           => $mocion->getCuentaTotal(),
-				'aprobado'        => $mocion->isAprobado(),
-				'votaronNegativo' => $votaronNegativo,
-				'votaronPositivo' => $votaronPositivo,
-				'seAbstuvieron'   => $aNoVotaron,
-			) );
+        return $mocion;
+    }
 
-		return $mocion;
-	}
+    /**
+     * @param Mocion $mocion
+     *
+     * @return Mocion|null
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function finalizar(Mocion $mocion)
+    {
+        if (!$mocion->enVotacion()) {
+            throw new \RuntimeException('No se puede finalizar la votación de la moción');
+        }
 
-	/**
-	 * @param Mocion $mocion
-	 *
-	 * @return Mocion|null
-	 * @throws \Doctrine\ORM\OptimisticLockException
-	 */
-	public function finalizar( Mocion $mocion ) {
-		if ( ! $mocion->enVotacion() ) {
-			throw new \RuntimeException( 'No se puede finalizar la votación de la moción' );
-		}
+        $mocion->setEstado($this->getEstado(Mocion::ESTADO_FINALIZADO));
 
-		$mocion->setEstado( $this->getEstado( Mocion::ESTADO_FINALIZADO ) );
+        $this->entityManager->persist($mocion);
+        $this->entityManager->flush();
 
-		$this->entityManager->persist( $mocion );
-		$this->entityManager->flush();
+        $this->notificationsManager->notify('votacion.finalizada', array());
 
-		$this->notificationsManager->notify( 'votacion.finalizada', array() );
+        return $mocion;
+    }
 
-		return $mocion;
-	}
+    /**
+     * @param Mocion $mocion
+     * @param Usuario $usuario
+     * @param $valorVoto
+     *
+     * @return Voto
+     * @throws Exception
+     */
+    public function votar(Mocion $mocion, Usuario $usuario, $valorVoto)
+    {
+        // TODO verificar que el usuario sea concejal
 
-	/**
-	 * @param Mocion $mocion
-	 * @param Usuario $usuario
-	 * @param $valorVoto
-	 *
-	 * @return Voto
-	 * @throws Exception
-	 */
-	public function votar( Mocion $mocion, Usuario $usuario, $valorVoto ) {
-		// TODO verificar que el usuario sea concejal
+        if (!$mocion->enVotacion()) {
+            throw new Exception('La moción no se encuentra en votación');
+        }
 
-		if ( ! $mocion->enVotacion() ) {
-			throw new Exception( 'La moción no se encuentra en votación' );
-		}
+        $votacion = null;
+        foreach ($mocion->getVotaciones() as $votacion) {
+            if (!$votacion->finalizada()) {
+                break;
+            }
+        }
 
-		$votacion = null;
-		foreach ( $mocion->getVotaciones() as $votacion ) {
-			if ( ! $votacion->finalizada() ) {
-				break;
-			}
-		}
+        if (!$votacion || $votacion->finalizada()) {
+            throw new Exception('La moción no se encuentra en votación en este momento');
+        }
 
-		if ( ! $votacion || $votacion->finalizada() ) {
-			throw new Exception( 'La moción no se encuentra en votación en este momento' );
-		}
+        if (!in_array($valorVoto, array(Voto::VOTO_AFIRMATIVO, Voto::VOTO_NEGATIVO))) {
+            throw new Exception('El valor del voto no es válido');
+        }
 
-		if ( ! in_array( $valorVoto, array( Voto::VOTO_AFIRMATIVO, Voto::VOTO_NEGATIVO ) ) ) {
-			throw new Exception( 'El valor del voto no es válido' );
-		}
+        foreach ($mocion->getVotos() as $voto) {
+            if ($voto->getCreadoPor()->getId() == $usuario->getId()) {
+                throw new Exception('No se puede votar dos veces la misma moción');
+            }
+        }
 
-		foreach ( $mocion->getVotos() as $voto ) {
-			if ( $voto->getCreadoPor()->getId() == $usuario->getId() ) {
-				throw new Exception( 'No se puede votar dos veces la misma moción' );
-			}
-		}
+        $voto = new Voto();
+        $voto->setValor($valorVoto);
+        $voto->setMocion($mocion);
+        $voto->setVotacion($votacion);
+        $voto->setConcejal($usuario);
 
-		$voto = new Voto();
-		$voto->setValor( $valorVoto );
-		$voto->setMocion( $mocion );
-		$voto->setVotacion( $votacion );
-		$voto->setConcejal( $usuario );
+        $this->entityManager->persist($voto);
+        $this->entityManager->flush();
 
-		$this->entityManager->persist( $voto );
-		$this->entityManager->flush();
+        return $voto;
+    }
 
-		return $voto;
-	}
+    /**
+     * @param $estado
+     *
+     * @return Parametro|null
+     */
+    protected function getEstado($estado)
+    {
+        return $this->entityManager->getRepository(Parametro::class)->getBySlug($estado);
+    }
 
-	/**
-	 * @param $estado
-	 *
-	 * @return Parametro|null
-	 */
-	protected function getEstado( $estado ) {
-		return $this->entityManager->getRepository( Parametro::class )->getBySlug( $estado );
-	}
+    /**
+     * @return int
+     */
+    protected function getSiguienteNumero()
+    {
+        return $this->entityManager->getRepository(Mocion::class)->siguienteNumero();
+    }
 
-	/**
-	 * @return int
-	 */
-	protected function getSiguienteNumero() {
-		return $this->entityManager->getRepository( Mocion::class )->siguienteNumero();
-	}
+    /**
+     * @param Mocion $mocion
+     * @param $duracion
+     */
+    protected function notificar(Mocion $mocion, $duracion)
+    {
+        $textoMocion = '';
+        if ($expediente = $mocion->getExpediente()) {
+            $textoMocion = 'Expediente ' . $expediente . ': ' . $expediente->getExtracto();
+        }
 
-	/**
-	 * @param Mocion $mocion
-	 * @param $duracion
-	 */
-	protected function notificar( Mocion $mocion, $duracion ) {
-		$textoMocion = '';
-		if ( $expediente = $mocion->getExpediente() ) {
-			$textoMocion = 'Expediente ' . $expediente . ': ' . $expediente->getExtracto();
-		}
+        $tipoMayoria = $mocion->getTipoMayoria();
+        if ($tipoMayoria) {
+            $tipoMayoria = 'Se aprueba con ' . $tipoMayoria;
+        }
 
-		$tipoMayoria = $mocion->getTipoMayoria();
-		if ( $tipoMayoria ) {
-			$tipoMayoria = 'Se aprueba con ' . $tipoMayoria;
-		}
+        $this->notificationsManager->notify('votacion.abierta',
+            array(
+                'mocion' => 'Moción Nº' . $mocion->__toString(),
+                'textoMocion' => $textoMocion,
+                'tipoMayoria' => $tipoMayoria,
+                'sesion' => $mocion->getSesion()->__toString(),
+                'duracion' => $duracion
+            ));
 
-		$this->notificationsManager->notify( 'votacion.abierta',
-			array(
-				'mocion'      => 'Moción Nº' . $mocion->__toString(),
-				'textoMocion' => $textoMocion,
-				'tipoMayoria' => $tipoMayoria,
-				'sesion'      => $mocion->getSesion()->__toString(),
-				'duracion'    => $duracion
-			) );
-
-		$this->notificationsManager->notify( 'votacion.cerrada', null, $duracion );
-	}
+        $this->notificationsManager->notify('votacion.cerrada', null, $duracion);
+    }
 }

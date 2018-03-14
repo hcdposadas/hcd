@@ -103,6 +103,39 @@ class TipoMayoria extends BaseClass {
 	public function mayoriaSimple( Mocion $mocion ) {
 //		return ( $mocion->getCuentaAfirmativos() > ( intval( $mocion->getCuentaTotal() / 2 ) / 2 + 1 ) );
 		$return = false;
+
+		$afirmativos = $mocion->getCuentaAfirmativos();
+		$negativos = $mocion->getCuentaNegativos();
+
+		if ($mocion->getCuentaTotal() >= 8 && $afirmativos == $negativos) {
+		    // El cargo mayor debe estar más arriba
+		    // ID_cargo => valor_del_voto (inicialmente null)
+		    $ordenCargos = array(
+		        23 => null, // presidente
+                20 => null, // vicepresidente 1
+                21 => null, // vicepresidente 2
+            );
+
+		    foreach ($mocion->getVotos() as $voto) {
+		        if ($voto->esAbstencion()) {
+		            continue;
+                }
+
+		        $cargoPersona = $voto->getConcejal()->getPersona()->getCargoPersona();
+		        foreach ($cargoPersona as $cp) {
+		            if (in_array($cp->getCargo()->getId(), array_keys($ordenCargos))) {
+		                $ordenCargos[$cp->getCargo()->getId()] = $voto;
+                    }
+                }
+            }
+
+            foreach ($ordenCargos as $idCargo => $voto) {
+		        if ($voto != null) {
+		            return $voto->esAfirmativo();
+                }
+            }
+        }
+
 		switch ( $mocion->getCuentaTotal() ) {
 			case 14:
 				if ( $mocion->getCuentaAfirmativos() >= 8 ) {

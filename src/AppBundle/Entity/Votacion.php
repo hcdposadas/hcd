@@ -52,6 +52,10 @@ class Votacion extends BaseClass
      */
     private $votos;
 
+	public function __toString() {
+		return (string) $this->id;
+	}
+
     public function __construct()
     {
         $this->votos = new ArrayCollection();

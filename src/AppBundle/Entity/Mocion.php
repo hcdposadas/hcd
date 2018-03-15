@@ -15,427 +15,539 @@ use UtilBundle\Entity\Base\BaseClass;
  * @ORM\Table(name="mocion")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MocionRepository")
  */
-class Mocion extends BaseClass
-{
-    const ESTADO_PARA_VOTAR = 'mocion-estados-para-votar';
-    const ESTADO_EN_VOTACION = 'mocion-estados-en-votacion';
-    const ESTADO_FINALIZADO = 'mocion-estados-finalizado';
+class Mocion extends BaseClass {
+	const ESTADO_PARA_VOTAR = 'mocion-estados-para-votar';
+	const ESTADO_EN_VOTACION = 'mocion-estados-en-votacion';
+	const ESTADO_FINALIZADO = 'mocion-estados-finalizado';
 
-    const TIPO_PLANIFICADA = 'mocion-tipo-planificada';
-    const TIPO_ESPONTANEA = 'mocion-tipo-espontanea';
+	const TIPO_PLANIFICADA = 'mocion-tipo-planificada';
+	const TIPO_ESPONTANEA = 'mocion-tipo-espontanea';
+
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="id", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
+	private $id;
+
+	/**
+	 * @var Sesion $sesion
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion", inversedBy="mociones")
+	 */
+	private $sesion;
+
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="numero", type="integer", unique=true)
+	 */
+	private $numero;
+
+	/**
+	 * @var Parametro $tipo
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
+	 */
+	private $tipo;
+
+	/**
+	 * @var TipoMayoria $tipoMocion
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TipoMayoria")
+	 */
+	private $tipoMayoria;
+
+	/**
+	 * @var boolean $aprobado
+	 *
+	 * @ORM\Column(name="aprobado", type="boolean", nullable=true)
+	 */
+	private $aprobado = null;
+
+	/**
+	 * @var Expediente $expediente
+	 *
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente")
+	 * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id", nullable=true)
+	 */
+	private $expediente;
+
+	/**
+	 * @var Parametro $estado
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
+	 */
+	private $estado;
+
+	/**
+	 * @var int $cuentaTotal
+	 *
+	 * @ORM\Column(name="cuenta_total", type="integer", nullable=true)
+	 */
+	private $cuentaTotal;
+
+	/**
+	 * @var int $cuentaAfirmativos
+	 *
+	 * @ORM\Column(name="cuentaAfirmativos", type="integer", nullable=true)
+	 */
+	private $cuentaAfirmativos;
+
+	/**
+	 * @var int $cuentaNegativos
+	 *
+	 * @ORM\Column(name="cuentaNegativos", type="integer", nullable=true)
+	 */
+	private $cuentaNegativos;
+
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="cuentaAbstenciones", type="integer", nullable=true)
+	 */
+	private $cuentaAbstenciones;
+
+	/**
+	 * @var ArrayCollection|Votacion[]
+	 *
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\Votacion", mappedBy="mocion")
+	 */
+	private $votaciones;
+
+	/**
+	 * @var ArrayCollection|Voto[]
+	 *
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\Voto", mappedBy="mocion")
+	 */
+	private $votos;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="texto", type="string",length=255, nullable=true)
+	 */
+	private $texto;
+
+	public function __construct() {
+		$this->votaciones = new ArrayCollection();
+		$this->votos      = new ArrayCollection();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return '' . $this->getNumero();
+	}
+
+
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * @return Sesion
+	 */
+	public function getSesion() {
+		return $this->sesion;
+	}
+
+	/**
+	 * @param Sesion $sesion
+	 */
+	public function setSesion( $sesion ) {
+		$this->sesion = $sesion;
+	}
+
+	/**
+	 * Set numero
+	 *
+	 * @param integer $numero
+	 *
+	 * @return Mocion
+	 */
+	public function setNumero( $numero ) {
+		$this->numero = $numero;
+
+		return $this;
+	}
+
+	/**
+	 * Get numero
+	 *
+	 * @return int
+	 */
+	public function getNumero() {
+		return $this->numero;
+	}
+
+	/**
+	 * @return Parametro
+	 */
+	public function getTipo() {
+		return $this->tipo;
+	}
+
+	/**
+	 * @param Parametro $tipo
+	 */
+	public function setTipo( $tipo ) {
+		$this->tipo = $tipo;
+	}
+
+	/**
+	 * @return TipoMayoria
+	 */
+	public function getTipoMayoria() {
+		return $this->tipoMayoria;
+	}
+
+	/**
+	 * @param TipoMayoria $tipoMayoria
+	 */
+	public function setTipoMayoria( $tipoMayoria ) {
+		$this->tipoMayoria = $tipoMayoria;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isAprobado() {
+		return $this->aprobado;
+	}
+
+	/**
+	 * @param bool $aprobado
+	 */
+	public function setAprobado( $aprobado ) {
+		$this->aprobado = $aprobado;
+	}
+
+	/**
+	 * @return Expediente
+	 */
+	public function getExpediente() {
+		return $this->expediente;
+	}
+
+	/**
+	 * @param Expediente $expediente
+	 */
+	public function setExpediente( $expediente ) {
+		$this->expediente = $expediente;
+	}
+
+	/**
+	 * @return Parametro
+	 */
+	public function getEstado() {
+		return $this->estado;
+	}
+
+	/**
+	 * @param Parametro $estado
+	 */
+	public function setEstado( $estado ) {
+		$this->estado = $estado;
+	}
+
+	/**
+	 * Set cuentaAfirmativos
+	 *
+	 * @param integer $cuentaAfirmativos
+	 *
+	 * @return Mocion
+	 */
+	public function setCuentaAfirmativos( $cuentaAfirmativos ) {
+		$this->cuentaAfirmativos = $cuentaAfirmativos;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCuentaTotal() {
+		return $this->cuentaTotal;
+	}
+
+	/**
+	 * @param int $cuentaTotal
+	 */
+	public function setCuentaTotal( $cuentaTotal ) {
+		$this->cuentaTotal = $cuentaTotal;
+	}
+
+	/**
+	 * Get cuentaAfirmativos
+	 *
+	 * @return int
+	 */
+	public function getCuentaAfirmativos() {
+		return $this->cuentaAfirmativos;
+	}
+
+	/**
+	 * Set cuentaNegativos
+	 *
+	 * @param integer $cuentaNegativos
+	 *
+	 * @return Mocion
+	 */
+	public function setCuentaNegativos( $cuentaNegativos ) {
+		$this->cuentaNegativos = $cuentaNegativos;
+
+		return $this;
+	}
+
+	/**
+	 * Get cuentaNegativos
+	 *
+	 * @return int
+	 */
+	public function getCuentaNegativos() {
+		return $this->cuentaNegativos;
+	}
+
+	/**
+	 * Set cuentaAbstenciones
+	 *
+	 * @param integer $cuentaAbstenciones
+	 *
+	 * @return Mocion
+	 */
+	public function setCuentaAbstenciones( $cuentaAbstenciones ) {
+		$this->cuentaAbstenciones = $cuentaAbstenciones;
+
+		return $this;
+	}
+
+	/**
+	 * Get cuentaAbstenciones
+	 *
+	 * @return int
+	 */
+	public function getCuentaAbstenciones() {
+		return $this->cuentaAbstenciones;
+	}
+
+	/**
+	 * @return Votacion[]|ArrayCollection
+	 */
+	public function getVotaciones() {
+		return $this->votaciones;
+	}
+
+	/**
+	 * @param Votacion[]|ArrayCollection $votaciones
+	 */
+	public function setVotaciones( $votaciones ) {
+		$this->votaciones = $votaciones;
+	}
+
+	/**
+	 * @return Voto[]|ArrayCollection
+	 */
+	public function getVotos() {
+		return $this->votos;
+	}
+
+	/**
+	 * @param Voto[]|ArrayCollection $votos
+	 */
+	public function setVotos( $votos ) {
+		$this->votos = $votos;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function puedeVotarse() {
+		if ( $this->getEstado() ) {
+			return $this->getEstado()->getSlug() == self::ESTADO_PARA_VOTAR;
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function enVotacion() {
+		return $this->getEstado()->getSlug() == self::ESTADO_EN_VOTACION;
+	}
+
+	public function tiempoDeVotacionRestante() {
+		foreach ( $this->getVotaciones() as $votacion ) {
+			if ( ! $votacion->finalizada() ) {
+				$fecha = clone $votacion->getFechaCreacion();
+				$diff  = $fecha->modify( '+' . $votacion->getDuracion() . ' seconds' )->diff( new DateTime() );
+
+				return $diff->s;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function finalizada() {
+		return $this->getEstado()->getSlug() == self::ESTADO_FINALIZADO;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function editable() {
+		return $this->puedeVotarse();
+	}
 
     /**
-     * @var int
+     * Get aprobado
      *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @return boolean
      */
-    private $id;
-
-    /**
-     * @var Sesion $sesion
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion", inversedBy="mociones")
-     */
-    private $sesion;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="numero", type="integer", unique=true)
-     */
-    private $numero;
-
-    /**
-     * @var Parametro $tipo
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
-     */
-    private $tipo;
-
-    /**
-     * @var TipoMayoria $tipoMocion
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TipoMayoria")
-     */
-    private $tipoMayoria;
-
-    /**
-     * @var boolean $aprobado
-     *
-     * @ORM\Column(name="aprobado", type="boolean", nullable=true)
-     */
-    private $aprobado = null;
-
-    /**
-     * @var Expediente $expediente
-     *
-     * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente")
-     * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id", nullable=true)
-     */
-    private $expediente;
-
-    /**
-     * @var Parametro $estado
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
-     */
-    private $estado;
-
-    /**
-     * @var int $cuentaTotal
-     *
-     * @ORM\Column(name="cuenta_total", type="integer", nullable=true)
-     */
-    private $cuentaTotal;
-
-    /**
-     * @var int $cuentaAfirmativos
-     *
-     * @ORM\Column(name="cuentaAfirmativos", type="integer", nullable=true)
-     */
-    private $cuentaAfirmativos;
-
-    /**
-     * @var int $cuentaNegativos
-     *
-     * @ORM\Column(name="cuentaNegativos", type="integer", nullable=true)
-     */
-    private $cuentaNegativos;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="cuentaAbstenciones", type="integer", nullable=true)
-     */
-    private $cuentaAbstenciones;
-
-    /**
-     * @var ArrayCollection|Votacion[]
-     *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Votacion", mappedBy="mocion")
-     */
-    private $votaciones;
-
-    /**
-     * @var ArrayCollection|Voto[]
-     *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Voto", mappedBy="mocion")
-     */
-    private $votos;
-
-    public function __construct()
-    {
-        $this->votaciones = new ArrayCollection();
-        $this->votos = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return '' . $this->getNumero();
-    }
-
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return Sesion
-     */
-    public function getSesion()
-    {
-        return $this->sesion;
-    }
-
-    /**
-     * @param Sesion $sesion
-     */
-    public function setSesion($sesion)
-    {
-        $this->sesion = $sesion;
-    }
-
-    /**
-     * Set numero
-     *
-     * @param integer $numero
-     *
-     * @return Mocion
-     */
-    public function setNumero($numero)
-    {
-        $this->numero = $numero;
-
-        return $this;
-    }
-
-    /**
-     * Get numero
-     *
-     * @return int
-     */
-    public function getNumero()
-    {
-        return $this->numero;
-    }
-
-    /**
-     * @return Parametro
-     */
-    public function getTipo()
-    {
-        return $this->tipo;
-    }
-
-    /**
-     * @param Parametro $tipo
-     */
-    public function setTipo($tipo)
-    {
-        $this->tipo = $tipo;
-    }
-
-    /**
-     * @return TipoMayoria
-     */
-    public function getTipoMayoria()
-    {
-        return $this->tipoMayoria;
-    }
-
-    /**
-     * @param TipoMayoria $tipoMayoria
-     */
-    public function setTipoMayoria($tipoMayoria)
-    {
-        $this->tipoMayoria = $tipoMayoria;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAprobado()
+    public function getAprobado()
     {
         return $this->aprobado;
     }
 
     /**
-     * @param bool $aprobado
-     */
-    public function setAprobado($aprobado)
-    {
-        $this->aprobado = $aprobado;
-    }
-
-    /**
-     * @return Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
-
-    /**
-     * @param Expediente $expediente
-     */
-    public function setExpediente($expediente)
-    {
-        $this->expediente = $expediente;
-    }
-
-    /**
-     * @return Parametro
-     */
-    public function getEstado()
-    {
-        return $this->estado;
-    }
-
-    /**
-     * @param Parametro $estado
-     */
-    public function setEstado($estado)
-    {
-        $this->estado = $estado;
-    }
-
-    /**
-     * Set cuentaAfirmativos
+     * Set texto
      *
-     * @param integer $cuentaAfirmativos
+     * @param string $texto
      *
      * @return Mocion
      */
-    public function setCuentaAfirmativos($cuentaAfirmativos)
+    public function setTexto($texto)
     {
-        $this->cuentaAfirmativos = $cuentaAfirmativos;
+        $this->texto = $texto;
 
         return $this;
     }
 
     /**
-     * @return int
-     */
-    public function getCuentaTotal()
-    {
-        return $this->cuentaTotal;
-    }
-
-    /**
-     * @param int $cuentaTotal
-     */
-    public function setCuentaTotal($cuentaTotal)
-    {
-        $this->cuentaTotal = $cuentaTotal;
-    }
-
-    /**
-     * Get cuentaAfirmativos
+     * Get texto
      *
-     * @return int
+     * @return string
      */
-    public function getCuentaAfirmativos()
+    public function getTexto()
     {
-        return $this->cuentaAfirmativos;
+        return $this->texto;
     }
 
     /**
-     * Set cuentaNegativos
+     * Set fechaCreacion
      *
-     * @param integer $cuentaNegativos
+     * @param \DateTime $fechaCreacion
      *
      * @return Mocion
      */
-    public function setCuentaNegativos($cuentaNegativos)
+    public function setFechaCreacion($fechaCreacion)
     {
-        $this->cuentaNegativos = $cuentaNegativos;
+        $this->fechaCreacion = $fechaCreacion;
 
         return $this;
     }
 
     /**
-     * Get cuentaNegativos
+     * Set fechaActualizacion
      *
-     * @return int
-     */
-    public function getCuentaNegativos()
-    {
-        return $this->cuentaNegativos;
-    }
-
-    /**
-     * Set cuentaAbstenciones
-     *
-     * @param integer $cuentaAbstenciones
+     * @param \DateTime $fechaActualizacion
      *
      * @return Mocion
      */
-    public function setCuentaAbstenciones($cuentaAbstenciones)
+    public function setFechaActualizacion($fechaActualizacion)
     {
-        $this->cuentaAbstenciones = $cuentaAbstenciones;
+        $this->fechaActualizacion = $fechaActualizacion;
 
         return $this;
     }
 
     /**
-     * Get cuentaAbstenciones
+     * Add votacione
      *
-     * @return int
+     * @param \AppBundle\Entity\Votacion $votacione
+     *
+     * @return Mocion
      */
-    public function getCuentaAbstenciones()
+    public function addVotacione(\AppBundle\Entity\Votacion $votacione)
     {
-        return $this->cuentaAbstenciones;
+        $this->votaciones[] = $votacione;
+
+        return $this;
     }
 
     /**
-     * @return Votacion[]|ArrayCollection
+     * Remove votacione
+     *
+     * @param \AppBundle\Entity\Votacion $votacione
      */
-    public function getVotaciones()
+    public function removeVotacione(\AppBundle\Entity\Votacion $votacione)
     {
-        return $this->votaciones;
+        $this->votaciones->removeElement($votacione);
     }
 
     /**
-     * @param Votacion[]|ArrayCollection $votaciones
+     * Add voto
+     *
+     * @param \AppBundle\Entity\Voto $voto
+     *
+     * @return Mocion
      */
-    public function setVotaciones($votaciones)
+    public function addVoto(\AppBundle\Entity\Voto $voto)
     {
-        $this->votaciones = $votaciones;
+        $this->votos[] = $voto;
+
+        return $this;
     }
 
     /**
-     * @return Voto[]|ArrayCollection
+     * Remove voto
+     *
+     * @param \AppBundle\Entity\Voto $voto
      */
-    public function getVotos()
+    public function removeVoto(\AppBundle\Entity\Voto $voto)
     {
-        return $this->votos;
+        $this->votos->removeElement($voto);
     }
 
     /**
-     * @param Voto[]|ArrayCollection $votos
+     * Set creadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
+     * @return Mocion
      */
-    public function setVotos($votos)
+    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
     {
-        $this->votos = $votos;
+        $this->creadoPor = $creadoPor;
+
+        return $this;
     }
 
     /**
-     * @return bool
+     * Set actualizadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
+     * @return Mocion
      */
-    public function puedeVotarse()
+    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
     {
-    	if ($this->getEstado()){
-		    return $this->getEstado()->getSlug() == self::ESTADO_PARA_VOTAR;
-	    }
-	    return false;
+        $this->actualizadoPor = $actualizadoPor;
 
-    }
-
-    /**
-     * @return bool
-     */
-    public function enVotacion()
-    {
-        return $this->getEstado()->getSlug() == self::ESTADO_EN_VOTACION;
-    }
-
-    public function tiempoDeVotacionRestante()
-    {
-        foreach ($this->getVotaciones() as $votacion) {
-            if (!$votacion->finalizada()) {
-                $fecha = clone $votacion->getFechaCreacion();
-                $diff = $fecha->modify('+'.$votacion->getDuracion(). ' seconds')->diff(new DateTime());
-                return $diff->s;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function finalizada()
-    {
-        return $this->getEstado()->getSlug() == self::ESTADO_FINALIZADO;
-    }
-
-    /**
-     * @return bool
-     */
-    public function editable()
-    {
-        return $this->puedeVotarse();
+        return $this;
     }
 }
-

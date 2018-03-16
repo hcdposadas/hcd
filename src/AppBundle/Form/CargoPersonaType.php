@@ -14,6 +14,7 @@ class CargoPersonaType extends AbstractType {
 		$builder
 			->add( 'cargo')
 			->add( 'areaAdministrativa')
+			->add('comision')
 		;
 	}
 

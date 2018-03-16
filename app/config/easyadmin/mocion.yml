@@ -3,6 +3,8 @@ easy_admin:
         Mocion:
             class: AppBundle\Entity\Mocion
             disabled_actions: ['new']
+            list:
+                fields: ['id', 'sesion', 'numero', 'texto', 'aprobado', 'cuentaTotal', 'cuentaAfirmativos', 'cuentaNegativos', 'cuentaAbstenciones' ]
             form:
                 fields:
                     - { property: 'texto' }

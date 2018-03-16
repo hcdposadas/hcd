@@ -30,12 +30,14 @@ class VotacionManager
     public function __construct(
         EntityManagerInterface $entityManager,
         NotificationsManager $notificationsManager,
-        UrlGeneratorInterface $router
+        UrlGeneratorInterface $router,
+        TipoMayoriaManager $tipoMayoriaManager
     )
     {
         $this->entityManager = $entityManager;
         $this->notificationsManager = $notificationsManager;
         $this->router = $router;
+        $this->tipoMayoriaManager = $tipoMayoriaManager;
     }
 
     /**
@@ -207,8 +209,7 @@ class VotacionManager
         $mocion->setCuentaAbstenciones($abstenciones);
         $mocion->setCuentaTotal($total);
 
-        $tipoMayoria = $mocion->getTipoMayoria();
-        $mocion->setAprobado($tipoMayoria->{$tipoMayoria->getFuncion()}($mocion));
+        $mocion->setAprobado($this->tipoMayoriaManager->seAprueba($mocion));
 
         $this->entityManager->persist($mocion);
         $this->entityManager->flush();

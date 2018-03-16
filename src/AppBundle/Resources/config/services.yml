@@ -20,5 +20,5 @@ services:
         autowire: true
 
     votacion.manager:
-            alias: AppBundle\Services\VotacionManager
-            public: true
+        alias: AppBundle\Services\VotacionManager
+        public: true

@@ -1,0 +1,28 @@
+<?php
+
+namespace AppBundle\Services\Mayorias;
+
+use AppBundle\Entity\Mocion;
+
+/**
+ * Class MayoriaCalificadaPresentes
+ * @package AppBundle\Services\Mayorias
+ *
+ * Mayoría calificada presentes: dos tecios de los presentes.
+ */
+class MayoriaCalificadaPresentes extends Mayoria
+{
+    /**
+     * @param Mocion $mocion
+     * @return bool
+     */
+    public function seAprueba(Mocion $mocion)
+    {
+        if (array_key_exists($mocion->getCuentaTotal(), $this->cantidades)) {
+            if ($mocion->getCuentaAfirmativos() >= $this->cantidades[$mocion->getCuentaTotal()]) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

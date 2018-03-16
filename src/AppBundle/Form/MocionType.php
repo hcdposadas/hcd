@@ -42,9 +42,9 @@ class MocionType extends AbstractType
                 'class' => Sesion::class,
                 'data' => $sesion,
                 'query_builder' => function (EntityRepository $er) {
-	                return $er->createQueryBuilder( 's' )
-	                   ->where( 's.activo = true' )
-	                   ->setMaxResults( 1 );
+                    return $er->createQueryBuilder('s')
+                        ->where('s.activo = true')
+                        ->setMaxResults(1);
                 },
 
             ))
@@ -66,8 +66,7 @@ class MocionType extends AbstractType
                 'required' => false,
                 'label' => 'Expediente',
                 'class' => Expediente::class,
-            ))
-        ;
+            ));
     }
 
     /**

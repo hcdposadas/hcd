@@ -26,5 +26,35 @@ class SesionRepository extends \Doctrine\ORM\EntityRepository {
 		return $qb->getQuery()->getScalarResult();
 	}
 
+	public function getQbAll() {
+		$qb = $this->createQueryBuilder( 's' );
+
+		$qb->orderBy( 's.fecha', 'DESC' );
+
+		return $qb;
+	}
+
+	public function getQbBuscar( $filtros ) {
+		$qb = $this->getQbAll();
+
+		if ( $filtros ) {
+			if ( isset( $filtros['titulo'] ) ) {
+				$qb->where( 'upper(s.titulo) LIKE upper(:titulo)' )
+				   ->setParameter( 'titulo', $filtros['titulo'] );
+			}
+			if ( isset( $filtros['fecha'] ) ) {
+				$qb->andWhere( 's.fecha = :fecha' )
+				   ->setParameter( 'fecha', $filtros['fecha'] );
+			}
+			if ( isset( $filtros['tipo'] ) ) {
+				$qb->andWhere( 's.tipoSesion = :tipo' )
+				   ->setParameter( 'tipo', $filtros['tipo'] );
+			}
+
+		}
+
+		return $qb;
+	}
+
 
 }

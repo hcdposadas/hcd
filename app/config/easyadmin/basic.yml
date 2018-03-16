@@ -22,6 +22,7 @@ easy_admin:
             - Expediente
             - { label: 'Tipo Expediente', entity: TipoExpediente }
             - { label: 'Tipo Proyecto', entity: TipoProyecto }
+            - { label: 'Tipo Mayoría', entity: TipoMayoria }
             - Iniciador
             - { label: 'Area Administrativa', entity: AreaAdministrativa }
             - Bloque

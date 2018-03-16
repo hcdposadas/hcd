@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\Filter\SesionFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -58,6 +59,49 @@ class SesionController extends Controller {
 				'last_username' => $lastUsername,
 				'error'         => $error,
 			) );
+	}
+
+	public function indexSesionesAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+
+		$filterType = $this->createForm( SesionFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+		$filterType->handleRequest( $request );
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+			$sesiones = $em->getRepository( 'AppBundle:Sesion' )->getQbBuscar( $filterType->getData() );
+		} else {
+			$sesiones = $em->getRepository( 'AppBundle:Sesion' )->getQbAll();
+		}
+
+
+		$paginator = $this->get( 'knp_paginator' );
+		$sesiones  = $paginator->paginate(
+			$sesiones,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+
+		return $this->render( 'sesiones/index.html.twig',
+			[
+				'sesiones'   => $sesiones,
+				'filter_type' => $filterType->createView()
+			] );
+	}
+
+	public function verSesionAction( Request $request, $id ) {
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $id );
+
+		return $this->render( 'sesiones/ver.html.twig',
+			[
+				'sesion' => $sesion
+			] );
 	}
 
 }

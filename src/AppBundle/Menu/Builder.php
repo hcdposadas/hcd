@@ -178,6 +178,28 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+			$keyPersonal = 'SESIONES';
+			$menu->addChild(
+				$keyPersonal,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-file-text-o' )
+			     ->setAttribute( 'class', 'treeview' );
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Listado',
+					array(
+						'route' => 'sesiones_index',
+					)
+				);
+		}
+
 
 		$keyPersonal = 'DOCUMENTOS';
 		$menu->addChild(

@@ -1,0 +1,7 @@
+sesiones_index:
+    path: /index
+    defaults: { _controller: "AppBundle:Sesion:indexSesiones" }
+
+sesiones_ver:
+    path: /{id}/ver
+    defaults: { _controller: "AppBundle:Sesion:verSesion" }

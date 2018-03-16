@@ -296,7 +296,6 @@ class Persona extends BaseClass {
      */
     public function setCargoPersona($cargoPersona)
     {
-//        $this->cargoPersona = $cargoPersona;
 
         foreach ($cargoPersona as $item) {
 
@@ -316,9 +315,6 @@ class Persona extends BaseClass {
      */
     public function addCargoPersona(\AppBundle\Entity\CargoPersona $cargoPersona)
     {
-//        $this->cargoPersona[] = $cargoPersona;
-//
-//        return $this;
 
 	    $cargoPersona->setPersona( $this );
 

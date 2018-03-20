@@ -87,14 +87,14 @@
                     {#{{ form_widget(form) }}#}
                 {#</div>#}
             {#</div>#}
-            <input class="btn btn-primary" type="submit" value="Crear"/>
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
             <div class="hidden">
                 {{ form_end(form) }}
             </div>
         </div>
     </div>
 
-    <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
+    <a class="btn btn-default" href="{{ path('expedientes_administrativos_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
     {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}

@@ -36,15 +36,15 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
-			->add( 'iniciadorParticular',
-				Select2EntityType::class,
-				[
-					'remote_route' => 'get_persona_por_dni',
-					'class'        => 'AppBundle\Entity\Persona',
-					'required'     => false,
-					'placeholder'  => 'Por DNI'
-
-				] )
+//			->add( 'iniciadorParticular',
+//				Select2EntityType::class,
+//				[
+//					'remote_route' => 'get_persona_por_dni',
+//					'class'        => 'AppBundle\Entity\Persona',
+//					'required'     => false,
+//					'placeholder'  => 'Por DNI'
+//
+//				] )
 			->add( 'dependencia',
 				Select2EntityType::class,
 				[

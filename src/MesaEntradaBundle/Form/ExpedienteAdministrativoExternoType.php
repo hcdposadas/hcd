@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\BootstrapCollectionType;
@@ -15,8 +16,16 @@ use UtilBundle\Form\Type\Select2EntityType;
 class ExpedienteAdministrativoExternoType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'expediente' )
-			->add( 'letra' )
+			->add( 'expediente',
+				TextType::class,
+				[
+					'required' => true
+				] )
+			->add( 'letra',
+				TextType::class,
+				[
+					'required' => true
+				] )
 			->add( 'periodoLegislativo',
 				null,
 				[
@@ -27,16 +36,6 @@ class ExpedienteAdministrativoExternoType extends AbstractType {
 				[
 					'attr' => [ 'rows' => 5 ]
 				] )
-//			->add( 'texto',
-//				CKEditorType::class,
-//				[
-//					'required' => true,
-//					'config'   => array(
-//						'uiColor' => '#ffffff',
-////						'height'  => '600px'
-//					),
-//					'attr'     => [ 'class' => 'texto_por_defecto' ]
-//				] )
 			->add( 'registroMunicipal' )
 			->add( 'dependencia',
 				Select2EntityType::class,
@@ -45,6 +44,15 @@ class ExpedienteAdministrativoExternoType extends AbstractType {
 					'class'        => 'AppBundle\Entity\Dependencia',
 					'required'     => false,
 					'placeholder'  => 'Por Nombre'
+
+				] )
+			->add( 'iniciadorParticular',
+				Select2EntityType::class,
+				[
+					'remote_route' => 'get_persona_por_dni',
+					'class'        => 'AppBundle\Entity\Persona',
+					'required'     => false,
+					'placeholder'  => 'Por DNI'
 
 				] )
 			->add( 'giroAdministrativos',

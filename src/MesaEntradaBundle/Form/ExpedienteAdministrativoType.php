@@ -61,10 +61,6 @@ class ExpedienteAdministrativoType extends AbstractType {
 				array(
 					'html5'  => true,
 					'widget' => 'single_text',
-//					'format' => 'dd/MM/yyyy',
-//					'attr'   => array(
-//						'class' => 'datepicker',
-//					),
 				) )
 			->add( 'registroMunicipal' )
 			->add( 'dependencia',
@@ -76,6 +72,14 @@ class ExpedienteAdministrativoType extends AbstractType {
 					'placeholder'  => 'Por Nombre'
 
 				] )
+//			->add( 'iniciadorParticular',
+//				Select2EntityType::class,
+//				[
+//					'remote_route' => 'get_persona_por_dni',
+//					'class'        => 'AppBundle\Entity\Persona',
+//					'required'     => false,
+//
+//				] )
 			->add( 'giroAdministrativos',
 				BootstrapCollectionType::class,
 				[

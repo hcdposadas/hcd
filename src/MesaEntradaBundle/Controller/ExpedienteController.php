@@ -776,7 +776,7 @@ class ExpedienteController extends Controller {
 
 	public function nuevoExpedienteAdministrativoAction( Request $request ) {
 
-		$em             = $this->getDoctrine();
+		$em             = $this->getDoctrine()->getManager();
 		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
 			'slug' => 'interno'
 		] );
@@ -796,6 +796,8 @@ class ExpedienteController extends Controller {
 				'success',
 				'Expediente creado correctamente'
 			);
+
+			return $this->redirectToRoute( 'expediente_administrativo_editar', [ 'id' => $expediente->getId() ] );
 
 		}
 

@@ -4,6 +4,12 @@
 {% endblock title %}
 {% block body %}
 
+    <div class="row m-b-1">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('expediente_legislativo_externo_nuevo') }}">Nuevo Expediente</a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="box collapsed-box">
@@ -96,10 +102,10 @@
                                            href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                    {#{% else %}#}
+                                        {#{% else %}#}
                                         {#<a class="btn btn-default"#}
-                                           {#href="{{ path('expediente_edit', { 'id': expediente.id }) }}">#}
-                                            {#<i class="fa fa-edit"></i>#}
+                                        {#href="{{ path('expediente_edit', { 'id': expediente.id }) }}">#}
+                                        {#<i class="fa fa-edit"></i>#}
                                         {#</a>#}
                                     {% endif %}
                                     <a class="btn btn-default"
@@ -107,8 +113,8 @@
                                         <i class="fa fa-road"></i>
                                     </a>
                                     {#<a class="btn btn-default" target="_blank"#}
-                                       {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}
-                                        {#<i class="fa fa-print"></i>#}
+                                    {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}
+                                    {#<i class="fa fa-print"></i>#}
                                     {#</a>#}
                                 </td>
                             </tr>
@@ -120,9 +126,9 @@
         </div>
     </div>
     <div class="row">
-    <div class="col-md-12">
-        <a class="btn btn-primary" href="{{ path('expediente_legislativo_externo_nuevo') }}">Nuevo Expediente</a>
-    </div>
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('expediente_legislativo_externo_nuevo') }}">Nuevo Expediente</a>
+        </div>
     </div>
     {# display navigation #}
     <div class="col-md-12 text-center">

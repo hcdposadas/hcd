@@ -39,8 +39,9 @@ class SesionRepository extends \Doctrine\ORM\EntityRepository {
 
 		if ( $filtros ) {
 			if ( isset( $filtros['titulo'] ) ) {
+				$q = $filtros['titulo'];
 				$qb->where( 'upper(s.titulo) LIKE upper(:titulo)' )
-				   ->setParameter( 'titulo', $filtros['titulo'] );
+				   ->setParameter( 'titulo', "%$q%" );
 			}
 			if ( isset( $filtros['fecha'] ) ) {
 				$qb->andWhere( 's.fecha = :fecha' )

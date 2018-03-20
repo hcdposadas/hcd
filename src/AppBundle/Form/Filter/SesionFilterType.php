@@ -26,6 +26,7 @@ class SesionFilterType extends AbstractType {
 			        [
 				        'class'         => Parametro::class,
 				        'label'         => 'Tipo',
+				        'required'      => false,
 				        'query_builder' => function ( EntityRepository $er ) {
 					        return $er->createQueryBuilder( 'p' )
 					                  ->where( 'p.grupo = :grupo' )

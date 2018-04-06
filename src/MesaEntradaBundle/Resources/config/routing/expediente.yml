@@ -72,12 +72,12 @@ expediente_imprimir_proyecto:
     path: /expediente_imprimir_proyecto/{id}
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirProyecto" }
 
-expediente_recibir_proyecto:
-    path: /expediente_recibir_proyecto
-    defaults: { _controller: "MesaEntradaBundle:Expediente:recibirProyecto" }
+expediente_impresion_proyecto:
+    path: /expediente_impresion_proyecto
+    defaults: { _controller: "MesaEntradaBundle:Expediente:impresionProyecto" }
 
 expediente_asignar_numero:
-    path: /{id}/expediente_asignar_numero
+    path: /expediente_asignar_numero
     defaults: { _controller: "MesaEntradaBundle:Expediente:asignarNumeroExpediente" }
 
 expediente_imprimir_etiqueta:

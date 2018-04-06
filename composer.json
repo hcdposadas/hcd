@@ -43,7 +43,7 @@
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.4.*",
         "tetranz/select2entity-bundle": "1.*",
-        "vich/uploader-bundle": "^1.4"
+        "vich/uploader-bundle": "^1.7"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.1",

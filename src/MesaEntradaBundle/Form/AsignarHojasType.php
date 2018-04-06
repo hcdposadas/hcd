@@ -2,33 +2,24 @@
 
 namespace MesaEntradaBundle\Form;
 
-use AppBundle\Entity\PeriodoLegislativo;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AsignarNumeroType extends AbstractType {
+class AsignarHojasType extends AbstractType {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'expediente' )
-			->add( 'letra' )
-//			->add( 'periodoLegislativo',
-//				EntityType::class,
-//				[
-//					'class'    => PeriodoLegislativo::class,
-//					'disabled' => true
-//				] )
+			->add( 'numeroDeHojas' )
 			->add( 'asignar',
 				SubmitType::class,
 				[
 					'attr' => [ 'class' => 'btn btn-primary' ]
 				] );
+
 	}
 
 	/**
@@ -44,7 +35,7 @@ class AsignarNumeroType extends AbstractType {
 	 * {@inheritdoc}
 	 */
 	public function getBlockPrefix() {
-		return 'mesaentradabundle_expediente';
+		return 'mesaentradabundle_expediente_asignar_hoja';
 	}
 
 

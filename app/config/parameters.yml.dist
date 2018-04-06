@@ -27,3 +27,4 @@ parameters:
     redis_scheme: tcp
 
     knp_snappy_binary: "%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64"
+    app_url: 'http://localhost/hcd'

@@ -13,12 +13,12 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
-    app.path.expedientes_internos: /uploads/expedientes/internos
-    app.path.expedientes_externos: /uploads/expedientes/externos
-    app.path.dictamenes: /uploads/dictamenes
-    app.path.sanciones: /uploads/sanciones
-    app.path.documentos: /uploads/documentos
-    app.path.varios: /uploads/varios
+    app.path.expedientes_internos: '%app_url%/web/uploads/expedientes/internos'
+    app.path.expedientes_externos: '%app_url%/web/uploads/expedientes/externos'
+    app.path.dictamenes: '%app_url%/web/uploads/dictamenes'
+    app.path.sanciones: '%app_url%/web/uploads/sanciones'
+    app.path.documentos: '%app_url%/web/uploads/documentos'
+    app.path.varios: '%app_url%/web/uploads/varios'
 
 framework:
     ide: "%ide%"
@@ -51,6 +51,7 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         version: "%version%"
+        kernelRootDir: "%kernel.root_dir%"
     form_themes:
         - 'bootstrap_3_layout.html.twig'
 #        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'

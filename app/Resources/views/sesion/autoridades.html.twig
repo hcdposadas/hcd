@@ -79,9 +79,9 @@
                             <span class="glyphicon glyphicon-log-out"></span>
                         </a>
                         {% if is_granted('ROLE_SECRETARIO') %}
-                        <button class="btn btn-primary" type="button">
-                            Presentes <span class="badge"><quorum></quorum></span>
-                        </button>
+                            <button class="btn btn-primary" type="button">
+                                Presentes <span class="badge"><quorum></quorum></span>
+                            </button>
                         {% endif %}
 
                     </div>
@@ -177,7 +177,17 @@
         <hr>
         <div class="col-md-12">
             <h2>
-                Secretario
+                {% if is_granted('ROLE_SECRETARIO') %}
+                    Secretario
+                {% elseif is_granted('ROLE_DEFENSOR') %}
+                    Defensor del Pueblo
+                {% elseif is_granted('ROLE_LEGISLATIVO') %}
+                    Legislativo
+                {% else %}
+                    {% if app.user.persona %}
+                        {{ app.user.persona }}
+                    {% endif %}
+                {% endif %}
             </h2>
         </div>
     </div>
@@ -185,8 +195,8 @@
 
 </body>
 
-<script src="{{ asset('build/app.js') }}"></script>
 <script src="{{ asset('build/common-js.js') }}"></script>
+<script src="{{ asset('build/app.js') }}"></script>
 {% block javascripts %}
 {% endblock javascripts %}
 

@@ -13,14 +13,14 @@ Encore
 
 
     // will create web/build/app.js and web/build/app.css
-    .addEntry('app', './app/Resources/assets/js/main.js')
     .addEntry('common-js', './app/Resources/assets/js/common.js')
+    .addEntry('app', './app/Resources/assets/js/main.js')
 
 
     .enableVueLoader()
 
-    .addStyleEntry('global', './app/Resources/assets/css/global.scss')
     .addStyleEntry('common', './app/Resources/assets/css/common.scss')
+    .addStyleEntry('global', './app/Resources/assets/css/global.scss')
 
     // allow sass/scss files to be processed
     .enableSassLoader()

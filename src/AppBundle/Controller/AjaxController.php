@@ -6,6 +6,7 @@ use AppBundle\Entity\Dependencia;
 use AppBundle\Entity\Persona;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
+use Endroid\QrCode\QrCode;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -265,5 +266,51 @@ class AjaxController extends Controller {
 		$json = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->buscarExpedientesSesion( $data );
 
 		return new JsonResponse( $json );
+	}
+
+	public function enviarMailCodigoProyectoAction( Request $request ) {
+
+		$expedienteId = $request->get( 'expedienteId' );
+		$expediente   = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->find( $expedienteId );
+
+		if ( ! $expediente ) {
+			return new JsonResponse( 'No se encontro el tipo de proyeto', 404 );
+		}
+
+		$mailer = $this->get( 'mailer' );
+
+		$mail = $this->getUser()->getEmail();
+
+		$asunto = 'HCD Posadas - Código Impresión Proyecto';
+
+		$code          = new QrCode( $expediente->getCodigoReferencia() );
+		$code->setLogoPath($this->get('kernel')->getRootDir() . '/../web/apple-touch-icon.png')
+		     ->setLogoWidth(50);
+
+		$nombreAdjunto = $expediente->getId() . '.png';
+
+		$message = ( new \Swift_Message( $asunto ) );
+
+		$img = $message->embed( \Swift_Image::newInstance( $code->writeString(),
+			$nombreAdjunto,
+			$code->getContentType() ) );
+
+		$message
+			->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
+			->setTo( $mail )
+			->setBody(
+				$this->renderView(
+					'emails/codigo_proyecto.html.twig',
+					[
+						'expediente' => $expediente,
+						'img'        => $img
+					]
+				),
+				'text/html'
+			);
+
+		$mailer->send( $message );
+
+		return new JsonResponse( 'ok' );
 	}
 }

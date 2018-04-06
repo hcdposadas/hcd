@@ -30,7 +30,8 @@ class SesionController extends Controller {
 
 		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ||
 		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ||
-		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' )
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_PROSECRETARIO' )
 		) {
 			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 

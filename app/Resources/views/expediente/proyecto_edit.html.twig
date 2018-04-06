@@ -95,10 +95,14 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        {#{{ form_row(edit_form.iniciadores) }}#}
                     </div>
                 </div>
             {% endif %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(edit_form.iniciadores) }}
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-12">
@@ -136,10 +140,10 @@
                         {{ form_widget(edit_form.guardarYEnviar) }}
                     {% endif %}
 
-                        <a class="btn btn-default" target="_blank"
-                           href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
-                            <i class="fa fa-print"></i> {% if expediente.borrador == false %}Imprimir{% else %}Vista Previa{% endif %}
-                        </a>
+                        {#<a class="btn btn-default" target="_blank"#}
+                           {#href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">#}
+                            {#<i class="fa fa-print"></i> {% if expediente.borrador == false %}Imprimir{% else %}Vista Previa{% endif %}#}
+                        {#</a>#}
 
                 </div>
             </div>
@@ -170,7 +174,7 @@
 
             $('.btn-borrar-acompaniante').click(function () {
                 var iniciadorId = $(this).data('iniciador');
-                $('.select2entity[value=' + iniciadorId + ']').parent().parent().remove();
+                $('.select2entity option[value=' + iniciadorId + ']').parents('tr').remove();
                 $(this).parent().parent().remove();
             })
 

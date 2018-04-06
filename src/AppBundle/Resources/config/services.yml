@@ -22,3 +22,11 @@ services:
     votacion.manager:
         alias: AppBundle\Services\VotacionManager
         public: true
+
+    AppBundle\Services\TipoMayoriaManager:
+        public: false
+        autowire: true
+
+    tipo_mayoria.manager:
+        alias: AppBundle\Services\TipoMayoriaManager
+        public: true

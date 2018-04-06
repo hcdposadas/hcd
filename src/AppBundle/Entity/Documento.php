@@ -69,10 +69,8 @@ class Documento extends BaseClass {
 		if ( $file ) {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
-//			$this->updatedAt = new \DateTimeImmutable();
+			$this->setActualizadoPor( new \DateTime( 'now' ) );
 		}
-
-		return $this;
 	}
 
 	/**
@@ -114,107 +112,99 @@ class Documento extends BaseClass {
 		return $this->nombre;
 	}
 
-    /**
-     * Set slug
-     *
-     * @param string $slug
-     *
-     * @return Documento
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
+	/**
+	 * Set slug
+	 *
+	 * @param string $slug
+	 *
+	 * @return Documento
+	 */
+	public function setSlug( $slug ) {
+		$this->slug = $slug;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get slug
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
+	/**
+	 * Get slug
+	 *
+	 * @return string
+	 */
+	public function getSlug() {
+		return $this->slug;
+	}
 
-    /**
-     * Set documento
-     *
-     * @param string $documento
-     *
-     * @return Documento
-     */
-    public function setDocumento($documento)
-    {
-        $this->documento = $documento;
+	/**
+	 * Set documento
+	 *
+	 * @param string $documento
+	 *
+	 * @return Documento
+	 */
+	public function setDocumento( $documento ) {
+		$this->documento = $documento;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get documento
-     *
-     * @return string
-     */
-    public function getDocumento()
-    {
-        return $this->documento;
-    }
+	/**
+	 * Get documento
+	 *
+	 * @return string
+	 */
+	public function getDocumento() {
+		return $this->documento;
+	}
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return Documento
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return Documento
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return Documento
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return Documento
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return Documento
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return Documento
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return Documento
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return Documento
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 }

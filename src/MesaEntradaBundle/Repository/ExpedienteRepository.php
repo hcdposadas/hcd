@@ -50,10 +50,20 @@ class ExpedienteRepository extends EntityRepository {
 
 	public function getQbExpedientesMesaEntradaTipo( $tipoExpediente ) {
 		$qb = $this->getQbAll();
-		$qb->where( 'e.borrador is null' )
+		$qb
 		   ->orWhere( 'e.borrador = false' )
 		   ->andWhere( 'e.tipoExpediente = :tipoExpediente' )
 		   ->setParameter( 'tipoExpediente', $tipoExpediente );
+
+		return $qb;
+	}
+
+	public function getQbExpedientesLegislativoTipo( $tipoExpediente ) {
+		$qb = $this->getQbAll();
+		$qb
+
+			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			->setParameter( 'tipoExpediente', $tipoExpediente );
 
 		return $qb;
 	}

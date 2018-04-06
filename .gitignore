@@ -25,6 +25,8 @@ env.json
 !web/uploads/expedientes/externos/.gitkeep
 /web/uploads/documentos/*
 !web/uploads/documentos/.gitkeep
+/web/uploads/varios/*
+!web/uploads/varios/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim

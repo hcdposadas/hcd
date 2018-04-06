@@ -52,9 +52,17 @@ class Builder implements ContainerAwareInterface {
 
 			$menu[ $keyEmpresa ]
 				->addChild(
-					'Recibir Proyecto',
+					'Imprimir Proyecto',
 					array(
-						'route' => 'expediente_recibir_proyecto',
+						'route' => 'expediente_impresion_proyecto',
+					)
+				);
+
+			$menu[ $keyEmpresa ]
+				->addChild(
+					'Asingar Nº Expte',
+					array(
+						'route' => 'expediente_asignar_numero',
 					)
 				);
 
@@ -178,7 +186,7 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
-		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) || $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 			$keyPersonal = 'SESIONES';
 			$menu->addChild(
 				$keyPersonal,
@@ -191,6 +199,15 @@ class Builder implements ContainerAwareInterface {
 			     ->setUri( '#' )
 			     ->setExtra( 'icon', 'fa fa-file-text-o' )
 			     ->setAttribute( 'class', 'treeview' );
+
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Conformar Plan de Labor',
+					array(
+						'route' => 'sesiones_index',
+					)
+				);
+
 			$menu[ $keyPersonal ]
 				->addChild(
 					'Listado',

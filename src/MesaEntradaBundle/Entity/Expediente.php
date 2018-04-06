@@ -47,6 +47,20 @@ class Expediente extends BaseClass {
 	/**
 	 * @var string
 	 *
+	 * @ORM\Column(name="extracto_temario", type="text", nullable=true)
+	 */
+	private $extractoTemario;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="extracto_dictamen", type="text", nullable=true)
+	 */
+	private $extractoDictamen;
+
+	/**
+	 * @var string
+	 *
 	 * @ORM\Column(name="expediente", type="string", length=255, nullable=true)
 	 */
 	private $expediente;
@@ -194,6 +208,18 @@ class Expediente extends BaseClass {
 	 * @ORM\Column(name="borrador", type="boolean", nullable=true)
 	 */
 	private $borrador;
+
+	/**
+	 * @ORM\Column(name="codigo_referencia", type="string", length=255, nullable=true)
+	 * @var string
+	 */
+	private $codigoReferencia;
+
+	/**
+	 * @ORM\Column(name="numero_de_hojas", type="string", length=255, nullable=true)
+	 * @var string
+	 */
+	private $numeroDeHojas;
 
 	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
@@ -857,5 +883,101 @@ class Expediente extends BaseClass {
     public function getPeriodoLegislativo()
     {
         return $this->periodoLegislativo;
+    }
+
+    /**
+     * Set codigoReferencia
+     *
+     * @param string $codigoReferencia
+     *
+     * @return Expediente
+     */
+    public function setCodigoReferencia($codigoReferencia)
+    {
+        $this->codigoReferencia = $codigoReferencia;
+
+        return $this;
+    }
+
+    /**
+     * Get codigoReferencia
+     *
+     * @return string
+     */
+    public function getCodigoReferencia()
+    {
+        return $this->codigoReferencia;
+    }
+
+    /**
+     * Set numeroDeHojas
+     *
+     * @param string $numeroDeHojas
+     *
+     * @return Expediente
+     */
+    public function setNumeroDeHojas($numeroDeHojas)
+    {
+        $this->numeroDeHojas = $numeroDeHojas;
+
+        return $this;
+    }
+
+    /**
+     * Get numeroDeHojas
+     *
+     * @return string
+     */
+    public function getNumeroDeHojas()
+    {
+        return $this->numeroDeHojas;
+    }
+
+    /**
+     * Set extractoTemario
+     *
+     * @param string $extractoTemario
+     *
+     * @return Expediente
+     */
+    public function setExtractoTemario($extractoTemario)
+    {
+        $this->extractoTemario = $extractoTemario;
+
+        return $this;
+    }
+
+    /**
+     * Get extractoTemario
+     *
+     * @return string
+     */
+    public function getExtractoTemario()
+    {
+        return $this->extractoTemario;
+    }
+
+    /**
+     * Set extractoDictamen
+     *
+     * @param string $extractoDictamen
+     *
+     * @return Expediente
+     */
+    public function setExtractoDictamen($extractoDictamen)
+    {
+        $this->extractoDictamen = $extractoDictamen;
+
+        return $this;
+    }
+
+    /**
+     * Get extractoDictamen
+     *
+     * @return string
+     */
+    public function getExtractoDictamen()
+    {
+        return $this->extractoDictamen;
     }
 }

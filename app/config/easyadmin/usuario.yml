@@ -26,6 +26,7 @@ easy_admin:
                           'ROLE_PERSONAL': 'ROLE_PERSONAL',
                           'ROLE_LEGISLATIVO': 'ROLE_LEGISLATIVO',
                           'ROLE_DEFENSOR': 'ROLE_DEFENSOR',
+                          'ROLE_PROSECRETARIO': 'ROLE_PROSECRETARIO',
                         }
                       }
                       }

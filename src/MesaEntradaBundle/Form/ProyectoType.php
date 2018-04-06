@@ -59,7 +59,7 @@ class ProyectoType extends AbstractType {
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,
-//					'display_history' => false,
+					'display_history' => false,
 					'label'        => 'Acompañantes'
 				] )
 			->add( 'fecha',

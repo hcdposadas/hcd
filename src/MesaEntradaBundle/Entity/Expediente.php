@@ -346,6 +346,7 @@ class Expediente extends BaseClass {
 		$this->iniciadores         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->anexos               = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**

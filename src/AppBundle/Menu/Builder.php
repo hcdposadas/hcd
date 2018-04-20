@@ -200,14 +200,15 @@ class Builder implements ContainerAwareInterface {
 			     ->setExtra( 'icon', 'fa fa-file-text-o' )
 			     ->setAttribute( 'class', 'treeview' );
 
-			$menu[ $keyPersonal ]
-				->addChild(
-					'Conformar Plan de Labor',
-					array(
-						'route' => 'sesiones_index',
-					)
-				);
-
+			if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+				$menu[ $keyPersonal ]
+					->addChild(
+						'Conformar Plan de Labor',
+						array(
+							'route' => 'sesiones_index',
+						)
+					);
+			}
 			$menu[ $keyPersonal ]
 				->addChild(
 					'Listado',

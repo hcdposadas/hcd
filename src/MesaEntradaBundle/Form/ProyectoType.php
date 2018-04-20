@@ -76,6 +76,15 @@ class ProyectoType extends AbstractType {
 					'allow_delete' => true,
 					'by_reference' => false,
 				] )
+			->add( 'anexos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => AnexoExpedienteType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Anexos'
+				] )
 			->add( 'guardar',
 				SubmitType::class,
 				array(

@@ -526,6 +526,13 @@ class ExpedienteController extends Controller {
 			$iniciadoresOriginales->add( $iniciadore );
 		}
 
+		$anexosOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getAnexos() as $anexo ) {
+			$anexosOriginales->add( $anexo );
+		}
+
 
 		$editForm = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType', $expediente );
 		$editForm->handleRequest( $request );
@@ -538,6 +545,13 @@ class ExpedienteController extends Controller {
 				if ( false === $expediente->getIniciadores()->contains( $iniciadore ) ) {
 					$iniciadore->setExpediente( null );
 					$em->remove( $iniciadore );
+				}
+			}
+
+			foreach ( $anexosOriginales as $anexo ) {
+				if ( false === $expediente->getIniciadores()->contains( $anexo ) ) {
+					$anexo->setExpediente( null );
+					$em->remove( $anexo );
 				}
 			}
 
@@ -590,7 +604,7 @@ class ExpedienteController extends Controller {
 		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
 
 
-		$dataToEncode = $expediente->getId();
+		$dataToEncode = $expediente->getCodigoReferencia();
 		if ( $expediente->getBorrador() ) {
 			$dataToEncode = null;
 		}

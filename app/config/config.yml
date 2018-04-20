@@ -15,6 +15,7 @@ parameters:
     locale: es
     app.path.expedientes_internos: '%app_url%/web/uploads/expedientes/internos'
     app.path.expedientes_externos: '%app_url%/web/uploads/expedientes/externos'
+    app.path.expedientes_anexos: '%app_url%/web/uploads/expedientes/anexos'
     app.path.dictamenes: '%app_url%/web/uploads/dictamenes'
     app.path.sanciones: '%app_url%/web/uploads/sanciones'
     app.path.documentos: '%app_url%/web/uploads/documentos'
@@ -108,6 +109,10 @@ vich_uploader:
         varios:
             uri_prefix: "%app.path.varios%"
             upload_destination: "%kernel.root_dir%/../web/uploads/varios"
+        expedientes_anexos:
+            uri_prefix: "%app.path.expedientes_anexos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/expedientes/anexos"
+            namer: "vich_uploader.namer_uniqid"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

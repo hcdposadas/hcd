@@ -45,7 +45,8 @@
     </div>
     <div class="col-md-6" style="margin-top: 0.5rem;">
         <img style="max-width: 100%; height: auto;"
-             src="{{ qrcode_data_uri(expediente.id, { writer: 'png' }) }}"/>
+             src="{{ qrcode_data_uri(expediente.codigoReferencia, { writer: 'png', logo_path: kernelRootDir ~ '/../web/apple-touch-icon.png' , logo_width: 50 }) }}"/>
+             
     </div>
 </div>
 </body>

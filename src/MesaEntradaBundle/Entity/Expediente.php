@@ -222,6 +222,14 @@ class Expediente extends BaseClass {
 	private $numeroDeHojas;
 
 	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\AnexoExpediente", mappedBy="expediente", cascade={"persist", "remove"})
+	 *
+	 */
+	private $anexos;
+
+	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
 	 * @var File
 	 */
@@ -979,5 +987,42 @@ class Expediente extends BaseClass {
     public function getExtractoDictamen()
     {
         return $this->extractoDictamen;
+    }
+
+    /**
+     * Add anexo
+     *
+     * @param \MesaEntradaBundle\Entity\AnexoExpediente $anexo
+     *
+     * @return Expediente
+     */
+    public function addAnexo(\MesaEntradaBundle\Entity\AnexoExpediente $anexo)
+    {
+
+	    $anexo->setExpediente( $this );
+
+	    $this->anexos->add( $anexo );
+
+	    return $this;
+    }
+
+    /**
+     * Remove anexo
+     *
+     * @param \MesaEntradaBundle\Entity\AnexoExpediente $anexo
+     */
+    public function removeAnexo(\MesaEntradaBundle\Entity\AnexoExpediente $anexo)
+    {
+        $this->anexos->removeElement($anexo);
+    }
+
+    /**
+     * Get anexos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAnexos()
+    {
+        return $this->anexos;
     }
 }

@@ -159,5 +159,84 @@ class Votacion extends BaseClass
         $fecha = clone $this->getFechaCreacion();
         return $fecha->modify('+'.$this->getDuracion().' seconds') < new DateTime();
     }
-}
 
+    /**
+     * Set fechaCreacion
+     *
+     * @param \DateTime $fechaCreacion
+     *
+     * @return Votacion
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+
+        return $this;
+    }
+
+    /**
+     * Set fechaActualizacion
+     *
+     * @param \DateTime $fechaActualizacion
+     *
+     * @return Votacion
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Add voto
+     *
+     * @param \AppBundle\Entity\Voto $voto
+     *
+     * @return Votacion
+     */
+    public function addVoto(\AppBundle\Entity\Voto $voto)
+    {
+        $this->votos[] = $voto;
+
+        return $this;
+    }
+
+    /**
+     * Remove voto
+     *
+     * @param \AppBundle\Entity\Voto $voto
+     */
+    public function removeVoto(\AppBundle\Entity\Voto $voto)
+    {
+        $this->votos->removeElement($voto);
+    }
+
+    /**
+     * Set creadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
+     * @return Votacion
+     */
+    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
+    {
+        $this->creadoPor = $creadoPor;
+
+        return $this;
+    }
+
+    /**
+     * Set actualizadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
+     * @return Votacion
+     */
+    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
+    {
+        $this->actualizadoPor = $actualizadoPor;
+
+        return $this;
+    }
+}

@@ -29,3 +29,11 @@ get_mis_cargos_por_nombre:
 enviar_mail:
     path: /enviar-mail
     defaults: { _controller: "AppBundle:Ajax:enviarMailCodigoProyecto" }
+
+get_proyectos_bae:
+    path: /get-proyectos-bae
+    defaults: { _controller: "AppBundle:Ajax:getProyectosBAE" }
+
+get_dictamenes_od:
+    path: /get-dictamenes-od
+    defaults: { _controller: "AppBundle:Ajax:getDictamenesOD" }

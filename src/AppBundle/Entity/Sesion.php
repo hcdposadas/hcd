@@ -11,30 +11,29 @@ use UtilBundle\Entity\Base\BaseClass;
  * @ORM\Table(name="sesion")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SesionRepository")
  */
-class Sesion extends BaseClass
-{
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+class Sesion extends BaseClass {
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="id", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
+	private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titulo", type="string", length=255)
-     */
-    private $titulo;
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="titulo", type="string", length=255)
+	 */
+	private $titulo;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="fecha", type="date")
-     */
-    private $fecha;
+	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="fecha", type="date")
+	 */
+	private $fecha;
 
 	/**
 	 * @var string
@@ -64,6 +63,18 @@ class Sesion extends BaseClass
 	private $mociones;
 
 	/**
+	 *
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\OrdenDelDia", mappedBy="sesion", cascade={"persist", "remove"})
+	 */
+	private $od;
+
+	/**
+	 *
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\BoletinAsuntoEntrado", mappedBy="sesion", cascade={"persist", "remove"})
+	 */
+	private $bae;
+
+	/**
 	 * @var $tipoSesion
 	 *
 	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Parametro")
@@ -71,262 +82,309 @@ class Sesion extends BaseClass
 	 */
 	private $tipoSesion;
 
-    /**
-     * @return string
-     */
-	public function __toString()
-    {
-        return $this->getTitulo();
-    }
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->getTitulo();
+	}
+
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * Set titulo
+	 *
+	 * @param string $titulo
+	 *
+	 * @return Sesion
+	 */
+	public function setTitulo( $titulo ) {
+		$this->titulo = $titulo;
+
+		return $this;
+	}
+
+	/**
+	 * Get titulo
+	 *
+	 * @return string
+	 */
+	public function getTitulo() {
+		return $this->titulo;
+	}
+
+	/**
+	 * Set fecha
+	 *
+	 * @param \DateTime $fecha
+	 *
+	 * @return Sesion
+	 */
+	public function setFecha( $fecha ) {
+		$this->fecha = $fecha;
+
+		return $this;
+	}
+
+	/**
+	 * Get fecha
+	 *
+	 * @return \DateTime
+	 */
+	public function getFecha() {
+		return $this->fecha;
+	}
+
+	/**
+	 * Set ordenDelDia
+	 *
+	 * @param string $ordenDelDia
+	 *
+	 * @return Sesion
+	 */
+	public function setOrdenDelDia( $ordenDelDia ) {
+		$this->ordenDelDia = $ordenDelDia;
+
+		return $this;
+	}
+
+	/**
+	 * Get ordenDelDia
+	 *
+	 * @return string
+	 */
+	public function getOrdenDelDia() {
+		return $this->ordenDelDia;
+	}
+
+	/**
+	 * Set asuntosEntrados
+	 *
+	 * @param string $asuntosEntrados
+	 *
+	 * @return Sesion
+	 */
+	public function setAsuntosEntrados( $asuntosEntrados ) {
+		$this->asuntosEntrados = $asuntosEntrados;
+
+		return $this;
+	}
+
+	/**
+	 * Get asuntosEntrados
+	 *
+	 * @return string
+	 */
+	public function getAsuntosEntrados() {
+		return $this->asuntosEntrados;
+	}
+
+	/**
+	 * Set acta
+	 *
+	 * @param string $acta
+	 *
+	 * @return Sesion
+	 */
+	public function setActa( $acta ) {
+		$this->acta = $acta;
+
+		return $this;
+	}
+
+	/**
+	 * Get acta
+	 *
+	 * @return string
+	 */
+	public function getActa() {
+		return $this->acta;
+	}
+
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return Sesion
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
+
+		return $this;
+	}
+
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return Sesion
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
+
+		return $this;
+	}
+
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return Sesion
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
+
+		return $this;
+	}
+
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return Sesion
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
+
+		return $this;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->mociones = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * Add mocione
+	 *
+	 * @param \AppBundle\Entity\Mocion $mocione
+	 *
+	 * @return Sesion
+	 */
+	public function addMocione( \AppBundle\Entity\Mocion $mocione ) {
+		$this->mociones[] = $mocione;
+
+		return $this;
+	}
+
+	/**
+	 * Remove mocione
+	 *
+	 * @param \AppBundle\Entity\Mocion $mocione
+	 */
+	public function removeMocione( \AppBundle\Entity\Mocion $mocione ) {
+		$this->mociones->removeElement( $mocione );
+	}
+
+	/**
+	 * Get mociones
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getMociones() {
+		return $this->mociones;
+	}
+
+	/**
+	 * Set tipoSesion
+	 *
+	 * @param \AppBundle\Entity\Parametro $tipoSesion
+	 *
+	 * @return Sesion
+	 */
+	public function setTipoSesion( \AppBundle\Entity\Parametro $tipoSesion = null ) {
+		$this->tipoSesion = $tipoSesion;
+
+		return $this;
+	}
+
+	/**
+	 * Get tipoSesion
+	 *
+	 * @return \AppBundle\Entity\Parametro
+	 */
+	public function getTipoSesion() {
+		return $this->tipoSesion;
+	}
 
     /**
-     * Get id
+     * Add od
      *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set titulo
-     *
-     * @param string $titulo
+     * @param \AppBundle\Entity\OrdenDelDia $od
      *
      * @return Sesion
      */
-    public function setTitulo($titulo)
+    public function addOd(\AppBundle\Entity\OrdenDelDia $od)
     {
-        $this->titulo = $titulo;
+        $this->od[] = $od;
 
         return $this;
     }
 
     /**
-     * Get titulo
+     * Remove od
      *
-     * @return string
+     * @param \AppBundle\Entity\OrdenDelDia $od
      */
-    public function getTitulo()
+    public function removeOd(\AppBundle\Entity\OrdenDelDia $od)
     {
-        return $this->titulo;
+        $this->od->removeElement($od);
     }
 
     /**
-     * Set fecha
-     *
-     * @param \DateTime $fecha
-     *
-     * @return Sesion
-     */
-    public function setFecha($fecha)
-    {
-        $this->fecha = $fecha;
-
-        return $this;
-    }
-
-    /**
-     * Get fecha
-     *
-     * @return \DateTime
-     */
-    public function getFecha()
-    {
-        return $this->fecha;
-    }
-
-    /**
-     * Set ordenDelDia
-     *
-     * @param string $ordenDelDia
-     *
-     * @return Sesion
-     */
-    public function setOrdenDelDia($ordenDelDia)
-    {
-        $this->ordenDelDia = $ordenDelDia;
-
-        return $this;
-    }
-
-    /**
-     * Get ordenDelDia
-     *
-     * @return string
-     */
-    public function getOrdenDelDia()
-    {
-        return $this->ordenDelDia;
-    }
-
-    /**
-     * Set asuntosEntrados
-     *
-     * @param string $asuntosEntrados
-     *
-     * @return Sesion
-     */
-    public function setAsuntosEntrados($asuntosEntrados)
-    {
-        $this->asuntosEntrados = $asuntosEntrados;
-
-        return $this;
-    }
-
-    /**
-     * Get asuntosEntrados
-     *
-     * @return string
-     */
-    public function getAsuntosEntrados()
-    {
-        return $this->asuntosEntrados;
-    }
-
-    /**
-     * Set acta
-     *
-     * @param string $acta
-     *
-     * @return Sesion
-     */
-    public function setActa($acta)
-    {
-        $this->acta = $acta;
-
-        return $this;
-    }
-
-    /**
-     * Get acta
-     *
-     * @return string
-     */
-    public function getActa()
-    {
-        return $this->acta;
-    }
-
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return Sesion
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
-
-        return $this;
-    }
-
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return Sesion
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
-
-        return $this;
-    }
-
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return Sesion
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
-
-        return $this;
-    }
-
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return Sesion
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
-
-        return $this;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->mociones = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add mocione
-     *
-     * @param \AppBundle\Entity\Mocion $mocione
-     *
-     * @return Sesion
-     */
-    public function addMocione(\AppBundle\Entity\Mocion $mocione)
-    {
-        $this->mociones[] = $mocione;
-
-        return $this;
-    }
-
-    /**
-     * Remove mocione
-     *
-     * @param \AppBundle\Entity\Mocion $mocione
-     */
-    public function removeMocione(\AppBundle\Entity\Mocion $mocione)
-    {
-        $this->mociones->removeElement($mocione);
-    }
-
-    /**
-     * Get mociones
+     * Get od
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getMociones()
+    public function getOd()
     {
-        return $this->mociones;
+        return $this->od;
     }
 
     /**
-     * Set tipoSesion
+     * Add bae
      *
-     * @param \AppBundle\Entity\Parametro $tipoSesion
+     * @param \AppBundle\Entity\BoletinAsuntoEntrado $bae
      *
      * @return Sesion
      */
-    public function setTipoSesion(\AppBundle\Entity\Parametro $tipoSesion = null)
+    public function addBae(\AppBundle\Entity\BoletinAsuntoEntrado $bae)
     {
-        $this->tipoSesion = $tipoSesion;
+        $this->bae[] = $bae;
 
         return $this;
     }
 
     /**
-     * Get tipoSesion
+     * Remove bae
      *
-     * @return \AppBundle\Entity\Parametro
+     * @param \AppBundle\Entity\BoletinAsuntoEntrado $bae
      */
-    public function getTipoSesion()
+    public function removeBae(\AppBundle\Entity\BoletinAsuntoEntrado $bae)
     {
-        return $this->tipoSesion;
+        $this->bae->removeElement($bae);
+    }
+
+    /**
+     * Get bae
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBae()
+    {
+        return $this->bae;
     }
 }

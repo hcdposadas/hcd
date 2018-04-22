@@ -51,9 +51,9 @@ class ExpedienteRepository extends EntityRepository {
 	public function getQbExpedientesMesaEntradaTipo( $tipoExpediente ) {
 		$qb = $this->getQbAll();
 		$qb
-		   ->orWhere( 'e.borrador = false' )
-		   ->andWhere( 'e.tipoExpediente = :tipoExpediente' )
-		   ->setParameter( 'tipoExpediente', $tipoExpediente );
+			->orWhere( 'e.borrador = false' )
+			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			->setParameter( 'tipoExpediente', $tipoExpediente );
 
 		return $qb;
 	}
@@ -61,7 +61,6 @@ class ExpedienteRepository extends EntityRepository {
 	public function getQbExpedientesLegislativoTipo( $tipoExpediente ) {
 		$qb = $this->getQbAll();
 		$qb
-
 			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
 			->setParameter( 'tipoExpediente', $tipoExpediente );
 
@@ -153,7 +152,7 @@ class ExpedienteRepository extends EntityRepository {
 
 	}
 
-	public function buscarExpedientesSesion( $data ) {
+	public function getQbExpedientes( $data = null ) {
 		$qb = $this->createQueryBuilder( 'e' );
 
 		$qb->innerJoin( 'e.tipoExpediente', 'te' )
@@ -176,25 +175,31 @@ class ExpedienteRepository extends EntityRepository {
 			$qb->setParameter( 'letra', $data['letra'] );
 		}
 
-		if ( $data['texto'] ) {
+		if ( isset( $data['texto'] ) ) {
 			$q = $data['texto'];
 			$qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
 			   ->setParameter( 'texto', "%$q%" );
 		}
 
-		if ( isset($data['tema']) ) {
+		if ( isset( $data['tema'] ) ) {
 			$q = $data['tema'];
 			$qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
 			   ->setParameter( 'extracto', "%$q%" );
 		}
 
-		$qb->andWhere('e.borrador = false');
+		$qb->andWhere( 'e.borrador = false' );
 
+		return $qb;
+	}
+
+	public function buscarExpedientesSesion( $data ) {
+
+		$qb = $this->getQbExpedientes( $data );
 
 		return $qb->getQuery()->getArrayResult();
 	}
 
-	public function getQbExpedientesLegislativosExternos(  ) {
+	public function getQbExpedientesLegislativosExternos() {
 		$qb = $this->getQbAll();
 
 //		$qb->join('e.iniciadores', 'iniciadores')
@@ -203,7 +208,7 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb;
 	}
 
-	public function getQbBuscarExpedientesLegislativosExternos(  ) {
+	public function getQbBuscarExpedientesLegislativosExternos() {
 		$qb = $this->getQbAll();
 
 //		$qb->join('e.iniciadores', 'iniciadores')
@@ -211,5 +216,25 @@ class ExpedienteRepository extends EntityRepository {
 
 
 		return $qb;
+	}
+
+	public function getProyectosBAE( $data ) {
+		$qb = $this->getQbExpedientes( $data );
+
+		$qb->join( 'e.periodoLegislativo', 'pl' );
+		$qb->addSelect( 'pl' );
+
+		return $qb->getQuery()->getArrayResult();
+	}
+
+	public function getDictamenesOD( $data ) {
+		$qb = $this->getQbExpedientes( $data );
+
+		$qb->join( 'e.periodoLegislativo', 'pl' );
+		$qb->addSelect( 'pl' );
+
+		$qb->andWhere( 'e.extractoDictamen is not null' );
+
+		return $qb->getQuery()->getArrayResult();
 	}
 }

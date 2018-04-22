@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+</head>
+<style>
+    dl dt {
+        float: left;
+        width: 160px;
+        overflow: hidden;
+        clear: left;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    dl dd {
+        margin-left: 180px;
+    }
+
+    dd {
+        text-align: justify;
+    }
+
+    h3 {
+        font-size: 11pt
+    }
+
+    .cuerpo p {
+        font-size: 11pt;
+    }
+</style>
+<body>
+<h3 style="text-align: center; margin-top: 5%"><u>DICTÁMENES DE DECLARACIÓN</u></h3>
+<div class="cuerpo">
+    <p>
+        {% for dictamen in od.dictamenes %}
+    <dl>
+        <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+        <dd>{{ dictamen.expediente.extractoDictamen }}</dd>
+    </dl>
+    {% endfor %}
+    </p>
+</div>
+</body>
+</html>

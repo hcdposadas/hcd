@@ -65,6 +65,14 @@
                                        href="{{ path('sesiones_ver', { 'id': sesion.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('sesiones_imprimir_boletin_asuntos_entrados', { 'sesionId': sesion.id }) }}">
+                                        <i class="fa fa-print"></i> BAE
+                                    </a>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('sesiones_imprimir_orden_del_dia', { 'sesionId': sesion.id }) }}">
+                                        <i class="fa fa-print"></i> OD
+                                    </a>
 
                                 </td>
                             </tr>

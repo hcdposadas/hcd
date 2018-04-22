@@ -2,9 +2,15 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BoletinAsuntoEntrado;
+use AppBundle\Entity\OrdenDelDia;
+use AppBundle\Entity\Sesion;
+use AppBundle\Form\BoletinAsuntoEntradoType;
 use AppBundle\Form\Filter\SesionFilterType;
+use AppBundle\Form\OrdenDelDiaType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Sesion controller.
@@ -90,7 +96,7 @@ class SesionController extends Controller {
 
 		return $this->render( 'sesiones/index.html.twig',
 			[
-				'sesiones'   => $sesiones,
+				'sesiones'    => $sesiones,
 				'filter_type' => $filterType->createView()
 			] );
 	}
@@ -103,6 +109,320 @@ class SesionController extends Controller {
 			[
 				'sesion' => $sesion
 			] );
+	}
+
+	public function conformarPlanDeLaborIndexAction( Request $request ) {
+		$em       = $this->getDoctrine()->getManager();
+		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
+		$sesion   = null;
+
+
+		if ( ! $sesionQb->getQuery()->getResult() ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No hay una Sesión Activa Creada'
+			);
+		} else {
+			$sesion = $sesionQb->getQuery()->getSingleResult();
+		}
+
+
+		if ( $request->getMethod() == 'POST' ) {
+			$ordenDelDia   = new OrdenDelDia();
+			$asuntoEntrado = new BoletinAsuntoEntrado();
+
+			$sesion->addOd( $ordenDelDia );
+			$sesion->addBae( $asuntoEntrado );
+
+			$ordenDelDia->setSesion( $sesion );
+			$ordenDelDia->setCerrado( false );
+			$asuntoEntrado->setSesion( $sesion );
+			$asuntoEntrado->setCerrado( false );
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'El Plan de Labor se creó correctamente.'
+			);
+
+		}
+
+		return $this->render( ':sesiones:conformar_plan_de_labor_index.html.twig',
+			array(
+				'sesion' => $sesion
+			) );
+	}
+
+	public function asignarProyectosABAEAction( Request $request, $sesionId ) {
+
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+
+		$bae = $sesion->getBae()->first();
+
+		$form = $this->createForm( BoletinAsuntoEntradoType::class, $bae );
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'BAE modificado correctamente'
+			);
+
+		}
+
+		return $this->render( ':sesiones:asignar_proyectos_a_bae.html.twig',
+			array(
+				'sesion' => $sesion,
+				'form'   => $form->createView()
+			) );
+	}
+
+	public function asignarDictamenesAODAction( Request $request, $sesionId ) {
+
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+
+		$od = $sesion->getOd()->first();
+
+		$form = $this->createForm( OrdenDelDiaType::class, $od );
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'OD modificado correctamente'
+			);
+
+		}
+
+		return $this->render( ':sesiones:asignar_dictamenes_a_od.html.twig',
+			array(
+				'sesion' => $sesion,
+				'form'   => $form->createView()
+			) );
+	}
+
+	public function conformarPlanDeLaborConfirmarAction( Request $request, $sesionId ) {
+
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+
+		if ( $sesion && $sesion->getActivo() ) {
+			$od  = $sesion->getOd()->first();
+			$bae = $sesion->getBae()->first();
+
+			if ( ! $bae->getCerrado() && ! $od->getCerrado() ) {
+				$bae->setCerrado( true );
+				$od->setCerrado( true );
+
+				$em->flush();
+
+				$this->get( 'session' )->getFlashBag()->add(
+					'success',
+					'El plan de labor fue creado correctamente.'
+				);
+
+				if ( $this->notificarConcejales( $sesion ) ) {
+					$this->get( 'session' )->getFlashBag()->add(
+						'info',
+						'Se ha enviado un mail a los concejales para notificarles que está disponible el plan de labor.'
+					);
+				} else {
+					$this->get( 'session' )->getFlashBag()->add(
+						'warning',
+						'Hubo un problema tratando de enviar el mail a los concejales.
+						Conctacte con el administrador.'
+					);
+				}
+
+
+			} else {
+				$this->get( 'session' )->getFlashBag()->add(
+					'warning',
+					'El Plan de Labor ya se encuentra Cerrado'
+				);
+			}
+		} else {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No existe una Sesión Activa'
+			);
+		}
+
+		return $this->redirectToRoute( 'sesiones_conformar_plan_de_labor_index' );
+
+	}
+
+	public function notificarConcejales( Sesion $sesion ) {
+
+		$mailer = $this->get( 'mailer' );
+
+		$em                    = $this->getDoctrine()->getManager();
+		$parametroMail         = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-concejales' );
+		$parametroMailDefensor = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-defensor' );
+
+		if ( $parametroMail && $parametroMailDefensor ) {
+			$asunto = 'HCD Posadas - Plan de Labor ' . $sesion->getTitulo();
+
+			$message = ( new \Swift_Message( $asunto ) );
+
+			$message
+				->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
+				->setTo( $parametroMail->getValor() )
+				->addTo( $parametroMailDefensor->getValor() )
+				->setBody(
+					$this->renderView(
+						'emails/plan_de_labor.html.twig',
+						[
+							'sesion' => $sesion
+						]
+					),
+					'text/html'
+				);
+
+			$mailer->send( $message );
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function imprimirBAEAction( Request $request, $sesionId ) {
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+
+		$bae = $sesion->getBae()->first();
+
+		if ( ! $bae ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'error',
+				'El Plan de Labor no Posee Boletin de Asuntos Entrados y/u Orden del Día.'
+			);
+
+			return $this->redirectToRoute( 'sesiones_index' );
+		}
+		if ( ! $bae->getCerrado() ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'error',
+				'El Plan de Labor aún se encuentra abierto.'
+			);
+
+			return $this->redirectToRoute( 'sesiones_index' );
+		}
+
+		$title = 'Boletín de Asuntos Entrados';
+
+		$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
+			[
+				"sesion"    => $sesion,
+				'documento' => $title
+			] );
+
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( ':sesiones:boletin_asuntos_entrados.pdf.twig',
+			[
+				'bae'   => $bae,
+				'title' => $title,
+			]
+		);
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+//					'margin-left'    => "3cm",
+//					'margin-right'   => "3cm",
+					'margin-top'     => "8cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 5,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+//                    'margin-bottom' => "1cm"
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			)
+		);
+
+	}
+
+	public function imprimirODAction( Request $request, $sesionId ) {
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+		$od     = $sesion->getOd()->first();
+
+
+		if ( ! $od ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'error',
+				'El Plan de Labor no Posee Orden del Día.'
+			);
+
+			return $this->redirectToRoute( 'sesiones_index' );
+		}
+		if ( ( ! $od->getCerrado() ) ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'error',
+				'El Plan de Labor aún se encuentra abierto.'
+			);
+
+			return $this->redirectToRoute( 'sesiones_index' );
+		}
+
+		$title = 'Orden del Día';
+
+		$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
+			[
+				"sesion"    => $sesion,
+				'documento' => $title
+
+			] );
+
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( ':sesiones:orden_del_dia.pdf.twig',
+			[
+				'od'    => $od,
+				'title' => $title,
+			]
+		);
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+//					'margin-left'    => "3cm",
+//					'margin-right'   => "3cm",
+					'margin-top'     => "8cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 5,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+//                    'margin-bottom' => "1cm"
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			)
+		);
+
 	}
 
 }

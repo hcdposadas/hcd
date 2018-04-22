@@ -41,6 +41,14 @@ class Comision extends BaseClass {
 	 */
 	private $descripcion;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="abreviacion", type="string", length=255, nullable=true)
+	 */
+	private $abreviacion;
+
+
 	public function __toString() {
 		return $this->nombre;
 	}
@@ -173,5 +181,29 @@ class Comision extends BaseClass {
     public function getPeso()
     {
         return $this->peso;
+    }
+
+    /**
+     * Set abreviacion
+     *
+     * @param string $abreviacion
+     *
+     * @return Comision
+     */
+    public function setAbreviacion($abreviacion)
+    {
+        $this->abreviacion = $abreviacion;
+
+        return $this;
+    }
+
+    /**
+     * Get abreviacion
+     *
+     * @return string
+     */
+    public function getAbreviacion()
+    {
+        return $this->abreviacion;
     }
 }

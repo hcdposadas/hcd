@@ -205,7 +205,7 @@ class Builder implements ContainerAwareInterface {
 					->addChild(
 						'Conformar Plan de Labor',
 						array(
-							'route' => 'sesiones_index',
+							'route' => 'sesiones_conformar_plan_de_labor_index',
 						)
 					);
 			}

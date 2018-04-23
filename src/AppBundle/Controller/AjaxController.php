@@ -6,6 +6,7 @@ use AppBundle\Entity\Dependencia;
 use AppBundle\Entity\Persona;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
+use Endroid\QrCode\QrCode;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -208,8 +209,8 @@ class AjaxController extends Controller {
 
 		$em = $this->getDoctrine();
 
-		$value = $request->get( 'q' );
-		$limit = $request->get( 'page_limit' );
+		$value    = $request->get( 'q' );
+		$limit    = $request->get( 'page_limit' );
 		$entities = $em->getRepository( 'MesaEntradaBundle:Iniciador' )->getACargosPorNombre( $value, $limit );
 
 		$json = array();
@@ -230,6 +231,177 @@ class AjaxController extends Controller {
 				);
 //				}
 
+			}
+		}
+
+		return new JsonResponse( $json );
+	}
+
+	public function getUltimaSesionAction() {
+
+		$json = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findUltimaSesion();
+
+		return new JsonResponse( $json[0] );
+	}
+
+	public function buscarExpedienteAction( Request $request ) {
+
+		$data = $request->get( 'data' );
+		$data = json_decode( $data, true );
+
+		if ( $data['expediente'] ) {
+			$expediente = explode( ' ', $data['expediente'] );
+			if ( count( $expediente ) == 3 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+				$data['anio']       = $expediente[2];
+			} else if ( count( $expediente ) == 2 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+			} else if ( count( $expediente ) == 1 ) {
+				$data['expediente'] = $expediente[0];
+			}
+		}
+
+		$json = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->buscarExpedientesSesion( $data );
+
+		return new JsonResponse( $json );
+	}
+
+	public function enviarMailCodigoProyectoAction( Request $request ) {
+
+		$expedienteId = $request->get( 'expedienteId' );
+		$expediente   = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->find( $expedienteId );
+
+		if ( ! $expediente ) {
+			return new JsonResponse( 'No se encontro el tipo de proyeto', 404 );
+		}
+
+		$mailer = $this->get( 'mailer' );
+
+		$mail = $this->getUser()->getEmail();
+
+		$asunto = 'HCD Posadas - Código Impresión Proyecto';
+
+		$code = new QrCode( $expediente->getCodigoReferencia() );
+		$code->setLogoPath( $this->get( 'kernel' )->getRootDir() . '/../web/apple-touch-icon.png' )
+		     ->setLogoWidth( 50 );
+
+		$nombreAdjunto = $expediente->getId() . '.png';
+
+		$message = ( new \Swift_Message( $asunto ) );
+
+		$img = $message->embed( \Swift_Image::newInstance( $code->writeString(),
+			$nombreAdjunto,
+			$code->getContentType() ) );
+
+		$message
+			->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
+			->setTo( $mail )
+			->setBody(
+				$this->renderView(
+					'emails/codigo_proyecto.html.twig',
+					[
+						'expediente' => $expediente,
+						'img'        => $img
+					]
+				),
+				'text/html'
+			);
+
+		$mailer->send( $message );
+
+		return new JsonResponse( 'ok' );
+	}
+
+	public function getProyectosBAEAction( Request $request ) {
+		$em = $this->getDoctrine();
+
+		$value = $request->get( 'q' );
+		$limit = $request->get( 'page_limit' );
+
+
+		if ( $value ) {
+			$expediente = explode( ' ', $value );
+			if ( count( $expediente ) == 3 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+				$data['anio']       = $expediente[2];
+			} else if ( count( $expediente ) == 2 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+			} else if ( count( $expediente ) == 1 ) {
+				$data['expediente'] = $expediente[0];
+			}
+		}
+
+
+		$entities = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getProyectosBAE( $data );
+
+		$json = array();
+
+		if ( ! count( $entities ) ) {
+			$json[] = array(
+				'text' => 'No se encontraron coincidencias',
+				'id'   => ''
+			);
+		} else {
+
+			foreach ( $entities as $entity ) {
+				$anio   = $entity['anio'] ? $entity['anio'] : $entity['periodoLegislativo']['anio'];
+				$text   = $entity['expediente'] . '-' . strtoupper($entity['letra']) . '-' . $anio;
+				$json[] = array(
+					'id'   => $entity['id'],
+					//'label' => $entity[$property],
+					'text' => $text
+				);
+			}
+		}
+
+		return new JsonResponse( $json );
+	}
+
+	public function getDictamenesODAction( Request $request ) {
+		$em = $this->getDoctrine();
+
+		$value = $request->get( 'q' );
+		$limit = $request->get( 'page_limit' );
+
+
+		if ( $value ) {
+			$expediente = explode( ' ', $value );
+			if ( count( $expediente ) == 3 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+				$data['anio']       = $expediente[2];
+			} else if ( count( $expediente ) == 2 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+			} else if ( count( $expediente ) == 1 ) {
+				$data['expediente'] = $expediente[0];
+			}
+		}
+
+
+		$entities = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getDictamenesOD( $data );
+
+		$json = array();
+
+		if ( ! count( $entities ) ) {
+			$json[] = array(
+				'text' => 'No se encontraron coincidencias',
+				'id'   => ''
+			);
+		} else {
+
+			foreach ( $entities as $entity ) {
+				$anio   = $entity['anio'] ? $entity['anio'] : $entity['periodoLegislativo']['anio'];
+				$text   = $entity['expediente'] . '-' . strtoupper($entity['letra']) . '-' . $anio;
+				$json[] = array(
+					'id'   => $entity['id'],
+					//'label' => $entity[$property],
+					'text' => $text
+				);
 			}
 		}
 

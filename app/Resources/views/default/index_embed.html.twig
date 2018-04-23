@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {{ titulo }}
+{% endblock title %}
+{% block body %}
+    <div class="embed-responsive embed-responsive-16by9">
+        <embed class="embed-responsive-item"
+               src="{{ asset('uploads/documentos/') ~ documento.documento }}">
+    </div>
+{% endblock %}

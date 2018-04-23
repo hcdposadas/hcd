@@ -6,4 +6,5 @@ easy_admin:
                 fields:
                     - { property: 'nombre' }
                     - { property: 'descripcion' }
+                    - { property: 'peso' }
                     - { property: 'muestraSoloCargo' }

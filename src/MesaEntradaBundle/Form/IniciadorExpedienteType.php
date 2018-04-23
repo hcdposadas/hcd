@@ -24,7 +24,8 @@ class IniciadorExpedienteType extends AbstractType
                     'class' => 'MesaEntradaBundle\Entity\Iniciador',
                     'required' => false,
                     'placeholder' => 'Por Nombre',
-                    'attr'=> ['class'=>'']
+                    'attr'=> ['class'=>''],
+	                'label'=> 'Concejal'
 
                 ])
         ;

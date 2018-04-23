@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sesión HCD</title>
+    <link rel="stylesheet" href="{{ asset('build/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/theme/css/custom.css') }}">
+    <style>
+        .btn-circle.btn-xl {
+            width: 120px;
+            height: 120px;
+            padding: 10px 16px;
+            font-size: 24px;
+            line-height: 1.33;
+            border-radius: 75px;
+        }
+
+        .btn-primary-hcd {
+            background-color: #12a9d4;
+        }
+
+        .navbar-fixed-top {
+            background-color: #17a867;
+            padding: 1%;
+        }
+    </style>
+    <script>
+        window.user = {id: {{ app.user.id }} };
+        window.baseUrl = '{{ path('app_homepage') }}';
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        {% if is_granted('ROLE_CONCEJAL') %}
+            <div id="app">
+            <panel-concejal path-logout="{{ path('sesion_logout') }}" path-carta-organica="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}" concejal="{{ concejal }}"></panel-concejal>
+            </div>
+        {% endif %}
+        {% if is_granted('ROLE_SECRETARIO') %}
+            {% include 'sesion/autoridades.html.twig' %}
+        {% endif %}
+
+        <div class="col-md-12">
+
+        </div>
+    </div>
+    <div class="row">
+        <hr>
+        <div class="col-md-12">
+            <h2>
+                {% if is_granted('ROLE_CONCEJAL') %}
+                    Concejal {{ concejal }}
+                {% endif %}
+                {% if is_granted('ROLE_SECRETARIO') %}
+                    Secretario
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="{{ asset('build/common-js.js') }}"></script>
+<script src="{{ asset('build/app.js') }}"></script>
+</html>

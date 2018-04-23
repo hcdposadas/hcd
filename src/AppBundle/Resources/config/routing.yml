@@ -13,3 +13,32 @@ app_homepage:
 app_ajax:
     resource: "ajax/ajax.yml"
     prefix:   /ajax
+
+app_mocion:
+    resource: "@AppBundle/Resources/config/routing/mocion.yml"
+    prefix:   /sesion/mocion
+
+app_tipomayoria:
+    resource: "@AppBundle/Resources/config/routing/tipomayoria.yml"
+    prefix:   /tipomayoria
+
+app_concejal:
+    path:     /concejal
+    defaults: { _controller: AppBundle:Default:concejal }
+
+documento_carta_organica:
+    path:     /documento_carta_organica
+    defaults: { _controller: AppBundle:Default:cartaOrganica }
+
+sesiones:
+    resource: "@AppBundle/Resources/config/routing/sesiones.yml"
+    prefix: /interno-sesiones
+
+#app_display:
+#    path:     /display
+#    defaults: { _controller: AppBundle:Default:display }
+
+#app_votar:
+#    path:     /votar
+#    defaults: { _controller: AppBundle:Mocion:votoConcejal }
+#    methods:  POST

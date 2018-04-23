@@ -2,7 +2,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% block fos_user_content %}
-{% include "@FOSUser/Profile/show_content.html.twig" %}
-{% endblock fos_user_content %}
+    {% block fos_user_content %}
+        {% include "@Usuarios/Profile/show_content.html.twig" %}
+    {% endblock fos_user_content %}
 {% endblock body %}

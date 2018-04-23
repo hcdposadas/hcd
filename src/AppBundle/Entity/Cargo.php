@@ -35,6 +35,12 @@ class Cargo extends BaseClass {
 	 */
 	private $descripcion;
 
+	/**
+	 * @var integer
+	 * @ORM\Column(name="peso", type="integer", nullable=true)
+	 */
+	private $peso;
+
     /**
      * @var boolean
      *
@@ -174,5 +180,29 @@ class Cargo extends BaseClass {
     public function getMuestraSoloCargo()
     {
         return $this->muestraSoloCargo;
+    }
+
+    /**
+     * Set peso
+     *
+     * @param integer $peso
+     *
+     * @return Cargo
+     */
+    public function setPeso($peso)
+    {
+        $this->peso = $peso;
+
+        return $this;
+    }
+
+    /**
+     * Get peso
+     *
+     * @return integer
+     */
+    public function getPeso()
+    {
+        return $this->peso;
     }
 }

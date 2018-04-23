@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\BootstrapCollectionType;
@@ -23,8 +24,9 @@ class ProyectoType extends AbstractType {
 			->add( 'tipoProyecto',
 				null,
 				[
-					'required' => true,
-					'attr'     => [ 'class' => 'tipo-proyecto select2' ]
+					'required'    => true,
+					'placeholder' => 'Seleccionar',
+					'attr'        => [ 'class' => 'tipo-proyecto select2' ]
 				] )
 			->add( 'texto',
 				CKEditorType::class,
@@ -36,13 +38,19 @@ class ProyectoType extends AbstractType {
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
-			->add( 'iniciarComo',
-				EntityType::class,
+//			->add( 'iniciarComo',
+//				EntityType::class,
+//				[
+//					'class'    => 'MesaEntradaBundle\Entity\Iniciador',
+//					'required' => true,
+//					'mapped'   => false,
+//					'choices'  => $options['iniciarComo'],
+//				] )
+			->add( 'extracto',
+				TextareaType::class,
 				[
-					'class'    => 'MesaEntradaBundle\Entity\Iniciador',
-					'required' => true,
-					'mapped'   => false,
-					'choices'  => $options['iniciarComo'],
+					'attr'     => [ 'rows' => 5 ],
+					'required' => false
 				] )
 			->add( 'iniciadores',
 				BootstrapCollectionType::class,
@@ -51,17 +59,32 @@ class ProyectoType extends AbstractType {
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,
+					'display_history' => false,
 					'label'        => 'Acompañantes'
 				] )
 			->add( 'fecha',
 				DateType::class,
 				array(
 					'widget' => 'single_text',
-					'format' => 'dd/MM/yyyy',
-					'attr'   => array(
-						'class' => 'datepicker',
-					),
+					'html5'  => true
 				) )
+			->add( 'giros',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
+			->add( 'anexos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => AnexoExpedienteType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Anexos'
+				] )
 			->add( 'guardar',
 				SubmitType::class,
 				array(
@@ -79,8 +102,7 @@ class ProyectoType extends AbstractType {
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class'  => 'MesaEntradaBundle\Entity\Expediente',
-			'iniciarComo' => null
+			'data_class' => 'MesaEntradaBundle\Entity\Expediente',
 		) );
 	}
 

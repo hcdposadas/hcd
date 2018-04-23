@@ -8,7 +8,9 @@ use MesaEntradaBundle\Entity\GiroAdministrativo;
 use MesaEntradaBundle\Entity\IniciadorExpediente;
 use MesaEntradaBundle\Form\ExpedienteAdministrativoExternoType;
 use MesaEntradaBundle\Form\ExpedienteAdministrativoType;
+use MesaEntradaBundle\Form\ExpedienteExtractoType;
 use MesaEntradaBundle\Form\ExpedienteLegislativoExternoType;
+use MesaEntradaBundle\Form\ExpedienteType;
 use MesaEntradaBundle\Form\Filter\ExpedienteFilterType;
 use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -849,6 +851,34 @@ class ExpedienteController extends Controller {
 				'Content-Disposition' => 'inline; filename="etiqueta.pdf"'
 			)
 		);
+	}
+
+	public function cargarExtractoAction( Request $request, $id ) {
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+		$form       = $this->createForm( ExpedienteExtractoType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Extracto Cargado Correctamentes'
+			);
+
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+
+		}
+
+
+		return $this->render( ':expediente:cargar_extracto.html.twig',
+			[
+				'expediente' => $expediente,
+				'form' => $form->createView()
+			] );
 	}
 
 //  EXPEDIENTES ADMINISTRATIVOS

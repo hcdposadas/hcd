@@ -91,6 +91,12 @@
                             <i class="fa fa-print"></i> Imprimir Etiqueta
                         </a>
                     {% endif %}
+                    {% if is_granted('ROLE_LEGISLATIVO')  %}
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('expediente_editar_extracto', {id: expediente.id}) }}">
+                            <i class="fa fa-edit"></i> Editar extractos
+                        </a>
+                    {% endif %}
 
 
                 </div>

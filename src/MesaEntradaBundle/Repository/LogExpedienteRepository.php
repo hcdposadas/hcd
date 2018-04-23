@@ -1,6 +1,6 @@
 <?php
 
-namespace MesaEntradaBundle\Entity;
+namespace MesaEntradaBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

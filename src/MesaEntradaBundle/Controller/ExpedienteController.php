@@ -1204,7 +1204,7 @@ class ExpedienteController extends Controller {
      */
     public function editarExtractoAction(Request $request, Expediente $expediente)
     {
-//        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
+        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
 
         // Estos son los campos a auditar en el log
         $campos = ['extractoDictamen', 'extractoTemario'];
@@ -1243,6 +1243,21 @@ class ExpedienteController extends Controller {
         return $this->render('expediente/editarExtracto.html.twig', array(
             'expediente' => $expediente,
             'edit_form' => $editForm->createView(),
+        ));
+    }
+
+    /**
+     * @param Request $request
+     * @param Expediente $expediente
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function showEdicionExtractoAction(Request $request, Expediente $expediente, LogExpediente $logExpediente)
+    {
+        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
+
+        return $this->render('expediente/showEdicionExtracto.html.twig', array(
+            'expediente' => $expediente,
+            'logExpediente' => $logExpediente,
         ));
     }
 }

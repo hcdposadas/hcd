@@ -17,16 +17,35 @@
                     {{ form_row(edit_form.extractoDictamen) }}
                 </div>
                 <div class="col-md-6">
-                    {% for log in expediente.logs %}
-                        {% if log. %}
-                            
-                        {% endif %}
-                    {% endfor %}
+                    <p>&nbsp;</p>
+                    <ul>
+                        {% for log in expediente.logs %}
+                            {% if log.cambios.extractoDictamen is defined %}
+                                <li>
+                                Editado por {{ log.creadoPor.persona }} el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}
+                                (<a href="{{ path('expediente_show_edicion_extracto', {'expediente': expediente.id, 'logExpediente': log.id}) }}">#{{ log.id }}</a>)
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(edit_form.extractoTemario) }}
+                </div>
+                <div class="col-md-6">
+                    <p>&nbsp;</p>
+                    <ul>
+                        {% for log in expediente.logs %}
+                            {% if log.cambios.extractoTemario is defined %}
+                                <li>
+                                    Editado por {{ log.creadoPor.persona }} el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}
+                                    (<a href="{{ path('expediente_show_edicion_extracto', {'expediente': expediente.id, 'logExpediente': log.id}) }}">#{{ log.id }}</a>)
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
 
@@ -36,5 +55,5 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
+    <a class="btn btn-default" href="{{ path('expediente_show', {'id': expediente.id}) }}">Volver</a>
 {% endblock %}

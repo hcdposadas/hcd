@@ -35,7 +35,7 @@ class LogExpediente extends BaseClass
      *
      * @ORM\Column(name="log", type="text")
      */
-    private $log = '[]';
+    private $log = '{}';
 
     public function __toString()
     {
@@ -98,8 +98,7 @@ class LogExpediente extends BaseClass
     public function agregarCambio($campo, $valorOriginal, $valorNuevo)
     {
         $cambios = $this->getCambios();
-        $cambios[] = [
-            'campo' => $campo,
+        $cambios[$campo] = [
             'original' => $valorOriginal,
             'nuevo' => $valorNuevo,
         ];

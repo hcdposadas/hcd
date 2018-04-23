@@ -5,7 +5,8 @@ easy_admin:
             form:
                 fields:
                     - { property: 'tipoExpediente' }
-                    - { property: 'letra' }
-                    - { property: 'fecha' }
-                    - { property: 'iniciador' }
-                    - { property: 'expedienteExternoFile', type: 'vich_file' }
+                    - { property: 'texto', type: 'ckeditor'}
+#                    - { property: 'letra' }
+#                    - { property: 'fecha' }
+#                    - { property: 'iniciador' }
+#                    - { property: 'expedienteExternoFile', type: 'vich_file' }

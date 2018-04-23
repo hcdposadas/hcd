@@ -3,9 +3,12 @@
 namespace MesaEntradaBundle\Controller;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\Debug;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\GiroAdministrativo;
 use MesaEntradaBundle\Entity\IniciadorExpediente;
+use MesaEntradaBundle\Entity\LogExpediente;
+use MesaEntradaBundle\Form\EditarExtractoType;
 use MesaEntradaBundle\Form\ExpedienteAdministrativoExternoType;
 use MesaEntradaBundle\Form\ExpedienteAdministrativoType;
 use MesaEntradaBundle\Form\ExpedienteExtractoType;
@@ -1193,4 +1196,53 @@ class ExpedienteController extends Controller {
 				'expediente' => $expediente
 			] );
 	}
+
+    /**
+     * @param Request $request
+     * @param Expediente $expediente
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function editarExtractoAction(Request $request, Expediente $expediente)
+    {
+//        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
+
+        // Estos son los campos a auditar en el log
+        $campos = ['extractoDictamen', 'extractoTemario'];
+
+        $valoresOriginales = [];
+        foreach ($campos as $campo) {
+            $getter = 'get' . ucfirst($campo);
+            $valoresOriginales[$campo] = [
+                'valor' => $expediente->{$getter}(),
+                'getter' => $getter,
+            ];
+        }
+
+        $editForm = $this->createForm(EditarExtractoType::class, $expediente);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $log = new LogExpediente();
+            $log->setExpediente($expediente);
+            foreach ($valoresOriginales as $nombre => $campo) {
+                if ($campo['valor'] != $expediente->{$campo['getter']}()) {
+                    $log->agregarCambio($nombre, $campo['valor'], $expediente->{$campo['getter']}());
+                }
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            if (count($log->getCambios()) > 0) {
+                $em->persist($log);
+            }
+            $em->persist($expediente);
+            $em->flush();
+
+            return $this->redirectToRoute('expediente_show', array('id' => $expediente->getId()));
+        }
+
+        return $this->render('expediente/editarExtracto.html.twig', array(
+            'expediente' => $expediente,
+            'edit_form' => $editForm->createView(),
+        ));
+    }
 }

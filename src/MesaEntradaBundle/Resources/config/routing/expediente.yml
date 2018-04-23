@@ -124,3 +124,8 @@ expediente_administrativo_externo_nuevo:
 expediente_administrativo_externo_editar:
     path: /{id}/expediente_administrativo_externo_editar
     defaults: { _controller: "MesaEntradaBundle:Expediente:editarExpedienteAdministrativoExterno" }
+
+expediente_editar_extracto:
+    path:     /{id}/editarExtracto
+    defaults: { _controller: "MesaEntradaBundle:Expediente:editarExtracto" }
+    methods:  [GET, POST]

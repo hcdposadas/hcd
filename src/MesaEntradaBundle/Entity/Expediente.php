@@ -156,6 +156,13 @@ class Expediente extends BaseClass {
 	 */
 	private $giros;
 
+    /**
+     * @var LogExpediente[] $logs
+     *
+     * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\LogExpediente", mappedBy="expediente", cascade={"persist"})
+     */
+    private $logs;
+
 	/**
 	 * @ORM\Column(name="sesion_numero", type="integer", nullable=true)
 	 * @var string

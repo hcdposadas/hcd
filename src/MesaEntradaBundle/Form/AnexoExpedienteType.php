@@ -14,9 +14,12 @@ class AnexoExpedienteType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
 			->add( 'descripcion' )
-			->add( 'anexoFile', VichFileType::class, [
-				'label'=> 'Archivo'
-			] );
+			->add( 'anexoFile',
+				VichFileType::class,
+				[
+					'label'        => 'Archivo',
+					'required'     => false,
+				] );
 	}
 
 	/**

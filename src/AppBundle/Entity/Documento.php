@@ -69,7 +69,7 @@ class Documento extends BaseClass {
 		if ( $file ) {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
-			$this->setActualizadoPor( new \DateTime( 'now' ) );
+			$this->setFechaActualizacion( new \DateTime( 'now' ) );
 		}
 	}
 

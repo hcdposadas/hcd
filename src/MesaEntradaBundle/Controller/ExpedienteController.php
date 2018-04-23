@@ -549,7 +549,7 @@ class ExpedienteController extends Controller {
 			}
 
 			foreach ( $anexosOriginales as $anexo ) {
-				if ( false === $expediente->getIniciadores()->contains( $anexo ) ) {
+				if ( false === $expediente->getAnexos()->contains( $anexo ) ) {
 					$anexo->setExpediente( null );
 					$em->remove( $anexo );
 				}

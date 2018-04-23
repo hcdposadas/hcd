@@ -57,6 +57,7 @@ twig:
         - 'bootstrap_3_layout.html.twig'
 #        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
         - 'UtilBundle:Form:fields.html.twig'
+        - ':Form:vich_widget.html.twig'
 
 # Doctrine Configuration
 doctrine:

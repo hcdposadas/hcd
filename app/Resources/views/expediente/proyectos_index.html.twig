@@ -74,7 +74,9 @@
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>
                                 <td>{{ expediente.expediente }}</td>
-                                <td>{{ expediente.anio }}</td>
+                                <td>
+                                    {% if expediente.anio %}{{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo.anio }}{% endif %}
+                                </td>
                                 <td>{{ expediente.letra }}</td>
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>

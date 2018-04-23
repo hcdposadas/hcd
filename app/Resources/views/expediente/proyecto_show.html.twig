@@ -16,25 +16,40 @@
                 </div>
                 <div class="box-body">
                     {% if expediente.borrador == false and is_granted('ROLE_CONCEJAL') %}
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="progress active">
-                                    <div class="progress-bar progress-bar-primary progress-bar-striped"
-                                         role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
-                                         style="width: 50%">
-                                        <span>50% Completo</span>
+                        {% if expediente.expediente %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="progress active">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped"
+                                             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                                             style="width: 100%">
+                                            <span>100% Completo</span>
+                                        </div>
                                     </div>
+                                    <a class="btn btn-default" target="_blank" href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i class="fa fa-print"></i></a>
                                 </div>
-                                <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente
-                                    acerquese a Mesa de Entrada con el código que se muestra a la derecha</p>
                             </div>
-                        </div>
+                        {% else %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="progress active">
+                                        <div class="progress-bar progress-bar-primary progress-bar-striped"
+                                             role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
+                                             style="width: 50%">
+                                            <span>50% Completo</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente
+                                        acerquese a Mesa de Entrada con el código que se muestra a la derecha</p>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                     <table>
                         <tbody>
                         <tr>
                             <th>Expediente</th>
-                            <td>{{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.anio }}</td>
+                            <td>{{ expediente.expediente }}-{{ expediente.letra }}-{% if expediente.anio %}{{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo.anio }}{% endif %}</td>
                         </tr>
                         <tr>
                             <th>Texto definitivo</th>

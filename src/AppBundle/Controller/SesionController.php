@@ -332,7 +332,7 @@ class SesionController extends Controller {
 		$html = $this->renderView( ':sesiones:boletin_asuntos_entrados.pdf.twig',
 			[
 				'bae'   => $bae,
-				'title' => $title,
+				'title' => $title .' - '. $sesion->getTitulo(),
 			]
 		);
 
@@ -354,7 +354,7 @@ class SesionController extends Controller {
 			)
 			, 200, array(
 				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
 			)
 		);
 
@@ -397,7 +397,7 @@ class SesionController extends Controller {
 		$html = $this->renderView( ':sesiones:orden_del_dia.pdf.twig',
 			[
 				'od'    => $od,
-				'title' => $title,
+				'title' => $title .' - '. $sesion->getTitulo(),
 			]
 		);
 
@@ -419,7 +419,7 @@ class SesionController extends Controller {
 			)
 			, 200, array(
 				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
 			)
 		);
 

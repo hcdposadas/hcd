@@ -1,6 +1,6 @@
 #easy admin
 easy_admin:
-    disabled_actions: ['delete']
+#    disabled_actions: ['delete']
     site_name: 'HCD - Posadas'
     show:
         max_results: 20

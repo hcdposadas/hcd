@@ -107,8 +107,12 @@ class ExpedienteRepository extends EntityRepository {
 //			$qb->andWhere( 'e.iniciador = :iniciador' )
 //			   ->setParameter( 'iniciador', $data['iniciador'] );
 			$q = $data['iniciador'];
-			$qb->join( 'e.iniciador', 'iniciador' )
-			   ->andWhere( 'upper(iniciador.nombre) LIKE upper(:iniciador)' )
+			$qb->join( 'e.iniciadores', 'iniciadores' )
+				->join('iniciadores.iniciador', 'iniciador')
+				->join('iniciador.cargoPersona', 'cargoPersona')
+				->join('cargoPersona.persona', 'persona')
+			   ->andWhere( 'upper(persona.nombre) LIKE upper(:iniciador)' )
+			   ->orWhere( 'upper(persona.apellido) LIKE upper(:iniciador)' )
 			   ->setParameter( 'iniciador', "%$q%" );
 		}
 		if ( $data['iniciadorParticular'] ) {

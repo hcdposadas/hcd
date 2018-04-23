@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Dependencia;
+use AppBundle\Form\Filter\DependenciaFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,14 +17,37 @@ class DependenciaController extends Controller
      * Lists all dependencium entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $dependencias = $em->getRepository('AppBundle:Dependencia')->findAll();
+        $filterType = $this->createForm(DependenciaFilterType::class, null,
+            [
+                'method' => 'GET'
+            ]);
+
+        $filterType->handleRequest($request);
+
+
+        if ($filterType->get('buscar')->isClicked()) {
+
+            $dependencias = $em->getRepository('AppBundle:Dependencia')->getQbAll($filterType->getData());
+        } else {
+
+            $dependencias = $em->getRepository('AppBundle:Dependencia')->getQbAll();
+        }
+
+
+        $paginator = $this->get('knp_paginator');
+        $dependencias = $paginator->paginate(
+            $dependencias,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
 
         return $this->render('dependencia/index.html.twig', array(
             'dependencias' => $dependencias,
+            'filter_type' => $filterType->createView()
         ));
     }
 
@@ -118,7 +142,6 @@ class DependenciaController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('dependencia_delete', array('id' => $dependencium->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

@@ -84,6 +84,11 @@ expediente_imprimir_etiqueta:
     path: /{id}/expediente_imprimir_etiqueta
     defaults: { _controller: "MesaEntradaBundle:Expediente:expedienteImprimirEtiqueta" }
 
+expediente_cargar_extracto:
+    path: /{id}/expediente_cargar_extracto
+    defaults: { _controller: "MesaEntradaBundle:Expediente:cargarExtracto" }
+
+
 # administrativos
 expediente_administrativo_nuevo:
     path: /expediente_administrativo_nuevo

@@ -91,7 +91,7 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     {#{% if is_granted('ROLE_LEGISLATIVO') and expediente.giros.count < 1 %}#}
-                                    {% if is_granted('ROLE_LEGISLATIVO')  %}
+                                    {% if is_granted('ROLE_LEGISLATIVO') %}
                                         <a class="btn btn-default"
                                            href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
@@ -101,6 +101,12 @@
                                         {#href="{{ path('expediente_edit', { 'id': expediente.id }) }}">#}
                                         {#<i class="fa fa-edit"></i>#}
                                         {#</a>#}
+                                    {% endif %}
+                                    {% if is_granted('ROLE_MESA_ENTRADA') %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('expediente_cargar_extracto', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
                                     {% endif %}
                                     <a class="btn btn-default"
                                        href="{{ path('expediente_timeline', {id: expediente.id}) }}">

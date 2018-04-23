@@ -7,84 +7,55 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ title }}</title>
     <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+        }
+
         .giro {
             width: 100%;
         }
 
-        .texto, .punteado {
-            /*display: inline-flex;*/
-            /*display: inline-block;*/
-        }
-
-        .content {
-            /*display: ruby;*/
-            /*display: flex;*/
-            /*display: inline-flex;*/
-            /*display: inline-block;*/
-            /*width: 100%;*/
-        }
-
-        /*.texto{*/
-        /*width: 100%;*/
-        /**/
-        /*}*/
         .punteado {
-            /*border-bottom: 1px dotted black;*/
-            width: 100%;
-            border-bottom: 2px dotted black;
-        }
-        #destino{
+            width: 96%;
+            margin-left: 4%;
             text-align: center;
+            border-bottom: 2px dotted black;
         }
 
         section {
             width: 100%;
-            /*height: 200px;*/
-            /*background: aqua;*/
             margin: auto;
             padding: 5px;
         }
 
-
         div#one {
             width: 30%;
-            /*height: 200px;*/
-            /*background: red;*/
             float: left;
         }
 
         div#two {
-            margin-left: 25%;
-            /*height: 200px;*/
-            /*background: black;*/
+            margin-left: 30%;
+            width: 70%;
             border-bottom: 2px dotted black;
         }
 
         div#tres {
-            width: 100%;
-            /*height: 200px;*/
-            /*background: red;*/
-            /*float: left;*/
+            width: 80%;
         }
 
         div#cuatro {
-            margin-left: 62%;
-            /*height: 200px;*/
-            /*background: black;*/
+            margin-left: 75%;
+            width: 25%;
             border-bottom: 2px dotted black;
         }
 
         div#cinco {
             width: 10%;
-            /*height: 200px;*/
-            /*background: red;*/
-            /*float: left;*/
         }
 
         div#seis {
             margin-left: 10%;
-            /*height: 200px;*/
-            /*background: black;*/
             border-bottom: 2px dotted black;
         }
 
@@ -93,40 +64,20 @@
 </head>
 <body>
 
-{#<div class="giro">#}
-{#<div class="punteado"></div>#}
-{#<br>#}
-{#<div class="content">#}
-{#<div class="texto">Remitase el Expte.:</div>#}
-{#<div>{{ expediente.expediente }} {{ expediente.letra }} {{ expediente.anio }}</div>#}
-{#</div>#}
-{#<br>#}
-{#<div class="content">#}
-{#<div class="texto">para la prosecución del texto correspondiente.</div>#}
-{#<div ></div>#}
-{#</div>#}
-{#<br>#}
-{#<div class="content">#}
-{#<div class="texto">Fecha</div>#}
-{#<div ></div>#}
-{#</div>#}
-{#</div>#}
-<div id="destino" class="punteado">
-    {{ giro }}
-</div>
 <section>
-
-
-    <div id="one">Remitase el Expte.:</div>
-    <div id="two">{{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.anio }}</div>
-    {#<div id="tres">para la prosecución del texto correspondiente.</div>#}
-    {#<div id="cuatro"></div>#}
-    {#<div id="cinco">Fecha</div>#}
-    {#<div id="seis"></div>#}
+    <div style="width: 10%; float: left;">A:</div>
+    <div class="punteado">{{ giro }}</div>
 </section>
 
 <section>
-    <div id="tres">para la prosecución del texto correspondiente.</div>
+
+    <div id="one">Remitase el Expte.:</div>
+    <div id="two">{{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.anio }}</div>
+
+</section>
+
+<section>
+    <div id="tres">para la prosecución del trámite correspondiente.</div>
     <div id="cuatro"></div>
 
 </section>

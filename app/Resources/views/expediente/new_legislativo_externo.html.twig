@@ -1,0 +1,172 @@
+
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expediente Legislativo Externo
+{% endblock title %}
+{% block body %}
+    {# modal add persona #}
+    {% include 'default/modal_add_persona.html.twig' %}
+    {% include 'default/modal_add_dependencia.html.twig' %}
+    {# modal add persona #}
+
+    {#<h1>Expediente Administrativo</h1>#}
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Expediente Legislativo Externo</h3>
+        </div>
+        <div class="box-body">
+            {{ form_start(form) }}
+            {#<div class="row">#}
+            {#<div class="col-md-6">#}
+            {#{{ form_row(form.numeroNota) }}#}
+            {#</div>#}
+            {#</div>#}
+            <div class="row">
+                <div class="col-md-2">
+                    {{ form_row(form.expediente) }}
+                </div>
+                <div class="col-md-1">
+                    {{ form_row(form.letra) }}
+                </div>
+                <div class="col-md-2">
+                    {{ form_row(form.periodoLegislativo) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.fecha) }}
+                </div>
+                {#<div class="col-md-4">#}
+                {#{{ form_row(form.registroMunicipal) }}#}
+                {#</div>#}
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        {{ form_row(form.dependencia) }}
+                        <button type="button" class="btn btn-default btn-add-dependencia">
+                            <i class="fa fa-plus"></i> Agregar Dependencia
+                        </button>
+                    </div>
+
+                </div>
+
+                {#<div class="col-md-6">#}
+                    {#<div>#}
+                        {#{{ form_row(form.iniciadorParticular) }}#}
+                        {#<button type="button" class="btn btn-default btn-add-persona">#}
+                            {#<i class="fa fa-plus"></i> Agregar Persona#}
+                        {#</button>#}
+                    {#</div>#}
+
+                {#</div>#}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.extracto) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(form.texto) }}
+                </div>
+            </div>
+            {#<div class="row">#}
+            {#<div class="col-md-12">#}
+            {#{{ form_row(form.textoDefinitivo) }}#}
+            {#</div>#}
+            {#</div>#}
+
+
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            <div class="hidden">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('expediente_legislativo_externo_index') }}">Volver</a>
+{% endblock %}
+{% block javascripts %}
+    {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            $('.btn-add-persona').click(function () {
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("form_persona") }}',
+                    success: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        $('#modal-add-persona').modal('toggle');
+                        inicializarPlugins();
+                    }
+                });
+            });
+
+            $('#modal-add-persona-btn-ok').click(function () {
+
+                var data = $('form[name="appbundle_persona"]').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("form_persona") }}',
+                    data: data,
+                    success: function (data) {
+                        $('#modal-add-persona').modal('toggle');
+                        modalAlert(data.mensaje);
+                    },
+                    error: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                    500: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                });
+            });
+
+            $('.btn-add-dependencia').click(function () {
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("form_dependencia") }}',
+                    success: function (data) {
+                        $('#modal-add-dependencia .modal-body').html(data.form);
+                        $('#modal-add-dependencia').modal('toggle');
+                        inicializarPlugins();
+                    }
+                });
+            });
+
+            $('#modal-add-dependencia-btn-ok').click(function () {
+
+                var data = $('form[name="appbundle_dependencia"]').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("form_dependencia") }}',
+                    data: data,
+                    success: function (data) {
+                        $('#modal-add-dependencia').modal('toggle');
+                        modalAlert(data.mensaje);
+                    },
+                    error: function (data) {
+                        $('#modal-add-dependencia .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                    500: function (data) {
+                        $('#modal-add-dependencia .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                });
+            });
+
+        });
+    </script>
+{% endblock javascripts %}

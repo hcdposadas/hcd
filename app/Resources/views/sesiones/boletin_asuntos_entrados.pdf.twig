@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+</head>
+<style>
+    dl dt {
+        float: left;
+        width: 160px;
+        overflow: hidden;
+        clear: left;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    dl dd {
+        margin-left: 180px;
+    }
+
+    dd {
+        text-align: justify;
+    }
+
+    h3 {
+        font-size: 11pt
+    }
+
+    .cuerpo p {
+        font-size: 11pt;
+    }
+</style>
+<body>
+{# TODO agrupar por tipo de proyecto #}
+<h3 style="text-align: center; margin-top: 5%"><u>PROYECTOS DE CONCEJALES</u></h3>
+<div class="cuerpo">
+
+    {% for proyecto in bae.proyectos %}
+        <p>
+        <dl>
+            <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
+            <dd>{{ proyecto.expediente.extractoTemario }}</dd>
+        </dl>
+        </p>
+        <p style="text-align: center">
+            {% if proyecto.expediente.giros.count > 1 %}
+                A la Comisiones de
+            {% else %}
+                A la Comisión de
+            {% endif %}
+
+            {% if proyecto.expediente.giros.count <= 2 %}
+                {% if proyecto.expediente.giros.count == 1 %}
+                    {% for giro in proyecto.expediente.giros %}
+                        <strong>{{ giro.comisionDestino.abreviacion }}</strong>
+                    {% endfor %}
+                {% else %}
+                    {% for giro in proyecto.expediente.giros %}
+                        <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                {% for giro in proyecto.expediente.giros %}
+                    {% set ender = '; ' %}
+                    {% if loop.index == (loop.length - 1) %}
+                        {% set ender = ' y de ' %}
+                    {% endif %}
+                    <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
+                {% endfor %}
+            {% endif %}
+
+        </p>
+
+    {% endfor %}
+
+</div>
+</body>
+</html>

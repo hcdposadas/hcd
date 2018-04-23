@@ -25,3 +25,15 @@ services:
                 - "%tetranz_select2_entity.data_type%"
             tags:
                 - { name: form.type, alias: tetranz_select2entity }
+
+
+    UtilBundle\Services\NotificationsManager:
+        public: false
+        arguments:
+            - "%redis_host%"
+            - "%redis_port%"
+            - "%redis_scheme%"
+
+    notifications.manager:
+        alias: UtilBundle\Services\NotificationsManager
+        public: true

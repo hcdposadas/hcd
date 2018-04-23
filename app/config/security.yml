@@ -10,11 +10,27 @@ security:
     providers:
         fos_userbundle:
             id: fos_user.user_provider.username
+        user_db:
+            entity: { class: UsuariosBundle\Entity\Usuario, property: username }
 
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        sesion:
+            pattern: ^/sesion/*
+            provider: user_db
+            form_login:
+                login_path: /sesion/login
+                check_path: /sesion/login
+                default_target_path: /sesion
+#                csrf_token_generator: security.csrf.token_manager
+            logout:
+                path:   /sesion/logout
+                target: /sesion
+            anonymous:    true
+            logout_on_user_change: true
 
         main:
             pattern: ^/
@@ -26,10 +42,15 @@ security:
 
             logout:       true
             anonymous:    true
+            logout_on_user_change: true
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/sesion/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/pantalla, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/sesion/, role: [ROLE_CONCEJAL, ROLE_SECRETARIO] }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/, role: IS_AUTHENTICATED_FULLY }

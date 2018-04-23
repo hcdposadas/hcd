@@ -42,3 +42,34 @@ fos_user_resetting:
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
+    
+#sesion
+sesion:
+    path: /sesion
+    defaults: { _controller: "AppBundle:Sesion:index" }
+
+sesion_login:
+    path: /sesion/login
+    defaults: { _controller: "AppBundle:Sesion:login" }
+
+sesion_logout:
+    path: /sesion/logout
+
+app_display:
+    path:     /pantalla
+    defaults: { _controller: AppBundle:Default:display }
+
+app_votar:
+    path:     /sesion/votar
+    defaults: { _controller: AppBundle:Mocion:votoConcejal }
+    methods:  POST
+
+get_ultima_sesion:
+    path: /sesion/ultima-sesion
+    defaults: { _controller: "AppBundle:Ajax:getUltimaSesion" }
+
+get_buscar_expediente:
+    path: /sesion/buscar-expediente
+    defaults: { _controller: "AppBundle:Ajax:buscarExpediente" }
+
+#sesion secretario

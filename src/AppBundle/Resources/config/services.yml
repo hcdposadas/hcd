@@ -5,3 +5,28 @@ services:
     manager.reportes:
         class: AppBundle\Services\ReportesManager
         arguments: ["@doctrine","@security.token_storage", "@router", "@assets.packages", "@knp_snappy.pdf"]
+
+    AppBundle\Form\MocionType:
+        arguments: ['@doctrine.orm.entity_manager']
+        tags: [form.type]
+
+    AppBundle\Form\SesionType:
+            arguments: ['@doctrine.orm.entity_manager']
+            tags: [form.type]
+
+
+    AppBundle\Services\VotacionManager:
+        public: false
+        autowire: true
+
+    votacion.manager:
+        alias: AppBundle\Services\VotacionManager
+        public: true
+
+    AppBundle\Services\TipoMayoriaManager:
+        public: false
+        autowire: true
+
+    tipo_mayoria.manager:
+        alias: AppBundle\Services\TipoMayoriaManager
+        public: true

@@ -54,7 +54,8 @@
                         </tr>
                         <tr>
                             <th>Activo</th>
-                            <td>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span class="label label-danger">No</span>{% endif %}</td>
+                            <td>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                        class="label label-danger">No</span>{% endif %}</td>
                         </tr>
                         <tr>
                             <th>Fecha creacion</th>
@@ -68,11 +69,29 @@
                     </table>
                 </div>
                 <div class="box-footer">
-                    <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
-                    <a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>
-                    <a class="btn btn-default" target="_blank"                                                                                                                          href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Carátula
+                    {% if referer is defined %}
+                        <a class="btn btn-default" href="{{ referer }}">Volver</a>
+                    {% else %}
+                        <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
+                    {% endif %}
+                    {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
+                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
+                            <i class="fa fa-print"></i> Imprimir Carátula
+                        </a>
+                    {% endif %}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto
                     </a>
+                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA')  %}
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">
+                            <i class="fa fa-print"></i> Imprimir Etiqueta
+                        </a>
+                    {% endif %}
+
 
                 </div>
             </div>

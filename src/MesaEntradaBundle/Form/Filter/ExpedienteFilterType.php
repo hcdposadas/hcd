@@ -18,14 +18,14 @@ class ExpedienteFilterType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'tipoExpediente',
-				EntityType::class,
-				[
-					'class'        => 'MesaEntradaBundle\Entity\TipoExpediente',
-					'choice_label' => 'nombre',
-					'required'     => false,
-					'empty_data'   => ''
-				] )
+//			->add( 'tipoExpediente',
+//				EntityType::class,
+//				[
+//					'class'        => 'MesaEntradaBundle\Entity\TipoExpediente',
+//					'choice_label' => 'nombre',
+//					'required'     => false,
+//					'empty_data'   => ''
+//				] )
 			->add( 'textoDefinitivo' )
 			->add( 'extracto' )
 			->add( 'expediente',

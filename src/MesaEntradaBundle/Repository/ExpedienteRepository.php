@@ -40,12 +40,43 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb;
 	}
 
-	public function getQbBuscar( $data ) {
+	public function getQbExpedientesMesaEntrada() {
 		$qb = $this->getQbAll();
+		$qb->where( 'e.borrador is null' )
+		   ->orWhere( 'e.borrador = false' );
+
+		return $qb;
+	}
+
+	public function getQbExpedientesMesaEntradaTipo( $tipoExpediente ) {
+		$qb = $this->getQbAll();
+		$qb
+			->orWhere( 'e.borrador = false' )
+			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			->setParameter( 'tipoExpediente', $tipoExpediente );
+
+		return $qb;
+	}
+
+	public function getQbExpedientesLegislativoTipo( $tipoExpediente ) {
+		$qb = $this->getQbAll();
+		$qb
+			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			->setParameter( 'tipoExpediente', $tipoExpediente );
+
+		return $qb;
+	}
+
+	public function getQbBuscar( $data, $tipoExpediente = null ) {
+		$qb = $this->getQbExpedientesMesaEntrada();
 
 		if ( isset( $data['tipoExpediente'] ) ) {
 			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
 			   ->setParameter( 'tipoExpediente', $data['tipoExpediente'] );
+		}
+		if ( $tipoExpediente ) {
+			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			   ->setParameter( 'tipoExpediente', $tipoExpediente );
 		}
 		if ( $data['textoDefinitivo'] ) {
 			$q = $data['textoDefinitivo'];
@@ -105,5 +136,105 @@ class ExpedienteRepository extends EntityRepository {
 
 		return $qb;
 
+	}
+
+	public function getQbProyecetosPorConcejal( $concejal ) {
+
+		$qb = $this->getQbAll();
+
+		$qb->join( 'e.iniciadores', 'iniciadores' )
+		   ->where( 'iniciadores.iniciador = :concejal' );
+
+		$qb->setParameter( 'concejal', $concejal );
+
+
+		return $qb;
+
+	}
+
+	public function getQbExpedientes( $data = null ) {
+		$qb = $this->createQueryBuilder( 'e' );
+
+		$qb->innerJoin( 'e.tipoExpediente', 'te' )
+		   ->where( 'te.slug = :teSlug' )
+		   ->setParameter( 'teSlug', 'externo' );
+
+		if ( $data['expediente'] ) {
+			$q = $data['expediente'];
+			$qb->andWhere( 'e.expediente = :expediente' )
+			   ->setParameter( 'expediente', $q );
+		}
+
+		if ( isset( $data['anio'] ) ) {
+			$qb->andWhere( 'e.anio = :anio' );
+			$qb->setParameter( 'anio', $data['anio'] );
+		}
+
+		if ( isset( $data['letra'] ) ) {
+			$qb->andWhere( 'UPPER(e.letra) = UPPER(:letra)' );
+			$qb->setParameter( 'letra', $data['letra'] );
+		}
+
+		if ( isset( $data['texto'] ) ) {
+			$q = $data['texto'];
+			$qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
+			   ->setParameter( 'texto', "%$q%" );
+		}
+
+		if ( isset( $data['tema'] ) ) {
+			$q = $data['tema'];
+			$qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
+			   ->setParameter( 'extracto', "%$q%" );
+		}
+
+		$qb->andWhere( 'e.borrador = false' );
+
+		return $qb;
+	}
+
+	public function buscarExpedientesSesion( $data ) {
+
+		$qb = $this->getQbExpedientes( $data );
+
+		return $qb->getQuery()->getArrayResult();
+	}
+
+	public function getQbExpedientesLegislativosExternos() {
+		$qb = $this->getQbAll();
+
+//		$qb->join('e.iniciadores', 'iniciadores')
+//		   ->where('iniciadores is null');
+
+		return $qb;
+	}
+
+	public function getQbBuscarExpedientesLegislativosExternos() {
+		$qb = $this->getQbAll();
+
+//		$qb->join('e.iniciadores', 'iniciadores')
+//		   ->where('iniciadores is null');
+
+
+		return $qb;
+	}
+
+	public function getProyectosBAE( $data ) {
+		$qb = $this->getQbExpedientes( $data );
+
+		$qb->join( 'e.periodoLegislativo', 'pl' );
+		$qb->addSelect( 'pl' );
+
+		return $qb->getQuery()->getArrayResult();
+	}
+
+	public function getDictamenesOD( $data ) {
+		$qb = $this->getQbExpedientes( $data );
+
+		$qb->join( 'e.periodoLegislativo', 'pl' );
+		$qb->addSelect( 'pl' );
+
+		$qb->andWhere( 'e.extractoDictamen is not null' );
+
+		return $qb->getQuery()->getArrayResult();
 	}
 }

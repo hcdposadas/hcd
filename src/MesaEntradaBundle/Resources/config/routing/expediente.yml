@@ -38,3 +38,84 @@ expediente_imprimir_caratula:
 expediente_imprimir_giro:
     path:     /{id}/{giroId}/expediente_imprimir_giro
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirGiro" }
+
+expedientes_administrativos_index:
+    path: /expedientes_administrativos_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesAdministrativosIndex" }
+
+#legislativos
+expedientes_legislativos_index:
+    path: /expedientes_legislativos_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesLegislativosIndex" }
+
+proyectos_index:
+    path:     /proyectos
+    defaults: { _controller: "MesaEntradaBundle:Expediente:proyectosIndex" }
+    methods:  GET
+
+proyecto_show:
+    path:     /{id}/proyecto-ver
+    defaults: { _controller: "MesaEntradaBundle:Expediente:showProyecto" }
+    methods:  GET
+
+proyecto_new:
+    path:     /proyecto-new
+    defaults: { _controller: "MesaEntradaBundle:Expediente:newProyecto" }
+    methods:  [GET, POST]
+
+proyecto_edit:
+    path:     /{id}/proyecto-edit
+    defaults: { _controller: "MesaEntradaBundle:Expediente:editProyecto" }
+    methods:  [GET, POST]
+
+expediente_imprimir_proyecto:
+    path: /expediente_imprimir_proyecto/{id}
+    defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirProyecto" }
+
+expediente_impresion_proyecto:
+    path: /expediente_impresion_proyecto
+    defaults: { _controller: "MesaEntradaBundle:Expediente:impresionProyecto" }
+
+expediente_asignar_numero:
+    path: /expediente_asignar_numero
+    defaults: { _controller: "MesaEntradaBundle:Expediente:asignarNumeroExpediente" }
+
+expediente_imprimir_etiqueta:
+    path: /{id}/expediente_imprimir_etiqueta
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedienteImprimirEtiqueta" }
+
+# administrativos
+expediente_administrativo_nuevo:
+    path: /expediente_administrativo_nuevo
+    defaults: { _controller: "MesaEntradaBundle:Expediente:nuevoExpedienteAdministrativo" }
+
+expediente_administrativo_editar:
+    path: /{id}/expediente_administrativo_editar
+    defaults: { _controller: "MesaEntradaBundle:Expediente:editarExpedienteAdministrativo" }
+
+
+#legislativos externos
+expediente_legislativo_externo_index:
+    path: /expediente_legislativo_externo_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesLegislativoExternosIndex" }
+
+expediente_legislativo_externo_nuevo:
+    path: /expediente_legislativo_externo_nuevo
+    defaults: { _controller: "MesaEntradaBundle:Expediente:nuevoExpedienteLegislativoExterno" }
+
+expediente_legislativo_externo_editar:
+    path: /{id}/expediente_legislativo_externo_editar
+    defaults: { _controller: "MesaEntradaBundle:Expediente:editarExpedienteLegislativoExterno" }
+
+#administrativos externos
+expediente_administrativo_externo_index:
+    path: /expediente_administrativo_externo_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesAdministrativoExternosIndex" }
+
+expediente_administrativo_externo_nuevo:
+    path: /expediente_administrativo_externo_nuevo
+    defaults: { _controller: "MesaEntradaBundle:Expediente:nuevoExpedienteAdministrativoExterno" }
+
+expediente_administrativo_externo_editar:
+    path: /{id}/expediente_administrativo_externo_editar
+    defaults: { _controller: "MesaEntradaBundle:Expediente:editarExpedienteAdministrativoExterno" }

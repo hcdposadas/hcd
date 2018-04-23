@@ -13,9 +13,13 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
-    app.path.expedientes_internos: /uploads/expedientes/internos
-    app.path.expedientes_externos: /uploads/expedientes/externos
-    app.path.dictamenes: /uploads/dictamenes/
+    app.path.expedientes_internos: '%app_url%/uploads/expedientes/internos'
+    app.path.expedientes_externos: '%app_url%/uploads/expedientes/externos'
+    app.path.expedientes_anexos: '%app_url%/uploads/expedientes/anexos'
+    app.path.dictamenes: '%app_url%/uploads/dictamenes'
+    app.path.sanciones: '%app_url%/uploads/sanciones'
+    app.path.documentos: '%app_url%/uploads/documentos'
+    app.path.varios: '%app_url%/uploads/varios'
 
 framework:
     ide: "%ide%"
@@ -37,6 +41,8 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id: ~
+        cookie_lifetime: 21600
+        gc_maxlifetime: 21600
     fragments: ~
     http_method_override: true
 
@@ -46,10 +52,12 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         version: "%version%"
+        kernelRootDir: "%kernel.root_dir%"
     form_themes:
         - 'bootstrap_3_layout.html.twig'
 #        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
         - 'UtilBundle:Form:fields.html.twig'
+        - ':Form:vich_widget.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -93,14 +101,36 @@ vich_uploader:
         dictamen:
             uri_prefix: "%app.path.dictamenes%"
             upload_destination: "%kernel.root_dir%/../web/uploads/dictamenes"
+        sanciones:
+            uri_prefix: "%app.path.sanciones%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/sanciones"
+        documentos:
+            uri_prefix: "%app.path.documentos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/documentos"
+        varios:
+            uri_prefix: "%app.path.varios%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/varios"
+        expedientes_anexos:
+            uri_prefix: "%app.path.expedientes_anexos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/expedientes/anexos"
+            namer: "vich_uploader.namer_uniqid"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: UsuariosBundle\Entity\Usuario
     from_email:
-        address: "%mailer_user%"
-        sender_name: "%mailer_user%"
+        address:        '%mailer_user%'
+        sender_name:    '%mailer_sender%'
+    resetting:
+        token_ttl: 86400
+        email:
+            from_email: # Use this node only if you don't want the global email address for the resetting email
+                address:        '%mailer_sender_as%'
+                sender_name:    '%mailer_sender%'
+            template:   'UsuariosBundle:Resetting:email.txt.twig'
+    service:
+        mailer: fos_user.mailer.default
 
 
 #doctrine extentions
@@ -118,7 +148,12 @@ ivory_ck_editor:
     default_config: my_config
     configs:
         my_config:
-            toolbar: [ ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],  ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat'], '/', ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'], ['Styles', 'Format']  ]
+            toolbar: [ ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+                    ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'], '/',
+                    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'], '/',
+                    ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'],
+                    ['Styles', 'Format']
+                    ]
 
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer
@@ -142,7 +177,7 @@ tetranz_select2_entity:
 knp_snappy:
     pdf:
         enabled:    true
-        binary:     "%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64"
+        binary:     '%knp_snappy_binary%'
 
 #KNPpaginator
 knp_paginator:

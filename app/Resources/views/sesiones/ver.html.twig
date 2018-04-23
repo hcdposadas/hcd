@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{{ path('sesiones_index') }}">Volver</a>
+        </div>
+    </div>
+
+    <h1>{{ sesion.titulo }}</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Orden del Día</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Boletín de Asuntos Entrados</a></li>
+                    <li><a href="#tab_3" data-toggle="tab">Acta</a></li>
+
+
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        {{ sesion.ordenDelDia | raw }}
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        {{ sesion.asuntosEntrados | raw }}
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_3">
+                        {{ sesion.acta | raw }}
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <a class="btn btn-default" href="{{ path('sesiones_index') }}">Volver</a>
+
+
+
+
+
+{% endblock %}

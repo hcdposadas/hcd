@@ -1,0 +1,16 @@
+easy_admin:
+    entities:
+        Mocion:
+            class: AppBundle\Entity\Mocion
+            disabled_actions: ['new']
+            list:
+                fields: ['id', 'sesion', 'numero', 'texto', 'aprobado', 'cuentaTotal', 'cuentaAfirmativos', 'cuentaNegativos', 'cuentaAbstenciones' ]
+            form:
+                fields:
+                    - { property: 'texto' }
+                    - { property: 'numero' }
+                    - { property: 'cuentaTotal' }
+                    - { property: 'cuentaAfirmativos' }
+                    - { property: 'cuentaNegativos' }
+                    - { property: 'cuentaAbstenciones' }
+                    - { property: 'votos', type: 'collection' , type_options: { by_reference: false, entry_type: AppBundle\Form\VotoType } }

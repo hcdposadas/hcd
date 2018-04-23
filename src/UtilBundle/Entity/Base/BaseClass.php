@@ -7,6 +7,7 @@ namespace UtilBundle\Entity\Base;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use UsuariosBundle\Entity\Usuario;
 
 /**
  * Class BaseClass
@@ -38,7 +39,7 @@ abstract class BaseClass
 	protected $fechaActualizacion;
 
 	/**
-	 * @var string $creadoPor
+	 * @var Usuario $creadoPor
 	 *
 	 * @Gedmo\Blameable(on="create")
 	 *
@@ -48,7 +49,7 @@ abstract class BaseClass
 	protected $creadoPor;
 
 	/**
-	 * @var string $actualizadoPor
+	 * @var Usuario $actualizadoPor
 	 *
 	 * @Gedmo\Blameable(on="update")
 	 *
@@ -91,16 +92,19 @@ abstract class BaseClass
 		return $this->fechaActualizacion;
 	}
 
+    /**
+     * @return Usuario
+     */
 	public function getCreadoPor()
 	{
 		return $this->creadoPor;
 	}
 
-
+    /**
+     * @return Usuario
+     */
 	public function getActualizadoPor()
 	{
 		return $this->actualizadoPor;
 	}
-
-
 }

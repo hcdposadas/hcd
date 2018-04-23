@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sesión HCD</title>
+    <link rel="stylesheet" href="{{ asset('build/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/theme/css/custom.css') }}">
+    <style>
+        .btn-circle.btn-xl {
+            width: 120px;
+            height: 120px;
+            padding: 10px 16px;
+            font-size: 24px;
+            line-height: 1.33;
+            border-radius: 75px;
+        }
+
+        .container-body {
+            margin-top: 15rem;
+        }
+
+        .btn-primary-hcd {
+            background-color: #12a9d4;
+        }
+
+        .navbar-fixed-top {
+            background-color: #17a867;
+            padding: 1%;
+        }
+    </style>
+    <script>
+        window.baseUrl = '{{ path('app_homepage') }}';
+    </script>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="row">
+        <div data-spy="scroll" data-target=".navbar" data-offset="50">
+
+            <nav class="navbar navbar-fixed-top">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+
+                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                id="verAe">
+                            <i class="fa fa-file" aria-hidden="true"></i><br>
+                            AE
+                        </button>
+                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                id="consultarExpte">
+                            <i class="fa fa-search" aria-hidden="true"></i><br>
+                            <span style="font-size: 12px">Consultar Expte</span>
+                        </button>
+                        {% if is_granted('ROLE_SECRETARIO') %}
+                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                    id="lanzarVotacion"
+                                    href="{{ path('mocion_index') }}">
+                                <i class="fa fa-hand-paper-o" aria-hidden="true"></i><br>
+                                <span style="font-size: 12px">Lanzar Votacion</span>
+                            </button>
+                        {% endif %}
+                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                id="verOd">
+                            <i class="fa fa-file-o" aria-hidden="true"></i><br>
+                            OD
+                        </button>
+                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                id="verCartaOrganica">
+                            <i class="fa fa-file-o" aria-hidden="true"></i><br>
+                            <span style="font-size: 12px">Carta Orgánica</span>
+                        </button>
+                        <a class="btn btn-danger btn-lg pull-right" href="{{ path('sesion_logout') }}"> Salir
+                            <span class="glyphicon glyphicon-log-out"></span>
+                        </a>
+                        {% if is_granted('ROLE_SECRETARIO') %}
+                            <button class="btn btn-primary" type="button">
+                                Presentes <span class="badge"><quorum></quorum></span>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% for flashMessage in app.flashes('success') %}
+                            <div class="alert alert-dismissable alert-success">
+                                <i class="fa fa-check"></i>
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                {{ flashMessage }}
+                            </div>
+                        {% endfor %}
+                        {% for flashMessage in app.flashes('error') %}
+                            <div class="alert alert-dismissable alert-danger">
+                                <i class="fa fa-ban"></i>
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                {{ flashMessage | raw }}
+                            </div>
+
+                        {% endfor %}
+
+                        {% for flashMessage in app.flashes('warning') %}
+                            <div class="alert alert-dismissable alert-warning">
+                                <i class="fa fa-warning"></i>
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                {{ flashMessage }}
+                            </div>
+
+                        {% endfor %}
+                        {% for flashMessage in app.flashes('info') %}
+                            <div class="alert alert-info alert-dismissable">
+                                <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
+                                <h4>
+                                    <i class="icon fa fa-info"></i>
+                                    Info!
+                                </h4>
+                                {{ flashMessage }}
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <b>
+                            {{ sesion.fecha | date('j F Y') }} - {{ sesion.titulo }}
+                        </b>
+                    </div>
+                </div>
+                <div class="row m-t-1">
+
+                    <div class="col-md-12">
+                        <div data-spy="scroll"
+                             data-target="#navbar-example2" data-offset="0">
+                            <div class="ae" style="display: none;">
+                                {{ sesion.asuntosEntrados | raw }}
+                            </div>
+                            <div class="consultar-expedientes" style="display: none;">
+                                <consultar-expediente></consultar-expediente>
+                            </div>
+                            <div class="mociones">
+                                {% block body %}
+                                {% endblock body %}
+                            </div>
+                            <div class="od" style="display: none;">
+                                {{ sesion.ordenDelDia | raw }}
+                            </div>
+                            <div class="carta-organica" style="display: none;">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <embed class="embed-responsive-item"
+                                           src="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12">
+
+        </div>
+    </div>
+    <div class="row">
+        <hr>
+        <div class="col-md-12">
+            <h2>
+                {% if is_granted('ROLE_SECRETARIO') %}
+                    Secretario
+                {% elseif is_granted('ROLE_DEFENSOR') %}
+                    Defensor del Pueblo
+                {% elseif is_granted('ROLE_LEGISLATIVO') %}
+                    Legislativo
+                {% else %}
+                    {% if app.user.persona %}
+                        {{ app.user.persona }}
+                    {% endif %}
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="{{ asset('build/common-js.js') }}"></script>
+<script src="{{ asset('build/app.js') }}"></script>
+{% block javascripts %}
+{% endblock javascripts %}
+
+<script>
+
+    $(document).ready(function () {
+        $('.ae').hide();
+        $('.consultar-expedientes').hide();
+        $('.od').hide()
+        $('.carta-organica').hide()
+
+        {% if is_granted('ROLE_SECRETARIO') %}
+        $('#lanzarVotacion').click(function () {
+            window.location.href = $(this).attr('href');
+        });
+        {% endif %}
+
+        $('#verAe').click(function () {
+            $('.ae').show();
+            $('.consultar-expedientes').hide();
+            $('.od').hide();
+            $('.mociones').hide();
+            $('.carta-organica').hide();
+        })
+        $('#verOd').click(function () {
+            $('.od').show();
+            $('.consultar-expedientes').hide();
+            $('.ae').hide();
+            $('.mociones').hide();
+            $('.carta-organica').hide();
+        })
+        $('#consultarExpte').click(function () {
+            $('.consultar-expedientes').show();
+            $('.od').hide();
+            $('.ae').hide();
+            $('.mociones').hide();
+            $('.carta-organica').hide();
+        })
+        $('#verCartaOrganica').click(function () {
+            $('.carta-organica').show()
+            $('.consultar-expedientes').hide();
+            $('.od').hide();
+            $('.ae').hide();
+            $('.mociones').hide();
+        })
+    });
+</script>
+</html>

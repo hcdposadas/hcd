@@ -1,5 +1,6 @@
 /app/config/parameters.yml
 /build/
+/node_modules/
 /phpunit.xml
 /var/*
 !/var/cache
@@ -14,12 +15,20 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+/node_modules/
+env.json
 
 # -- uploads
 /web/uploads/expedientes/internos/*
 !web/uploads/expedientes/internos/.gitkeep
 /web/uploads/expedientes/externos/*
 !web/uploads/expedientes/externos/.gitkeep
+/web/uploads/documentos/*
+!web/uploads/documentos/.gitkeep
+/web/uploads/varios/*
+!web/uploads/varios/.gitkeep
+/web/uploads/expedientes/anexos/*
+!web/uploads/expedientes/anexos/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim

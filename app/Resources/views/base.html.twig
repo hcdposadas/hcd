@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
-    <title>{% block title %}Welcome!{% endblock %} | HCD</title>
+    <title>{% block title %}Bienvenido!{% endblock %} | HCD</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="{{ asset('bundles/theme/bootstrap/css/bootstrap.min.css') }}">
+    {#<link rel="stylesheet" href="{{ asset('bundles/theme/bootstrap/css/bootstrap.min.css') }}">#}
+    <link rel="stylesheet" href="{{ asset('build/global.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- Ionicons -->
@@ -22,7 +23,8 @@
     <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/AdminLTE.min.css') }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/skins/_all-skins.min.css') }}">
+    {#<link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/skins/_all-skins.min.css') }}">#}
+    <link rel="stylesheet" href="{{ asset('bundles/theme/css/skin-green-hcd.css') }}">
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('bundles/theme/plugins/iCheck/flat/blue.css') }}">
     <!-- jvectormap -->
@@ -41,11 +43,18 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <link rel="stylesheet" href="{{ asset('bundles/theme/css/custom.css') }}">
+
     {% block stylesheets %}{% endblock %}
     <!-- jQuery 2.2.3 -->
     <script src="{{ asset('bundles/theme/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+    <script>
+        {#window.user = { id: {{ app.user.id }} };#}
+        window.baseUrl = '{{ path('app_homepage') }}';
+    </script>
 </head>
-<body class="hold-transition skin-red sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper">
 
     <header class="main-header">
@@ -67,9 +76,13 @@
                 <ul class="nav navbar-nav">
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
+                        {% set nombreusuario = app.user %}
+                        {% if app.user.persona %}
+                            {% set nombreusuario = app.user.persona %}
+                        {% endif %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="{{ asset('bundles/theme/img/avatar.png') }}" class="user-image" alt="User Image">
-                            <span class="hidden-xs">{{ app.user }}</span>
+                            <span class="hidden-xs">{{ nombreusuario }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
@@ -78,8 +91,17 @@
                                      alt="User Image">
 
                                 <p>
-                                    {{ app.user }} - Web Developer
-                                    <small>Activo desde -</small>
+                                    {{ nombreusuario }}
+                                    {% if is_granted('ROLE_CONCEJAL') %}
+                                        - Concejal
+                                    {% elseif is_granted('ROLE_SECRETARIO') %}
+                                        - Secretario
+                                    {% elseif is_granted('ROLE_LEGISLATIVO') %}
+                                        - Legislativo
+                                    {% else %}
+                                        - Agente
+                                    {% endif %}
+                                    {#<small>Activo desde -</small>#}
                                 </p>
                             </li>
 
@@ -141,15 +163,15 @@
         {#</section>#}
 
         <!-- Main content -->
-        <section class="content">
-            {% for flashMessage in app.session.flashbag.get('success') %}
+        <section class="content" style="position: relative;">
+            {% for flashMessage in app.flashes('success') %}
                 <div class="alert alert-dismissable alert-success">
                     <i class="fa fa-check"></i>
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            {% for flashMessage in app.session.flashbag.get('error') %}
+            {% for flashMessage in app.flashes('error') %}
                 <div class="alert alert-dismissable alert-danger">
                     <i class="fa fa-ban"></i>
                     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -158,21 +180,17 @@
 
             {% endfor %}
 
-            {% for flashMessage in app.session.flashbag.get('warning') %}
+            {% for flashMessage in app.flashes('warning') %}
                 <div class="alert alert-dismissable alert-warning">
                     <i class="fa fa-warning"></i>
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ flashMessage }}
                 </div>
-
             {% endfor %}
-            {% for flashMessage in app.session.flashbag.get('info') %}
+            {% for flashMessage in app.flashes('info') %}
                 <div class="alert alert-info alert-dismissable">
-                    <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
-                    <h4>
-                        <i class="icon fa fa-info"></i>
-                        Info!
-                    </h4>
+                    <i class="fa fa-info"></i>
+                    <button type="button" class="close" data-dismiss="alert">×</button>
                     {{ flashMessage }}
                 </div>
 
@@ -195,6 +213,10 @@
 </div>
 <!-- ./wrapper -->
 
+
+<script src="{{ asset('build/common-js.js') }}"></script>
+{#<script src="{{ asset('build/app.js') }}"></script>#}
+
 <!-- jQuery UI 1.11.4 -->
 <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -202,7 +224,7 @@
     $.widget.bridge('uibutton', $.ui.button);
 </script>
 <!-- Bootstrap 3.3.6 -->
-<script src="{{ asset('bundles/theme/bootstrap/js/bootstrap.min.js') }}"></script>
+{#<script src="{{ asset('bundles/theme/bootstrap/js/bootstrap.min.js') }}"></script>#}
 <!-- Select2 -->
 <script src="{{ asset('bundles/theme/plugins/select2/select2.full.min.js') }}"></script>
 <script src="{{ asset('bundles/theme/plugins/select2/i18n/es.js') }}"></script>

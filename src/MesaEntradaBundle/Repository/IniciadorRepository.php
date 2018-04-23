@@ -39,6 +39,7 @@ class IniciadorRepository extends EntityRepository {
 				LEFT JOIN cargo cargo on cargo_persona.cargo_id = cargo.id
 				INNER JOIN iniciador iniciador on cargo_persona.id = iniciador.cargo_persona_id
 				WHERE upper(persona.apellido) like upper('%$apellido%')
+				AND iniciador.activo = true
 				LIMIT $limit
 				";
 

@@ -25,7 +25,7 @@ class Iniciador extends BaseClass
     /**
      * @var
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CargoPersona")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CargoPersona", inversedBy="iniciador")
      * @ORM\JoinColumn(name="cargo_persona_id", referencedColumnName="id")
      */
     private $cargoPersona;

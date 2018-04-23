@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="expediente")
  * @Vich\Uploadable
  * @UniqueEntity(
- *     fields={"expediente", "anio"},
+ *     fields={"expediente", "periodoLegislativo"},
  *     errorPath="expediente",
  *     message="Ya existe el expediente en el año y con esta letra"
  * )
@@ -47,12 +47,26 @@ class Expediente extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="expediente", type="string", length=255)
+	 * @ORM\Column(name="extracto_temario", type="text", nullable=true)
+	 */
+	private $extractoTemario;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="extracto_dictamen", type="text", nullable=true)
+	 */
+	private $extractoDictamen;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="expediente", type="string", length=255, nullable=true)
 	 */
 	private $expediente;
 
 	/**
-	 * @ORM\Column(name="anio",type="string", length=255)
+	 * @ORM\Column(name="anio",type="string", length=255, nullable=true)
 	 * @var string
 	 */
 	private $anio;
@@ -84,6 +98,14 @@ class Expediente extends BaseClass {
 	 * @ORM\JoinColumn(name="tipo_expediente_id", referencedColumnName="id")
 	 */
 	private $tipoExpediente;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PeriodoLegislativo")
+	 * @ORM\JoinColumn(name="periodo_legislativo_id", referencedColumnName="id")
+	 */
+	private $periodoLegislativo;
 
 	/**
 	 * @var string
@@ -165,6 +187,56 @@ class Expediente extends BaseClass {
 	private $expedienteExterno;
 
 	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\TipoProyecto")
+	 * @ORM\JoinColumn(name="tipo_proyecto_id", referencedColumnName="id")
+	 */
+	private $tipoProyecto;
+
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="texto", type="text", nullable=true)
+	 */
+	private $texto;
+
+	/**
+	 * @var boolean
+	 *
+	 * @ORM\Column(name="borrador", type="boolean", nullable=true)
+	 */
+	private $borrador;
+
+	/**
+	 * @ORM\Column(name="codigo_referencia", type="string", length=255, nullable=true)
+	 * @var string
+	 */
+	private $codigoReferencia;
+
+	/**
+	 * @ORM\Column(name="numero_de_hojas", type="string", length=255, nullable=true)
+	 * @var string
+	 */
+	private $numeroDeHojas;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\AnexoExpediente", mappedBy="expediente", cascade={"persist", "remove"})
+	 *
+	 */
+	private $anexos;
+
+	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="fecha_presentacion", type="datetime", nullable=true)
+	 */
+	private $fechaPresentacion;
+
+	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
 	 * @var File
 	 */
@@ -235,7 +307,7 @@ class Expediente extends BaseClass {
 		if ( $file ) {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
-//			$this->updatedAt = new \DateTimeImmutable();
+			$this->fechaActualizacion =  new \DateTime( 'now' ) ;
 		}
 
 		return $this;
@@ -266,8 +338,13 @@ class Expediente extends BaseClass {
 		return $this->expedienteInterno;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function __toString() {
-		return $this->letra;
+		$anio = $this->anio ? $this->anio : $this->getPeriodoLegislativo()->getAnio();
+
+		return $this->expediente . '-' . strtoupper($this->letra) . '-' . $anio;
 	}
 
 	/**
@@ -277,6 +354,7 @@ class Expediente extends BaseClass {
 		$this->iniciadores         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -712,27 +790,257 @@ class Expediente extends BaseClass {
 		return $this;
 	}
 
-    /**
-     * Set numeroNota
-     *
-     * @param string $numeroNota
-     *
-     * @return Expediente
-     */
-    public function setNumeroNota($numeroNota)
-    {
-        $this->numeroNota = $numeroNota;
+	/**
+	 * Set numeroNota
+	 *
+	 * @param string $numeroNota
+	 *
+	 * @return Expediente
+	 */
+	public function setNumeroNota( $numeroNota ) {
+		$this->numeroNota = $numeroNota;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get numeroNota
-     *
-     * @return string
-     */
-    public function getNumeroNota()
-    {
-        return $this->numeroNota;
-    }
+	/**
+	 * Get numeroNota
+	 *
+	 * @return string
+	 */
+	public function getNumeroNota() {
+		return $this->numeroNota;
+	}
+
+	/**
+	 * Set tipoProyecto
+	 *
+	 * @param \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto
+	 *
+	 * @return Expediente
+	 */
+	public function setTipoProyecto( \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto = null ) {
+		$this->tipoProyecto = $tipoProyecto;
+
+		return $this;
+	}
+
+	/**
+	 * Get tipoProyecto
+	 *
+	 * @return \MesaEntradaBundle\Entity\TipoProyecto
+	 */
+	public function getTipoProyecto() {
+		return $this->tipoProyecto;
+	}
+
+	/**
+	 * Set texto
+	 *
+	 * @param string $texto
+	 *
+	 * @return Expediente
+	 */
+	public function setTexto( $texto ) {
+		$this->texto = $texto;
+
+		return $this;
+	}
+
+	/**
+	 * Get texto
+	 *
+	 * @return string
+	 */
+	public function getTexto() {
+		return $this->texto;
+	}
+
+	/**
+	 * Set borrador
+	 *
+	 * @param boolean $borrador
+	 *
+	 * @return Expediente
+	 */
+	public function setBorrador( $borrador ) {
+		$this->borrador = $borrador;
+
+		return $this;
+	}
+
+	/**
+	 * Get borrador
+	 *
+	 * @return boolean
+	 */
+	public function getBorrador() {
+		return $this->borrador;
+	}
+
+	/**
+	 * Set periodoLegislativo
+	 *
+	 * @param \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo
+	 *
+	 * @return Expediente
+	 */
+	public function setPeriodoLegislativo( \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo = null ) {
+		$this->periodoLegislativo = $periodoLegislativo;
+
+		return $this;
+	}
+
+	/**
+	 * Get periodoLegislativo
+	 *
+	 * @return \AppBundle\Entity\PeriodoLegislativo
+	 */
+	public function getPeriodoLegislativo() {
+		return $this->periodoLegislativo;
+	}
+
+	/**
+	 * Set codigoReferencia
+	 *
+	 * @param string $codigoReferencia
+	 *
+	 * @return Expediente
+	 */
+	public function setCodigoReferencia( $codigoReferencia ) {
+		$this->codigoReferencia = $codigoReferencia;
+
+		return $this;
+	}
+
+	/**
+	 * Get codigoReferencia
+	 *
+	 * @return string
+	 */
+	public function getCodigoReferencia() {
+		return $this->codigoReferencia;
+	}
+
+	/**
+	 * Set numeroDeHojas
+	 *
+	 * @param string $numeroDeHojas
+	 *
+	 * @return Expediente
+	 */
+	public function setNumeroDeHojas( $numeroDeHojas ) {
+		$this->numeroDeHojas = $numeroDeHojas;
+
+		return $this;
+	}
+
+	/**
+	 * Get numeroDeHojas
+	 *
+	 * @return string
+	 */
+	public function getNumeroDeHojas() {
+		return $this->numeroDeHojas;
+	}
+
+	/**
+	 * Set extractoTemario
+	 *
+	 * @param string $extractoTemario
+	 *
+	 * @return Expediente
+	 */
+	public function setExtractoTemario( $extractoTemario ) {
+		$this->extractoTemario = $extractoTemario;
+
+		return $this;
+	}
+
+	/**
+	 * Get extractoTemario
+	 *
+	 * @return string
+	 */
+	public function getExtractoTemario() {
+		return $this->extractoTemario;
+	}
+
+	/**
+	 * Set extractoDictamen
+	 *
+	 * @param string $extractoDictamen
+	 *
+	 * @return Expediente
+	 */
+	public function setExtractoDictamen( $extractoDictamen ) {
+		$this->extractoDictamen = $extractoDictamen;
+
+		return $this;
+	}
+
+	/**
+	 * Get extractoDictamen
+	 *
+	 * @return string
+	 */
+	public function getExtractoDictamen() {
+		return $this->extractoDictamen;
+	}
+
+	/**
+	 * Add anexo
+	 *
+	 * @param \MesaEntradaBundle\Entity\AnexoExpediente $anexo
+	 *
+	 * @return Expediente
+	 */
+	public function addAnexo( \MesaEntradaBundle\Entity\AnexoExpediente $anexo ) {
+
+		$anexo->setExpediente( $this );
+
+		$this->anexos->add( $anexo );
+
+		return $this;
+	}
+
+	/**
+	 * Remove anexo
+	 *
+	 * @param \MesaEntradaBundle\Entity\AnexoExpediente $anexo
+	 */
+	public function removeAnexo( \MesaEntradaBundle\Entity\AnexoExpediente $anexo ) {
+		$this->anexos->removeElement( $anexo );
+	}
+
+	/**
+	 * Get anexos
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getAnexos() {
+		return $this->anexos;
+	}
+
+	/**
+	 * Set fechaPresentacion
+	 *
+	 * @param \DateTime $fechaPresentacion
+	 *
+	 * @return Expediente
+	 */
+	public function setFechaPresentacion( $fechaPresentacion ) {
+		$this->fechaPresentacion = $fechaPresentacion;
+
+		return $this;
+	}
+
+	/**
+	 * Get fechaPresentacion
+	 *
+	 * @return \DateTime
+	 */
+	public function getFechaPresentacion() {
+		return $this->fechaPresentacion;
+	}
 }

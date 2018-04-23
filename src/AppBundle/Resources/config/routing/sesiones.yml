@@ -1,0 +1,31 @@
+sesiones_index:
+    path: /index
+    defaults: { _controller: "AppBundle:Sesion:indexSesiones" }
+
+sesiones_ver:
+    path: /{id}/ver
+    defaults: { _controller: "AppBundle:Sesion:verSesion" }
+
+sesiones_conformar_plan_de_labor_index:
+    path: /conformar-plan-de-labor-index
+    defaults: { _controller: "AppBundle:Sesion:conformarPlanDeLaborIndex" }
+
+sesiones_asignar_proyectos_a_bae:
+    path: /{sesionId}/asignar-proyectos-a-bae
+    defaults: { _controller: "AppBundle:Sesion:asignarProyectosABAE" }
+
+sesiones_asignar_dictamenes_a_od:
+    path: /{sesionId}/asignar-dictamenes-a-od
+    defaults: { _controller: "AppBundle:Sesion:asignarDictamenesAOD" }
+
+sesiones_conformar_plan_de_labor_cerrar:
+    path: /{sesionId}/conformar-plan-de-labor-confirmar
+    defaults: { _controller: "AppBundle:Sesion:conformarPlanDeLaborConfirmar" }
+
+sesiones_imprimir_boletin_asuntos_entrados:
+    path: /{sesionId}/imprimir-boletin-asuntos-entrados
+    defaults: { _controller: "AppBundle:Sesion:imprimirBAE" }
+
+sesiones_imprimir_orden_del_dia:
+    path: /{sesionId}/imprimir-orden-del-dia
+    defaults: { _controller: "AppBundle:Sesion:imprimirOD" }

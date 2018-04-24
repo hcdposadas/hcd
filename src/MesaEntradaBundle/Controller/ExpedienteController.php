@@ -515,7 +515,8 @@ class ExpedienteController extends Controller {
 
 	public function editProyectoAction( Request $request, Expediente $expediente ) {
 
-		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) &&
+		     ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 			$this->get( 'session' )->getFlashBag()->add(
 				'warning',
 				'No tiene permisos para modificar un Proyecto.'

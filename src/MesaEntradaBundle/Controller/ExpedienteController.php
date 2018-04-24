@@ -19,6 +19,7 @@ use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\FormError;
 
 /**
  * Expediente controller.
@@ -348,7 +349,7 @@ class ExpedienteController extends Controller {
 
 			} else {
 				$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
-				$expedientes = $expedientes->andWhere( 'e.expediente is null' );
+				$expedientes = $expedientes->andWhere( 'e.expediente is not null' );
 			}
 
 		}
@@ -761,39 +762,63 @@ class ExpedienteController extends Controller {
 			$form->handleRequest( $request );
 
 			if ( $form->get( 'asignar' )->isClicked() ) {
+//				$form->submit($request->request->get($form->getName()));
 //				$codigoReferencia = $request->get( 'codigoReferencia' );
 //
 //				$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->findOneByCodigoReferencia( $codigoReferencia );
 //				$form->setData( $expediente );
 
+
 				if ( $form->isSubmitted() && $form->isValid() ) {
+
 
 					$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->findOneByCodigoReferencia( $request->get( 'codigoReferencia' ) );
 
-//			Prosecretaria Legislativa
+					$existeExpediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->findOneBy(
+						[
+							'expediente'         => $form->getData()->getExpediente(),
+							'periodoLegislativo' => $expediente->getPeriodoLegislativo()
+						]
+					);
 
-					$giroAdministrativo = new GiroAdministrativo();
-					$areaDestino        = $em->getRepository( 'AppBundle:AreaAdministrativa' )->findOneBy( [
-						'nombre' => 'Prosecretaria Legislativa'
-					] );
-					$giroAdministrativo->setAreaDestino( $areaDestino );
-					$giroAdministrativo->setExpediente( $expediente );
-					$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+					if ( $existeExpediente ) {
+						$form->get( 'expediente' )->addError( new FormError( 'Ya existe el expediente en el año' ) );
+
+						return $this->render( 'expediente/asignar_numero_expediente.html.twig',
+							array(
+								'expediente'       => $existeExpediente,
+								'form'             => $form->createView(),
+								'codigoReferencia' => $request->get( 'codigoReferencia' )
+							) );
+
+					} else {
+						//			Prosecretaria Legislativa
+
+						$giroAdministrativo = new GiroAdministrativo();
+						$areaDestino        = $em->getRepository( 'AppBundle:AreaAdministrativa' )->findOneBy( [
+							'nombre' => 'Prosecretaria Legislativa'
+						] );
+						$giroAdministrativo->setAreaDestino( $areaDestino );
+						$giroAdministrativo->setExpediente( $expediente );
+						$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
 
 
-					$expediente->addGiroAdministrativo( $giroAdministrativo );
-					$em->persist( $giroAdministrativo );
+						$expediente->addGiroAdministrativo( $giroAdministrativo );
+						$em->persist( $giroAdministrativo );
 
 //					$periodoLegislativo = $form->getData()->getPeriodoLegislativo();
 //					$expediente->setPeriodoLegislativo($periodoLegislativo);
-					$expediente->setExpediente( $form->getData()->getExpediente() );
-					$expediente->setLetra( $form->getData()->getLetra() );
-					$expediente->setFechaPresentacion( new \DateTime( 'now' ) );
+						$expediente->setExpediente( $form->getData()->getExpediente() );
+						$expediente->setLetra( $form->getData()->getLetra() );
+						$expediente->setFechaPresentacion( new \DateTime( 'now' ) );
 
 //					$em->persist( $expediente );
-					$em->flush();
+						$em->flush();
 
-					return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
+						return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
+					}
+
+
 				}
 
 			}

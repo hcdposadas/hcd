@@ -514,6 +514,15 @@ class ExpedienteController extends Controller {
 
 	public function editProyectoAction( Request $request, Expediente $expediente ) {
 
+		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No tiene permisos para modificar un Proyecto.'
+			);
+
+			return $this->redirectToRoute( 'app_homepage' );
+		}
+
 		$em = $this->getDoctrine()->getManager();
 
 //		$iniciarComo = [];
@@ -625,11 +634,14 @@ class ExpedienteController extends Controller {
 			return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
 		}
 
-		$header = $this->renderView( ':default:membrete.pdf.twig',
-			[
-				"periodo"      => $expediente->getPeriodoLegislativo(),
-				'dataToEncode' => $dataToEncode
-			] );
+		$header = null;
+		if ( ! $expediente->getBorrador() ) {
+			$header = $this->renderView( ':default:membrete.pdf.twig',
+				[
+					"periodo"      => $expediente->getPeriodoLegislativo(),
+					'dataToEncode' => $dataToEncode
+				] );
+		}
 
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
@@ -645,6 +657,9 @@ class ExpedienteController extends Controller {
 		return new Response(
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
+					'page-size'      => 'Legal',
+//					'page-width'     => '220mm',
+//					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
 //					'margin-right'   => "3cm",
 					'margin-top'     => "5cm",
@@ -759,7 +774,7 @@ class ExpedienteController extends Controller {
 
 					$giroAdministrativo = new GiroAdministrativo();
 					$areaDestino        = $em->getRepository( 'AppBundle:AreaAdministrativa' )->findOneBy( [
-						'nombre' => 'Prosecretaria Legislativas'
+						'nombre' => 'Prosecretaria Legislativa'
 					] );
 					$giroAdministrativo->setAreaDestino( $areaDestino );
 					$giroAdministrativo->setExpediente( $expediente );
@@ -773,6 +788,7 @@ class ExpedienteController extends Controller {
 //					$expediente->setPeriodoLegislativo($periodoLegislativo);
 					$expediente->setExpediente( $form->getData()->getExpediente() );
 					$expediente->setLetra( $form->getData()->getLetra() );
+					$expediente->setFechaPresentacion( new \DateTime( 'now' ) );
 
 //					$em->persist( $expediente );
 					$em->flush();
@@ -880,7 +896,7 @@ class ExpedienteController extends Controller {
 		return $this->render( ':expediente:cargar_extracto.html.twig',
 			[
 				'expediente' => $expediente,
-				'form' => $form->createView()
+				'form'       => $form->createView()
 			] );
 	}
 
@@ -1197,67 +1213,73 @@ class ExpedienteController extends Controller {
 			] );
 	}
 
-    /**
-     * @param Request $request
-     * @param Expediente $expediente
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function editarExtractoAction(Request $request, Expediente $expediente)
-    {
-        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
+	/**
+	 * @param Request $request
+	 * @param Expediente $expediente
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 */
+	public function editarExtractoAction( Request $request, Expediente $expediente ) {
+		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
 
-        // Estos son los campos a auditar en el log
-        $campos = ['extractoDictamen', 'extractoTemario'];
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extractoDictamen', 'extractoTemario' ];
 
-        $valoresOriginales = [];
-        foreach ($campos as $campo) {
-            $getter = 'get' . ucfirst($campo);
-            $valoresOriginales[$campo] = [
-                'valor' => $expediente->{$getter}(),
-                'getter' => $getter,
-            ];
-        }
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $expediente->{$getter}(),
+				'getter' => $getter,
+			];
+		}
 
-        $editForm = $this->createForm(EditarExtractoType::class, $expediente);
-        $editForm->handleRequest($request);
+		$editForm = $this->createForm( EditarExtractoType::class, $expediente );
+		$editForm->handleRequest( $request );
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $log = new LogExpediente();
-            $log->setExpediente($expediente);
-            foreach ($valoresOriginales as $nombre => $campo) {
-                if ($campo['valor'] != $expediente->{$campo['getter']}()) {
-                    $log->agregarCambio($nombre, $campo['valor'], $expediente->{$campo['getter']}());
-                }
-            }
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+			$log = new LogExpediente();
+			$log->setExpediente( $expediente );
+			foreach ( $valoresOriginales as $nombre => $campo ) {
+				if ( $campo['valor'] != $expediente->{$campo['getter']}() ) {
+					$log->agregarCambio( $nombre, $campo['valor'], $expediente->{$campo['getter']}() );
+				}
+			}
 
-            $em = $this->getDoctrine()->getManager();
-            if (count($log->getCambios()) > 0) {
-                $em->persist($log);
-            }
-            $em->persist($expediente);
-            $em->flush();
+			$em = $this->getDoctrine()->getManager();
+			if ( count( $log->getCambios() ) > 0 ) {
+				$em->persist( $log );
+			}
+			$em->persist( $expediente );
+			$em->flush();
 
-            return $this->redirectToRoute('expediente_show', array('id' => $expediente->getId()));
-        }
+			return $this->redirectToRoute( 'expediente_show', array( 'id' => $expediente->getId() ) );
+		}
 
-        return $this->render('expediente/editarExtracto.html.twig', array(
-            'expediente' => $expediente,
-            'edit_form' => $editForm->createView(),
-        ));
-    }
+		return $this->render( 'expediente/editarExtracto.html.twig',
+			array(
+				'expediente' => $expediente,
+				'edit_form'  => $editForm->createView(),
+			) );
+	}
 
-    /**
-     * @param Request $request
-     * @param Expediente $expediente
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function showEdicionExtractoAction(Request $request, Expediente $expediente, LogExpediente $logExpediente)
-    {
-        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
+	/**
+	 * @param Request $request
+	 * @param Expediente $expediente
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 */
+	public function showEdicionExtractoAction(
+		Request $request,
+		Expediente $expediente,
+		LogExpediente $logExpediente
+	) {
+		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
 
-        return $this->render('expediente/showEdicionExtracto.html.twig', array(
-            'expediente' => $expediente,
-            'logExpediente' => $logExpediente,
-        ));
-    }
+		return $this->render( 'expediente/showEdicionExtracto.html.twig',
+			array(
+				'expediente'    => $expediente,
+				'logExpediente' => $logExpediente,
+			) );
+	}
 }

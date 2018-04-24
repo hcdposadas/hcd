@@ -310,29 +310,32 @@ class SesionController extends Controller {
 
 			return $this->redirectToRoute( 'sesiones_index' );
 		}
-		if ( ! $bae->getCerrado() ) {
-			$this->get( 'session' )->getFlashBag()->add(
-				'error',
-				'El Plan de Labor aún se encuentra abierto.'
-			);
-
-			return $this->redirectToRoute( 'sesiones_index' );
-		}
+//		if ( ! $bae->getCerrado() ) {
+//			$this->get( 'session' )->getFlashBag()->add(
+//				'error',
+//				'El Plan de Labor aún se encuentra abierto.'
+//			);
+//
+//			return $this->redirectToRoute( 'sesiones_index' );
+//		}
 
 		$title = 'Boletín de Asuntos Entrados';
 
-		$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
-			[
-				"sesion"    => $sesion,
-				'documento' => $title
-			] );
+		$header = null;
+		if ( $bae->getCerrado() ) {
+			$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
+				[
+					"sesion"    => $sesion,
+					'documento' => $title
+				] );
+		}
 
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$html = $this->renderView( ':sesiones:boletin_asuntos_entrados.pdf.twig',
 			[
 				'bae'   => $bae,
-				'title' => $title .' - '. $sesion->getTitulo(),
+				'title' => $title . ' - ' . $sesion->getTitulo(),
 			]
 		);
 
@@ -341,6 +344,9 @@ class SesionController extends Controller {
 		return new Response(
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
+					'page-size'=> 'Legal',
+//					'page-width'     => '220mm',
+//					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
 //					'margin-right'   => "3cm",
 					'margin-top'     => "8cm",
@@ -374,30 +380,33 @@ class SesionController extends Controller {
 
 			return $this->redirectToRoute( 'sesiones_index' );
 		}
-		if ( ( ! $od->getCerrado() ) ) {
-			$this->get( 'session' )->getFlashBag()->add(
-				'error',
-				'El Plan de Labor aún se encuentra abierto.'
-			);
-
-			return $this->redirectToRoute( 'sesiones_index' );
-		}
+//		if ( ( ! $od->getCerrado() ) ) {
+//			$this->get( 'session' )->getFlashBag()->add(
+//				'error',
+//				'El Plan de Labor aún se encuentra abierto.'
+//			);
+//
+//			return $this->redirectToRoute( 'sesiones_index' );
+//		}
 
 		$title = 'Orden del Día';
 
-		$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
-			[
-				"sesion"    => $sesion,
-				'documento' => $title
+		$header = null;
+		if ( $od->getCerrado() ) {
+			$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
+				[
+					"sesion"    => $sesion,
+					'documento' => $title
 
-			] );
+				] );
+		}
 
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$html = $this->renderView( ':sesiones:orden_del_dia.pdf.twig',
 			[
 				'od'    => $od,
-				'title' => $title .' - '. $sesion->getTitulo(),
+				'title' => $title . ' - ' . $sesion->getTitulo(),
 			]
 		);
 
@@ -406,6 +415,9 @@ class SesionController extends Controller {
 		return new Response(
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
+					'page-size'=> 'Legal',
+//					'page-width'     => '220mm',
+//					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
 //					'margin-right'   => "3cm",
 					'margin-top'     => "8cm",

@@ -150,10 +150,12 @@
                         {{ form_widget(edit_form.guardarYEnviar) }}
                     {% endif %}
 
-                    {#<a class="btn btn-default" target="_blank"#}
-                    {#href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">#}
-                    {#<i class="fa fa-print"></i> {% if expediente.borrador == false %}Imprimir{% else %}Vista Previa{% endif %}#}
-                    {#</a>#}
+                    {% if expediente.borrador == true %}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Vista Previa Proyecto
+                    </a>
+                    {% endif %}
 
                 </div>
             </div>

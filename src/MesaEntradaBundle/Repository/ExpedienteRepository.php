@@ -108,9 +108,9 @@ class ExpedienteRepository extends EntityRepository {
 //			   ->setParameter( 'iniciador', $data['iniciador'] );
 			$q = $data['iniciador'];
 			$qb->join( 'e.iniciadores', 'iniciadores' )
-				->join('iniciadores.iniciador', 'iniciador')
-				->join('iniciador.cargoPersona', 'cargoPersona')
-				->join('cargoPersona.persona', 'persona')
+			   ->join( 'iniciadores.iniciador', 'iniciador' )
+			   ->join( 'iniciador.cargoPersona', 'cargoPersona' )
+			   ->join( 'cargoPersona.persona', 'persona' )
 			   ->andWhere( 'upper(persona.nombre) LIKE upper(:iniciador)' )
 			   ->orWhere( 'upper(persona.apellido) LIKE upper(:iniciador)' )
 			   ->setParameter( 'iniciador', "%$q%" );
@@ -208,6 +208,8 @@ class ExpedienteRepository extends EntityRepository {
 
 //		$qb->join('e.iniciadores', 'iniciadores')
 //		   ->where('iniciadores is null');
+		$qb->leftJoin( 'e.dependencia', 'dependencia' )
+		   ->andWhere( 'dependencia.id is not null' );
 
 		return $qb;
 	}

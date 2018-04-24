@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use UtilBundle\Form\Type\BootstrapCollectionType;
 use UtilBundle\Form\Type\Select2EntityType;
 
 class ExpedienteLegislativoExternoType extends AbstractType {
@@ -62,6 +63,15 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					'html5'  => true
 //					'format' => 'dd/MM/yyyy',
 				) )
+
+			->add( 'giros',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
 			->add( 'guardar',
 				SubmitType::class,
 				array(

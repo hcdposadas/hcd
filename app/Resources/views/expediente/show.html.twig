@@ -29,7 +29,7 @@
                             <td>{{ expediente.expediente }}</td>
                         </tr>
                         <tr>
-                            <th>Anio</th>
+                            <th>Año</th>
                             <td>{{ expediente.anio }}</td>
                         </tr>
                         <tr>
@@ -44,14 +44,7 @@
                             <th>Registro municipal</th>
                             <td>{{ expediente.registroMunicipal }}</td>
                         </tr>
-                        <tr>
-                            <th>Expediente interno</th>
-                            <td>{{ expediente.expedienteInterno }}</td>
-                        </tr>
-                        <tr>
-                            <th>Expediente externo</th>
-                            <td>{{ expediente.expedienteExterno }}</td>
-                        </tr>
+
                         <tr>
                             <th>Activo</th>
                             <td>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
@@ -69,14 +62,13 @@
                     </table>
                 </div>
                 <div class="box-footer">
-                    {% if referer is defined %}
-                        <a class="btn btn-default" href="{{ referer }}">Volver</a>
-                    {% else %}
-                        <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
-                    {% endif %}
                     {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
                     {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
-                        <a class="btn btn-default" target="_blank"
+                        <a class="btn btn-default margin" target="_blank"
+                           href="{{ path('expediente_cargar_extracto', {id: expediente.id}) }}">
+                            <i class="fa fa-pencil"></i> Cargar Texto
+                        </a>
+                        <a class="btn btn-default margin" target="_blank"
                            href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
                             <i class="fa fa-print"></i> Imprimir Carátula
                         </a>
@@ -85,22 +77,27 @@
                        href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
                         <i class="fa fa-print"></i> Imprimir Proyecto
                     </a>
-                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA')  %}
-                        <a class="btn btn-default" target="_blank"
+                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
+                        <a class="btn btn-default margin" target="_blank"
                            href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">
                             <i class="fa fa-print"></i> Imprimir Etiqueta
                         </a>
                     {% endif %}
-                    {% if is_granted('ROLE_LEGISLATIVO')  %}
-                        <a class="btn btn-default" target="_blank"
+                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                        <a class="btn btn-default margin" target="_blank"
                            href="{{ path('expediente_editar_extracto', {id: expediente.id}) }}">
                             <i class="fa fa-edit"></i> Editar extractos
                         </a>
                     {% endif %}
 
-
                 </div>
+
             </div>
+            {% if referer is defined %}
+                <a class="btn btn-default" href="{{ referer }}">Volver</a>
+            {% else %}
+                <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
+            {% endif %}
         </div>
     </div>
 

@@ -38,14 +38,14 @@ class Sesion extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="orden_del_dia", type="text")
+	 * @ORM\Column(name="orden_del_dia", type="text", nullable=true)
 	 */
 	private $ordenDelDia;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="asuntos_entrados", type="text")
+	 * @ORM\Column(name="asuntos_entrados", type="text", nullable=true)
 	 */
 	private $asuntosEntrados;
 
@@ -81,6 +81,14 @@ class Sesion extends BaseClass {
 	 * @ORM\JoinColumn(name="tipo_sesion_id", referencedColumnName="id", nullable=true)
 	 */
 	private $tipoSesion;
+
+	/**
+	 * @var LogExpediente[] $logs
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\LogExpediente", mappedBy="sesion", cascade={"persist"})
+	 * @ORM\OrderBy({"id" = "DESC"})
+	 */
+	private $logs;
 
 	/**
 	 * @return string
@@ -386,5 +394,39 @@ class Sesion extends BaseClass {
     public function getBae()
     {
         return $this->bae;
+    }
+
+    /**
+     * Add log
+     *
+     * @param \MesaEntradaBundle\Entity\LogExpediente $log
+     *
+     * @return Sesion
+     */
+    public function addLog(\MesaEntradaBundle\Entity\LogExpediente $log)
+    {
+        $this->logs[] = $log;
+
+        return $this;
+    }
+
+    /**
+     * Remove log
+     *
+     * @param \MesaEntradaBundle\Entity\LogExpediente $log
+     */
+    public function removeLog(\MesaEntradaBundle\Entity\LogExpediente $log)
+    {
+        $this->logs->removeElement($log);
+    }
+
+    /**
+     * Get logs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLogs()
+    {
+        return $this->logs;
     }
 }

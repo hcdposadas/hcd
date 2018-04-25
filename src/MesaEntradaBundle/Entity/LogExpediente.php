@@ -26,9 +26,17 @@ class LogExpediente extends BaseClass
      * @var Expediente $expediente
      *
      * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente", inversedBy="logs")
-     * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id", nullable=true)
      */
     private $expediente;
+
+	/**
+	 * @var Sesion $sesion
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion", inversedBy="logs")
+	 * @ORM\JoinColumn(name="sesion_id", referencedColumnName="id", nullable=true)
+	 */
+	private $sesion;
 
     /**
      * @var string $log
@@ -111,5 +119,85 @@ class LogExpediente extends BaseClass
     public function getCambios()
     {
         return json_decode($this->getLog(), JSON_OBJECT_AS_ARRAY);
+    }
+
+    /**
+     * Set fechaCreacion
+     *
+     * @param \DateTime $fechaCreacion
+     *
+     * @return LogExpediente
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+
+        return $this;
+    }
+
+    /**
+     * Set fechaActualizacion
+     *
+     * @param \DateTime $fechaActualizacion
+     *
+     * @return LogExpediente
+     */
+    public function setFechaActualizacion($fechaActualizacion)
+    {
+        $this->fechaActualizacion = $fechaActualizacion;
+
+        return $this;
+    }
+
+    /**
+     * Set sesion
+     *
+     * @param \AppBundle\Entity\Sesion $sesion
+     *
+     * @return LogExpediente
+     */
+    public function setSesion(\AppBundle\Entity\Sesion $sesion = null)
+    {
+        $this->sesion = $sesion;
+
+        return $this;
+    }
+
+    /**
+     * Get sesion
+     *
+     * @return \AppBundle\Entity\Sesion
+     */
+    public function getSesion()
+    {
+        return $this->sesion;
+    }
+
+    /**
+     * Set creadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $creadoPor
+     *
+     * @return LogExpediente
+     */
+    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
+    {
+        $this->creadoPor = $creadoPor;
+
+        return $this;
+    }
+
+    /**
+     * Set actualizadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+     *
+     * @return LogExpediente
+     */
+    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
+    {
+        $this->actualizadoPor = $actualizadoPor;
+
+        return $this;
     }
 }

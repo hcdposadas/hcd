@@ -108,6 +108,12 @@
                                         {#<i class="fa fa-edit"></i>#}
                                         {#</a>#}
                                     {% endif %}
+                                    {% if is_granted('ROLE_MESA_ENTRADA') %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('expediente_legislativo_externo_editar', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% endif %}
                                     <a class="btn btn-default"
                                        href="{{ path('expediente_timeline', {id: expediente.id}) }}">
                                         <i class="fa fa-road"></i>

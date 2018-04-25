@@ -1213,7 +1213,7 @@ class ExpedienteController extends Controller {
 
 	public function editarExpedienteAdministrativoExternoAction( Request $request, Expediente $expediente ) {
 
-		$form = $this->createForm( ExpedienteAdministrativoType::class, $expediente );
+		$form = $this->createForm( ExpedienteAdministrativoExternoType::class, $expediente );
 
 		$form->handleRequest( $request );
 

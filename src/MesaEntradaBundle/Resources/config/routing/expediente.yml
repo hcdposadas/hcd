@@ -112,7 +112,7 @@ expediente_legislativo_externo_editar:
     path: /{id}/expediente_legislativo_externo_editar
     defaults: { _controller: "MesaEntradaBundle:Expediente:editarExpedienteLegislativoExterno" }
 
-#administrativos externosLogExpediente
+#administrativos externos
 expediente_administrativo_externo_index:
     path: /expediente_administrativo_externo_index
     defaults: { _controller: "MesaEntradaBundle:Expediente:expedientesAdministrativoExternosIndex" }

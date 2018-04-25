@@ -20,7 +20,8 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 			->add( 'periodoLegislativo',
 				null,
 				[
-					'attr' => [ 'class' => 'select2' ]
+					'attr'     => [ 'class' => 'select2' ],
+					'required' => true
 				] )
 			->add( 'extracto',
 				TextareaType::class,
@@ -55,7 +56,6 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					'placeholder'  => 'Por Nombre'
 
 				] )
-
 			->add( 'fecha',
 				DateType::class,
 				array(
@@ -63,7 +63,6 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					'html5'  => true
 //					'format' => 'dd/MM/yyyy',
 				) )
-
 			->add( 'giros',
 				BootstrapCollectionType::class,
 				[

@@ -8,6 +8,8 @@ use AppBundle\Entity\Sesion;
 use AppBundle\Form\BoletinAsuntoEntradoType;
 use AppBundle\Form\Filter\SesionFilterType;
 use AppBundle\Form\OrdenDelDiaType;
+use AppBundle\Form\SesionCargarActaType;
+use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -310,14 +312,6 @@ class SesionController extends Controller {
 
 			return $this->redirectToRoute( 'sesiones_index' );
 		}
-//		if ( ! $bae->getCerrado() ) {
-//			$this->get( 'session' )->getFlashBag()->add(
-//				'error',
-//				'El Plan de Labor aún se encuentra abierto.'
-//			);
-//
-//			return $this->redirectToRoute( 'sesiones_index' );
-//		}
 
 		$title = 'Boletín de Asuntos Entrados';
 
@@ -344,7 +338,7 @@ class SesionController extends Controller {
 		return new Response(
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
-					'page-size'=> 'Legal',
+					'page-size'      => 'Legal',
 //					'page-width'     => '220mm',
 //					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
@@ -380,14 +374,6 @@ class SesionController extends Controller {
 
 			return $this->redirectToRoute( 'sesiones_index' );
 		}
-//		if ( ( ! $od->getCerrado() ) ) {
-//			$this->get( 'session' )->getFlashBag()->add(
-//				'error',
-//				'El Plan de Labor aún se encuentra abierto.'
-//			);
-//
-//			return $this->redirectToRoute( 'sesiones_index' );
-//		}
 
 		$title = 'Orden del Día';
 
@@ -415,7 +401,7 @@ class SesionController extends Controller {
 		return new Response(
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
-					'page-size'=> 'Legal',
+					'page-size'      => 'Legal',
 //					'page-width'     => '220mm',
 //					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
@@ -435,6 +421,70 @@ class SesionController extends Controller {
 			)
 		);
 
+	}
+
+	public function cargarActaAction( Request $request, $sesionId ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+		$form   = $this->createForm( SesionCargarActaType::class, $sesion );
+
+		// Estos son los campos a auditar en el log
+		$campos = [ 'acta' ];
+
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $sesion->{$getter}(),
+				'getter' => $getter,
+			];
+		}
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$log = new LogExpediente();
+			$log->setSesion( $sesion );
+			foreach ( $valoresOriginales as $nombre => $campo ) {
+				if ( $campo['valor'] != $sesion->{$campo['getter']}() ) {
+					$log->agregarCambio( $nombre, $campo['valor'], $sesion->{$campo['getter']}() );
+				}
+			}
+
+			if ( count( $log->getCambios() ) > 0 ) {
+				$em->persist( $log );
+			}
+
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'El acta se modificó correctamente.'
+			);
+
+		}
+
+		return $this->render( ':sesiones:cargar_acta.html.twig',
+			[
+				'sesion' => $sesion,
+				'form'   => $form->createView()
+			]
+		);
+	}
+
+	public function verCambiosActaAction(
+		Request $request,
+		Sesion $sesion,
+		LogExpediente $log
+	) {
+		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
+
+		return $this->render( ':sesiones:ver_cambios_acta.html.twig',
+			array(
+				'sesion' => $sesion,
+				'log'    => $log,
+			) );
 	}
 
 }

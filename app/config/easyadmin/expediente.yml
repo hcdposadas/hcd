@@ -8,5 +8,5 @@ easy_admin:
                     - { property: 'texto', type: 'ckeditor'}
 #                    - { property: 'letra' }
 #                    - { property: 'fecha' }
-#                    - { property: 'iniciador' }
+                    - { property: 'iniciadores' , type: 'collection' , type_options: { by_reference: false, entry_type: MesaEntradaBundle\Form\AdminIniciadorExpedienteType } }
 #                    - { property: 'expedienteExternoFile', type: 'vich_file' }

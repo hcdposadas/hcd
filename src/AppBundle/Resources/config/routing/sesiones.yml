@@ -29,3 +29,12 @@ sesiones_imprimir_boletin_asuntos_entrados:
 sesiones_imprimir_orden_del_dia:
     path: /{sesionId}/imprimir-orden-del-dia
     defaults: { _controller: "AppBundle:Sesion:imprimirOD" }
+
+sesiones_cargar_acta:
+    path: /{sesionId}/cargar-acta
+    defaults: { _controller: "AppBundle:Sesion:cargarActa" }
+
+sesiones_show_log_cambios_acta:
+    path:     /{sesion}/log-cambios-acta/{log}
+    defaults: { _controller: "AppBundle:Sesion:verCambiosActa" }
+    methods:  [GET]

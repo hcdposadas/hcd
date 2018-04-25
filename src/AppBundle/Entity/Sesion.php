@@ -38,14 +38,14 @@ class Sesion extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="orden_del_dia", type="text")
+	 * @ORM\Column(name="orden_del_dia", type="text", nullable=true)
 	 */
 	private $ordenDelDia;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="asuntos_entrados", type="text")
+	 * @ORM\Column(name="asuntos_entrados", type="text", nullable=true)
 	 */
 	private $asuntosEntrados;
 

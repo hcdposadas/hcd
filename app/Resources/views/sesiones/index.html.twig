@@ -74,6 +74,14 @@
                                         <i class="fa fa-print"></i> OD
                                     </a>
 
+                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('sesiones_cargar_acta', { 'sesionId': sesion.id }) }}">
+                                            <i class="fa fa-edit"></i> Cargar Acta
+                                        </a>
+                                    {% endif %}
+
+
                                 </td>
                             </tr>
                         {% endfor %}

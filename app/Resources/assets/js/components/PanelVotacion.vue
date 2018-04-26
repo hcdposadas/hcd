@@ -135,10 +135,10 @@
         watch: {
             display: function (val) {
                 if (val) {
-                    $('#modal-votacion').modal('toggle')
+                    window.$('#modal-votacion').modal('toggle')
 
                 } else {
-                    $('#modal-votacion').modal('toggle')
+                    window.$('#modal-votacion').modal('toggle')
 
                     // this.mocion no se reinicia, porque se usa para saber si es la misma
                     // moción que se extiende o es una nueva

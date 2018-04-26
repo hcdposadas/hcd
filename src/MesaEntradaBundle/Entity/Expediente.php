@@ -156,13 +156,13 @@ class Expediente extends BaseClass {
 	 */
 	private $giros;
 
-    /**
-     * @var LogExpediente[] $logs
-     *
-     * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\LogExpediente", mappedBy="expediente", cascade={"persist"})
-     * @ORM\OrderBy({"id" = "DESC"})
-     */
-    private $logs;
+	/**
+	 * @var LogExpediente[] $logs
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\LogExpediente", mappedBy="expediente", cascade={"persist"})
+	 * @ORM\OrderBy({"id" = "DESC"})
+	 */
+	private $logs;
 
 	/**
 	 * @ORM\Column(name="sesion_numero", type="integer", nullable=true)
@@ -315,7 +315,7 @@ class Expediente extends BaseClass {
 		if ( $file ) {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
-			$this->fechaActualizacion =  new \DateTime( 'now' ) ;
+			$this->fechaActualizacion = new \DateTime( 'now' );
 		}
 
 		return $this;
@@ -350,9 +350,14 @@ class Expediente extends BaseClass {
 	 * @return string
 	 */
 	public function __toString() {
-		$anio = $this->anio ? $this->anio : $this->getPeriodoLegislativo()->getAnio();
+		if ( $this->getPeriodoLegislativo() ) {
 
-		return $this->expediente . '-' . strtoupper($this->letra) . '-' . $anio;
+			$anio = $this->anio ? $this->anio : $this->getPeriodoLegislativo()->getAnio();
+		} else {
+			$anio = $this->anio ? $this->anio : '';
+		}
+
+		return $this->expediente . '-' . strtoupper( $this->letra ) . '-' . $anio;
 	}
 
 	/**
@@ -1052,37 +1057,34 @@ class Expediente extends BaseClass {
 		return $this->fechaPresentacion;
 	}
 
-    /**
-     * Add log
-     *
-     * @param \MesaEntradaBundle\Entity\LogExpediente $log
-     *
-     * @return Expediente
-     */
-    public function addLog(\MesaEntradaBundle\Entity\LogExpediente $log)
-    {
-        $this->logs[] = $log;
+	/**
+	 * Add log
+	 *
+	 * @param \MesaEntradaBundle\Entity\LogExpediente $log
+	 *
+	 * @return Expediente
+	 */
+	public function addLog( \MesaEntradaBundle\Entity\LogExpediente $log ) {
+		$this->logs[] = $log;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove log
-     *
-     * @param \MesaEntradaBundle\Entity\LogExpediente $log
-     */
-    public function removeLog(\MesaEntradaBundle\Entity\LogExpediente $log)
-    {
-        $this->logs->removeElement($log);
-    }
+	/**
+	 * Remove log
+	 *
+	 * @param \MesaEntradaBundle\Entity\LogExpediente $log
+	 */
+	public function removeLog( \MesaEntradaBundle\Entity\LogExpediente $log ) {
+		$this->logs->removeElement( $log );
+	}
 
-    /**
-     * Get logs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getLogs()
-    {
-        return $this->logs;
-    }
+	/**
+	 * Get logs
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getLogs() {
+		return $this->logs;
+	}
 }

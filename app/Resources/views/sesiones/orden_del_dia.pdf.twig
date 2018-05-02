@@ -35,20 +35,24 @@
     }
 </style>
 <body>
-{% for titulo, lista in dictamenes %}
-    {% if lista.count %}
-        <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
-        <div class="cuerpo">
-            <p>
-                {% for dictamen in lista %}
-            <dl>
-                <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
-                <dd>{{ dictamen.expediente.extractoDictamen }}</dd>
-            </dl>
-            {% endfor %}
-            </p>
-        </div>
-    {% endif %}
-{% endfor %}
+{% if sesion.ordenDelDia %}
+    {{ sesion.ordenDelDia | raw }}
+{% else %}
+    {% for titulo, lista in dictamenes %}
+        {% if lista.count %}
+            <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+            <div class="cuerpo">
+                <p>
+                    {% for dictamen in lista %}
+                <dl>
+                    <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                    <dd>{{ dictamen.expediente.extractoDictamen }}</dd>
+                </dl>
+                {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
 </body>
 </html>

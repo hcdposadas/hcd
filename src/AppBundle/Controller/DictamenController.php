@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\AltaDictamenType;
 use AppBundle\Form\CargarDictamenType;
 use AppBundle\Form\CrearDictamenType;
 use AppBundle\Form\Filter\DictamenFilterType;
@@ -41,8 +42,8 @@ class DictamenController extends Controller {
 
 		return $this->render( 'dictamen/index.html.twig',
 			[
-				'filter_type'=>$filterType->createView(),
-				'dictamenes' => $dictamenes
+				'filter_type' => $filterType->createView(),
+				'dictamenes'  => $dictamenes
 			] );
 	}
 
@@ -82,6 +83,40 @@ class DictamenController extends Controller {
 		}
 
 		return $this->render( 'dictamen/crear.html.twig',
+			[
+				'form' => $form->createView()
+			] );
+	}
+
+//	public function cargarAction( Request $request ) {
+//
+//		return $this->render( 'dictamen/cargar.html.twig',
+//			[]
+//		);
+//	}
+
+	public function altaDictamenAnteriorAction( Request $request ) {
+
+		$dictamen = new Dictamen();
+
+		$form = $this->createForm( AltaDictamenType::class, $dictamen );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+
+			$em->persist( $dictamen );
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Dictamen creado correctamente'
+			);
+
+			return $this->redirectToRoute( 'dictamen_index' );
+		}
+
+		return $this->render( 'dictamen/alta.html.twig',
 			[
 				'form' => $form->createView()
 			] );

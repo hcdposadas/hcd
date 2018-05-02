@@ -382,6 +382,7 @@ class SesionController extends Controller {
             'bae' => $bae,
             'title' => $title . ' - ' . $sesion->getTitulo(),
             'proyectos' => $proyectos,
+            'sesion' => $sesion,
         ]);
 
 //        return new Response($html);
@@ -466,6 +467,7 @@ class SesionController extends Controller {
             'od' => $od,
             'title' => $title . ' - ' . $sesion->getTitulo(),
             'dictamenes' => $dictamenes,
+            "sesion"    => $sesion,
         ]);
 
 //        return new Response($html);

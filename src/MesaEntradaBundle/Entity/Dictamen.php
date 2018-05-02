@@ -34,7 +34,7 @@ class Dictamen extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente", inversedBy="dictamenes")
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente", inversedBy="dictamenes", cascade={"persist"})
 	 * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id")
 	 */
 	private $expediente;
@@ -51,6 +51,31 @@ class Dictamen extends BaseClass {
 	 * @ORM\JoinColumn(name="presidente_comision_id", referencedColumnName="id", nullable=true)
 	 */
 	private $presidenteComision;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\TipoProyecto")
+	 * @ORM\JoinColumn(name="tipo_proyecto_id", referencedColumnName="id")
+	 */
+	private $tipoProyecto;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PeriodoLegislativo")
+	 * @ORM\JoinColumn(name="periodo_legislativo_id", referencedColumnName="id")
+	 */
+	private $periodoLegislativo;
+
+
+	/**
+	 * @var IniciadorExpediente[]
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\FirmanteDictamen", mappedBy="dictamen", cascade={"persist"})
+	 *
+	 */
+	private $firmantes;
 
 	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -228,5 +253,94 @@ class Dictamen extends BaseClass {
     public function getPresidenteComision()
     {
         return $this->presidenteComision;
+    }
+
+    /**
+     * Set tipoProyecto
+     *
+     * @param \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto
+     *
+     * @return Dictamen
+     */
+    public function setTipoProyecto(\MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto = null)
+    {
+        $this->tipoProyecto = $tipoProyecto;
+
+        return $this;
+    }
+
+    /**
+     * Get tipoProyecto
+     *
+     * @return \MesaEntradaBundle\Entity\TipoProyecto
+     */
+    public function getTipoProyecto()
+    {
+        return $this->tipoProyecto;
+    }
+
+    /**
+     * Set periodoLegislativo
+     *
+     * @param \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo
+     *
+     * @return Dictamen
+     */
+    public function setPeriodoLegislativo(\AppBundle\Entity\PeriodoLegislativo $periodoLegislativo = null)
+    {
+        $this->periodoLegislativo = $periodoLegislativo;
+
+        return $this;
+    }
+
+    /**
+     * Get periodoLegislativo
+     *
+     * @return \AppBundle\Entity\PeriodoLegislativo
+     */
+    public function getPeriodoLegislativo()
+    {
+        return $this->periodoLegislativo;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->firmantes = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add firmante
+     *
+     * @param \MesaEntradaBundle\Entity\FirmanteDictamen $firmante
+     *
+     * @return Dictamen
+     */
+    public function addFirmante(\MesaEntradaBundle\Entity\FirmanteDictamen $firmante)
+    {
+        $this->firmantes[] = $firmante;
+
+        return $this;
+    }
+
+    /**
+     * Remove firmante
+     *
+     * @param \MesaEntradaBundle\Entity\FirmanteDictamen $firmante
+     */
+    public function removeFirmante(\MesaEntradaBundle\Entity\FirmanteDictamen $firmante)
+    {
+        $this->firmantes->removeElement($firmante);
+    }
+
+    /**
+     * Get firmantes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFirmantes()
+    {
+        return $this->firmantes;
     }
 }

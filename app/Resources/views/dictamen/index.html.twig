@@ -30,6 +30,11 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -54,7 +59,7 @@
                                     <a href="{{ path('dependencia_show', { 'id': dictamen.id }) }}">{{ dictamen.id }}</a>
                                 </td>
                                 <td>
-                                    {{ dictamen.expediente.tipoProyecto }}
+                                    {{ dictamen.tipoProyecto }}
                                 </td>
                                 <td>
                                     {{ dictamen.expediente }}

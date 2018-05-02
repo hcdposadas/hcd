@@ -789,7 +789,7 @@ class Expediente extends BaseClass {
 
         // Do sort the new iterator.
         $iterator->uasort(function (\MesaEntradaBundle\Entity\Giro $a, \MesaEntradaBundle\Entity\Giro $b) {
-            return ($a->getComisionDestino()->getPeso() > $b->getComisionDestino()->getPeso()) ? -1 : 1;
+            return ($a->getComisionDestino()->getPeso() < $b->getComisionDestino()->getPeso()) ? -1 : 1;
         });
 
         return new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));

@@ -780,6 +780,21 @@ class Expediente extends BaseClass {
 		return $this->giros;
 	}
 
+	public function getGirosOrdenados()
+    {
+        $giros = $this->giros;
+
+        // Collect an array iterator.
+        $iterator = $giros->getIterator();
+
+        // Do sort the new iterator.
+        $iterator->uasort(function (\MesaEntradaBundle\Entity\Giro $a, \MesaEntradaBundle\Entity\Giro $b) {
+            return ($a->getComisionDestino()->getPeso() > $b->getComisionDestino()->getPeso()) ? -1 : 1;
+        });
+
+        return new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));
+    }
+
 	/**
 	 * Set creadoPor
 	 *

@@ -6,3 +6,5 @@ const $ = require('jquery');
 global.$ = global.jQuery = $;
 
 require('bootstrap-sass');
+
+$('[data-toggle="tooltip"]').tooltip()

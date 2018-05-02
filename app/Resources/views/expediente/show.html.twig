@@ -84,9 +84,9 @@
                         </a>
                     {% endif %}
                     {% if is_granted('ROLE_LEGISLATIVO') %}
-                        <a class="btn btn-default margin" target="_blank"
+                        <a class="btn btn-default margin" title="Editar Extracto"
                            href="{{ path('expediente_editar_extracto', {id: expediente.id}) }}">
-                            <i class="fa fa-edit"></i> Editar extractos
+                            <i class="fa fa-file-text-o"></i> Editar extractos
                         </a>
                     {% endif %}
 

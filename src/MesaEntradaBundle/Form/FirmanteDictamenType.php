@@ -1,28 +1,30 @@
 <?php
 
-namespace AppBundle\Form;
+namespace MesaEntradaBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\Select2EntityType;
-use Symfony\Component\Validator\Constraints\Valid;
 
-class ProyectoBAEType extends AbstractType {
+class FirmanteDictamenType extends AbstractType {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'expediente',
+			->add( 'iniciador',
 				Select2EntityType::class,
 				[
-					'remote_route' => 'get_proyectos_bae',
-					'class'        => 'MesaEntradaBundle\Entity\Expediente',
+					'remote_route' => 'get_cargos_por_nombre',
+					'class'        => 'MesaEntradaBundle\Entity\Iniciador',
 					'required'     => false,
-					'placeholder'  => 'Por Expte'
+					'placeholder'  => 'Por Nombre',
+					'attr'         => [ 'class' => '' ],
+					'label'        => 'Concejal'
 
-				] );
+				] )
+			->add( 'presidente' );
 	}
 
 	/**
@@ -30,8 +32,7 @@ class ProyectoBAEType extends AbstractType {
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class' => 'AppBundle\Entity\ProyectoBAE',
-			'constraints' => new Valid()
+			'data_class' => 'MesaEntradaBundle\Entity\FirmanteDictamen'
 		) );
 	}
 
@@ -39,7 +40,7 @@ class ProyectoBAEType extends AbstractType {
 	 * {@inheritdoc}
 	 */
 	public function getBlockPrefix() {
-		return 'appbundle_proyectobae';
+		return 'mesaentradabundle_firmantedictamen';
 	}
 
 

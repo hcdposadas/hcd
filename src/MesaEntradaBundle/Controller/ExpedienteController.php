@@ -1280,7 +1280,13 @@ class ExpedienteController extends Controller {
 			$em->persist( $expediente );
 			$em->flush();
 
-			return $this->redirectToRoute( 'expediente_show', array( 'id' => $expediente->getId() ) );
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Extracto guardado correctamente'
+			);
+
+//			return $this->redirectToRoute( 'expediente_show', array( 'id' => $expediente->getId() ) );
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
 		}
 
 		return $this->render( 'expediente/editarExtracto.html.twig',

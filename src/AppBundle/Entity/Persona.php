@@ -86,382 +86,363 @@ class Persona extends BaseClass {
 
 	public function getNombreCompleto() {
 
-		return $this->apellido. ' ' . $this->nombre;
+		return $this->apellido . ' ' . $this->nombre;
 
 	}
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->domicilioPersona = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->cargoPersona = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contactoPersona = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->personaACargo = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+	public function esPresidenteComision() {
+		foreach ( $this->cargoPersona as $cargoPersona ) {
+			if ( strtoupper( $cargoPersona->getCargo()->getNombre() ) == 'PRESIDENTE' &&
+			     $cargoPersona->getComision()
+			) {
+				return $cargoPersona;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->domicilioPersona = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->cargoPersona     = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->contactoPersona  = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->personaACargo    = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 
-    /**
-     * Set nombre
-     *
-     * @param string $nombre
-     *
-     * @return Persona
-     */
-    public function setNombre($nombre)
-    {
-        $this->nombre = $nombre;
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set nombre
+	 *
+	 * @param string $nombre
+	 *
+	 * @return Persona
+	 */
+	public function setNombre( $nombre ) {
+		$this->nombre = $nombre;
 
-    /**
-     * Get nombre
-     *
-     * @return string
-     */
-    public function getNombre()
-    {
-        return $this->nombre;
-    }
+		return $this;
+	}
 
-    /**
-     * Set apellido
-     *
-     * @param string $apellido
-     *
-     * @return Persona
-     */
-    public function setApellido($apellido)
-    {
-        $this->apellido = $apellido;
+	/**
+	 * Get nombre
+	 *
+	 * @return string
+	 */
+	public function getNombre() {
+		return $this->nombre;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set apellido
+	 *
+	 * @param string $apellido
+	 *
+	 * @return Persona
+	 */
+	public function setApellido( $apellido ) {
+		$this->apellido = $apellido;
 
-    /**
-     * Get apellido
-     *
-     * @return string
-     */
-    public function getApellido()
-    {
-        return $this->apellido;
-    }
+		return $this;
+	}
 
-    /**
-     * Set dni
-     *
-     * @param string $dni
-     *
-     * @return Persona
-     */
-    public function setDni($dni)
-    {
-        $this->dni = $dni;
+	/**
+	 * Get apellido
+	 *
+	 * @return string
+	 */
+	public function getApellido() {
+		return $this->apellido;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set dni
+	 *
+	 * @param string $dni
+	 *
+	 * @return Persona
+	 */
+	public function setDni( $dni ) {
+		$this->dni = $dni;
 
-    /**
-     * Get dni
-     *
-     * @return string
-     */
-    public function getDni()
-    {
-        return $this->dni;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaNacimiento
-     *
-     * @param \DateTime $fechaNacimiento
-     *
-     * @return Persona
-     */
-    public function setFechaNacimiento($fechaNacimiento)
-    {
-        $this->fechaNacimiento = $fechaNacimiento;
+	/**
+	 * Get dni
+	 *
+	 * @return string
+	 */
+	public function getDni() {
+		return $this->dni;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaNacimiento
+	 *
+	 * @param \DateTime $fechaNacimiento
+	 *
+	 * @return Persona
+	 */
+	public function setFechaNacimiento( $fechaNacimiento ) {
+		$this->fechaNacimiento = $fechaNacimiento;
 
-    /**
-     * Get fechaNacimiento
-     *
-     * @return \DateTime
-     */
-    public function getFechaNacimiento()
-    {
-        return $this->fechaNacimiento;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return Persona
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * Get fechaNacimiento
+	 *
+	 * @return \DateTime
+	 */
+	public function getFechaNacimiento() {
+		return $this->fechaNacimiento;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return Persona
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return Persona
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return Persona
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-    /**
-     * @param mixed $domicilioPersona
-     */
-    public function setDomicilioPersona($domicilioPersona)
-    {
+		return $this;
+	}
+
+	/**
+	 * @param mixed $domicilioPersona
+	 */
+	public function setDomicilioPersona( $domicilioPersona ) {
 //        $this->domicilioPersona = $domicilioPersona;
 
-        foreach ($domicilioPersona as $item) {
+		foreach ( $domicilioPersona as $item ) {
 
-            $this->domicilioPersona->add( $item );
-            $item->setPersona( $this );
-        }
+			$this->domicilioPersona->add( $item );
+			$item->setPersona( $this );
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Add domicilioPersona
-     *
-     * @param \AppBundle\Entity\DomicilioPersona $domicilioPersona
-     *
-     * @return Persona
-     */
-    public function addDomicilioPersona(\AppBundle\Entity\DomicilioPersona $domicilioPersona)
-    {
+	/**
+	 * Add domicilioPersona
+	 *
+	 * @param \AppBundle\Entity\DomicilioPersona $domicilioPersona
+	 *
+	 * @return Persona
+	 */
+	public function addDomicilioPersona( \AppBundle\Entity\DomicilioPersona $domicilioPersona ) {
 //        $this->domicilioPersona[] = $domicilioPersona;
 //
 //        return $this;
 
-	    $domicilioPersona->setPersona( $this );
+		$domicilioPersona->setPersona( $this );
 
-	    $this->domicilioPersona->add( $domicilioPersona );
+		$this->domicilioPersona->add( $domicilioPersona );
 
-	    return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove domicilioPersona
-     *
-     * @param \AppBundle\Entity\DomicilioPersona $domicilioPersona
-     */
-    public function removeDomicilioPersona(\AppBundle\Entity\DomicilioPersona $domicilioPersona)
-    {
-        $this->domicilioPersona->removeElement($domicilioPersona);
-    }
+	/**
+	 * Remove domicilioPersona
+	 *
+	 * @param \AppBundle\Entity\DomicilioPersona $domicilioPersona
+	 */
+	public function removeDomicilioPersona( \AppBundle\Entity\DomicilioPersona $domicilioPersona ) {
+		$this->domicilioPersona->removeElement( $domicilioPersona );
+	}
 
-    /**
-     * Get domicilioPersona
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDomicilioPersona()
-    {
-        return $this->domicilioPersona;
-    }
+	/**
+	 * Get domicilioPersona
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getDomicilioPersona() {
+		return $this->domicilioPersona;
+	}
 
-    /**
-     * @param mixed $cargoPersona
-     */
-    public function setCargoPersona($cargoPersona)
-    {
+	/**
+	 * @param mixed $cargoPersona
+	 */
+	public function setCargoPersona( $cargoPersona ) {
 
-        foreach ($cargoPersona as $item) {
+		foreach ( $cargoPersona as $item ) {
 
-            $this->cargoPersona->add( $item );
-            $item->setPersona( $this );
-        }
+			$this->cargoPersona->add( $item );
+			$item->setPersona( $this );
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Add cargoPersona
-     *
-     * @param \AppBundle\Entity\CargoPersona $cargoPersona
-     *
-     * @return Persona
-     */
-    public function addCargoPersona(\AppBundle\Entity\CargoPersona $cargoPersona)
-    {
+	/**
+	 * Add cargoPersona
+	 *
+	 * @param \AppBundle\Entity\CargoPersona $cargoPersona
+	 *
+	 * @return Persona
+	 */
+	public function addCargoPersona( \AppBundle\Entity\CargoPersona $cargoPersona ) {
 
-	    $cargoPersona->setPersona( $this );
+		$cargoPersona->setPersona( $this );
 
-	    $this->cargoPersona->add( $cargoPersona );
+		$this->cargoPersona->add( $cargoPersona );
 
-	    return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove cargoPersona
-     *
-     * @param \AppBundle\Entity\CargoPersona $cargoPersona
-     */
-    public function removeCargoPersona(\AppBundle\Entity\CargoPersona $cargoPersona)
-    {
-        $this->cargoPersona->removeElement($cargoPersona);
-    }
+	/**
+	 * Remove cargoPersona
+	 *
+	 * @param \AppBundle\Entity\CargoPersona $cargoPersona
+	 */
+	public function removeCargoPersona( \AppBundle\Entity\CargoPersona $cargoPersona ) {
+		$this->cargoPersona->removeElement( $cargoPersona );
+	}
 
-    /**
-     * Get cargoPersona
-     *
-     * @return CargoPersona[]|\Doctrine\Common\Collections\Collection
-     */
-    public function getCargoPersona()
-    {
-        return $this->cargoPersona;
-    }
+	/**
+	 * Get cargoPersona
+	 *
+	 * @return CargoPersona[]|\Doctrine\Common\Collections\Collection
+	 */
+	public function getCargoPersona() {
+		return $this->cargoPersona;
+	}
 
-    /**
-     * Add contactoPersona
-     *
-     * @param \AppBundle\Entity\ContactoPersona $contactoPersona
-     *
-     * @return Persona
-     */
-    public function addContactoPersona(\AppBundle\Entity\ContactoPersona $contactoPersona)
-    {
-        $this->contactoPersona[] = $contactoPersona;
+	/**
+	 * Add contactoPersona
+	 *
+	 * @param \AppBundle\Entity\ContactoPersona $contactoPersona
+	 *
+	 * @return Persona
+	 */
+	public function addContactoPersona( \AppBundle\Entity\ContactoPersona $contactoPersona ) {
+		$this->contactoPersona[] = $contactoPersona;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove contactoPersona
-     *
-     * @param \AppBundle\Entity\ContactoPersona $contactoPersona
-     */
-    public function removeContactoPersona(\AppBundle\Entity\ContactoPersona $contactoPersona)
-    {
-        $this->contactoPersona->removeElement($contactoPersona);
-    }
+	/**
+	 * Remove contactoPersona
+	 *
+	 * @param \AppBundle\Entity\ContactoPersona $contactoPersona
+	 */
+	public function removeContactoPersona( \AppBundle\Entity\ContactoPersona $contactoPersona ) {
+		$this->contactoPersona->removeElement( $contactoPersona );
+	}
 
-    /**
-     * Get contactoPersona
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getContactoPersona()
-    {
-        return $this->contactoPersona;
-    }
+	/**
+	 * Get contactoPersona
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getContactoPersona() {
+		return $this->contactoPersona;
+	}
 
-    /**
-     * Add personaACargo
-     *
-     * @param \AppBundle\Entity\PersonaACargo $personaACargo
-     *
-     * @return Persona
-     */
-    public function addPersonaACargo(\AppBundle\Entity\PersonaACargo $personaACargo)
-    {
-        $this->personaACargo[] = $personaACargo;
+	/**
+	 * Add personaACargo
+	 *
+	 * @param \AppBundle\Entity\PersonaACargo $personaACargo
+	 *
+	 * @return Persona
+	 */
+	public function addPersonaACargo( \AppBundle\Entity\PersonaACargo $personaACargo ) {
+		$this->personaACargo[] = $personaACargo;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove personaACargo
-     *
-     * @param \AppBundle\Entity\PersonaACargo $personaACargo
-     */
-    public function removePersonaACargo(\AppBundle\Entity\PersonaACargo $personaACargo)
-    {
-        $this->personaACargo->removeElement($personaACargo);
-    }
+	/**
+	 * Remove personaACargo
+	 *
+	 * @param \AppBundle\Entity\PersonaACargo $personaACargo
+	 */
+	public function removePersonaACargo( \AppBundle\Entity\PersonaACargo $personaACargo ) {
+		$this->personaACargo->removeElement( $personaACargo );
+	}
 
-    /**
-     * Get personaACargo
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonaACargo()
-    {
-        return $this->personaACargo;
-    }
+	/**
+	 * Get personaACargo
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getPersonaACargo() {
+		return $this->personaACargo;
+	}
 
-    /**
-     * Set legajo
-     *
-     * @param \AppBundle\Entity\Legajo $legajo
-     *
-     * @return Persona
-     */
-    public function setLegajo(\AppBundle\Entity\Legajo $legajo = null)
-    {
-        $this->legajo = $legajo;
+	/**
+	 * Set legajo
+	 *
+	 * @param \AppBundle\Entity\Legajo $legajo
+	 *
+	 * @return Persona
+	 */
+	public function setLegajo( \AppBundle\Entity\Legajo $legajo = null ) {
+		$this->legajo = $legajo;
 
-        $legajo->setPersona($this);
+		$legajo->setPersona( $this );
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get legajo
-     *
-     * @return \AppBundle\Entity\Legajo
-     */
-    public function getLegajo()
-    {
-        return $this->legajo;
-    }
+	/**
+	 * Get legajo
+	 *
+	 * @return \AppBundle\Entity\Legajo
+	 */
+	public function getLegajo() {
+		return $this->legajo;
+	}
 
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return Persona
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return Persona
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return Persona
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return Persona
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 }

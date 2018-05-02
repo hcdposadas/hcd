@@ -184,6 +184,55 @@ class Builder implements ContainerAwareInterface {
 						'route' => 'expedientes_legislativos_index',
 					)
 				);
+
+
+		}
+
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+
+			$keyDictamenes = 'DICTÁMENES';
+			$menu->addChild(
+				$keyDictamenes,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-file-text-o' )
+			     ->setAttribute( 'class', 'treeview' );
+
+			$menu[ $keyDictamenes ]
+				->addChild(
+					'Listado',
+					array(
+						'route' => 'dictamen_index',
+					)
+				);
+		}
+
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+			if ($this->container->get('security.token_storage')->getToken()->getUser()->getPersona()->esPresidenteComision()){
+				$menu[ $keyDictamenes ]
+					->addChild(
+						'Crear Dictamen',
+						array(
+							'route' => 'dictamen_crear',
+						)
+					);
+			}
+		}
+
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			$menu[ $keyDictamenes ]
+				->addChild(
+					'Cargar Dictamen',
+					array(
+						'route' => 'dictamen_cargar',
+					)
+				);
 		}
 
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) || $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {

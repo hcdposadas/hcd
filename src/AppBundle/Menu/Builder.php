@@ -235,7 +235,9 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
-		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) || $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ||
+		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' )) {
 			$keyPersonal = 'SESIONES';
 			$menu->addChild(
 				$keyPersonal,

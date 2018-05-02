@@ -30,7 +30,13 @@
             </div>
         </div>
     </div>
-
+    {% if is_granted('ROLE_LEGISLATIVO') %}
+        <div class="row">
+            <div class="col-md-12">
+                <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
+            </div>
+        </div>
+    {% endif %}
     <div class="row">
         <div class="col-md-12">
             <div class="box">
@@ -54,7 +60,7 @@
                                     <a href="{{ path('dependencia_show', { 'id': dictamen.id }) }}">{{ dictamen.id }}</a>
                                 </td>
                                 <td>
-                                    {{ dictamen.expediente.tipoProyecto }}
+                                    {{ dictamen.tipoProyecto }}
                                 </td>
                                 <td>
                                     {{ dictamen.expediente }}

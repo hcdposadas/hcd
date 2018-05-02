@@ -151,6 +151,9 @@ class ExpedienteRepository extends EntityRepository {
 
 		$qb->setParameter( 'concejal', $concejal );
 
+		$qb->innerJoin( 'e.tipoExpediente', 'te' )
+		   ->andWhere( 'te.slug = :teSlug' )
+		   ->setParameter( 'teSlug', 'externo' );
 
 		return $qb;
 

@@ -31,7 +31,7 @@ class BoletinAsuntoEntrado extends BaseClass
 	private $sesion;
 
 	/**
-	 * @var
+	 * @var ProyectoBAE[]
 	 *
 	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\ProyectoBAE", mappedBy="boletinAsuntoEntrado", cascade={"persist", "remove"})
 	 *
@@ -197,10 +197,40 @@ class BoletinAsuntoEntrado extends BaseClass
     /**
      * Get proyectos
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
      */
     public function getProyectos()
     {
         return $this->proyectos;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+     */
+    public function getProyectosDeConcejales()
+    {
+        return $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
+            return $proyectoBae->getExpediente()->esProyectoDeConcejal();
+        });
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+     */
+    public function getProyectosDeDEM()
+    {
+        return $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
+            return $proyectoBae->getExpediente()->esProyectoDeDEM();
+        });
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+     */
+    public function getProyectosDeDefensor()
+    {
+        return $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
+            return $proyectoBae->getExpediente()->esProyectoDeDefensor();
+        });
     }
 }

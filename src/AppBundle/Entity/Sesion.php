@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
 
@@ -63,13 +64,13 @@ class Sesion extends BaseClass {
 	private $mociones;
 
 	/**
-	 *
+	 * @var Collection|OrdenDelDia[]
 	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\OrdenDelDia", mappedBy="sesion", cascade={"persist", "remove"})
 	 */
 	private $od;
 
 	/**
-	 *
+	 * @var Collection|BoletinAsuntoEntrado[]
 	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\BoletinAsuntoEntrado", mappedBy="sesion", cascade={"persist", "remove"})
 	 */
 	private $bae;
@@ -355,7 +356,7 @@ class Sesion extends BaseClass {
     /**
      * Get od
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection|OrdenDelDia[]
      */
     public function getOd()
     {
@@ -389,7 +390,7 @@ class Sesion extends BaseClass {
     /**
      * Get bae
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|BoletinAsuntoEntrado[]
      */
     public function getBae()
     {

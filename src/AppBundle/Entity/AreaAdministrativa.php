@@ -13,6 +13,8 @@ use UtilBundle\Entity\Base\BaseClass;
  */
 class AreaAdministrativa extends BaseClass
 {
+    const AREA_ADMINISTRATIVA_DEM = 29;
+
     /**
      * @var int
      *

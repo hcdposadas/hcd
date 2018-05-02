@@ -14,6 +14,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class TipoProyecto extends BaseClass
 {
+    const TIPO_ORDENANZA = 1;
+    const TIPO_DECLARACION = 2;
+    const TIPO_RESOLUCION = 3;
+    const TIPO_COMUNICACION = 4;
+
     /**
      * @var int
      *
@@ -188,5 +193,37 @@ class TipoProyecto extends BaseClass
     public function getTextoPorDefecto()
     {
         return $this->textoPorDefecto;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esTipoOrdenanza()
+    {
+        return $this->getId() == self::TIPO_ORDENANZA;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esTipoDeclaracion()
+    {
+        return $this->getId() == self::TIPO_DECLARACION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esTipoResolucion()
+    {
+        return $this->getId() == self::TIPO_RESOLUCION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function esTipoComunicacion()
+    {
+        return $this->getId() == self::TIPO_COMUNICACION;
     }
 }

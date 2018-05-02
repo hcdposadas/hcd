@@ -2,45 +2,44 @@
 
 namespace AppBundle\Form;
 
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\Select2EntityType;
-use Symfony\Component\Validator\Constraints\Valid;
 
-class ProyectoBAEType extends AbstractType {
-	/**
-	 * {@inheritdoc}
-	 */
+class CrearDictamenType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
+
 		$builder
 			->add( 'expediente',
 				Select2EntityType::class,
 				[
-					'remote_route' => 'get_proyectos_bae',
+					'remote_route' => 'get_expedientes',
 					'class'        => 'MesaEntradaBundle\Entity\Expediente',
-					'required'     => false,
+					'required'     => true,
 					'placeholder'  => 'Por Expte'
 
+				] )
+			->add( 'textoDictamen',
+				CKEditorType::class,
+				[
+					'required' => true,
+					'config'   => array(
+						'uiColor' => '#ffffff',
+//						'height'  => '600px'
+					),
+					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] );
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class' => 'AppBundle\Entity\ProyectoBAE',
-			'constraints' => new Valid()
+			'data_class' => 'MesaEntradaBundle\Entity\Dictamen'
 		) );
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function getBlockPrefix() {
-		return 'appbundle_proyectobae';
+		return 'app_bundle_crear_dictamen_type';
 	}
-
-
 }

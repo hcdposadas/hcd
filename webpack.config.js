@@ -11,6 +11,7 @@ Encore
     // .setPublicPath('/build')
     .setPublicPath(env.publicPath)
 
+    .setManifestKeyPrefix('build')
 
     // will create web/build/app.js and web/build/app.css
     .addEntry('common-js', './app/Resources/assets/js/common.js')

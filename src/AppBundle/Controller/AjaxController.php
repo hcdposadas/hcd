@@ -349,7 +349,7 @@ class AjaxController extends Controller {
 
 			foreach ( $entities as $entity ) {
 				$anio   = $entity['anio'] ? $entity['anio'] : $entity['periodoLegislativo']['anio'];
-				$text   = $entity['expediente'] . '-' . strtoupper($entity['letra']) . '-' . $anio;
+				$text   = $entity['expediente'] . '-' . strtoupper( $entity['letra'] ) . '-' . $anio;
 				$json[] = array(
 					'id'   => $entity['id'],
 					//'label' => $entity[$property],
@@ -396,7 +396,57 @@ class AjaxController extends Controller {
 
 			foreach ( $entities as $entity ) {
 				$anio   = $entity['anio'] ? $entity['anio'] : $entity['periodoLegislativo']['anio'];
-				$text   = $entity['expediente'] . '-' . strtoupper($entity['letra']) . '-' . $anio;
+				$text   = $entity['expediente'] . '-' . strtoupper( $entity['letra'] ) . '-' . $anio;
+				$json[] = array(
+					'id'   => $entity['id'],
+					//'label' => $entity[$property],
+					'text' => $text
+				);
+			}
+		}
+
+		return new JsonResponse( $json );
+	}
+
+	public function getExpedientesAction( Request $request ) {
+		$em = $this->getDoctrine();
+
+		$value = $request->get( 'q' );
+		$limit = $request->get( 'page_limit' );
+
+
+		if ( $value ) {
+			$expediente = explode( ' ', $value );
+			if ( count( $expediente ) == 3 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+				$data['anio']       = $expediente[2];
+			} else if ( count( $expediente ) == 2 ) {
+				$data['expediente'] = $expediente[0];
+				$data['letra']      = $expediente[1];
+			} else if ( count( $expediente ) == 1 ) {
+				$data['expediente'] = $expediente[0];
+			}
+		}
+
+
+		$entities = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientes( $data )
+		               ->join( 'e.periodoLegislativo', 'pl' )
+		               ->addSelect( 'pl' )
+		               ->getQuery()->getArrayResult();
+
+		$json = array();
+
+		if ( ! count( $entities ) ) {
+			$json[] = array(
+				'text' => 'No se encontraron coincidencias',
+				'id'   => ''
+			);
+		} else {
+
+			foreach ( $entities as $entity ) {
+				$anio   = $entity['anio'] ? $entity['anio'] : $entity['periodoLegislativo']['anio'];
+				$text   = $entity['expediente'] . '-' . strtoupper( $entity['letra'] ) . '-' . $anio;
 				$json[] = array(
 					'id'   => $entity['id'],
 					//'label' => $entity[$property],

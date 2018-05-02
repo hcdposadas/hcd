@@ -61,7 +61,7 @@
                                 <td>{% if sesion.fecha %}{{ sesion.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ sesion.tipoSesion }}</td>
                                 <td>
-                                    <a class="btn btn-default"
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Plan de Labor"
                                        href="{{ path('sesiones_ver', { 'id': sesion.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
@@ -81,7 +81,6 @@
                                         </a>
                                     {% endif %}
 
-
                                 </td>
                             </tr>
                         {% endfor %}
@@ -91,11 +90,14 @@
             </div>
         </div>
     </div>
-    {# display navigation #}
-    <div class="col-md-12 text-center">
-        <div class="navigation">
-            {{ knp_pagination_render(sesiones) }}
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(sesiones) }}
+            </div>
         </div>
     </div>
+
 
 {% endblock %}

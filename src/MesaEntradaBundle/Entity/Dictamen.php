@@ -25,16 +25,32 @@ class Dictamen extends BaseClass {
 	private $id;
 
 	/**
-	 * @ORM\Column(type="string", length=255)
 	 * @var string
+	 *
+	 * @ORM\Column(name="texto_dictamen", type="text", nullable=true)
 	 */
-	private $dictamen;
+	private $textoDictamen;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente", inversedBy="dictamenes")
+	 * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id")
+	 */
+	private $expediente;
 
 	/**
 	 * @Vich\UploadableField(mapping="dictamen", fileNameProperty="dictamen")
 	 * @var File
 	 */
 	private $dictamenFile;
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CargoPersona")
+	 * @ORM\JoinColumn(name="presidente_comision_id", referencedColumnName="id", nullable=true)
+	 */
+	private $presidenteComision;
 
 	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -45,7 +61,7 @@ class Dictamen extends BaseClass {
 	 *
 	 * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
 	 *
-	 * @return Expediente
+	 * @return Dictamen
 	 */
 	public function setDictamenFile( File $file = null ) {
 		$this->dictamenFile = $file;
@@ -54,6 +70,7 @@ class Dictamen extends BaseClass {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
 //			$this->updatedAt = new \DateTimeImmutable();
+			$this->fechaActualizacion = new \DateTime('now');
 		}
 
 		return $this;
@@ -93,59 +110,123 @@ class Dictamen extends BaseClass {
 		return $this->id;
 	}
 
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return Dictamen
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
+
+		return $this;
+	}
+
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return Dictamen
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
+
+		return $this;
+	}
+
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return Dictamen
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
+
+		return $this;
+	}
+
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return Dictamen
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
+
+		return $this;
+	}
+
+	/**
+	 * Set textoDictamen
+	 *
+	 * @param string $textoDictamen
+	 *
+	 * @return Dictamen
+	 */
+	public function setTextoDictamen( $textoDictamen ) {
+		$this->textoDictamen = $textoDictamen;
+
+		return $this;
+	}
+
+	/**
+	 * Get textoDictamen
+	 *
+	 * @return string
+	 */
+	public function getTextoDictamen() {
+		return $this->textoDictamen;
+	}
+
+	/**
+	 * Set expediente
+	 *
+	 * @param \MesaEntradaBundle\Entity\Expediente $expediente
+	 *
+	 * @return Dictamen
+	 */
+	public function setExpediente( \MesaEntradaBundle\Entity\Expediente $expediente = null ) {
+		$this->expediente = $expediente;
+
+		return $this;
+	}
+
+	/**
+	 * Get expediente
+	 *
+	 * @return \MesaEntradaBundle\Entity\Expediente
+	 */
+	public function getExpediente() {
+		return $this->expediente;
+	}
+
     /**
-     * Set fechaCreacion
+     * Set presidenteComision
      *
-     * @param \DateTime $fechaCreacion
+     * @param \AppBundle\Entity\CargoPersona $presidenteComision
      *
      * @return Dictamen
      */
-    public function setFechaCreacion($fechaCreacion)
+    public function setPresidenteComision(\AppBundle\Entity\CargoPersona $presidenteComision = null)
     {
-        $this->fechaCreacion = $fechaCreacion;
+        $this->presidenteComision = $presidenteComision;
 
         return $this;
     }
 
     /**
-     * Set fechaActualizacion
+     * Get presidenteComision
      *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return Dictamen
+     * @return \AppBundle\Entity\CargoPersona
      */
-    public function setFechaActualizacion($fechaActualizacion)
+    public function getPresidenteComision()
     {
-        $this->fechaActualizacion = $fechaActualizacion;
-
-        return $this;
-    }
-
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return Dictamen
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
-
-        return $this;
-    }
-
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return Dictamen
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
-
-        return $this;
+        return $this->presidenteComision;
     }
 }

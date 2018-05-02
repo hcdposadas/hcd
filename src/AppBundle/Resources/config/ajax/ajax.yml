@@ -37,3 +37,7 @@ get_proyectos_bae:
 get_dictamenes_od:
     path: /get-dictamenes-od
     defaults: { _controller: "AppBundle:Ajax:getDictamenesOD" }
+
+get_expedientes:
+    path: /get-expedientes
+    defaults: { _controller: "AppBundle:Ajax:getExpedientes" }

@@ -245,6 +245,14 @@ class Expediente extends BaseClass {
 	private $fechaPresentacion;
 
 	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Dictamen", mappedBy="expediente", cascade={"persist", "remove"})
+	 *
+	 */
+	private $dictamenes;
+
+	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
 	 * @var File
 	 */
@@ -1087,4 +1095,62 @@ class Expediente extends BaseClass {
 	public function getLogs() {
 		return $this->logs;
 	}
+
+    /**
+     * Set textoDictamen
+     *
+     * @param string $textoDictamen
+     *
+     * @return Expediente
+     */
+    public function setTextoDictamen($textoDictamen)
+    {
+        $this->textoDictamen = $textoDictamen;
+
+        return $this;
+    }
+
+    /**
+     * Get textoDictamen
+     *
+     * @return string
+     */
+    public function getTextoDictamen()
+    {
+        return $this->textoDictamen;
+    }
+
+    /**
+     * Add dictamene
+     *
+     * @param \MesaEntradaBundle\Entity\Dictamen $dictamene
+     *
+     * @return Expediente
+     */
+    public function addDictamene(\MesaEntradaBundle\Entity\Dictamen $dictamene)
+    {
+        $this->dictamenes[] = $dictamene;
+
+        return $this;
+    }
+
+    /**
+     * Remove dictamene
+     *
+     * @param \MesaEntradaBundle\Entity\Dictamen $dictamene
+     */
+    public function removeDictamene(\MesaEntradaBundle\Entity\Dictamen $dictamene)
+    {
+        $this->dictamenes->removeElement($dictamene);
+    }
+
+    /**
+     * Get dictamenes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDictamenes()
+    {
+        return $this->dictamenes;
+    }
 }

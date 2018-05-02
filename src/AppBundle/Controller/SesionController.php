@@ -9,6 +9,7 @@ use AppBundle\Form\BoletinAsuntoEntradoType;
 use AppBundle\Form\Filter\SesionFilterType;
 use AppBundle\Form\OrdenDelDiaType;
 use AppBundle\Form\SesionCargarActaType;
+use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,8 +105,24 @@ class SesionController extends Controller {
 	}
 
 	public function verSesionAction( Request $request, $id ) {
-		$em     = $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
+
 		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $id );
+
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
+			if ( $sesion->getBae()->first() && $sesion->getOd()->first() ) {
+				if ( ! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado() ) {
+					$this->get( 'session' )->getFlashBag()->add(
+						'info',
+						'El Plan de labor aun no está conformado'
+					);
+
+					return $this->redirectToRoute( 'sesiones_index' );
+				}
+			}
+		}
+
 
 		return $this->render( 'sesiones/ver.html.twig',
 			[
@@ -163,10 +180,25 @@ class SesionController extends Controller {
 
 		$bae = $sesion->getBae()->first();
 
+
+		$proyectosBaeOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $bae->getProyectos() as $proyectoBae ) {
+			$proyectosBaeOriginales->add( $proyectoBae );
+		}
+
 		$form = $this->createForm( BoletinAsuntoEntradoType::class, $bae );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			foreach ( $proyectosBaeOriginales as $proyectoBae ) {
+				if ( false === $bae->getProyectos()->contains( $proyectoBae ) ) {
+					$proyectoBae->setBoletinAsuntoEntrado( null );
+					$em->remove( $proyectoBae );
+				}
+			}
 
 			$em->flush();
 
@@ -302,6 +334,20 @@ class SesionController extends Controller {
 		$em     = $this->getDoctrine()->getManager();
 		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
 
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
+			if ( $sesion->getBae()->first() && $sesion->getOd()->first() ) {
+				if ( ! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado() ) {
+					$this->get( 'session' )->getFlashBag()->add(
+						'info',
+						'El Plan de labor aun no está conformado'
+					);
+
+					return $this->redirectToRoute( 'sesiones_index' );
+				}
+			}
+		}
+
 		$bae = $sesion->getBae()->first();
 
 		if ( ! $bae ) {
@@ -363,7 +409,22 @@ class SesionController extends Controller {
 	public function imprimirODAction( Request $request, $sesionId ) {
 		$em     = $this->getDoctrine()->getManager();
 		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
-		$od     = $sesion->getOd()->first();
+
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
+		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
+			if ( $sesion->getBae()->first() && $sesion->getOd()->first() ) {
+				if ( ! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado() ) {
+					$this->get( 'session' )->getFlashBag()->add(
+						'info',
+						'El Plan de labor aun no está conformado'
+					);
+
+					return $this->redirectToRoute( 'sesiones_index' );
+				}
+			}
+		}
+
+		$od = $sesion->getOd()->first();
 
 
 		if ( ! $od ) {

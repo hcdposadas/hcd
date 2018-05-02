@@ -4,12 +4,18 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * DictamenOD
  *
  * @ORM\Table(name="dictamen_o_d")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DictamenODRepository")
+ * @UniqueEntity(
+ *     fields={"expediente", "ordenDelDia"},
+ *     errorPath="expediente",
+ *     message="Este Dictámen ya existe en el OD"
+ * )
  */
 class DictamenOD extends BaseClass
 {

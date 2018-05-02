@@ -4,23 +4,28 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * ProyectoBAE
  *
  * @ORM\Table(name="proyecto_b_a_e")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProyectoBAERepository")
+ * @UniqueEntity(
+ *     fields={"expediente", "boletinAsuntoEntrado"},
+ *     errorPath="expediente",
+ *     message="Este expediente ya existe en el BAE"
+ * )
  */
-class ProyectoBAE extends BaseClass
-{
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+class ProyectoBAE extends BaseClass {
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="id", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
+	private $id;
 
 
 	/**
@@ -40,117 +45,108 @@ class ProyectoBAE extends BaseClass
 	private $boletinAsuntoEntrado;
 
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return ProyectoBAE
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return ProyectoBAE
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return ProyectoBAE
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return ProyectoBAE
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set expediente
-     *
-     * @param \MesaEntradaBundle\Entity\Expediente $expediente
-     *
-     * @return ProyectoBAE
-     */
-    public function setExpediente(\MesaEntradaBundle\Entity\Expediente $expediente = null)
-    {
-        $this->expediente = $expediente;
+	/**
+	 * Set expediente
+	 *
+	 * @param \MesaEntradaBundle\Entity\Expediente $expediente
+	 *
+	 * @return ProyectoBAE
+	 */
+	public function setExpediente( \MesaEntradaBundle\Entity\Expediente $expediente = null ) {
+		$this->expediente = $expediente;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get expediente
-     *
-     * @return \MesaEntradaBundle\Entity\Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
+	/**
+	 * Get expediente
+	 *
+	 * @return \MesaEntradaBundle\Entity\Expediente
+	 */
+	public function getExpediente() {
+		return $this->expediente;
+	}
 
-    /**
-     * Set boletinAsuntoEntrado
-     *
-     * @param \AppBundle\Entity\BoletinAsuntoEntrado $boletinAsuntoEntrado
-     *
-     * @return ProyectoBAE
-     */
-    public function setBoletinAsuntoEntrado(\AppBundle\Entity\BoletinAsuntoEntrado $boletinAsuntoEntrado = null)
-    {
-        $this->boletinAsuntoEntrado = $boletinAsuntoEntrado;
+	/**
+	 * Set boletinAsuntoEntrado
+	 *
+	 * @param \AppBundle\Entity\BoletinAsuntoEntrado $boletinAsuntoEntrado
+	 *
+	 * @return ProyectoBAE
+	 */
+	public function setBoletinAsuntoEntrado( \AppBundle\Entity\BoletinAsuntoEntrado $boletinAsuntoEntrado = null ) {
+		$this->boletinAsuntoEntrado = $boletinAsuntoEntrado;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get boletinAsuntoEntrado
-     *
-     * @return \AppBundle\Entity\BoletinAsuntoEntrado
-     */
-    public function getBoletinAsuntoEntrado()
-    {
-        return $this->boletinAsuntoEntrado;
-    }
+	/**
+	 * Get boletinAsuntoEntrado
+	 *
+	 * @return \AppBundle\Entity\BoletinAsuntoEntrado
+	 */
+	public function getBoletinAsuntoEntrado() {
+		return $this->boletinAsuntoEntrado;
+	}
 
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return ProyectoBAE
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return ProyectoBAE
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return ProyectoBAE
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return ProyectoBAE
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 }

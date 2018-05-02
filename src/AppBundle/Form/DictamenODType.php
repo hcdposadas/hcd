@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\Select2EntityType;
+use Symfony\Component\Validator\Constraints\Valid;
 
 class DictamenODType extends AbstractType {
 	/**
@@ -29,7 +30,8 @@ class DictamenODType extends AbstractType {
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class' => 'AppBundle\Entity\DictamenOD'
+			'data_class' => 'AppBundle\Entity\DictamenOD',
+			'constraints' => new Valid()
 		) );
 	}
 

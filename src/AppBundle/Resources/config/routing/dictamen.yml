@@ -1,0 +1,12 @@
+dictamen_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Dictamen:index" }
+    methods:  GET
+
+dictamen_crear:
+    path:     /crear
+    defaults: { _controller: "AppBundle:Dictamen:crear" }
+
+dictamen_cargar:
+    path:     /cargar
+    defaults: { _controller: "AppBundle:Dictamen:index" }

@@ -86,15 +86,19 @@
                                 </td>
 
                                 <td>
-                                    <a class="btn btn-default"
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Expediente"
                                        href="{{ path('expediente_show', { 'id': expediente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     {#{% if is_granted('ROLE_LEGISLATIVO') and expediente.giros.count < 1 %}#}
                                     {% if is_granted('ROLE_LEGISLATIVO') %}
-                                        <a class="btn btn-default"
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Cargar Giros"
                                            href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Extracto"
+                                           href="{{ path('expediente_editar_extracto', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-file-text-o"></i>
                                         </a>
                                         {#{% else %}#}
                                         {#<a class="btn btn-default"#}
@@ -108,7 +112,7 @@
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     {% endif %}
-                                    <a class="btn btn-default"
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento"
                                        href="{{ path('expediente_timeline', {id: expediente.id}) }}">
                                         <i class="fa fa-road"></i>
                                     </a>

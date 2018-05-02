@@ -35,17 +35,18 @@
     }
 </style>
 <body>
-{#TODO agrupar por tipo de dictamen#}
-<h3 style="text-align: center; margin-top: 5%"><u>DICTÁMENES DE DECLARACIÓN</u></h3>
-<div class="cuerpo">
-    <p>
-        {% for dictamen in od.dictamenes %}
-    <dl>
-        <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
-        <dd>{{ dictamen.expediente.extractoDictamen }}</dd>
-    </dl>
-    {% endfor %}
-    </p>
-</div>
+{% for titulo, lista in dictamenes %}
+    <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+    <div class="cuerpo">
+        <p>
+            {% for dictamen in lista %}
+        <dl>
+            <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+            <dd>{{ dictamen.expediente.extractoDictamen }}</dd>
+        </dl>
+        {% endfor %}
+        </p>
+    </div>
+{% endfor %}
 </body>
 </html>

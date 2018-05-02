@@ -18,473 +18,489 @@ use Symfony\Component\HttpFoundation\Response;
  * Sesion controller.
  *
  */
-class SesionController extends Controller {
-	/**
-	 * Lists all sesion entities.
-	 *
-	 */
-	public function indexAction() {
+class SesionController extends Controller
+{
+    /**
+     * Lists all sesion entities.
+     *
+     */
+    public function indexAction()
+    {
 
-		$personaUsuario = $this->getUser()->getPersona();
-		$cartaOrganica  = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
+        $personaUsuario = $this->getUser()->getPersona();
+        $cartaOrganica = $this->getDoctrine()->getRepository('AppBundle:Documento')->findOneBySlug('carta-organica');
 
-		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
-			return $this->render( 'sesion/index.html.twig',
-				array(
-					'concejal'      => $personaUsuario,
-					'cartaOrganica' => $cartaOrganica,
-				) );
-		}
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CONCEJAL')) {
+            return $this->render('sesion/index.html.twig',
+                array(
+                    'concejal' => $personaUsuario,
+                    'cartaOrganica' => $cartaOrganica,
+                ));
+        }
 
-		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ||
-		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ||
-		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ||
-		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_PROSECRETARIO' )
-		) {
-			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_SECRETARIO') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_DEFENSOR') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_PROSECRETARIO')
+        ) {
+            $sesion = $this->getDoctrine()->getRepository('AppBundle:Sesion')->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-			return $this->render( 'sesion/autoridades.html.twig',
-				array(
-					'sesion'        => $sesion,
-					'concejal'      => $personaUsuario,
-					'cartaOrganica' => $cartaOrganica,
-				) );
-		}
+            return $this->render('sesion/autoridades.html.twig',
+                array(
+                    'sesion' => $sesion,
+                    'concejal' => $personaUsuario,
+                    'cartaOrganica' => $cartaOrganica,
+                ));
+        }
 
-		return $this->redirectToRoute( 'sesion_logout' );
-	}
+        return $this->redirectToRoute('sesion_logout');
+    }
 
-	public function loginAction( Request $request ) {
+    public function loginAction(Request $request)
+    {
 
-		$authUtils = $this->get( 'security.authentication_utils' );
-		// get the login error if there is one
-		$error = $authUtils->getLastAuthenticationError();
+        $authUtils = $this->get('security.authentication_utils');
+        // get the login error if there is one
+        $error = $authUtils->getLastAuthenticationError();
 
-		// last username entered by the user
-		$lastUsername = $authUtils->getLastUsername();
+        // last username entered by the user
+        $lastUsername = $authUtils->getLastUsername();
 
-		return $this->render( 'sesion/login.html.twig',
-			array(
-				'last_username' => $lastUsername,
-				'error'         => $error,
-			) );
-	}
+        return $this->render('sesion/login.html.twig',
+            array(
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ));
+    }
 
-	public function indexSesionesAction( Request $request ) {
+    public function indexSesionesAction(Request $request)
+    {
 
-		$em = $this->getDoctrine()->getManager();
-
-
-		$filterType = $this->createForm( SesionFilterType::class,
-			null,
-			[
-				'method' => 'GET'
-			] );
-		$filterType->handleRequest( $request );
-		if ( $filterType->get( 'buscar' )->isClicked() ) {
-			$sesiones = $em->getRepository( 'AppBundle:Sesion' )->getQbBuscar( $filterType->getData() );
-		} else {
-			$sesiones = $em->getRepository( 'AppBundle:Sesion' )->getQbAll();
-		}
+        $em = $this->getDoctrine()->getManager();
 
 
-		$paginator = $this->get( 'knp_paginator' );
-		$sesiones  = $paginator->paginate(
-			$sesiones,
-			$request->query->get( 'page', 1 )/* page number */,
-			10/* limit per page */
-		);
+        $filterType = $this->createForm(SesionFilterType::class,
+            null,
+            [
+                'method' => 'GET'
+            ]);
+        $filterType->handleRequest($request);
+        if ($filterType->get('buscar')->isClicked()) {
+            $sesiones = $em->getRepository('AppBundle:Sesion')->getQbBuscar($filterType->getData());
+        } else {
+            $sesiones = $em->getRepository('AppBundle:Sesion')->getQbAll();
+        }
 
 
-		return $this->render( 'sesiones/index.html.twig',
-			[
-				'sesiones'    => $sesiones,
-				'filter_type' => $filterType->createView()
-			] );
-	}
-
-	public function verSesionAction( Request $request, $id ) {
-		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $id );
-
-		return $this->render( 'sesiones/ver.html.twig',
-			[
-				'sesion' => $sesion
-			] );
-	}
-
-	public function conformarPlanDeLaborIndexAction( Request $request ) {
-		$em       = $this->getDoctrine()->getManager();
-		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
-		$sesion   = null;
+        $paginator = $this->get('knp_paginator');
+        $sesiones = $paginator->paginate(
+            $sesiones,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
 
 
-		if ( ! $sesionQb->getQuery()->getResult() ) {
-			$this->get( 'session' )->getFlashBag()->add(
-				'warning',
-				'No hay una Sesión Activa Creada'
-			);
-		} else {
-			$sesion = $sesionQb->getQuery()->getSingleResult();
-		}
+        return $this->render('sesiones/index.html.twig',
+            [
+                'sesiones' => $sesiones,
+                'filter_type' => $filterType->createView()
+            ]);
+    }
+
+    public function verSesionAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($id);
+
+        return $this->render('sesiones/ver.html.twig',
+            [
+                'sesion' => $sesion
+            ]);
+    }
+
+    public function conformarPlanDeLaborIndexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $sesionQb = $em->getRepository('AppBundle:Sesion')->findQbUltimaSesion();
+        $sesion = null;
 
 
-		if ( $request->getMethod() == 'POST' ) {
-			$ordenDelDia   = new OrdenDelDia();
-			$asuntoEntrado = new BoletinAsuntoEntrado();
+        if (!$sesionQb->getQuery()->getResult()) {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No hay una Sesión Activa Creada'
+            );
+        } else {
+            $sesion = $sesionQb->getQuery()->getSingleResult();
+        }
 
-			$sesion->addOd( $ordenDelDia );
-			$sesion->addBae( $asuntoEntrado );
 
-			$ordenDelDia->setSesion( $sesion );
-			$ordenDelDia->setCerrado( false );
-			$asuntoEntrado->setSesion( $sesion );
-			$asuntoEntrado->setCerrado( false );
+        if ($request->getMethod() == 'POST') {
+            $ordenDelDia = new OrdenDelDia();
+            $asuntoEntrado = new BoletinAsuntoEntrado();
 
-			$em->flush();
+            $sesion->addOd($ordenDelDia);
+            $sesion->addBae($asuntoEntrado);
 
-			$this->get( 'session' )->getFlashBag()->add(
-				'success',
-				'El Plan de Labor se creó correctamente.'
-			);
+            $ordenDelDia->setSesion($sesion);
+            $ordenDelDia->setCerrado(false);
+            $asuntoEntrado->setSesion($sesion);
+            $asuntoEntrado->setCerrado(false);
 
-		}
+            $em->flush();
 
-		return $this->render( ':sesiones:conformar_plan_de_labor_index.html.twig',
-			array(
-				'sesion' => $sesion
-			) );
-	}
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'El Plan de Labor se creó correctamente.'
+            );
 
-	public function asignarProyectosABAEAction( Request $request, $sesionId ) {
+        }
 
-		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+        return $this->render(':sesiones:conformar_plan_de_labor_index.html.twig',
+            array(
+                'sesion' => $sesion
+            ));
+    }
 
-		$bae = $sesion->getBae()->first();
+    public function asignarProyectosABAEAction(Request $request, $sesionId)
+    {
 
-		$form = $this->createForm( BoletinAsuntoEntradoType::class, $bae );
-		$form->handleRequest( $request );
+        $em = $this->getDoctrine()->getManager();
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($sesionId);
 
-		if ( $form->isSubmitted() && $form->isValid() ) {
+        $bae = $sesion->getBae()->first();
 
-			$em->flush();
+        $form = $this->createForm(BoletinAsuntoEntradoType::class, $bae);
+        $form->handleRequest($request);
 
-			$this->get( 'session' )->getFlashBag()->add(
-				'success',
-				'BAE modificado correctamente'
-			);
+        if ($form->isSubmitted() && $form->isValid()) {
 
-		}
+            $em->flush();
 
-		return $this->render( ':sesiones:asignar_proyectos_a_bae.html.twig',
-			array(
-				'sesion' => $sesion,
-				'form'   => $form->createView()
-			) );
-	}
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'BAE modificado correctamente'
+            );
 
-	public function asignarDictamenesAODAction( Request $request, $sesionId ) {
+        }
 
-		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+        return $this->render(':sesiones:asignar_proyectos_a_bae.html.twig',
+            array(
+                'sesion' => $sesion,
+                'form' => $form->createView()
+            ));
+    }
 
-		$od = $sesion->getOd()->first();
+    public function asignarDictamenesAODAction(Request $request, $sesionId)
+    {
 
-		$form = $this->createForm( OrdenDelDiaType::class, $od );
-		$form->handleRequest( $request );
+        $em = $this->getDoctrine()->getManager();
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($sesionId);
 
-		if ( $form->isSubmitted() && $form->isValid() ) {
+        $od = $sesion->getOd()->first();
 
-			$em->flush();
+        $form = $this->createForm(OrdenDelDiaType::class, $od);
+        $form->handleRequest($request);
 
-			$this->get( 'session' )->getFlashBag()->add(
-				'success',
-				'OD modificado correctamente'
-			);
+        if ($form->isSubmitted() && $form->isValid()) {
 
-		}
+            $em->flush();
 
-		return $this->render( ':sesiones:asignar_dictamenes_a_od.html.twig',
-			array(
-				'sesion' => $sesion,
-				'form'   => $form->createView()
-			) );
-	}
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'OD modificado correctamente'
+            );
 
-	public function conformarPlanDeLaborConfirmarAction( Request $request, $sesionId ) {
+        }
 
-		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+        return $this->render(':sesiones:asignar_dictamenes_a_od.html.twig',
+            array(
+                'sesion' => $sesion,
+                'form' => $form->createView()
+            ));
+    }
 
-		if ( $sesion && $sesion->getActivo() ) {
-			$od  = $sesion->getOd()->first();
-			$bae = $sesion->getBae()->first();
+    public function conformarPlanDeLaborConfirmarAction(Request $request, $sesionId)
+    {
 
-			if ( ! $bae->getCerrado() && ! $od->getCerrado() ) {
-				$bae->setCerrado( true );
-				$od->setCerrado( true );
+        $em = $this->getDoctrine()->getManager();
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($sesionId);
 
-				$em->flush();
+        if ($sesion && $sesion->getActivo()) {
+            $od = $sesion->getOd()->first();
+            $bae = $sesion->getBae()->first();
 
-				$this->get( 'session' )->getFlashBag()->add(
-					'success',
-					'El plan de labor fue creado correctamente.'
-				);
+            if (!$bae->getCerrado() && !$od->getCerrado()) {
+                $bae->setCerrado(true);
+                $od->setCerrado(true);
 
-				if ( $this->notificarConcejales( $sesion ) ) {
-					$this->get( 'session' )->getFlashBag()->add(
-						'info',
-						'Se ha enviado un mail a los concejales para notificarles que está disponible el plan de labor.'
-					);
-				} else {
-					$this->get( 'session' )->getFlashBag()->add(
-						'warning',
-						'Hubo un problema tratando de enviar el mail a los concejales.
+                $em->flush();
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'El plan de labor fue creado correctamente.'
+                );
+
+                if ($this->notificarConcejales($sesion)) {
+                    $this->get('session')->getFlashBag()->add(
+                        'info',
+                        'Se ha enviado un mail a los concejales para notificarles que está disponible el plan de labor.'
+                    );
+                } else {
+                    $this->get('session')->getFlashBag()->add(
+                        'warning',
+                        'Hubo un problema tratando de enviar el mail a los concejales.
 						Conctacte con el administrador.'
-					);
-				}
+                    );
+                }
 
 
-			} else {
-				$this->get( 'session' )->getFlashBag()->add(
-					'warning',
-					'El Plan de Labor ya se encuentra Cerrado'
-				);
-			}
-		} else {
-			$this->get( 'session' )->getFlashBag()->add(
-				'warning',
-				'No existe una Sesión Activa'
-			);
-		}
+            } else {
+                $this->get('session')->getFlashBag()->add(
+                    'warning',
+                    'El Plan de Labor ya se encuentra Cerrado'
+                );
+            }
+        } else {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No existe una Sesión Activa'
+            );
+        }
 
-		return $this->redirectToRoute( 'sesiones_conformar_plan_de_labor_index' );
+        return $this->redirectToRoute('sesiones_conformar_plan_de_labor_index');
 
-	}
+    }
 
-	public function notificarConcejales( Sesion $sesion ) {
+    public function notificarConcejales(Sesion $sesion)
+    {
 
-		$mailer = $this->get( 'mailer' );
+        $mailer = $this->get('mailer');
 
-		$em                    = $this->getDoctrine()->getManager();
-		$parametroMail         = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-concejales' );
-		$parametroMailDefensor = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-defensor' );
+        $em = $this->getDoctrine()->getManager();
+        $parametroMail = $em->getRepository('AppBundle:Parametro')->findOneBySlug('mail-concejales');
+        $parametroMailDefensor = $em->getRepository('AppBundle:Parametro')->findOneBySlug('mail-defensor');
 
-		if ( $parametroMail && $parametroMailDefensor ) {
-			$asunto = 'HCD Posadas - Plan de Labor ' . $sesion->getTitulo();
+        if ($parametroMail && $parametroMailDefensor) {
+            $asunto = 'HCD Posadas - Plan de Labor ' . $sesion->getTitulo();
 
-			$message = ( new \Swift_Message( $asunto ) );
+            $message = (new \Swift_Message($asunto));
 
-			$message
-				->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
-				->setTo( $parametroMail->getValor() )
-				->addTo( $parametroMailDefensor->getValor() )
-				->setBody(
-					$this->renderView(
-						'emails/plan_de_labor.html.twig',
-						[
-							'sesion' => $sesion
-						]
-					),
-					'text/html'
-				);
+            $message
+                ->setFrom($this->getParameter('mailer_sender_as'), $this->getParameter('mailer_sender'))
+                ->setTo($parametroMail->getValor())
+                ->addTo($parametroMailDefensor->getValor())
+                ->setBody(
+                    $this->renderView(
+                        'emails/plan_de_labor.html.twig',
+                        [
+                            'sesion' => $sesion
+                        ]
+                    ),
+                    'text/html'
+                );
 
-			$mailer->send( $message );
+            $mailer->send($message);
 
-			return true;
-		} else {
-			return false;
-		}
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function imprimirBAEAction( Request $request, $sesionId ) {
-		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+    public function imprimirBAEAction(Request $request, $sesionId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($sesionId);
 
-		$bae = $sesion->getBae()->first();
+        /** @var BoletinAsuntoEntrado $bae */
+        $bae = $sesion->getBae()->first();
 
-		if ( ! $bae ) {
-			$this->get( 'session' )->getFlashBag()->add(
-				'error',
-				'El Plan de Labor no Posee Boletin de Asuntos Entrados y/u Orden del Día.'
-			);
+        if (!$bae) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'El Plan de Labor no Posee Boletin de Asuntos Entrados y/u Orden del Día.'
+            );
 
-			return $this->redirectToRoute( 'sesiones_index' );
-		}
+            return $this->redirectToRoute('sesiones_index');
+        }
 
-		$title = 'Boletín de Asuntos Entrados';
+        $title = 'Boletín de Asuntos Entrados';
 
-		$header = null;
-		if ( $bae->getCerrado() ) {
-			$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
-				[
-					"sesion"    => $sesion,
-					'documento' => $title
-				] );
-		}
+        $header = null;
+        if ($bae->getCerrado()) {
+            $header = $this->renderView(':sesiones:encabezado_plan_de_labor.pdf.twig',
+                [
+                    "sesion" => $sesion,
+                    'documento' => $title
+                ]);
+        }
 
-		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+        $footer = $this->renderView(':default:pie_pagina.pdf.twig');
 
-		$html = $this->renderView( ':sesiones:boletin_asuntos_entrados.pdf.twig',
-			[
-				'bae'   => $bae,
-				'title' => $title . ' - ' . $sesion->getTitulo(),
-			]
-		);
+        $proyectos = [
+            'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+            'PROYECTOS DE CONCEJALES' => $bae->getProyectosDeConcejales(),
+            'PROYECTOS DEL DEFENSOR DEL PUEBLO' => $bae->getProyectosDeDefensor(),
+        ];
 
-//        return new Response($html);
+        $html = $this->renderView(':sesiones:boletin_asuntos_entrados.pdf.twig', [
+            'bae' => $bae,
+            'title' => $title . ' - ' . $sesion->getTitulo(),
+            'proyectos' => $proyectos,
+        ]);
 
-		return new Response(
-			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
-				array(
-					'page-size'      => 'Legal',
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
+                array(
+                    'page-size' => 'Legal',
 //					'page-width'     => '220mm',
 //					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
 //					'margin-right'   => "3cm",
-					'margin-top'     => "8cm",
-					'margin-bottom'  => "2cm",
-					'header-html'    => $header,
-					'header-spacing' => 5,
-					'footer-spacing' => 5,
-					'footer-html'    => $footer,
+                    'margin-top' => "8cm",
+                    'margin-bottom' => "2cm",
+                    'header-html' => $header,
+                    'header-spacing' => 5,
+                    'footer-spacing' => 5,
+                    'footer-html' => $footer,
 //                    'margin-bottom' => "1cm"
-				)
-			)
-			, 200, array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
-			)
-		);
+                )
+            )
+            , 200, array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
+            )
+        );
 
-	}
+    }
 
-	public function imprimirODAction( Request $request, $sesionId ) {
-		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
-		$od     = $sesion->getOd()->first();
+    public function imprimirODAction(Request $request, $sesionId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($sesionId);
+        /** @var OrdenDelDia $od */
+        $od = $sesion->getOd()->first();
 
+        if (!$od) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'El Plan de Labor no Posee Orden del Día.'
+            );
+            return $this->redirectToRoute('sesiones_index');
+        }
 
-		if ( ! $od ) {
-			$this->get( 'session' )->getFlashBag()->add(
-				'error',
-				'El Plan de Labor no Posee Orden del Día.'
-			);
+        $title = 'Orden del Día';
 
-			return $this->redirectToRoute( 'sesiones_index' );
-		}
+        $header = null;
+        if ($od->getCerrado()) {
+            $header = $this->renderView(':sesiones:encabezado_plan_de_labor.pdf.twig', [
+                "sesion" => $sesion,
+                'documento' => $title
+            ]);
+        }
 
-		$title = 'Orden del Día';
+        $footer = $this->renderView(':default:pie_pagina.pdf.twig');
 
-		$header = null;
-		if ( $od->getCerrado() ) {
-			$header = $this->renderView( ':sesiones:encabezado_plan_de_labor.pdf.twig',
-				[
-					"sesion"    => $sesion,
-					'documento' => $title
+        $dictamenes = [
+            'DICTÁMENES DE DECLARACIÓN' => $od->getDictamenesDeDeclaracion(),
+            'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+            'DICTÁMENES DE RESOLUCIÓN' => $od->getDictamenesDeResolucion(),
+            'DICTÁMENES DE ORDENANZA' => $od->getDictamenesDeOrdenanza(),
+        ];
 
-				] );
-		}
+        $html = $this->renderView(':sesiones:orden_del_dia.pdf.twig', [
+            'od' => $od,
+            'title' => $title . ' - ' . $sesion->getTitulo(),
+            'dictamenes' => $dictamenes,
+        ]);
 
-		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
-
-		$html = $this->renderView( ':sesiones:orden_del_dia.pdf.twig',
-			[
-				'od'    => $od,
-				'title' => $title . ' - ' . $sesion->getTitulo(),
-			]
-		);
-
-//        return new Response($html);
-
-		return new Response(
-			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
-				array(
-					'page-size'      => 'Legal',
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
+                'page-size' => 'Legal',
 //					'page-width'     => '220mm',
 //					'page-height'     => '340mm',
 //					'margin-left'    => "3cm",
 //					'margin-right'   => "3cm",
-					'margin-top'     => "8cm",
-					'margin-bottom'  => "2cm",
-					'header-html'    => $header,
-					'header-spacing' => 5,
-					'footer-spacing' => 5,
-					'footer-html'    => $footer,
+                'margin-top' => "8cm",
+                'margin-bottom' => "2cm",
+                'header-html' => $header,
+                'header-spacing' => 5,
+                'footer-spacing' => 5,
+                'footer-html' => $footer,
 //                    'margin-bottom' => "1cm"
-				)
-			)
-			, 200, array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
-			)
-		);
+            )), 200, array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
+            )
+        );
 
-	}
+    }
 
-	public function cargarActaAction( Request $request, $sesionId ) {
+    public function cargarActaAction(Request $request, $sesionId)
+    {
 
-		$em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
-		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
-		$form   = $this->createForm( SesionCargarActaType::class, $sesion );
+        $sesion = $em->getRepository('AppBundle:Sesion')->find($sesionId);
+        $form = $this->createForm(SesionCargarActaType::class, $sesion);
 
-		// Estos son los campos a auditar en el log
-		$campos = [ 'acta' ];
+        // Estos son los campos a auditar en el log
+        $campos = ['acta'];
 
-		$valoresOriginales = [];
-		foreach ( $campos as $campo ) {
-			$getter                      = 'get' . ucfirst( $campo );
-			$valoresOriginales[ $campo ] = [
-				'valor'  => $sesion->{$getter}(),
-				'getter' => $getter,
-			];
-		}
+        $valoresOriginales = [];
+        foreach ($campos as $campo) {
+            $getter = 'get' . ucfirst($campo);
+            $valoresOriginales[$campo] = [
+                'valor' => $sesion->{$getter}(),
+                'getter' => $getter,
+            ];
+        }
 
-		$form->handleRequest( $request );
+        $form->handleRequest($request);
 
-		if ( $form->isSubmitted() && $form->isValid() ) {
-			$log = new LogExpediente();
-			$log->setSesion( $sesion );
-			foreach ( $valoresOriginales as $nombre => $campo ) {
-				if ( $campo['valor'] != $sesion->{$campo['getter']}() ) {
-					$log->agregarCambio( $nombre, $campo['valor'], $sesion->{$campo['getter']}() );
-				}
-			}
+        if ($form->isSubmitted() && $form->isValid()) {
+            $log = new LogExpediente();
+            $log->setSesion($sesion);
+            foreach ($valoresOriginales as $nombre => $campo) {
+                if ($campo['valor'] != $sesion->{$campo['getter']}()) {
+                    $log->agregarCambio($nombre, $campo['valor'], $sesion->{$campo['getter']}());
+                }
+            }
 
-			if ( count( $log->getCambios() ) > 0 ) {
-				$em->persist( $log );
-			}
+            if (count($log->getCambios()) > 0) {
+                $em->persist($log);
+            }
 
-			$em->flush();
-			$this->get( 'session' )->getFlashBag()->add(
-				'success',
-				'El acta se modificó correctamente.'
-			);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'El acta se modificó correctamente.'
+            );
 
-		}
+        }
 
-		return $this->render( ':sesiones:cargar_acta.html.twig',
-			[
-				'sesion' => $sesion,
-				'form'   => $form->createView()
-			]
-		);
-	}
+        return $this->render(':sesiones:cargar_acta.html.twig',
+            [
+                'sesion' => $sesion,
+                'form' => $form->createView()
+            ]
+        );
+    }
 
-	public function verCambiosActaAction(
-		Request $request,
-		Sesion $sesion,
-		LogExpediente $log
-	) {
-		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
+    public function verCambiosActaAction(
+        Request $request,
+        Sesion $sesion,
+        LogExpediente $log
+    )
+    {
+        $this->denyAccessUnlessGranted('ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.');
 
-		return $this->render( ':sesiones:ver_cambios_acta.html.twig',
-			array(
-				'sesion' => $sesion,
-				'log'    => $log,
-			) );
-	}
+        return $this->render(':sesiones:ver_cambios_acta.html.twig',
+            array(
+                'sesion' => $sesion,
+                'log' => $log,
+            ));
+    }
 
 }

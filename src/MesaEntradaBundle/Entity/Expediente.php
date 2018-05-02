@@ -2,6 +2,9 @@
 
 namespace MesaEntradaBundle\Entity;
 
+use AppBundle\Entity\AreaAdministrativa;
+use AppBundle\Entity\Cargo;
+use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use UtilBundle\Entity\Base\BaseClass;
@@ -116,7 +119,7 @@ class Expediente extends BaseClass {
 
 
 	/**
-	 * @var
+	 * @var IniciadorExpediente[]
 	 *
 	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\IniciadorExpediente", mappedBy="expediente", cascade={"persist"})
 	 *
@@ -1087,4 +1090,38 @@ class Expediente extends BaseClass {
 	public function getLogs() {
 		return $this->logs;
 	}
+
+    /**
+     * @return bool
+     */
+	public function esProyectoDeConcejal()
+    {
+        return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
+            return $ie->getAutor()
+                && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_CONCEJAL;
+        });
+    }
+
+    /**
+     * @return bool
+     */
+    public function esProyectoDeDEM()
+    {
+        return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
+            return $ie->getAutor()
+                && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
+                && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
+        });
+    }
+
+    /**
+     * @return bool
+     */
+    public function esProyectoDeDefensor()
+    {
+        return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
+            return $ie->getAutor()
+                && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_DEFENSOR;
+        });
+    }
 }

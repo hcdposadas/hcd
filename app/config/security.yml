@@ -52,6 +52,6 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/sesion/, role: [ROLE_CONCEJAL, ROLE_SECRETARIO] }
+        - { path: ^/sesion/, role: [ROLE_CONCEJAL, ROLE_SECRETARIO, ROLE_LEGISLATIVO, ROLE_DEFENSOR] }
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/, role: IS_AUTHENTICATED_FULLY }

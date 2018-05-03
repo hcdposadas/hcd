@@ -75,6 +75,11 @@
                             <i class="fa fa-file-o" aria-hidden="true"></i><br>
                             <span style="font-size: 12px">Carta Orgánica</span>
                         </button>
+                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                id="verSesiones">
+                            <i class="fa fa-file-o" aria-hidden="true"></i><br>
+                            <span style="font-size: 12px">Actas</span>
+                        </button>
                         <a class="btn btn-danger btn-lg pull-right" href="{{ path('sesion_logout') }}"> Salir
                             <span class="glyphicon glyphicon-log-out"></span>
                         </a>
@@ -161,6 +166,9 @@
                                 </div>
 
                             </div>
+                            <div class="consultar-sesiones" style="display: none;">
+                                <consultar-sesiones></consultar-sesiones>
+                            </div>
                         </div>
                     </div>
 
@@ -207,6 +215,7 @@
         $('.consultar-expedientes').hide();
         $('.od').hide()
         $('.carta-organica').hide()
+        $('.consultar-sesiones').hide()
 
         {% if is_granted('ROLE_SECRETARIO') %}
         $('#lanzarVotacion').click(function () {
@@ -220,6 +229,7 @@
             $('.od').hide();
             $('.mociones').hide();
             $('.carta-organica').hide();
+            $('.consultar-sesiones').hide();
         })
         $('#verOd').click(function () {
             $('.od').show();
@@ -227,6 +237,7 @@
             $('.ae').hide();
             $('.mociones').hide();
             $('.carta-organica').hide();
+            $('.consultar-sesiones').hide();
         })
         $('#consultarExpte').click(function () {
             $('.consultar-expedientes').show();
@@ -234,6 +245,7 @@
             $('.ae').hide();
             $('.mociones').hide();
             $('.carta-organica').hide();
+            $('.consultar-sesiones').hide();
         })
         $('#verCartaOrganica').click(function () {
             $('.carta-organica').show()
@@ -241,6 +253,15 @@
             $('.od').hide();
             $('.ae').hide();
             $('.mociones').hide();
+            $('.consultar-sesiones').hide();
+        })
+        $('#verSesiones').click(function () {
+            $('.carta-organica').hide()
+            $('.consultar-expedientes').hide();
+            $('.od').hide();
+            $('.ae').hide();
+            $('.mociones').hide();
+            $('.consultar-sesiones').show();
         })
     });
 </script>

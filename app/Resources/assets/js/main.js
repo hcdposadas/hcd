@@ -20,12 +20,14 @@ window.socket = io('http://' + nodeHost + ':3000', {
 import PanelVotacion from './components/PanelVotacion';
 import Concejal from './components/Concejal';
 import ConsultarExpediente from './components/ConsultarExpediente';
+import ConsultarSesiones from './components/ConsultarSesiones';
 import PanelDisplay from './components/PanelDisplay';
 import Quorm from './components/Quorum';
 
 Vue.component('panel-votacion', PanelVotacion);
 Vue.component('panel-concejal', Concejal);
 Vue.component('consultar-expediente', ConsultarExpediente);
+Vue.component('consultar-sesiones', ConsultarSesiones);
 Vue.component('panel-display', PanelDisplay);
 Vue.component('quorum', Quorm);
 

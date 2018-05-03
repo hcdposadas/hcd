@@ -35,6 +35,11 @@
                                 <i class="fa fa-file-o" aria-hidden="true"></i><br>
                                 <span style="font-size: 12px">Carga Orgánica</span>
                             </button>
+                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                                    @click="verActas">
+                                <i class="fa fa-file-text-o" aria-hidden="true"></i><br>
+                                <span style="font-size: 12px">Actas</span>
+                            </button>
                             <a class="btn btn-danger btn-lg pull-right" :href="pathLogout"> Salir
                                 <span class="glyphicon glyphicon-log-out"></span>
                             </a>
@@ -67,6 +72,8 @@
 
                             <consultar-expediente v-show="showConsultarExpte"></consultar-expediente>
 
+                            <consultar-sesiones v-show="showActas"></consultar-sesiones>
+
                             <panel-votacion></panel-votacion>
                         </div>
                     </div>
@@ -92,6 +99,7 @@
                 showTexto: false,
                 showConsultarExpte: false,
                 showCartaOrganica: false,
+                showActas: false,
                 titulo: null,
                 fecha: null,
                 texto: null
@@ -103,24 +111,32 @@
                 this.showCartaOrganica = false
                 this.showTexto = true
                 this.texto = this.ae;
+                this.showActas = false
             },
             verOd() {
                 this.showConsultarExpte = false
                 this.showCartaOrganica = false
                 this.showTexto = true
                 this.texto = this.od;
+                this.showActas = false
             },
             verCartaOrganica() {
                 this.showCartaOrganica = true
                 this.showConsultarExpte = false
                 this.showTexto = false
-
+                this.showActas = false
             },
             consultarExpte() {
                 this.showConsultarExpte = true
                 this.showCartaOrganica = false
                 this.showTexto = false
-
+                this.showActas = false
+            },
+            verActas(){
+                this.showConsultarExpte = false
+                this.showCartaOrganica = false
+                this.showTexto = false
+                this.showActas = true
             }
         },
         mounted() {

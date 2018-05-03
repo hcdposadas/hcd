@@ -457,4 +457,63 @@ class AjaxController extends Controller {
 
 		return new JsonResponse( $json );
 	}
+
+    public function consultarSesionesAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entities = $em->getRepository( 'AppBundle:Sesion' )->getQbAll()
+            ->getQuery()->getArrayResult();
+
+        $json = array();
+
+        if ( ! count( $entities ) ) {
+            $json[] = array(
+                'text' => 'No se encontraron coincidencias',
+                'id'   => ''
+            );
+        } else {
+
+            foreach ( $entities as $entity ) {
+                $json[] = array(
+                    'id'   => $entity['id'],
+                    //'label' => $entity[$property],
+                    'text' => $entity['titulo'],
+                    'acta' => $entity['acta']
+                );
+            }
+        }
+
+        return new JsonResponse( $json );
+
+    }
+
+    public function consultarActasAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entities = $em->getRepository( 'AppBundle:Sesion' )->getQbAll()
+            ->getQuery()->getArrayResult();
+
+        $json = array();
+
+        if ( ! count( $entities ) ) {
+            $json[] = array(
+                'text' => 'No se encontraron coincidencias',
+                'id'   => ''
+            );
+        } else {
+
+            foreach ( $entities as $entity ) {
+                $json[] = array(
+                    'id'   => $entity['id'],
+                    //'label' => $entity[$property],
+                    'text' => $text
+                );
+            }
+        }
+
+        return new JsonResponse( $json );
+
+    }
 }

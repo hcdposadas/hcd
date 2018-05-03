@@ -72,4 +72,12 @@ get_buscar_expediente:
     path: /sesion/buscar-expediente
     defaults: { _controller: "AppBundle:Ajax:buscarExpediente" }
 
+get_sesiones:
+    path: /sesion/consultar-sesiones
+    defaults: { _controller: "AppBundle:Ajax:consultarSesiones" }
+
+get_actas:
+    path: /sesion/consultar-actas
+    defaults: { _controller: "AppBundle:Ajax:consultarActas" }
+
 #sesion secretario

@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('bundles/theme/plugins/datatables/dataTables.bootstrap.css') }}">
     <!-- Select2 -->
     {#<link rel="stylesheet" href="{{ asset('bundles/theme/plugins/select2/select2.min.css') }}">#}
-    <link href="{{ asset('bundles/theme/css/select2/css/select2.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/theme/css/select2/css/select2.min.css') }}" rel="stylesheet"/>
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/AdminLTE.min.css') }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -74,6 +74,14 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                        <li>
+                            <a href="{{ path('app_homepage') }}?_want_to_be_this_user=_exit"><i
+                                        class="fa fa-fw fa-sign-out"></i>
+                                Desimpersonar
+                            </a>
+                        </li>
+                    {% endif %}
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         {% set nombreusuario = app.user %}
@@ -146,7 +154,8 @@
                     ...
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="modal-btn-ok" data-dismiss="modal">{{ 'Ok'|trans }}</button>
+                    <button type="button" class="btn btn-default" id="modal-btn-ok"
+                            data-dismiss="modal">{{ 'Ok'|trans }}</button>
                     {#<a type="button" id="modal-btn-ok" class="btn btn-primary">Ok</a>#}
                 </div>
             </div>
@@ -158,10 +167,10 @@
         <!-- Content Header (Page header) -->
         {% block contentHeader %}{% endblock %}
         {#<section class="content-header">#}
-            {#<h1>#}
-                {#Dashboard#}
-                {#<small>Control panel</small>#}
-            {#</h1>#}
+        {#<h1>#}
+        {#Dashboard#}
+        {#<small>Control panel</small>#}
+        {#</h1>#}
         {#</section>#}
 
         <!-- Main content -->

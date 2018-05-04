@@ -41,3 +41,8 @@ get_dictamenes_od:
 get_expedientes:
     path: /get-expedientes
     defaults: { _controller: "AppBundle:Ajax:getExpedientes" }
+
+
+get_usuarios:
+    path: /usuarios
+    defaults: { _controller: "AppBundle:Ajax:getUsuarios" }

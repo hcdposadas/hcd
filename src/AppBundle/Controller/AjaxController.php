@@ -516,4 +516,23 @@ class AjaxController extends Controller {
         return new JsonResponse( $json );
 
     }
+
+    public function getUsuariosAction()
+    {
+        $usuarios = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Usuario::class)
+            ->findBy(['enabled' => true]);
+
+        $usuarios = array_map(function (Usuario $usuario) {
+            return [
+                'id' => $usuario->getId(),
+                'username' => $usuario->getUsername(),
+                'nombre' => $usuario->getPersona() ? $usuario->getPersona()->getNombreCompleto() : null,
+                'roles' => $usuario->getRoles(),
+            ];
+        }, $usuarios);
+
+        return JsonResponse::create($usuarios);
+    }
 }

@@ -10,6 +10,7 @@ use Endroid\QrCode\QrCode;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use UsuariosBundle\Entity\Usuario;
 
 class AjaxController extends Controller {
 	public function getAjaxDefaultAction( Request $request ) {
@@ -488,32 +489,22 @@ class AjaxController extends Controller {
 
     }
 
-    public function consultarActasAction(Request $request)
+    public function getUsuariosAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        $usuarios = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Usuario::class)
+            ->findBy(['enabled' => true]);
 
-        $entities = $em->getRepository( 'AppBundle:Sesion' )->getQbAll()
-            ->getQuery()->getArrayResult();
+        $usuarios = array_map(function (Usuario $usuario) {
+            return [
+                'id' => $usuario->getId(),
+                'username' => $usuario->getUsername(),
+                'nombre' => $usuario->getPersona() ? $usuario->getPersona()->getNombreCompleto() : null,
+                'roles' => $usuario->getRoles(),
+            ];
+        }, $usuarios);
 
-        $json = array();
-
-        if ( ! count( $entities ) ) {
-            $json[] = array(
-                'text' => 'No se encontraron coincidencias',
-                'id'   => ''
-            );
-        } else {
-
-            foreach ( $entities as $entity ) {
-                $json[] = array(
-                    'id'   => $entity['id'],
-                    //'label' => $entity[$property],
-                    'text' => $text
-                );
-            }
-        }
-
-        return new JsonResponse( $json );
-
+        return JsonResponse::create($usuarios);
     }
 }

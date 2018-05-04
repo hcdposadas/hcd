@@ -10,6 +10,7 @@ use Endroid\QrCode\QrCode;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use UsuariosBundle\Entity\Usuario;
 
 class AjaxController extends Controller {
 	public function getAjaxDefaultAction( Request $request ) {
@@ -480,35 +481,6 @@ class AjaxController extends Controller {
                     //'label' => $entity[$property],
                     'text' => $entity['titulo'],
                     'acta' => $entity['acta']
-                );
-            }
-        }
-
-        return new JsonResponse( $json );
-
-    }
-
-    public function consultarActasAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository( 'AppBundle:Sesion' )->getQbAll()
-            ->getQuery()->getArrayResult();
-
-        $json = array();
-
-        if ( ! count( $entities ) ) {
-            $json[] = array(
-                'text' => 'No se encontraron coincidencias',
-                'id'   => ''
-            );
-        } else {
-
-            foreach ( $entities as $entity ) {
-                $json[] = array(
-                    'id'   => $entity['id'],
-                    //'label' => $entity[$property],
-                    'text' => $text
                 );
             }
         }

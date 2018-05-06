@@ -72,7 +72,7 @@
 <section>
 
     <div id="one">Remitase el Expte.:</div>
-    <div id="two">{{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.anio }}</div>
+    <div id="two">{{ expediente.expediente }}-{{ expediente.letra }}-{% if expediente.anio %}{{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo }}{% endif %}</div>
 
 </section>
 

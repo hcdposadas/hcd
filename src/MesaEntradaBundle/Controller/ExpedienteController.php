@@ -16,6 +16,8 @@ use MesaEntradaBundle\Form\ExpedienteLegislativoExternoType;
 use MesaEntradaBundle\Form\ExpedienteType;
 use MesaEntradaBundle\Form\Filter\ExpedienteFilterType;
 use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
+use MesaEntradaBundle\Form\NuevoGiroExpedienteComisionType;
+use MesaEntradaBundle\Form\NuevoGiroExpedienteDependenciaType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -268,13 +270,14 @@ class ExpedienteController extends Controller {
 
 	}
 
-	public function imprimirGiroAction( $id, $giroId ) {
+	public function imprimirGiroAction( $id, $giroId, $tipoExpediente ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
-		if ( strtoupper( $expediente->getTipoExpediente() ) == 'INTERNO' ) {
+
+		if ( strtoupper( $tipoExpediente ) == 'ADMINISTRATIVO' ) {
 			$giro = $em->getRepository( 'MesaEntradaBundle:GiroAdministrativo' )->find( $giroId );
 			$giro = $giro->getAreaDestino();
-		} else {
+		} elseif ( strtoupper( $tipoExpediente ) == 'LEGISLATIVO' ) {
 			$giro = $em->getRepository( 'MesaEntradaBundle:Giro' )->find( $giroId );
 			$giro = $giro->getComisionDestino();
 		}
@@ -517,7 +520,7 @@ class ExpedienteController extends Controller {
 
 		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) &&
 		     ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) &&
-		     ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' )) {
+		     ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
 			$this->get( 'session' )->getFlashBag()->add(
 				'warning',
 				'No tiene permisos para modificar un Proyecto.'
@@ -927,6 +930,34 @@ class ExpedienteController extends Controller {
 			] );
 	}
 
+	public function nuevoGiroAction( Request $request, $id ) {
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+		$form       = $this->createForm( NuevoGiroExpedienteComisionType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'El expediente se ha girado a la/s comision/es'
+			);
+
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+
+		}
+
+
+		return $this->render( ':expediente:nuevo_giro_legislativo.html.twig',
+			[
+				'expediente' => $expediente,
+				'form'       => $form->createView()
+			] );
+	}
+
 //  EXPEDIENTES ADMINISTRATIVOS
 
 	public function expedientesAdministrativosIndexAction( Request $request ) {
@@ -1026,6 +1057,34 @@ class ExpedienteController extends Controller {
 			[
 				'form'       => $form->createView(),
 				'expediente' => $expediente
+			] );
+	}
+
+	public function nuevoGiroAdministrativoAction( Request $request, $id ) {
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+		$form       = $this->createForm( NuevoGiroExpedienteDependenciaType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'El expediente se ha girado a la/s dependencia/s'
+			);
+
+			return $this->redirectToRoute( 'expedientes_administrativos_index' );
+
+		}
+
+
+		return $this->render( ':expediente:nuevo_giro_administrativo.html.twig',
+			[
+				'expediente' => $expediente,
+				'form'       => $form->createView()
 			] );
 	}
 

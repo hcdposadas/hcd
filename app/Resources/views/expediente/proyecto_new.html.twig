@@ -21,6 +21,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
+                    <p class="help-block">Si el proyeto tuviera acompañantes, debe agregarlos aquí abajo.</p>
                     {{ form_row(form.iniciadores) }}
                 </div>
             </div>
@@ -55,6 +56,7 @@
 {% endblock %}
 {% block javascripts %}
     <script>
+        var submitConfirm = false;
         $(document).ready(function () {
             $('.tipo-proyecto').change(function () {
                 var tipoId = $(this).val();
@@ -70,6 +72,30 @@
                     }
                 });
             });
+            $('form[name="{{ form.vars.name }}"]').submit(function (event) {
+
+                if (event.originalEvent.explicitOriginalTarget.firstChild.data == 'Guardar') {
+                    return true;
+                }
+
+                if (submitConfirm) {
+                    console.log('confirmo');
+                    // return true;
+                } else {
+                    console.log('no confirmo');
+                    event.preventDefault();
+                    if (event.originalEvent.explicitOriginalTarget.firstChild.data == 'Guardar y enviar') {
+                        modalConfirm('¿Está seguro?', '<p>¿Realmente desea enviar el proyecto a Mesa de Entrada? <br> Esta acción es irreversible.</p>');
+                    }
+                }
+            });
+
+            $('#modal-confirm-btn-ok').click(function () {
+                submitConfirm = true;
+                $(this).addClass('disabled');
+                $(this).html('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando');
+                $('.btn-guardar-enviar').trigger('click');
+            })
         });
     </script>
 

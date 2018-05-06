@@ -58,6 +58,12 @@ $(document).ready(function () {
         }
     });
 
+    $('.vich-img').on("click", function() {
+        var src = $(this).attr('src')
+        modalAlert('<img src="'+src+'" id="imagepreview" class="img-responsive" >');
+
+    });
+
     inicializarPlugins();
 });
 
@@ -130,10 +136,10 @@ function modalAlert(msg) {
  * @param okButonHref
  */
 function modalConfirm(titulo, body, okButonHref) {
-    $('#modal-alert .modal-body').html(body);
-    $('#modal-alert #myModalLabel').html(titulo);
-    $('#modal-alert #modal-btn-ok').attr('href', okButonHref);
-    $('#modal-alert').modal('toggle');
+    $('#modal-confirm .modal-body').html(body);
+    $('#modal-confirm #myModalLabel').html(titulo);
+    $('#modal-confirm #modal-btn-ok').attr('href', okButonHref);
+    $('#modal-confirm').modal('toggle');
 }
 
 function bootstrapCollectionBorrarItem(item) {

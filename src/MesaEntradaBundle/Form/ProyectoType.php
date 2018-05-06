@@ -88,12 +88,12 @@ class ProyectoType extends AbstractType {
 			->add( 'guardar',
 				SubmitType::class,
 				array(
-					'attr' => array( 'class' => 'btn btn-primary' ),
+					'attr' => array( 'class' => 'btn btn-default' ),
 				) )
 			->add( 'guardarYEnviar',
 				SubmitType::class,
 				array(
-					'attr' => array( 'class' => 'btn btn-primary' ),
+					'attr' => array( 'class' => 'btn btn-primary pull-right btn-guardar-enviar' ),
 				) );
 	}
 

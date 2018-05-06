@@ -5,7 +5,9 @@ namespace MesaEntradaBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class AnexoExpedienteType extends AbstractType {
 	/**
@@ -15,10 +17,20 @@ class AnexoExpedienteType extends AbstractType {
 		$builder
 			->add( 'descripcion' )
 			->add( 'anexoFile',
-				VichFileType::class,
+//				VichFileType::class,
+				VichImageType::class,
 				[
-					'label'        => 'Archivo',
-					'required'     => false,
+					'label'       => 'Archivo',
+					'required'    => false,
+					'constraints' => [
+						new File( [
+							'maxSize'          => '8M',
+							'mimeTypes'        => [
+								'image/*'
+							],
+							'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg',
+						] )
+					]
 				] );
 	}
 

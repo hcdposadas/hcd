@@ -43,6 +43,7 @@
     "webpack-notifier": "^1.5.1"
   },
   "dependencies": {
+    "admin-lte": "^2.4.3",
     "axios": "^0.17.1",
     "bootstrap": "^3.3.7",
     "express": "^4.16.2",

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use UtilBundle\Entity\Base\BaseClass;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * AnexoExpediente
@@ -51,6 +52,7 @@ class AnexoExpediente extends BaseClass {
 	/**
 	 * @Vich\UploadableField(mapping="expedientes_anexos", fileNameProperty="anexo")
 	 * @var File
+	 * @Assert\Image(mimeTypes={ "image/*" })
 	 */
 	private $anexoFile;
 

@@ -148,7 +148,7 @@ class Builder implements ContainerAwareInterface {
 			     ->setAttribute( 'class', 'treeview' );
 			$menu[ $keyPersonal ]
 				->addChild(
-					'Listado',
+					'Mis Proyectos',
 					array(
 						'route' => 'proyectos_index',
 					)
@@ -158,6 +158,13 @@ class Builder implements ContainerAwareInterface {
 					'Nuevo Proyecto',
 					array(
 						'route' => 'proyecto_new',
+					)
+				);
+			$menu[ $keyPersonal ]
+				->addChild(
+					'Otros Proyectos',
+					array(
+						'route' => 'expedientes_legislativos_index',
 					)
 				);
 		}

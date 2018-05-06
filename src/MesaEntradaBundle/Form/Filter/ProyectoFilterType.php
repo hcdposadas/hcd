@@ -2,7 +2,7 @@
 
 namespace MesaEntradaBundle\Form\Filter;
 
-use AppBundle\Entity\Dependencia;
+use MesaEntradaBundle\Entity\TipoProyecto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -10,24 +10,19 @@ use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use UtilBundle\Form\Type\JqueryAutocompleteType;
 
-class ExpedienteFilterType extends AbstractType {
-	/**
-	 * {@inheritdoc}
-	 */
+class ProyectoFilterType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-//			->add( 'tipoExpediente',
-//				EntityType::class,
-//				[
-//					'class'        => 'MesaEntradaBundle\Entity\TipoExpediente',
-//					'choice_label' => 'nombre',
-//					'required'     => false,
-//					'empty_data'   => ''
-//				] )
-			->add( 'textoDefinitivo' )
-			->add( 'extracto' )
+			->add( 'tipoProyecto',
+				EntityType::class,
+				[
+					'class'       => TipoProyecto::class,
+					'required'    => true,
+					'placeholder' => 'Seleccionar',
+
+				] )
+			->add('texto')
 			->add( 'expediente',
 				null,
 				[
@@ -46,9 +41,6 @@ class ExpedienteFilterType extends AbstractType {
 					'html5'  => true
 				) )
 			->add( 'registroMunicipal' )
-			->add( 'iniciador' )
-			->add( 'iniciadorParticular' )
-			->add( 'dependencia')
 			->add( 'buscar',
 				SubmitType::class,
 				array(
@@ -61,23 +53,13 @@ class ExpedienteFilterType extends AbstractType {
 				) );
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-//			'data_class' => 'MesaEntradaBundle\Entity\Expediente'
-			'csrf_protection' => false,
-			'required'        => false
+			'required' => false
 		) );
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function getBlockPrefix() {
-		return 'mesaentradabundle_expediente_filter';
+		return 'mesa_entrada_bundle_proyecto_filter_type';
 	}
-
-
 }

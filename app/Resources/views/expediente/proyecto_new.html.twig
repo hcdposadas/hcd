@@ -3,7 +3,7 @@
     Proyecto
 {% endblock title %}
 {% block body %}
-
+    <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
     <h1>Nuevo Proyecto</h1>
     <div class="box">
         <div class="box-header">
@@ -34,6 +34,8 @@
 
             <div class="row">
                 <div class="col-md-12">
+                    <p class="help-block">Si el proyeto tuviera anexos, debe agregarlos aquí abajo. Los formatos
+                        admitidos son imágenes (.jpg, .png, .jpeg)</p>
                     {{ form_row(form.anexos) }}
                 </div>
             </div>

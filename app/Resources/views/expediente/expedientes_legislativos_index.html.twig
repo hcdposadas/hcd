@@ -28,7 +28,7 @@
                         {{ form_row(filter_type.fecha) }}
                         {{ form_row(filter_type.registroMunicipal) }}
                         {{ form_row(filter_type.iniciador) }}
-                        {{ form_row(filter_type.iniciadorParticular) }}
+                        {#{{ form_row(filter_type.iniciadorParticular) }}#}
                         {{ form_row(filter_type.dependencia) }}
                     </div>
                 </div>
@@ -36,7 +36,9 @@
                     {{ form_widget(filter_type.buscar) }}
                     {{ form_widget(filter_type.limpiar) }}
                 </div>
-                {{ form_end(filter_type) }}
+                <div class="hidden">
+                    {{ form_end(filter_type) }}
+                </div>
             </div>
         </div>
     </div>

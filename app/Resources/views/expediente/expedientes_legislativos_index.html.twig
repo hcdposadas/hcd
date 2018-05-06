@@ -107,9 +107,14 @@
                                         {#</a>#}
                                     {% endif %}
                                     {% if is_granted('ROLE_MESA_ENTRADA') %}
-                                        <a class="btn btn-default"
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Cargar Extracto"
                                            href="{{ path('expediente_cargar_extracto', { 'id': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Nuevo Giro"
+                                           href="{{ path('expediente_nuevo_giro_legislativo', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-map-signs"></i>
+                                            <i class="fa fa-balance-scale"></i>
                                         </a>
                                     {% endif %}
                                     <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento"

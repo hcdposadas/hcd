@@ -18,7 +18,7 @@
                             <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
                                     @click="verAe">
                                 <i class="fa fa-file" aria-hidden="true"></i><br>
-                                AE
+                                BAE
                             </button>
                             <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
                                     @click="consultarExpte">

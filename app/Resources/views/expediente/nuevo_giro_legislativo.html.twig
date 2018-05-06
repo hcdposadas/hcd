@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Giro Legislativo
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    <h1>Expediente {{ expediente }}</h1>
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Giro a Comisión</h3>
+        </div>
+        <div class="box-body">
+
+            {{ form_start(form) }}
+
+            {{ form_widget(form) }}
+
+            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
+            <div class="hidden">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+{% endblock body %}

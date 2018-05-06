@@ -36,7 +36,7 @@ expediente_imprimir_caratula:
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirCaratula" }
 
 expediente_imprimir_giro:
-    path:     /{id}/{giroId}/expediente_imprimir_giro
+    path:     /{id}/{giroId}/expediente_imprimir_giro/{tipoExpediente}
     defaults: { _controller: "MesaEntradaBundle:Expediente:imprimirGiro" }
 
 expedientes_administrativos_index:
@@ -88,6 +88,10 @@ expediente_cargar_extracto:
     path: /{id}/expediente_cargar_extracto
     defaults: { _controller: "MesaEntradaBundle:Expediente:cargarExtracto" }
 
+expediente_nuevo_giro_legislativo:
+    path: /{id}/expediente-nuevo-giro-legislativo
+    defaults: { _controller: "MesaEntradaBundle:Expediente:nuevoGiro" }
+
 
 # administrativos
 expediente_administrativo_nuevo:
@@ -97,6 +101,11 @@ expediente_administrativo_nuevo:
 expediente_administrativo_editar:
     path: /{id}/expediente_administrativo_editar
     defaults: { _controller: "MesaEntradaBundle:Expediente:editarExpedienteAdministrativo" }
+
+expediente_nuevo_giro_administrativo:
+    path: /{id}/expediente-nuevo-giro-administrativo
+    defaults: { _controller: "MesaEntradaBundle:Expediente:nuevoGiroAdministrativo" }
+
 
 
 #legislativos externos

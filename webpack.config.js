@@ -16,12 +16,14 @@ Encore
     // will create web/build/app.js and web/build/app.css
     .addEntry('common-js', './app/Resources/assets/js/common.js')
     .addEntry('app', './app/Resources/assets/js/main.js')
+    // .addEntry('admin-lte', './app/Resources/assets/js/adminlte.js')
 
 
     .enableVueLoader()
 
     .addStyleEntry('common', './app/Resources/assets/css/common.scss')
     .addStyleEntry('global', './app/Resources/assets/css/global.scss')
+    // .addStyleEntry('admin-lte-style', './app/Resources/assets/css/adminlte.scss')
 
     // allow sass/scss files to be processed
     .enableSassLoader()

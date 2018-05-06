@@ -182,6 +182,8 @@
         });
         {% endif %}
 
+        var submitConfirm = false;
+
         $(document).ready(function () {
 
             $('.btn-borrar-acompaniante').click(function () {
@@ -190,6 +192,30 @@
                 $(this).parent().parent().remove();
             })
 
+            $('form[name="{{ edit_form.vars.name }}"]').submit(function (event) {
+
+                if (event.originalEvent.explicitOriginalTarget.firstChild.data == 'Guardar') {
+                    return true;
+                }
+
+                if (submitConfirm) {
+                    console.log('confirmo');
+                    // return true;
+                } else {
+                    console.log('no confirmo');
+                    event.preventDefault();
+                    if (event.originalEvent.explicitOriginalTarget.firstChild.data == 'Guardar y enviar') {
+                        modalConfirm('¿Está seguro?', '<p>¿Realmente desea enviar el proyecto a Mesa de Entrada? <br> Esta acción es irreversible.</p>');
+                    }
+                }
+            });
+
+            $('#modal-confirm-btn-ok').click(function () {
+                submitConfirm = true;
+                $(this).addClass('disabled');
+                $(this).html('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando');
+                $('.btn-guardar-enviar').trigger('click');
+            })
 
         });
     </script>

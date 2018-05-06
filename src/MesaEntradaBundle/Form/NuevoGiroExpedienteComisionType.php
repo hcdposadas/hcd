@@ -17,13 +17,12 @@ class NuevoGiroExpedienteComisionType extends AbstractType {
 			->add( 'giros',
 				BootstrapCollectionType::class,
 				[
-					'entry_type'   => GiroType::class,
-					'allow_add'    => true,
-					'allow_delete' => true,
-					'by_reference' => false,
-				] )
-
-		;
+					'entry_type'      => GiroType::class,
+					'allow_add'       => true,
+					'allow_delete'    => true,
+					'by_reference'    => false,
+					'display_history' => false
+				] );
 	}
 
 	/**

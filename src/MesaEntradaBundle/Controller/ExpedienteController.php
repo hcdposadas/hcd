@@ -15,6 +15,7 @@ use MesaEntradaBundle\Form\ExpedienteExtractoType;
 use MesaEntradaBundle\Form\ExpedienteLegislativoExternoType;
 use MesaEntradaBundle\Form\ExpedienteType;
 use MesaEntradaBundle\Form\Filter\ExpedienteFilterType;
+use MesaEntradaBundle\Form\Filter\ProyectoFilterType;
 use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
 use MesaEntradaBundle\Form\NuevoGiroExpedienteComisionType;
 use MesaEntradaBundle\Form\NuevoGiroExpedienteDependenciaType;
@@ -342,13 +343,6 @@ class ExpedienteController extends Controller {
 
 				$expedientes = $expedientes->andWhere( 'e.expediente is not null' );
 
-//			$expedientes = $expedientes->innerJoin( 'e.giros', 'giros' );
-
-//				$expedientes->join( 'e.giros', 'giros' )->where('count(giros) > 0');
-//			$sq = $this->getDoctrine()->getRepository('MesaEntradaBundle:Giro')->createQueryBuilder('giros')
-//			                                                                   ->where('giros.expediente = e');
-//
-//			$expedientes->andWhere($expedientes->expr()->not($expedientes->expr()->exists($sq->getDQL())));
 
 			} else {
 				$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
@@ -380,8 +374,21 @@ class ExpedienteController extends Controller {
 
 			$autor = $this->getUser()->getPersona()->getCargoPersona()->first()->getIniciador();
 
-			$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor );
 
+			$filterType = $this->createForm( ProyectoFilterType::class,
+				null,
+				[
+					'method' => 'GET'
+				] );
+
+			$filterType->handleRequest( $request );
+
+
+			if ( $filterType->get( 'buscar' )->isClicked() ) {
+				$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor, $filterType->getData() );
+			}else{
+				$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor );
+			}
 
 			$paginator = $this->get( 'knp_paginator' );
 
@@ -393,7 +400,10 @@ class ExpedienteController extends Controller {
 
 
 			return $this->render( 'expediente/proyectos_index.html.twig',
-				array( 'proyectos' => $proyectos ) );
+				[
+					'proyectos' => $proyectos,
+					'filter_type' => $filterType->createView()
+				] );
 
 		} else {
 			throw $this->createAccessDeniedException();

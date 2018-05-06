@@ -14,29 +14,35 @@
                         </button>
                     </div>
                 </div>
-                {#{{ form_start(filter_type) }}#}
-                {#<div class="box-body">#}
-                {#<div class="col-md-6">#}
-                {#{{ form_row(filter_type.tipoExpediente) }}#}
-                {#{{ form_row(filter_type.textoDefinitivo) }}#}
-                {#{{ form_row(filter_type.extracto) }}#}
-                {#{{ form_row(filter_type.expediente) }}#}
-                {#{{ form_row(filter_type.anio) }}#}
-                {#</div>#}
-                {#<div class="col-md-6">#}
-                {#{{ form_row(filter_type.letra) }}#}
-                {#{{ form_row(filter_type.fecha) }}#}
-                {#{{ form_row(filter_type.registroMunicipal) }}#}
-                {#{{ form_row(filter_type.iniciador) }}#}
-                {#{{ form_row(filter_type.iniciadorParticular) }}#}
-                {#{{ form_row(filter_type.dependencia) }}#}
-                {#</div>#}
-                {#</div>#}
-                {#<div class="box-footer">#}
-                {#{{ form_widget(filter_type.buscar) }}#}
-                {#{{ form_widget(filter_type.limpiar) }}#}
-                {#</div>#}
-                {#{{ form_end(filter_type) }}#}
+                {{ form_start(filter_type) }}
+                <div class="box-body">
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.tipoProyecto) }}
+                        {{ form_row(filter_type.texto) }}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form_row(filter_type.expediente) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(filter_type.letra) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(filter_type.anio) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(filter_type.fecha) }}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="hidden">
+                    {{ form_end(filter_type) }}
+                </div>
             </div>
         </div>
     </div>
@@ -58,9 +64,8 @@
                         <thead>
                         <tr>
                             <th>Id</th>
+                            <th>Proyecto de</th>
                             <th>Expediente</th>
-                            <th>Año</th>
-                            <th>Letra</th>
                             <th>Fecha</th>
                             <th>Borrador</th>
                             <th>Iniciador</th>
@@ -71,13 +76,15 @@
                         {% for expediente in proyectos %}
                             <tr>
                                 <td>
-                                    <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
+                                    {{ expediente.id }}
                                 </td>
-                                <td>{{ expediente.expediente }}</td>
+                                <td>{{ expediente.tipoProyecto }}</td>
                                 <td>
-                                    {% if expediente.anio %}{{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo.anio }}{% endif %}
+                                    {% if expediente.expediente %}
+                                        {{ expediente.expediente }}-{{ expediente.letra }}-{% if expediente.anio %}{{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo.anio }}{% endif %}
+                                    {% endif %}
                                 </td>
-                                <td>{{ expediente.letra }}</td>
+
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>
                                     {% if expediente.borrador %}
@@ -101,23 +108,23 @@
                                 </td>
 
                                 <td>
-                                    <a class="btn btn-default"
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Expediente"
                                        href="{{ path('proyecto_show',{'id': expediente.id}) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     {% if expediente.borrador == true %}
-                                    <a class="btn btn-default"
-                                       href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Proyecto"
+                                           href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
                                     {% endif %}
-                                    <a class="btn btn-default"
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento Expte"
                                        href="{{ path('expediente_timeline', {id: expediente.id}) }}">
                                         <i class="fa fa-road"></i>
                                     </a>
                                     {#<a class="btn btn-default" target="_blank"#}
-                                       {#href="{{ path('expediente_imprimir_proyecto', { 'id': expediente.id }) }}">#}
-                                        {#<i class="fa fa-print"></i>#}
+                                    {#href="{{ path('expediente_imprimir_proyecto', { 'id': expediente.id }) }}">#}
+                                    {#<i class="fa fa-print"></i>#}
                                     {#</a>#}
                                 </td>
                             </tr>

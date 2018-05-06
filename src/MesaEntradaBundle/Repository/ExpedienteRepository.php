@@ -142,9 +142,10 @@ class ExpedienteRepository extends EntityRepository {
 
 	}
 
-	public function getQbProyecetosPorConcejal( $concejal ) {
+	public function getQbProyecetosPorConcejal( $concejal, $data = null ) {
 
 		$qb = $this->getQbAll();
+
 
 		$qb->join( 'e.iniciadores', 'iniciadores' )
 		   ->where( 'iniciadores.iniciador = :concejal' );
@@ -154,6 +155,40 @@ class ExpedienteRepository extends EntityRepository {
 		$qb->innerJoin( 'e.tipoExpediente', 'te' )
 		   ->andWhere( 'te.slug = :teSlug' )
 		   ->setParameter( 'teSlug', 'externo' );
+
+		if ( isset( $data['expediente'] ) ) {
+			$q = $data['expediente'];
+			$qb->andWhere( 'e.expediente = :expediente' )
+			   ->setParameter( 'expediente', $q );
+		}
+
+		if ( isset( $data['anio'] ) ) {
+			$qb->andWhere( 'e.anio = :anio' );
+			$qb->setParameter( 'anio', $data['anio'] );
+		}
+
+		if ( isset( $data['letra'] ) ) {
+			$qb->andWhere( 'UPPER(e.letra) = UPPER(:letra)' );
+			$qb->setParameter( 'letra', $data['letra'] );
+		}
+
+		if ( isset( $data['texto'] ) ) {
+			$q = $data['texto'];
+			$qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
+			   ->setParameter( 'texto', "%$q%" );
+		}
+
+		if ( isset( $data['fecha'] ) ) {
+			$qb->andWhere( 'e.fecha = :fecha' );
+			$qb->setParameter( 'fecha', $data['fecha'] );
+		}
+
+		if ( isset( $data['tipoProyecto'] ) ) {
+			$q = $data['tipoProyecto'];
+			$qb->andWhere( 'e.tipoProyecto = :tipoProyecto' )
+			   ->setParameter( 'tipoProyecto', $q );
+		}
+
 
 		return $qb;
 

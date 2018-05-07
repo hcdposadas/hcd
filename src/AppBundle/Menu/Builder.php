@@ -237,7 +237,7 @@ class Builder implements ContainerAwareInterface {
 				->addChild(
 					'Cargar Dictamen',
 					array(
-						'route' => 'dictamen_cargar',
+						'route' => 'dictamen_alta',
 					)
 				);
 		}

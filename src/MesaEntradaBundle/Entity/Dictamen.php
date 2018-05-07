@@ -78,6 +78,13 @@ class Dictamen extends BaseClass {
 	private $firmantes;
 
 	/**
+	 * @var \DateTime $fecha
+	 *
+	 * @ORM\Column(name="fecha", type="datetime", nullable=true)
+	 */
+	private $fecha;
+
+	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
 	 * of 'UploadedFile' is injected into this setter to trigger the  update. If this
 	 * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
@@ -95,7 +102,7 @@ class Dictamen extends BaseClass {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
 //			$this->updatedAt = new \DateTimeImmutable();
-			$this->fechaActualizacion = new \DateTime('now');
+			$this->fechaActualizacion = new \DateTime( 'now' );
 		}
 
 		return $this;
@@ -231,116 +238,134 @@ class Dictamen extends BaseClass {
 		return $this->expediente;
 	}
 
+	/**
+	 * Set presidenteComision
+	 *
+	 * @param \AppBundle\Entity\CargoPersona $presidenteComision
+	 *
+	 * @return Dictamen
+	 */
+	public function setPresidenteComision( \AppBundle\Entity\CargoPersona $presidenteComision = null ) {
+		$this->presidenteComision = $presidenteComision;
+
+		return $this;
+	}
+
+	/**
+	 * Get presidenteComision
+	 *
+	 * @return \AppBundle\Entity\CargoPersona
+	 */
+	public function getPresidenteComision() {
+		return $this->presidenteComision;
+	}
+
+	/**
+	 * Set tipoProyecto
+	 *
+	 * @param \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto
+	 *
+	 * @return Dictamen
+	 */
+	public function setTipoProyecto( \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto = null ) {
+		$this->tipoProyecto = $tipoProyecto;
+
+		return $this;
+	}
+
+	/**
+	 * Get tipoProyecto
+	 *
+	 * @return \MesaEntradaBundle\Entity\TipoProyecto
+	 */
+	public function getTipoProyecto() {
+		return $this->tipoProyecto;
+	}
+
+	/**
+	 * Set periodoLegislativo
+	 *
+	 * @param \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo
+	 *
+	 * @return Dictamen
+	 */
+	public function setPeriodoLegislativo( \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo = null ) {
+		$this->periodoLegislativo = $periodoLegislativo;
+
+		return $this;
+	}
+
+	/**
+	 * Get periodoLegislativo
+	 *
+	 * @return \AppBundle\Entity\PeriodoLegislativo
+	 */
+	public function getPeriodoLegislativo() {
+		return $this->periodoLegislativo;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->firmantes = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * Add firmante
+	 *
+	 * @param \MesaEntradaBundle\Entity\FirmanteDictamen $firmante
+	 *
+	 * @return Dictamen
+	 */
+	public function addFirmante( \MesaEntradaBundle\Entity\FirmanteDictamen $firmante ) {
+
+		$firmante->setDictamen( $this );
+
+		$this->firmantes->add( $firmante );
+
+		return $this;
+	}
+
+	/**
+	 * Remove firmante
+	 *
+	 * @param \MesaEntradaBundle\Entity\FirmanteDictamen $firmante
+	 */
+	public function removeFirmante( \MesaEntradaBundle\Entity\FirmanteDictamen $firmante ) {
+		$this->firmantes->removeElement( $firmante );
+	}
+
+	/**
+	 * Get firmantes
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getFirmantes() {
+		return $this->firmantes;
+	}
+
     /**
-     * Set presidenteComision
+     * Set fecha
      *
-     * @param \AppBundle\Entity\CargoPersona $presidenteComision
+     * @param \DateTime $fecha
      *
      * @return Dictamen
      */
-    public function setPresidenteComision(\AppBundle\Entity\CargoPersona $presidenteComision = null)
+    public function setFecha($fecha)
     {
-        $this->presidenteComision = $presidenteComision;
+        $this->fecha = $fecha;
 
         return $this;
     }
 
     /**
-     * Get presidenteComision
+     * Get fecha
      *
-     * @return \AppBundle\Entity\CargoPersona
+     * @return \DateTime
      */
-    public function getPresidenteComision()
+    public function getFecha()
     {
-        return $this->presidenteComision;
-    }
-
-    /**
-     * Set tipoProyecto
-     *
-     * @param \MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto
-     *
-     * @return Dictamen
-     */
-    public function setTipoProyecto(\MesaEntradaBundle\Entity\TipoProyecto $tipoProyecto = null)
-    {
-        $this->tipoProyecto = $tipoProyecto;
-
-        return $this;
-    }
-
-    /**
-     * Get tipoProyecto
-     *
-     * @return \MesaEntradaBundle\Entity\TipoProyecto
-     */
-    public function getTipoProyecto()
-    {
-        return $this->tipoProyecto;
-    }
-
-    /**
-     * Set periodoLegislativo
-     *
-     * @param \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo
-     *
-     * @return Dictamen
-     */
-    public function setPeriodoLegislativo(\AppBundle\Entity\PeriodoLegislativo $periodoLegislativo = null)
-    {
-        $this->periodoLegislativo = $periodoLegislativo;
-
-        return $this;
-    }
-
-    /**
-     * Get periodoLegislativo
-     *
-     * @return \AppBundle\Entity\PeriodoLegislativo
-     */
-    public function getPeriodoLegislativo()
-    {
-        return $this->periodoLegislativo;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->firmantes = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add firmante
-     *
-     * @param \MesaEntradaBundle\Entity\FirmanteDictamen $firmante
-     *
-     * @return Dictamen
-     */
-    public function addFirmante(\MesaEntradaBundle\Entity\FirmanteDictamen $firmante)
-    {
-        $this->firmantes[] = $firmante;
-
-        return $this;
-    }
-
-    /**
-     * Remove firmante
-     *
-     * @param \MesaEntradaBundle\Entity\FirmanteDictamen $firmante
-     */
-    public function removeFirmante(\MesaEntradaBundle\Entity\FirmanteDictamen $firmante)
-    {
-        $this->firmantes->removeElement($firmante);
-    }
-
-    /**
-     * Get firmantes
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFirmantes()
-    {
-        return $this->firmantes;
+        return $this->fecha;
     }
 }

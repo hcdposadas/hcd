@@ -31,7 +31,7 @@
         </div>
     </div>
     {% if is_granted('ROLE_LEGISLATIVO') %}
-        <div class="row">
+        <div class="row m-b-1">
             <div class="col-md-12">
                 <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
             </div>
@@ -68,13 +68,13 @@
 
                                 <td>
                                     <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"
-                                       href="#">
+                                       href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {#<a class="btn btn-default"#}
-                                    {#href="{{ path('dependencia_edit', { 'id': dependencium.id }) }}">#}
-                                    {#<i class="fa fa-edit"></i>#}
-                                    {#</a>#}
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Editar Dictamen"
+                                       href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -86,7 +86,13 @@
         </div>
     </div>
 
-
+    {% if is_granted('ROLE_LEGISLATIVO') %}
+        <div class="row m-b-1">
+            <div class="col-md-12">
+                <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
+            </div>
+        </div>
+    {% endif %}
 
     <div class="row">
         {# display navigation #}

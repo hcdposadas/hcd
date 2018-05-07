@@ -6,9 +6,11 @@ use AppBundle\Form\AltaDictamenType;
 use AppBundle\Form\CargarDictamenType;
 use AppBundle\Form\CrearDictamenType;
 use AppBundle\Form\Filter\DictamenFilterType;
+use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Dictamen;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DictamenController extends Controller {
 	public function indexAction( Request $request ) {
@@ -88,13 +90,6 @@ class DictamenController extends Controller {
 			] );
 	}
 
-//	public function cargarAction( Request $request ) {
-//
-//		return $this->render( 'dictamen/cargar.html.twig',
-//			[]
-//		);
-//	}
-
 	public function altaDictamenAnteriorAction( Request $request ) {
 
 		$dictamen = new Dictamen();
@@ -120,5 +115,117 @@ class DictamenController extends Controller {
 			[
 				'form' => $form->createView()
 			] );
+	}
+
+	public function editarDictamenAnteriorAction( Request $request, $id ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$dictamen = $em->getRepository( 'MesaEntradaBundle:Dictamen' )->find( $id );
+
+		$firmantesOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $dictamen->getFirmantes() as $firmanteDictamen ) {
+			$firmantesOriginales->add( $firmanteDictamen );
+		}
+
+		$form = $this->createForm( AltaDictamenType::class, $dictamen );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			foreach ( $firmantesOriginales as $firmanteDictamen ) {
+				if ( false === $dictamen->getFirmantes()->contains( $firmanteDictamen ) ) {
+
+					$firmanteDictamen->setDictamen( null );
+
+					$em->persist( $firmanteDictamen );
+
+					$em->remove( $firmanteDictamen );
+				}
+			}
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Dictamen modificado correctamente'
+			);
+
+			return $this->redirectToRoute( 'dictamen_editar', [ 'id' => $id ] );
+		}
+
+		return $this->render( ':dictamen:editar.html.twig',
+			[
+				'form'     => $form->createView(),
+				'dictamen' => $dictamen
+			] );
+	}
+
+	public function verDictamenAction( Request $request, $id ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$dictamen = $em->getRepository( 'MesaEntradaBundle:Dictamen' )->find( $id );
+
+
+		return $this->render( ':dictamen:ver.html.twig',
+			[
+				'dictamen' => $dictamen
+			] );
+	}
+
+	public function imprimirDictamenAction( Request $request, $id ) {
+		$title = 'Dictamen';
+
+		$em = $this->getDoctrine()->getManager();
+
+		$dictamen = $em->getRepository( 'MesaEntradaBundle:Dictamen' )->find( $id );
+
+		if ( ! $dictamen->getPeriodoLegislativo() ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'error',
+				'El dictamen no tiene periodo legislativo asignado'
+			);
+
+			return $this->redirectToRoute( 'dictamen_ver', [ 'id' => $dictamen->getId() ] );
+		}
+
+		$header = null;
+
+		$header = $this->renderView( ':default:membrete.pdf.twig',
+			[
+				"periodo" => $dictamen->getPeriodoLegislativo(),
+			] );
+
+
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( 'dictamen/dictamen.pdf.twig',
+			[
+				'dictamen' => $dictamen,
+				'title'    => $title,
+			]
+		);
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+					'page-size'      => 'Legal',
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 6,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			)
+		);
 	}
 }

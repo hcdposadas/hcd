@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ver dictamen
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+    <h1>Dictamen {{ dictamen.expediente }}</h1>
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Dictamen de {{ dictamen.tipoProyecto }}</h3>
+        </div>
+        <div class="box-body">
+
+            {{ dictamen.textoDictamen | raw }}
+
+            <h4>Firmantes</h4>
+            {% for firmante in dictamen.firmantes %}
+                {{ firmante.iniciador }}
+            {% endfor %}
+
+        </div>
+        <div class="box-footer">
+            <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
+                <i class="fa fa-edit"></i> Editar</a>
+            <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
+                <i class="fa fa-print"></i> Imprimir</a>
+        </div>
+    </div>
+
+
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+{% endblock body %}

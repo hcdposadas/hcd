@@ -25,6 +25,13 @@
     <div>
         {{ dictamen.textoDictamen | raw }}
     </div>
+    <br>
+    <div>
+        <h4>Firmantes</h4>
+        {% for firmante in dictamen.firmantes %}
+            {{ firmante.iniciador }}<br>
+        {% endfor %}
+    </div>
 </div>
 </body>
 </html>

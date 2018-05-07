@@ -14,3 +14,15 @@ dictamen_cargar:
 dictamen_alta:
     path:     /alta
     defaults: { _controller: "AppBundle:Dictamen:altaDictamenAnterior" }
+
+dictamen_editar:
+    path:     /{id}/editar
+    defaults: { _controller: "AppBundle:Dictamen:editarDictamenAnterior" }
+
+dictamen_ver:
+    path:     /{id}/ver
+    defaults: { _controller: "AppBundle:Dictamen:verDictamen" }
+
+dictamen_imprimir:
+    path:     /{id}/imprimir
+    defaults: { _controller: "AppBundle:Dictamen:imprimirDictamen" }

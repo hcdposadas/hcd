@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use MesaEntradaBundle\Form\FirmanteDictamenType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\BootstrapCollectionType;
@@ -23,11 +24,17 @@ class AltaDictamenType extends AbstractType {
 //					'placeholder'  => 'Por Expte'
 //
 //				] )
+			->add( 'fecha',
+				DateType::class,
+				array(
+					'widget' => 'single_text',
+					'html5'  => true
+				) )
 			->add( 'expediente', AltaExpedienteDictamenType::class )
 			->add( 'tipoProyecto',
 				null,
 				[
-					'label'=> 'Tipo Dictamen',
+					'label'       => 'Tipo Dictamen',
 					'required'    => true,
 					'placeholder' => 'Seleccionar',
 					'attr'        => [ 'class' => 'tipo-proyecto select2' ]
@@ -54,10 +61,9 @@ class AltaDictamenType extends AbstractType {
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,
-					'display_history' => false,
+//					'display_history' => false,
 					'label'        => 'Firmantes'
-				] )
-		;
+				] );
 	}
 
 	public function configureOptions( OptionsResolver $resolver ) {

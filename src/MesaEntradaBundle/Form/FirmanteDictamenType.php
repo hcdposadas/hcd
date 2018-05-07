@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\Select2EntityType;
+use Symfony\Component\Validator\Constraints\Valid;
 
 class FirmanteDictamenType extends AbstractType {
 	/**
@@ -32,7 +33,8 @@ class FirmanteDictamenType extends AbstractType {
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class' => 'MesaEntradaBundle\Entity\FirmanteDictamen'
+			'data_class' => 'MesaEntradaBundle\Entity\FirmanteDictamen',
+			'constraints' => new Valid()
 		) );
 	}
 

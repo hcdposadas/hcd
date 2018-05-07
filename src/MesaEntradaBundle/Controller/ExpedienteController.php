@@ -385,8 +385,9 @@ class ExpedienteController extends Controller {
 
 
 			if ( $filterType->get( 'buscar' )->isClicked() ) {
-				$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor, $filterType->getData() );
-			}else{
+				$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor,
+					$filterType->getData() );
+			} else {
 				$proyectos = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->getQbProyecetosPorConcejal( $autor );
 			}
 
@@ -401,7 +402,7 @@ class ExpedienteController extends Controller {
 
 			return $this->render( 'expediente/proyectos_index.html.twig',
 				[
-					'proyectos' => $proyectos,
+					'proyectos'   => $proyectos,
 					'filter_type' => $filterType->createView()
 				] );
 

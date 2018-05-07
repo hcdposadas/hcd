@@ -210,7 +210,7 @@ class Expediente extends BaseClass {
 	 *
 	 * @ORM\Column(name="nota", type="boolean", options={"default" = false})
 	 */
-	private $nota;
+	private $nota = false;
 
 
 	/**

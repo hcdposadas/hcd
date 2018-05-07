@@ -4,12 +4,18 @@ namespace MesaEntradaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * FirmanteDictamen
  *
  * @ORM\Table(name="firmante_dictamen")
  * @ORM\Entity()
+ * @UniqueEntity(
+ *     fields={"iniciador", "dictamen"},
+ *     errorPath="iniciador",
+ *     message="El firmante está duplicado"
+ * )
  */
 class FirmanteDictamen extends BaseClass {
 	/**

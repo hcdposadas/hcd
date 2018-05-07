@@ -205,6 +205,13 @@ class Expediente extends BaseClass {
 	 */
 	private $tipoProyecto;
 
+	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="nota", type="boolean", options={"default" = false})
+	 */
+	private $nota;
+
 
 	/**
 	 * @var string
@@ -1203,5 +1210,29 @@ class Expediente extends BaseClass {
     public function getDictamenes()
     {
         return $this->dictamenes;
+    }
+
+    /**
+     * Set nota
+     *
+     * @param boolean $nota
+     *
+     * @return Expediente
+     */
+    public function setNota($nota)
+    {
+        $this->nota = $nota;
+
+        return $this;
+    }
+
+    /**
+     * Get nota
+     *
+     * @return boolean
+     */
+    public function getNota()
+    {
+        return $this->nota;
     }
 }

@@ -682,7 +682,7 @@ class ExpedienteController extends Controller {
 					'margin-top'     => "5cm",
 					'margin-bottom'  => "2cm",
 					'header-html'    => $header,
-					'header-spacing' => 6,
+					'header-spacing' => 4,
 					'footer-spacing' => 5,
 					'footer-html'    => $footer,
 //                    'margin-bottom' => "1cm"

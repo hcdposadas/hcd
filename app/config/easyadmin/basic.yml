@@ -20,6 +20,7 @@ easy_admin:
             - Documento
             - Parametro
             - Expediente
+            - Dictamen
             - { label: 'Tipo Expediente', entity: TipoExpediente }
             - { label: 'Tipo Proyecto', entity: TipoProyecto }
             - { label: 'Tipo Mayoría', entity: TipoMayoria }

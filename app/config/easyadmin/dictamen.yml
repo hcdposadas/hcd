@@ -1,0 +1,7 @@
+easy_admin:
+    entities:
+        Dictamen:
+            class: MesaEntradaBundle\Entity\Dictamen
+            form:
+                fields:
+                    - { property: 'expediente' }

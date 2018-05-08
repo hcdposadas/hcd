@@ -33,6 +33,9 @@
     .cuerpo p {
         font-size: 11pt;
     }
+    .proyecto{
+        page-break-inside: avoid;
+    }
 </style>
 <body>
 {% if sesion.asuntosEntrados %}
@@ -44,6 +47,7 @@
             <div class="cuerpo">
 
                 {% for proyecto in lista %}
+                    <div class="proyecto">
                     <p>
                     <dl>
                         <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
@@ -52,7 +56,7 @@
                     </p>
                     <p style="text-align: center">
                         {% if proyecto.expediente.giros.count > 1 %}
-                            A la Comisiones de
+                            A las Comisiones de
                         {% else %}
                             A la Comisión de
                         {% endif %}
@@ -78,6 +82,7 @@
                         {% endif %}
 
                     </p>
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}

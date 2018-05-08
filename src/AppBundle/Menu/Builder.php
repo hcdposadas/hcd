@@ -235,9 +235,16 @@ class Builder implements ContainerAwareInterface {
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 			$menu[ $keyDictamenes ]
 				->addChild(
-					'Cargar Dictamen',
+					'Crear Dictamen',
 					array(
 						'route' => 'dictamen_alta',
+					)
+				);
+			$menu[ $keyDictamenes ]
+				->addChild(
+					'Crear Dictamen a Expte Existente',
+					array(
+						'route' => 'dictamen_asignar_a_expte',
 					)
 				);
 		}

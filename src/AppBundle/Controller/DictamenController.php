@@ -3,11 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Form\AltaDictamenType;
+use AppBundle\Form\AsignarDictamenAExpteType;
 use AppBundle\Form\CargarDictamenType;
 use AppBundle\Form\CrearDictamenType;
 use AppBundle\Form\Filter\DictamenFilterType;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Dictamen;
+use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -101,6 +103,10 @@ class DictamenController extends Controller {
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$em = $this->getDoctrine()->getManager();
 
+			$dictamen->getExpediente()->setBorrador( false );
+			$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBySlug( 'externo' );
+			$dictamen->getExpediente()->setTipoExpediente( $tipoExpediente );
+
 			$em->persist( $dictamen );
 			$em->flush();
 			$this->get( 'session' )->getFlashBag()->add(
@@ -121,13 +127,27 @@ class DictamenController extends Controller {
 
 		$em = $this->getDoctrine()->getManager();
 
-		$dictamen = $em->getRepository( 'MesaEntradaBundle:Dictamen' )->find( $id );
+		$dictamen   = $em->getRepository( 'MesaEntradaBundle:Dictamen' )->find( $id );
+		$expediente = $dictamen->getExpediente();
 
 		$firmantesOriginales = new ArrayCollection();
 
 		// Create an ArrayCollection of the current Tag objects in the database
 		foreach ( $dictamen->getFirmantes() as $firmanteDictamen ) {
 			$firmantesOriginales->add( $firmanteDictamen );
+		}
+
+		// Log
+
+		$campos = [ 'extractoDictamen' ];
+
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $expediente->{$getter}(),
+				'getter' => $getter,
+			];
 		}
 
 		$form = $this->createForm( AltaDictamenType::class, $dictamen );
@@ -146,6 +166,21 @@ class DictamenController extends Controller {
 					$em->remove( $firmanteDictamen );
 				}
 			}
+
+			// Log
+			$log = new LogExpediente();
+			$log->setExpediente( $expediente );
+			foreach ( $valoresOriginales as $nombre => $campo ) {
+				if ( $campo['valor'] != $expediente->{$campo['getter']}() ) {
+					$log->agregarCambio( $nombre, $campo['valor'], $expediente->{$campo['getter']}() );
+				}
+			}
+
+			$em = $this->getDoctrine()->getManager();
+			if ( count( $log->getCambios() ) > 0 ) {
+				$em->persist( $log );
+			}
+
 			$em->flush();
 			$this->get( 'session' )->getFlashBag()->add(
 				'success',
@@ -227,5 +262,34 @@ class DictamenController extends Controller {
 				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
 			)
 		);
+	}
+
+	public function asignarAExpteAction( Request $request ) {
+		$dictamen = new Dictamen();
+
+		$form = $this->createForm( AsignarDictamenAExpteType::class, $dictamen );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+
+			$expediente = $form->get( "expediente" )->getData();
+			$dictamen->setExpediente( $expediente );
+
+			$em->persist( $dictamen );
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Dictamen creado correctamente'
+			);
+
+			return $this->redirectToRoute( 'dictamen_index' );
+		}
+
+		return $this->render( 'dictamen/asignar_a_expte.html.twig',
+			[
+				'form' => $form->createView()
+			] );
 	}
 }

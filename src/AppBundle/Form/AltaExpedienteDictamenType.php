@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,7 +35,18 @@ class AltaExpedienteDictamenType extends AbstractType {
 				null,
 				[
 					'attr' => [ 'class' => 'select2' ]
-				] );
+				] )
+			->add( 'extractoDictamen',
+				CKEditorType::class,
+				[
+					'required' => true,
+					'config'   => array(
+						'uiColor' => '#ffffff',
+//						'height'  => '600px'
+					),
+					'attr'     => [ 'class' => 'texto_por_defecto' ]
+				] )
+		;
 
 	}
 

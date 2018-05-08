@@ -12,3 +12,4 @@ easy_admin:
                     - { property: 'iniciadores' , type: 'collection' , type_options: { by_reference: false, entry_type: MesaEntradaBundle\Form\AdminIniciadorExpedienteType } }
                     - { property: 'anexos' , type: 'collection' , type_options: { by_reference: false, entry_type: MesaEntradaBundle\Form\AnexoExpedienteType } }
 #                    - { property: 'expedienteExternoFile', type: 'vich_file' }
+                    - { property: 'borrador' }

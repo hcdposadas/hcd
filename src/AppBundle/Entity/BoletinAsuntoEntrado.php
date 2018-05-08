@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UtilBundle\Entity\Base\BaseClass;
 
@@ -209,9 +210,11 @@ class BoletinAsuntoEntrado extends BaseClass
      */
     public function getProyectosDeConcejales()
     {
-        return $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
-            return $proyectoBae->getExpediente()->esProyectoDeConcejal();
-        });
+        return $this->ordenarProyectos(
+            $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
+                return $proyectoBae->getExpediente()->esProyectoDeConcejal();
+            })
+        );
     }
 
     /**
@@ -219,9 +222,11 @@ class BoletinAsuntoEntrado extends BaseClass
      */
     public function getProyectosDeDEM()
     {
-        return $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
-            return $proyectoBae->getExpediente()->esProyectoDeDEM();
-        });
+        return $this->ordenarProyectos(
+            $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
+                return $proyectoBae->getExpediente()->esProyectoDeDEM();
+            })
+        );
     }
 
     /**
@@ -229,8 +234,41 @@ class BoletinAsuntoEntrado extends BaseClass
      */
     public function getProyectosDeDefensor()
     {
-        return $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
-            return $proyectoBae->getExpediente()->esProyectoDeDefensor();
+        return $this->ordenarProyectos(
+            $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
+                return $proyectoBae->getExpediente()->esProyectoDeDefensor();
+            })
+        );
+    }
+
+    /**
+     * @param \Doctrine\Common\Collections\Collection|ProyectoBAE[] $proyectos
+     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+     */
+    private function ordenarProyectos($proyectos)
+    {
+        $iterator = $proyectos->getIterator();
+
+        $iterator->uasort(function (ProyectoBAE $a, ProyectoBAE $b) {
+            list($numeroa, $letraa, $anioa) = explode('-', $a->getExpediente()->__toString(), 3);
+            list($numerob, $letrab, $aniob) = explode('-', $b->getExpediente()->__toString(), 3);
+
+
+            if ($anioa < $aniob){
+                return -1;
+            } elseif ($anioa > $aniob) {
+                return 1;
+            } else {
+                if ($numeroa < $numerob) {
+                    return -1;
+                } elseif ($numeroa > $numerob) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
         });
+
+        return new ArrayCollection(iterator_to_array($iterator));
     }
 }

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Alta dictamen
+    Asignar dictamen a Expediente
 {% endblock title %}
 {% block body %}
     <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
-    <h1>Crear dictamen</h1>
+    <h1>Asignar dictamen a Expediente</h1>
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Dictamen</h3>
@@ -17,30 +17,7 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    {{ form_row(form.expediente.nota) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.expediente.tipoProyecto) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.expediente.expediente) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.expediente.letra) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.expediente.periodoLegislativo) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    {{ form_row(form.expediente.extractoDictamen) }}
+                    {{ form_row(form.expediente) }}
                 </div>
             </div>
 

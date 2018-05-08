@@ -26,3 +26,7 @@ dictamen_ver:
 dictamen_imprimir:
     path:     /{id}/imprimir
     defaults: { _controller: "AppBundle:Dictamen:imprimirDictamen" }
+
+dictamen_asignar_a_expte:
+    path:     /asignar-a-expte
+    defaults: { _controller: "AppBundle:Dictamen:asignarAExpte" }

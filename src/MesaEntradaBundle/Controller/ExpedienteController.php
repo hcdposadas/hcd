@@ -566,6 +566,10 @@ class ExpedienteController extends Controller {
 
 
 		$editForm = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType', $expediente );
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			$editForm->remove( 'tipoProyecto' );
+			$editForm->remove( 'fecha' );
+		}
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {

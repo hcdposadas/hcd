@@ -73,6 +73,13 @@ class Giro extends BaseClass {
 	 */
 	private $texto;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="orden", type="integer", nullable=true)
+	 */
+	private $orden;
+
     /**
      * Get id
      *
@@ -305,5 +312,29 @@ class Giro extends BaseClass {
     public function getTexto()
     {
         return $this->texto;
+    }
+
+    /**
+     * Set orden
+     *
+     * @param integer $orden
+     *
+     * @return Giro
+     */
+    public function setOrden($orden)
+    {
+        $this->orden = $orden;
+
+        return $this;
+    }
+
+    /**
+     * Get orden
+     *
+     * @return integer
+     */
+    public function getOrden()
+    {
+        return $this->orden;
     }
 }

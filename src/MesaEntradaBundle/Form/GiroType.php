@@ -28,6 +28,7 @@ class GiroType extends AbstractType {
 						'class' => 'datepicker',
 					),
 				) )
+			->add('orden')
 			->add( 'cabecera',
 				null,
 				[

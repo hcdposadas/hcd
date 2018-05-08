@@ -212,6 +212,7 @@ class OrdenDelDia extends BaseClass
     {
         return $this->getDictamenes()->filter(function (DictamenOD $dod) {
             return $dod->getExpediente()
+                && $dod->getExpediente()->getTipoProyecto()
                 && $dod->getExpediente()->getTipoProyecto()->esTipoDeclaracion();
         });
     }
@@ -223,6 +224,7 @@ class OrdenDelDia extends BaseClass
     {
         return $this->getDictamenes()->filter(function (DictamenOD $dod) {
             return $dod->getExpediente()
+                && $dod->getExpediente()->getTipoProyecto()
                 && $dod->getExpediente()->getTipoProyecto()->esTipoComunicacion();
         });
     }
@@ -234,6 +236,7 @@ class OrdenDelDia extends BaseClass
     {
         return $this->getDictamenes()->filter(function (DictamenOD $dod) {
             return $dod->getExpediente()
+                && $dod->getExpediente()->getTipoProyecto()
                 && $dod->getExpediente()->getTipoProyecto()->esTipoResolucion();
         });
     }
@@ -245,6 +248,7 @@ class OrdenDelDia extends BaseClass
     {
         return $this->getDictamenes()->filter(function (DictamenOD $dod) {
             return $dod->getExpediente()
+                && $dod->getExpediente()->getTipoProyecto()
                 && $dod->getExpediente()->getTipoProyecto()->esTipoOrdenanza();
         });
     }

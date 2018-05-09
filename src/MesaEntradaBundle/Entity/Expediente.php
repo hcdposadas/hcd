@@ -1156,29 +1156,6 @@ class Expediente extends BaseClass {
                 && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_DEFENSOR;
         });
     }
-    /**
-     * Set textoDictamen
-     *
-     * @param string $textoDictamen
-     *
-     * @return Expediente
-     */
-    public function setTextoDictamen($textoDictamen)
-    {
-        $this->textoDictamen = $textoDictamen;
-
-        return $this;
-    }
-
-    /**
-     * Get textoDictamen
-     *
-     * @return string
-     */
-    public function getTextoDictamen()
-    {
-        return $this->textoDictamen;
-    }
 
     /**
      * Add dictamene

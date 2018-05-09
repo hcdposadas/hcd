@@ -10,27 +10,38 @@
     <link rel="stylesheet" href="{{ asset('build/common.css') }}">
     <link rel="stylesheet" href="{{ asset('build/app.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/theme/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/theme/admin-lte/css/AdminLTE.min.css') }}">
     <style>
-        .btn-circle.btn-xl {
-            width: 120px;
-            height: 120px;
-            padding: 10px 16px;
-            font-size: 24px;
-            line-height: 1.33;
-            border-radius: 75px;
-        }
-
-        .container-body {
-            margin-top: 15rem;
-        }
 
         .btn-primary-hcd {
             background-color: #12a9d4;
+            border-color: #12a9d4;
+            color: #fff;
         }
 
         .navbar-fixed-top {
             background-color: #17a867;
             padding: 1%;
+        }
+        .container {
+            margin-top: 8rem;
+        }
+
+        dl dt {
+            float: left;
+            width: 33%;
+            overflow: hidden;
+            clear: left;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        dl dd {
+            margin-left: 35%;
+        }
+
+        dd {
+            text-align: justify;
         }
     </style>
     <script>
@@ -47,38 +58,38 @@
                 <div class="row">
                     <div class="col-md-12 text-center">
 
-                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                        <button type="button" class="btn btn-app btn-primary-hcd"
                                 id="verAe">
-                            <i class="fa fa-file" aria-hidden="true"></i><br>
+                            <i class="fa fa-file" aria-hidden="true"></i>
                             BAE
                         </button>
-                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                        <button type="button" class="btn btn-app btn-primary-hcd"
                                 id="consultarExpte">
-                            <i class="fa fa-search" aria-hidden="true"></i><br>
-                            <span style="font-size: 12px">Consultar Expte</span>
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            Consultar Expte
                         </button>
                         {% if is_granted('ROLE_SECRETARIO') %}
-                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                            <button type="button" class="btn btn-app btn-primary-hcd"
                                     id="lanzarVotacion"
                                     href="{{ path('mocion_index') }}">
-                                <i class="fa fa-hand-paper-o" aria-hidden="true"></i><br>
-                                <span style="font-size: 12px">Lanzar Votacion</span>
+                                <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
+                                Lanzar Votacion
                             </button>
                         {% endif %}
-                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                        <button type="button" class="btn btn-app btn-primary-hcd"
                                 id="verOd">
-                            <i class="fa fa-file-o" aria-hidden="true"></i><br>
+                            <i class="fa fa-file-o" aria-hidden="true"></i>
                             OD
                         </button>
-                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                        <button type="button" class="btn btn-app btn-primary-hcd"
                                 id="verCartaOrganica">
-                            <i class="fa fa-file-o" aria-hidden="true"></i><br>
-                            <span style="font-size: 12px">Carta Orgánica</span>
+                            <i class="fa fa-file-o" aria-hidden="true"></i>
+                            Carta Orgánica
                         </button>
-                        <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
+                        <button type="button" class="btn btn-app btn-primary-hcd"
                                 id="verSesiones">
-                            <i class="fa fa-file-o" aria-hidden="true"></i><br>
-                            <span style="font-size: 12px">Actas</span>
+                            <i class="fa fa-file-o" aria-hidden="true"></i>
+                            Actas
                         </button>
                         <a class="btn btn-danger btn-lg pull-right" href="{{ path('sesion_logout') }}"> Salir
                             <span class="glyphicon glyphicon-log-out"></span>
@@ -93,7 +104,7 @@
                 </div>
             </nav>
 
-            <div class="container-body">
+            <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         {% for flashMessage in app.flashes('success') %}
@@ -147,7 +158,56 @@
                         <div data-spy="scroll"
                              data-target="#navbar-example2" data-offset="0">
                             <div class="ae" style="display: none;">
-                                {{ sesion.asuntosEntrados | raw }}
+                                {% if sesion.asuntosEntrados %}
+                                    {{ sesion.asuntosEntrados | raw }}
+                                {% else %}
+                                    {% for titulo, lista in proyectos %}
+                                        {% if lista.count %}
+                                            <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                            <div class="cuerpo">
+
+                                                {% for proyecto in lista %}
+                                                    <div class="proyecto">
+                                                        <p>
+                                                        <dl>
+                                                            <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
+                                                            <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                                        </dl>
+                                                        </p>
+                                                        <p style="text-align: center">
+                                                            {% if proyecto.expediente.giros.count > 1 %}
+                                                                A las Comisiones de
+                                                            {% else %}
+                                                                A la Comisión de
+                                                            {% endif %}
+
+                                                            {% if proyecto.expediente.girosOrdenados.count <= 2 %}
+                                                                {% if proyecto.expediente.girosOrdenados.count == 1 %}
+                                                                    {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                    {% set ender = '; ' %}
+                                                                    {% if loop.index == (loop.length - 1) %}
+                                                                        {% set ender = ' y de ' %}
+                                                                    {% endif %}
+                                                                    <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
+                                                                {% endfor %}
+                                                            {% endif %}
+
+                                                        </p>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                             <div class="consultar-expedientes" style="display: none;">
                                 <consultar-expediente></consultar-expediente>
@@ -157,7 +217,25 @@
                                 {% endblock body %}
                             </div>
                             <div class="od" style="display: none;">
-                                {{ sesion.ordenDelDia | raw }}
+                                {% if sesion.ordenDelDia %}
+                                    {{ sesion.ordenDelDia | raw }}
+                                {% else %}
+                                    {% for titulo, lista in dictamenes %}
+                                        {% if lista.count %}
+                                            <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                            <div class="cuerpo">
+                                                <p>
+                                                    {% for dictamen in lista %}
+                                                <dl>
+                                                    <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                                                    <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                                </dl>
+                                                {% endfor %}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                             <div class="carta-organica" style="display: none;">
                                 <div class="embed-responsive embed-responsive-16by9">

@@ -15,7 +15,7 @@
                         </div>
                         <div class="anexos">
                             <template v-for="iAnexo in anexos">
-                                <img class="img-responsive" :src="'/uploads/expedientes/anexos/'+iAnexo.anexo">
+                                <img class="img-responsive" :src="baseUrl+'/uploads/expedientes/anexos/'+iAnexo.anexo">
                                 <span>
                                 {{ iAnexo.descripcion}}
                             </span>
@@ -125,6 +125,7 @@
                 expedientes: [],
                 buscando: false,
                 anexos: [],
+                baseUrl: window.baseUrl
             }
         },
         methods: {
@@ -151,9 +152,10 @@
             verExpte(expediente) {
                 console.log(expediente);
                 window.$('#modal-expte').modal('toggle')
-                window.$('#modal-expte .modal-header').html(expediente.texto);
+                var anio = expediente.periodoLegislativo ? expediente.periodoLegislativo.anio : expediente.anio
+                window.$('#modal-expte .modal-header').html(expediente.expediente + '-' + expediente.letra + '-' + anio);
                 this.anexos = expediente.anexos;
-                window.$('#modal-expte .modal-body').html(expediente.expediente);
+                window.$('#modal-expte .modal-body').html(expediente.texto);
             }
         },
         mounted() {

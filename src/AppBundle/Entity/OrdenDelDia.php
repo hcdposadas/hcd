@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use MesaEntradaBundle\Entity\Dictamen;
 use UtilBundle\Entity\Base\BaseClass;
 
 /**
@@ -213,9 +214,20 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                return $dod->getExpediente()
-                    && $dod->getExpediente()->getTipoProyecto()
-                    && $dod->getExpediente()->getTipoProyecto()->esTipoDeclaracion();
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoDeclaracion();
             })
         );
     }
@@ -227,9 +239,20 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                return $dod->getExpediente()
-                    && $dod->getExpediente()->getTipoProyecto()
-                    && $dod->getExpediente()->getTipoProyecto()->esTipoComunicacion();
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoComunicacion();
             })
         );
     }
@@ -241,9 +264,20 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                return $dod->getExpediente()
-                    && $dod->getExpediente()->getTipoProyecto()
-                    && $dod->getExpediente()->getTipoProyecto()->esTipoResolucion();
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoResolucion();
             })
         );
     }
@@ -255,9 +289,20 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                return $dod->getExpediente()
-                    && $dod->getExpediente()->getTipoProyecto()
-                    && $dod->getExpediente()->getTipoProyecto()->esTipoOrdenanza();
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoOrdenanza();
             })
         );
     }

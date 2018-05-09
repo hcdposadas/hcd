@@ -15,7 +15,7 @@
                         </div>
                         <div class="anexos">
                             <template v-for="iAnexo in anexos">
-                                <img class="img-responsive" :src="baseUrl+'/uploads/expedientes/anexos/'+iAnexo.anexo">
+                                <img class="img-responsive" :src="'/uploads/expedientes/anexos/'+iAnexo.anexo">
                                 <span>
                                 {{ iAnexo.descripcion}}
                             </span>

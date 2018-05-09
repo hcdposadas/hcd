@@ -2,7 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use MesaEntradaBundle\Entity\Dictamen;
 use UtilBundle\Entity\Base\BaseClass;
 
 /**
@@ -210,11 +212,24 @@ class OrdenDelDia extends BaseClass
      */
     public function getDictamenesDeDeclaracion()
     {
-        return $this->getDictamenes()->filter(function (DictamenOD $dod) {
-            return $dod->getExpediente()
-                && $dod->getExpediente()->getTipoProyecto()
-                && $dod->getExpediente()->getTipoProyecto()->esTipoDeclaracion();
-        });
+        return $this->ordenarProyectos(
+            $this->getDictamenes()->filter(function (DictamenOD $dod) {
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoDeclaracion();
+            })
+        );
     }
 
     /**
@@ -222,11 +237,24 @@ class OrdenDelDia extends BaseClass
      */
     public function getDictamenesDeComunicacion()
     {
-        return $this->getDictamenes()->filter(function (DictamenOD $dod) {
-            return $dod->getExpediente()
-                && $dod->getExpediente()->getTipoProyecto()
-                && $dod->getExpediente()->getTipoProyecto()->esTipoComunicacion();
-        });
+        return $this->ordenarProyectos(
+            $this->getDictamenes()->filter(function (DictamenOD $dod) {
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoComunicacion();
+            })
+        );
     }
 
     /**
@@ -234,11 +262,24 @@ class OrdenDelDia extends BaseClass
      */
     public function getDictamenesDeResolucion()
     {
-        return $this->getDictamenes()->filter(function (DictamenOD $dod) {
-            return $dod->getExpediente()
-                && $dod->getExpediente()->getTipoProyecto()
-                && $dod->getExpediente()->getTipoProyecto()->esTipoResolucion();
-        });
+        return $this->ordenarProyectos(
+            $this->getDictamenes()->filter(function (DictamenOD $dod) {
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoResolucion();
+            })
+        );
     }
 
     /**
@@ -246,10 +287,54 @@ class OrdenDelDia extends BaseClass
      */
     public function getDictamenesDeOrdenanza()
     {
-        return $this->getDictamenes()->filter(function (DictamenOD $dod) {
-            return $dod->getExpediente()
-                && $dod->getExpediente()->getTipoProyecto()
-                && $dod->getExpediente()->getTipoProyecto()->esTipoOrdenanza();
+        return $this->ordenarProyectos(
+            $this->getDictamenes()->filter(function (DictamenOD $dod) {
+                $exp = $dod->getExpediente();
+                if (!$exp) {
+                    return false;
+                }
+
+                if (!count($exp->getDictamenes())) {
+                    return false;
+                }
+
+                /** @var Dictamen $dictamen */
+                $dictamen = $exp->getDictamenes()->last();
+
+                return $dictamen->getTipoProyecto()
+                    && $dictamen->getTipoProyecto()->esTipoOrdenanza();
+            })
+        );
+    }
+
+    /**
+     * @param \Doctrine\Common\Collections\Collection|DictamenOD[] $proyectos
+     * @return \Doctrine\Common\Collections\Collection|DictamenOD[]
+     */
+    private function ordenarProyectos($proyectos)
+    {
+        $iterator = $proyectos->getIterator();
+
+        $iterator->uasort(function (DictamenOD $a, DictamenOD $b) {
+            list($numeroa, $letraa, $anioa) = explode('-', $a->getExpediente()->__toString(), 3);
+            list($numerob, $letrab, $aniob) = explode('-', $b->getExpediente()->__toString(), 3);
+
+
+            if ($anioa < $aniob){
+                return -1;
+            } elseif ($anioa > $aniob) {
+                return 1;
+            } else {
+                if ($numeroa < $numerob) {
+                    return -1;
+                } elseif ($numeroa > $numerob) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
         });
+
+        return new ArrayCollection(iterator_to_array($iterator));
     }
 }

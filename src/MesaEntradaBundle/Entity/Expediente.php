@@ -798,8 +798,15 @@ class Expediente extends BaseClass {
 	public function getGirosOrdenados()
     {
         $iterator = $this->getGiros()->getIterator();
+
         $iterator->uasort(function (Giro $a, Giro $b) {
-            return ($a->getOrden() < $b->getOrden()) ? -1 : 1;
+            if ($a->getCabecera()) {
+                return -1;
+            } elseif ($b->getCabecera()) {
+                return 1;
+            } else {
+                return ($a->getOrden() < $b->getOrden()) ? -1 : 1;
+            }
         });
 
         return new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));

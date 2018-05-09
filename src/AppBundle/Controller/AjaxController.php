@@ -459,52 +459,51 @@ class AjaxController extends Controller {
 		return new JsonResponse( $json );
 	}
 
-    public function consultarSesionesAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
+	public function consultarSesionesAction( Request $request ) {
+		$em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository( 'AppBundle:Sesion' )->getQbAll()
-            ->getQuery()->getArrayResult();
+		$entities = $em->getRepository( 'AppBundle:Sesion' )->getQbAll()
+		               ->getQuery()->getArrayResult();
 
-        $json = array();
+		$json = array();
 
-        if ( ! count( $entities ) ) {
-            $json[] = array(
-                'text' => 'No se encontraron coincidencias',
-                'id'   => ''
-            );
-        } else {
+		if ( ! count( $entities ) ) {
+			$json[] = array(
+				'text' => 'No se encontraron coincidencias',
+				'id'   => ''
+			);
+		} else {
 
-            foreach ( $entities as $entity ) {
-                $json[] = array(
-                    'id'   => $entity['id'],
-                    //'label' => $entity[$property],
-                    'text' => $entity['titulo'],
-                    'acta' => $entity['acta']
-                );
-            }
-        }
+			foreach ( $entities as $entity ) {
+				$json[] = array(
+					'id'   => $entity['id'],
+					//'label' => $entity[$property],
+					'text' => $entity['titulo'],
+					'acta' => $entity['acta']
+				);
+			}
+		}
 
-        return new JsonResponse( $json );
+		return new JsonResponse( $json );
 
-    }
+	}
 
-    public function getUsuariosAction()
-    {
-        $usuarios = $this->getDoctrine()
-            ->getManager()
-            ->getRepository(Usuario::class)
-            ->findBy(['enabled' => true]);
+	public function getUsuariosAction() {
+		$usuarios = $this->getDoctrine()
+		                 ->getManager()
+		                 ->getRepository( Usuario::class )
+		                 ->findBy( [ 'enabled' => true ] );
 
-        $usuarios = array_map(function (Usuario $usuario) {
-            return [
-                'id' => $usuario->getId(),
-                'username' => $usuario->getUsername(),
-                'nombre' => $usuario->getPersona() ? $usuario->getPersona()->getNombreCompleto() : null,
-                'roles' => $usuario->getRoles(),
-            ];
-        }, $usuarios);
+		$usuarios = array_map( function ( Usuario $usuario ) {
+			return [
+				'id'       => $usuario->getId(),
+				'username' => $usuario->getUsername(),
+				'nombre'   => $usuario->getPersona() ? $usuario->getPersona()->getNombreCompleto() : null,
+				'roles'    => $usuario->getRoles(),
+			];
+		},
+			$usuarios );
 
-        return JsonResponse::create($usuarios);
-    }
+		return JsonResponse::create( $usuarios );
+	}
 }

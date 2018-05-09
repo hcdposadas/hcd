@@ -12,37 +12,40 @@
             <div data-spy="scroll" data-target=".navbar" data-offset="50">
 
                 <nav class="navbar navbar-fixed-top">
-                    <div class="row">
-                        <div class="col-md-12 text-center">
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
 
-                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
-                                    @click="verAe">
-                                <i class="fa fa-file" aria-hidden="true"></i><br>
-                                BAE
-                            </button>
-                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
-                                    @click="consultarExpte">
-                                <i class="fa fa-search" aria-hidden="true"></i><br>
-                                <span style="font-size: 12px">Consultar Expte</span>
-                            </button>
-                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
-                                    @click="verOd">
-                                <i class="fa fa-file-o" aria-hidden="true"></i><br>
-                                OD
-                            </button>
-                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
-                                    @click="verCartaOrganica">
-                                <i class="fa fa-file-o" aria-hidden="true"></i><br>
-                                <span style="font-size: 12px">Carga Orgánica</span>
-                            </button>
-                            <button type="button" class="btn btn-primary btn-primary-hcd btn-circle btn-xl"
-                                    @click="verActas">
-                                <i class="fa fa-file-text-o" aria-hidden="true"></i><br>
-                                <span style="font-size: 12px">Actas</span>
-                            </button>
-                            <a class="btn btn-danger btn-lg pull-right" :href="pathLogout"> Salir
-                                <span class="glyphicon glyphicon-log-out"></span>
-                            </a>
+                                <button type="button" class="btn btn-app btn-primary-hcd"
+                                        @click="verAe">
+                                    <i class="fa fa-file"></i>
+                                    BAE
+                                </button>
+                                <button type="button" class="btn btn-app btn-primary-hcd"
+                                        @click="consultarExpte">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                    Consultar Expte
+                                </button>
+                                <button type="button" class="btn btn-app btn-primary-hcd"
+                                        @click="verOd">
+                                    <i class="fa fa-file-o" aria-hidden="true"></i>
+                                    OD
+                                </button>
+                                <button type="button" class="btn btn-app btn-primary-hcd"
+                                        @click="verCartaOrganica">
+                                    <i class="fa fa-file-o" aria-hidden="true"></i>
+                                    Carga Orgánica
+                                </button>
+                                <button type="button" class="btn btn-app btn-primary-hcd"
+                                        @click="verActas">
+                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                    Actas
+                                </button>
+
+                                <a class="btn btn-danger btn-lg pull-right" :href="pathLogout"> Salir
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </nav>
@@ -60,10 +63,13 @@
                     </div>
                     <div class="row m-t-5">
                         <div class="col-md-12">
-                            <div v-html="texto" v-show="showTexto" data-spy="scroll"
-                                 data-target="#navbar-example2" data-offset="0">
+                            <slot name="bae" v-if="showBae"></slot>
 
-                            </div>
+                            <slot name="od" v-if="showOd"></slot>
+
+                            <!--<div v-html="texto" v-show="showTexto" data-spy="scroll"-->
+                            <!--data-target="#navbar-example2" data-offset="0">-->
+                            <!--</div>-->
 
                             <div class="embed-responsive embed-responsive-16by9" v-show="showCartaOrganica">
                                 <embed class="embed-responsive-item"
@@ -97,6 +103,8 @@
                 ae: null,
                 od: null,
                 showTexto: false,
+                showBae: false,
+                showOd: false,
                 showConsultarExpte: false,
                 showCartaOrganica: false,
                 showActas: false,
@@ -109,14 +117,18 @@
             verAe() {
                 this.showConsultarExpte = false
                 this.showCartaOrganica = false
-                this.showTexto = true
+                this.showTexto = false
+                this.showBae = true
+                this.showOd = false
                 this.texto = this.ae;
                 this.showActas = false
             },
             verOd() {
                 this.showConsultarExpte = false
                 this.showCartaOrganica = false
-                this.showTexto = true
+                this.showTexto = false
+                this.showBae = false
+                this.showOd = true
                 this.texto = this.od;
                 this.showActas = false
             },
@@ -124,18 +136,24 @@
                 this.showCartaOrganica = true
                 this.showConsultarExpte = false
                 this.showTexto = false
+                this.showBae = false
+                this.showOd = false
                 this.showActas = false
             },
             consultarExpte() {
                 this.showConsultarExpte = true
                 this.showCartaOrganica = false
                 this.showTexto = false
+                this.showBae = false
+                this.showOd = false
                 this.showActas = false
             },
-            verActas(){
+            verActas() {
                 this.showConsultarExpte = false
                 this.showCartaOrganica = false
                 this.showTexto = false
+                this.showBae = false
+                this.showOd = false
                 this.showActas = true
             }
         },
@@ -147,8 +165,8 @@
 
                 let data = response.data;
 
-                this.od = data.s_ordenDelDia;
-                this.ae = data.s_asuntosEntrados;
+                // this.od = data.s_ordenDelDia;
+                // this.ae = data.s_asuntosEntrados;
                 this.titulo = data.s_titulo;
                 this.fecha = data.s_fecha;
 

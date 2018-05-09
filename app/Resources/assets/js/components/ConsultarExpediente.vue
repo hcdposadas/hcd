@@ -1,6 +1,33 @@
 <template>
     <div class="row">
 
+        <div id="modal-expte" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+
+             aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Expte
+                    </div>
+                    <div class="modal-body">
+                        <div class="cuerpo">
+
+                        </div>
+                        <div class="anexos">
+                            <template v-for="iAnexo in anexos">
+                                <img class="img-responsive" :src="baseUrl+'/uploads/expedientes/anexos/'+iAnexo.anexo">
+                                <span>
+                                {{ iAnexo.descripcion}}
+                            </span>
+                            </template>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
@@ -65,13 +92,14 @@
                         </tr>
                         <tr v-for="expediente in expedientes">
                             <td>
-                                {{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.anio }}
+                                {{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.periodoLegislativo ?
+                                expediente.periodoLegislativo.anio : expediente.anio }}
                             </td>
                             <td>
                                 {{ expediente.extracto }}
                             </td>
                             <td>
-                                <a href="#">
+                                <a href="#" @click="verExpte(expediente)">
                                     <i class="fa fa-file"></i>
                                 </a>
                             </td>
@@ -95,7 +123,8 @@
                 tema: null,
                 contenido: null,
                 expedientes: [],
-                buscando: false
+                buscando: false,
+                anexos: [],
             }
         },
         methods: {
@@ -118,6 +147,13 @@
                     this.expedientes = response.data;
                     this.buscando = false;
                 })
+            },
+            verExpte(expediente) {
+                console.log(expediente);
+                window.$('#modal-expte').modal('toggle')
+                window.$('#modal-expte .modal-header').html(expediente.texto);
+                this.anexos = expediente.anexos;
+                window.$('#modal-expte .modal-body').html(expediente.expediente);
             }
         },
         mounted() {

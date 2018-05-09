@@ -30,10 +30,32 @@ class SesionController extends Controller {
 		$cartaOrganica  = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
 		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+
+			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+
+			$bae = $sesion->getBae()->first();
+			$od  = $sesion->getOd()->first();
+
+			$proyectos = [
+				'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+				'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+				'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+			];
+
+			$dictamenes = [
+				'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+				'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+				'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+				'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+			];
+
 			return $this->render( 'sesion/index.html.twig',
 				array(
 					'concejal'      => $personaUsuario,
 					'cartaOrganica' => $cartaOrganica,
+					'sesion'        => $sesion,
+					'proyectos'     => $proyectos,
+					'dictamenes'    => $dictamenes,
 				) );
 		}
 
@@ -44,11 +66,30 @@ class SesionController extends Controller {
 		) {
 			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
+			$bae = $sesion->getBae()->first();
+			$od  = $sesion->getOd()->first();
+
+			$proyectos = [
+				'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+				'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+				'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+			];
+
+			$dictamenes = [
+				'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+				'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+				'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+				'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+			];
+
+
 			return $this->render( 'sesion/autoridades.html.twig',
 				array(
 					'sesion'        => $sesion,
 					'concejal'      => $personaUsuario,
 					'cartaOrganica' => $cartaOrganica,
+					'proyectos'     => $proyectos,
+					'dictamenes'    => $dictamenes,
 				) );
 		}
 
@@ -299,9 +340,10 @@ class SesionController extends Controller {
 
 		$mailer = $this->get( 'mailer' );
 
-		$em                    = $this->getDoctrine()->getManager();
-		$parametroMail         = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-concejales' );
-		$parametroMailDefensor = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-defensor' );
+		$em                      = $this->getDoctrine()->getManager();
+		$parametroMail           = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-concejales' );
+		$parametroMailDefensor   = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-defensor' );
+		$parametroMailSecretario = $em->getRepository( 'AppBundle:Parametro' )->findOneBySlug( 'mail-secretaria' );
 
 		if ( $parametroMail && $parametroMailDefensor ) {
 			$asunto = 'HCD Posadas - Plan de Labor ' . $sesion->getTitulo();
@@ -312,6 +354,7 @@ class SesionController extends Controller {
 				->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
 				->setTo( $parametroMail->getValor() )
 				->addTo( $parametroMailDefensor->getValor() )
+				->addTo( $parametroMailSecretario->getValor() )
 				->setBody(
 					$this->renderView(
 						'emails/plan_de_labor.html.twig',
@@ -373,17 +416,18 @@ class SesionController extends Controller {
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$proyectos = [
-            'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
-            'PROYECTOS DE CONCEJALES' => $bae->getProyectosDeConcejales(),
-            'PROYECTOS DEL DEFENSOR DEL PUEBLO' => $bae->getProyectosDeDefensor(),
-        ];
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+		];
 
-        $html = $this->renderView(':sesiones:boletin_asuntos_entrados.pdf.twig', [
-            'bae' => $bae,
-            'title' => $title . ' - ' . $sesion->getTitulo(),
-            'proyectos' => $proyectos,
-            'sesion' => $sesion,
-        ]);
+		$html = $this->renderView( ':sesiones:boletin_asuntos_entrados.pdf.twig',
+			[
+				'bae'       => $bae,
+				'title'     => $title . ' - ' . $sesion->getTitulo(),
+				'proyectos' => $proyectos,
+				'sesion'    => $sesion,
+			] );
 
 //        return new Response($html);
 
@@ -457,18 +501,19 @@ class SesionController extends Controller {
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$dictamenes = [
-            'DICTÁMENES DE DECLARACIÓN' => $od->getDictamenesDeDeclaracion(),
-            'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
-            'DICTÁMENES DE RESOLUCIÓN' => $od->getDictamenesDeResolucion(),
-            'DICTÁMENES DE ORDENANZA' => $od->getDictamenesDeOrdenanza(),
-        ];
+			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+		];
 
-        $html = $this->renderView(':sesiones:orden_del_dia.pdf.twig', [
-            'od' => $od,
-            'title' => $title . ' - ' . $sesion->getTitulo(),
-            'dictamenes' => $dictamenes,
-            "sesion"    => $sesion,
-        ]);
+		$html = $this->renderView( ':sesiones:orden_del_dia.pdf.twig',
+			[
+				'od'         => $od,
+				'title'      => $title . ' - ' . $sesion->getTitulo(),
+				'dictamenes' => $dictamenes,
+				"sesion"     => $sesion,
+			] );
 
 //        return new Response($html);
 

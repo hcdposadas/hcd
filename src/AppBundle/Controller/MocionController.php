@@ -102,12 +102,30 @@ class MocionController extends Controller {
 
 		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
+		$bae = $sesion->getBae()->first();
+		$od  = $sesion->getOd()->first();
+
+		$proyectos = [
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+		];
+
+		$dictamenes = [
+			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+		];
+
 		return $this->render( 'mocion/new.html.twig',
 			array(
 				'mocion'        => $mocion,
 				'sesion'        => $sesion,
 				'cartaOrganica' => $cartaOrganica,
 				'form'          => $form->createView(),
+				'proyectos'     => $proyectos,
+				'dictamenes'    => $dictamenes,
 			) );
 	}
 
@@ -118,6 +136,21 @@ class MocionController extends Controller {
 	public function showAction( Request $request, Mocion $mocion ) {
 		$deleteForm    = $this->createDeleteForm( $mocion );
 		$sesion        = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		$bae = $sesion->getBae()->first();
+		$od  = $sesion->getOd()->first();
+
+		$proyectos = [
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+		];
+
+		$dictamenes = [
+			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+		];
 		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
 		return $this->render( 'mocion/show.html.twig',
@@ -129,6 +162,8 @@ class MocionController extends Controller {
 				'votar'         => false,
 				'lanzar'        => false,
 				'delete_form'   => $deleteForm->createView(),
+				'proyectos'     => $proyectos,
+				'dictamenes'    => $dictamenes,
 			) );
 	}
 
@@ -189,6 +224,21 @@ class MocionController extends Controller {
 		$editForm      = $this->createForm( 'AppBundle\Form\MocionType', $mocion );
 		$editForm->handleRequest( $request );
 		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		$bae = $sesion->getBae()->first();
+		$od  = $sesion->getOd()->first();
+
+		$proyectos = [
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+		];
+
+		$dictamenes = [
+			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+		];
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 			$this->getDoctrine()->getManager()->flush();
@@ -203,6 +253,8 @@ class MocionController extends Controller {
 				'cartaOrganica' => $cartaOrganica,
 				'edit_form'     => $editForm->createView(),
 				'delete_form'   => $deleteForm->createView(),
+				'proyectos'     => $proyectos,
+				'dictamenes'    => $dictamenes,
 			) );
 	}
 

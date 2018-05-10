@@ -27,6 +27,22 @@ class MocionController extends Controller {
 
 		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
+		$bae = $sesion->getBae()->first();
+		$od  = $sesion->getOd()->first();
+
+		$proyectos = [
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+		];
+
+		$dictamenes = [
+			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+		];
+
 		$mocions = $em->getRepository( 'AppBundle:Mocion' )->findByUltimaSesion( $sesion );
 
 		$cartaOrganica = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
@@ -36,6 +52,8 @@ class MocionController extends Controller {
 				'mocions'       => $mocions,
 				'sesion'        => $sesion,
 				'cartaOrganica' => $cartaOrganica,
+				'proyectos'     => $proyectos,
+				'dictamenes'    => $dictamenes,
 			) );
 	}
 

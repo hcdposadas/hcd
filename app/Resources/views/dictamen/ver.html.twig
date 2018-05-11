@@ -14,6 +14,19 @@
 
             {{ dictamen.textoDictamen | raw }}
 
+            {% if dictamen.anexos.count > 0 %}
+                <p class="break">
+                <div class="text-center">
+                    <h2 class="text-center">Anexos</h2>
+                    {% for anexo in dictamen.anexos %}
+                        <img class="img-responsive"
+                             src="{{ absolute_url( asset('uploads/dictamenes/anexos/') ~ anexo.anexo ) }}">
+                        {{ anexo.descripcion }}
+                    {% endfor %}
+                </div>
+                </p>
+            {% endif %}
+
             <h4>Firmantes</h4>
             {% for firmante in dictamen.firmantes %}
                 {{ firmante.iniciador }}

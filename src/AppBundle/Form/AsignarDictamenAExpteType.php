@@ -54,6 +54,15 @@ class AsignarDictamenAExpteType extends AbstractType {
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
+			->add( 'anexos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => AnexoDictamenType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Anexos'
+				] )
 			->add( 'firmantes',
 				BootstrapCollectionType::class,
 				[

@@ -27,10 +27,22 @@
     </div>
     <br>
     <div>
+        {% if dictamen.anexos.count > 0 %}
+            <p class="break">
+            <h2 class="text-center">Anexos</h2>
+            {% for anexo in dictamen.anexos %}
+                <img style="max-width: 100%; height: auto; max-height: 24cm;"
+                     src="{{ absolute_url( asset('uploads/dictamenes/anexos/') ~ anexo.anexo ) }}">
+                {{ anexo.descripcion }}
+            {% endfor %}
+            </p>
+        {% endif %}
+
         <h4>Firmantes</h4>
         {% for firmante in dictamen.firmantes %}
             {{ firmante.iniciador }}<br>
         {% endfor %}
+
     </div>
 </div>
 </body>

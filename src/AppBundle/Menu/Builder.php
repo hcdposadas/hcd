@@ -232,7 +232,9 @@ class Builder implements ContainerAwareInterface {
 			}
 		}
 
-		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) &&
+		     ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' )
+		) {
 			$menu[ $keyDictamenes ]
 				->addChild(
 					'Crear Dictamen',
@@ -265,7 +267,8 @@ class Builder implements ContainerAwareInterface {
 			     ->setExtra( 'icon', 'fa fa-file-text-o' )
 			     ->setAttribute( 'class', 'treeview' );
 
-			if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) &&
+			     ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' )) {
 				$menu[ $keyPersonal ]
 					->addChild(
 						'Conformar Plan de Labor',

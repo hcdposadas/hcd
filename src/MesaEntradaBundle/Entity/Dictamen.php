@@ -85,6 +85,14 @@ class Dictamen extends BaseClass {
 	private $fecha;
 
 	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\AnexoDictamen", mappedBy="dictamen", cascade={"persist", "remove"})
+	 *
+	 */
+	private $anexos;
+
+	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
 	 * of 'UploadedFile' is injected into this setter to trigger the  update. If this
 	 * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
@@ -309,6 +317,7 @@ class Dictamen extends BaseClass {
 	 */
 	public function __construct() {
 		$this->firmantes = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->anexos    = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -345,27 +354,58 @@ class Dictamen extends BaseClass {
 		return $this->firmantes;
 	}
 
-    /**
-     * Set fecha
-     *
-     * @param \DateTime $fecha
-     *
-     * @return Dictamen
-     */
-    public function setFecha($fecha)
-    {
-        $this->fecha = $fecha;
+	/**
+	 * Set fecha
+	 *
+	 * @param \DateTime $fecha
+	 *
+	 * @return Dictamen
+	 */
+	public function setFecha( $fecha ) {
+		$this->fecha = $fecha;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get fecha
-     *
-     * @return \DateTime
-     */
-    public function getFecha()
-    {
-        return $this->fecha;
-    }
+	/**
+	 * Get fecha
+	 *
+	 * @return \DateTime
+	 */
+	public function getFecha() {
+		return $this->fecha;
+	}
+
+	/**
+	 * Add anexo
+	 *
+	 * @param \MesaEntradaBundle\Entity\AnexoDictamen $anexo
+	 *
+	 * @return Dictamen
+	 */
+	public function addAnexo( \MesaEntradaBundle\Entity\AnexoDictamen $anexo ) {
+		$anexo->setDictamen( $this );
+
+		$this->anexos->add( $anexo );
+
+		return $this;
+	}
+
+	/**
+	 * Remove anexo
+	 *
+	 * @param \MesaEntradaBundle\Entity\AnexoDictamen $anexo
+	 */
+	public function removeAnexo( \MesaEntradaBundle\Entity\AnexoDictamen $anexo ) {
+		$this->anexos->removeElement( $anexo );
+	}
+
+	/**
+	 * Get anexos
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getAnexos() {
+		return $this->anexos;
+	}
 }

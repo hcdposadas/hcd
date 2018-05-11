@@ -16,6 +16,7 @@ parameters:
     app.path.expedientes_internos: '%app_url%/uploads/expedientes/internos'
     app.path.expedientes_externos: '%app_url%/uploads/expedientes/externos'
     app.path.expedientes_anexos: '%app_url%/uploads/expedientes/anexos'
+    app.path.dictamenes_anexos: '%app_url%/uploads/dictamenes/anexos'
     app.path.dictamenes: '%app_url%/uploads/dictamenes'
     app.path.sanciones: '%app_url%/uploads/sanciones'
     app.path.documentos: '%app_url%/uploads/documentos'
@@ -113,6 +114,10 @@ vich_uploader:
         expedientes_anexos:
             uri_prefix: "%app.path.expedientes_anexos%"
             upload_destination: "%kernel.root_dir%/../web/uploads/expedientes/anexos"
+            namer: "vich_uploader.namer_uniqid"
+        dictamenes_anexos:
+            uri_prefix: "%app.path.dictamenes_anexos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/dictamenes/anexos"
             namer: "vich_uploader.namer_uniqid"
 
 fos_user:

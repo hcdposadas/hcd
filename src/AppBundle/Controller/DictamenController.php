@@ -231,6 +231,7 @@ class DictamenController extends Controller {
 		$header = $this->renderView( ':default:membrete.pdf.twig',
 			[
 				"periodo" => $dictamen->getPeriodoLegislativo(),
+                'dictamen' => $dictamen,
 			] );
 
 

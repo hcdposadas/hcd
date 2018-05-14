@@ -22,6 +22,16 @@ class NuevoGiroExpedienteComisionType extends AbstractType {
 					'allow_delete'    => true,
 					'by_reference'    => false,
 					'display_history' => false
+				] )
+			->add( 'giroAdministrativos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'      => GiroDEMType::class,
+					'allow_add'       => true,
+					'allow_delete'    => true,
+					'by_reference'    => false,
+					'display_history' => false,
+					'label'           => 'Giro al DEM'
 				] );
 	}
 

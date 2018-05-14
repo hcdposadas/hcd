@@ -28,6 +28,7 @@ class BootstrapCollectionType extends AbstractType {
 			array(
 				'max_items_add'   => $options['max_items_add'],
 				'display_history' => $options['display_history'],
+				'extra_actions'   => $options['extra_actions'],
 				'prototype_name'  => $options['prototype_name']
 			) );
 	}
@@ -40,7 +41,8 @@ class BootstrapCollectionType extends AbstractType {
 
 		$resolver->setDefaults( array(
 			'max_items_add'   => 99999,
-			'display_history' => true
+			'display_history' => true,
+			'extra_actions'   => []
 		) );
 	}
 

@@ -11,6 +11,22 @@
         </div>
         <div class="box-body">
 
+            {% if expediente.giros.count > 0 %}
+                <h3>Giros a Comisiones</h3>
+                {% for giro in expediente.giros %}
+                    {{ giro.fechaGiro | date ('d/m/Y') }} - {{ giro.comisionDestino }}<br>
+                {% endfor %}
+            {% endif %}
+
+            {% if expediente.giroAdministrativos.count > 0 %}
+                <h3>Giros Administrativos</h3>
+                {% for giroAdministrativo in expediente.giroAdministrativos %}
+                    {{ giroAdministrativo.fechaGiro | date ('d/m/Y') }} - {{ giroAdministrativo.areaDestino }}<br>
+                {% endfor %}
+            {% endif %}
+
+            <div class="m-b-5"></div>
+
             {{ form_start(form) }}
 
             {{ form_widget(form) }}

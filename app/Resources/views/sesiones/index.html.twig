@@ -73,6 +73,10 @@
                                        href="{{ path('sesiones_imprimir_orden_del_dia', { 'sesionId': sesion.id }) }}">
                                         <i class="fa fa-print"></i> OD
                                     </a>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('sesiones_imprimir_acta', { 'sesionId': sesion.id }) }}">
+                                        <i class="fa fa-print"></i> Acta
+                                    </a>
 
                                     {% if is_granted('ROLE_LEGISLATIVO') %}
                                         <a class="btn btn-default"

@@ -196,3 +196,38 @@ knp_paginator:
         pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig     # sliding pagination controls template
         sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
 
+#bck
+
+bm_backup_manager:
+    database:
+        production:
+            type: postgresql
+            host: '%database_host%'
+            port: '%database_port%'
+            user: '%database_user%'
+            pass: '%database_password%'
+            database: '%database_name%'
+
+    storage:
+        local:
+            type: Local
+            root: '%local_folder_backup%'
+        dropbox:
+            type: 'DropboxV2'
+            token: '%dropbox_token%'
+#            key: '%dropbox_key%'
+#            secret: '%dropbox_secret%'
+#            app: '%dropbox_app%'
+            root: '%dropbox_root%'
+        ftp:
+            type: Ftp
+            host: '%ftp_host%'
+            username: '%ftp_username%'
+            password: '%ftp_password%'
+            root: '%ftp_root%'
+            port: 21
+            passive: true
+            ssl: false
+            timeout: 30
+#
+

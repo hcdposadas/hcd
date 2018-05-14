@@ -8,3 +8,5 @@ global.$ = global.jQuery = $;
 require('bootstrap-sass');
 
 $('[data-toggle="tooltip"]').tooltip()
+
+require('block-ui');

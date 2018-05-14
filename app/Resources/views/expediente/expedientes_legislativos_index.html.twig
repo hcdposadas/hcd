@@ -17,15 +17,25 @@
                 {{ form_start(filter_type) }}
                 <div class="box-body">
                     <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form_row(filter_type.expediente) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(filter_type.letra) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(filter_type.anio) }}
+                            </div>
+                        </div>
                         {#{{ form_row(filter_type.tipoExpediente) }}#}
-                        {{ form_row(filter_type.textoDefinitivo) }}
+
                         {{ form_row(filter_type.extracto) }}
-                        {{ form_row(filter_type.expediente) }}
-                        {{ form_row(filter_type.anio) }}
+                        {{ form_row(filter_type.fecha) }}
+
                     </div>
                     <div class="col-md-6">
-                        {{ form_row(filter_type.letra) }}
-                        {{ form_row(filter_type.fecha) }}
+                        {{ form_row(filter_type.textoDefinitivo) }}
                         {{ form_row(filter_type.registroMunicipal) }}
                         {{ form_row(filter_type.iniciador) }}
                         {#{{ form_row(filter_type.iniciadorParticular) }}#}
@@ -55,8 +65,6 @@
                         <tr>
                             <th>Id</th>
                             <th>Expediente</th>
-                            {#<th>Año</th>#}
-                            {#<th>Letra</th>#}
                             <th>Fecha</th>
                             <th>Registro municipal</th>
                             <th>Iniciador</th>
@@ -69,7 +77,8 @@
                                 <td>
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>
-                                <td>{{ expediente.expediente }}-{{ expediente.letra }}-{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
+                                <td>{{ expediente.expediente }}-{{ expediente.letra }}
+                                    -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
 
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ expediente.registroMunicipal }}</td>
@@ -77,7 +86,7 @@
                                     {% if expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in expediente.iniciadores %}
                                             {% if iniciadorExpediente.iniciador %}
-                                                {{ iniciadorExpediente.iniciador.cargoPersona }} -
+                                                {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
                                             {% endif %}
                                         {% endfor %}
                                     {% elseif expediente.iniciadorParticular %}

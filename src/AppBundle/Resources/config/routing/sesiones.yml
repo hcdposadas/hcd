@@ -38,3 +38,7 @@ sesiones_show_log_cambios_acta:
     path:     /{sesion}/log-cambios-acta/{log}
     defaults: { _controller: "AppBundle:Sesion:verCambiosActa" }
     methods:  [GET]
+
+sesiones_imprimir_acta:
+    path: /{sesionId}/imprimir-acta
+    defaults: { _controller: "AppBundle:Sesion:imprimirActa" }

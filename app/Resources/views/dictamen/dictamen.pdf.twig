@@ -40,7 +40,7 @@
 
         <h4>Firmantes</h4>
         {% for firmante in dictamen.firmantes %}
-            {{ firmante.iniciador }}<br>
+            {{ firmante.iniciador | title}}<br>
         {% endfor %}
 
     </div>

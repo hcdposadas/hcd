@@ -206,6 +206,14 @@
                                         <i class="fa fa-fw fa-trash-o"></i>
                                     </a>
                                 {% endif %}
+                                {% if form.vars.extra_actions %}
+                                    {% for action in form.vars.extra_actions %}
+                                        <button type="button" {% if action.title %}data-toggle="tooltip" title="{{ action.title }}" {% endif %}
+                                                data-id="{{ child.vars.data.id }}" class="btn btn-default {{ action.class }}">
+                                            <i class="fa {{ action.icon }}"></i>
+                                        </button>
+                                    {% endfor %}
+                                {% endif %}
                             </td>
                         {% else %}
                             <td class="cell-center">

@@ -14,22 +14,128 @@
 
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab">Orden del Día</a></li>
-                    <li><a href="#tab_2" data-toggle="tab">Boletín de Asuntos Entrados</a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Boletín de Asuntos Entrados</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Orden del Día</a></li>
                     <li><a href="#tab_3" data-toggle="tab">Acta</a></li>
 
 
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
-                        {{ sesion.ordenDelDia | raw }}
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('sesiones_imprimir_boletin_asuntos_entrados', { 'sesionId': sesion.id }) }}">
+                            <i class="fa fa-print"></i> BAE
+                        </a>
+
+                        {% if sesion.asuntosEntrados %}
+                            {% if sesion.ordenDelDia %}
+                                {{ sesion.ordenDelDia | raw }}
+                            {% else %}
+                                {% for titulo, lista in dictamenes %}
+                                    {% if lista.count %}
+                                        <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                        <div class="cuerpo">
+                                            <p>
+                                                {% for dictamen in lista %}
+                                            <dl class="dl-horizontal">
+                                                <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                                                <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                            </dl>
+                                            {% endfor %}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            {% for titulo, lista in proyectos %}
+                                {% if lista.count %}
+                                    <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                    <div class="cuerpo">
+
+                                        {% for proyecto in lista %}
+                                            <div class="proyecto">
+                                                <p>
+                                                <dl class="dl-horizontal">
+                                                    <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
+                                                    <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                                </dl>
+                                                </p>
+                                                <p style="text-align: center">
+                                                    {% if proyecto.expediente.giros.count > 1 %}
+                                                        A las Comisiones de
+                                                    {% else %}
+                                                        A la Comisión de
+                                                    {% endif %}
+
+                                                    {% if proyecto.expediente.girosOrdenados.count <= 2 %}
+                                                        {% if proyecto.expediente.girosOrdenados.count == 1 %}
+                                                            {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                <strong>{{ giro.comisionDestino.abreviacion }}</strong>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% for giro in proyecto.expediente.girosOrdenados %}
+                                                            {% set ender = '; ' %}
+                                                            {% if loop.index == (loop.length - 1) %}
+                                                                {% set ender = ' y de ' %}
+                                                            {% endif %}
+                                                            <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                </p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
-                        {{ sesion.asuntosEntrados | raw }}
+
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('sesiones_imprimir_orden_del_dia', { 'sesionId': sesion.id }) }}">
+                            <i class="fa fa-print"></i> OD
+                        </a>
+                        {% if sesion.ordenDelDia %}
+                            {{ sesion.ordenDelDia | raw }}
+                        {% else %}
+                            {% for titulo, lista in dictamenes %}
+                                {% if lista.count %}
+                                    <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                    <div class="cuerpo">
+                                        <p>
+                                            {% for dictamen in lista %}
+                                        <dl class="dl-horizontal">
+                                            <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                                            <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                        </dl>
+                                        {% endfor %}
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_3">
+                        <div class="row m-b-1">
+                            <div class="col-md-3">
+                                <a class="btn btn-default" target="_blank"
+                                   href="{{ path('sesiones_imprimir_acta', { 'sesionId': sesion.id }) }}">
+                                    <i class="fa fa-print"></i> Acta
+                                </a>
+
+                            </div>
+                        </div>
                         {{ sesion.acta | raw }}
                     </div>
                     <!-- /.tab-pane -->

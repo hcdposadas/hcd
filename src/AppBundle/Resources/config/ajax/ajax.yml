@@ -42,7 +42,14 @@ get_expedientes:
     path: /get-expedientes
     defaults: { _controller: "AppBundle:Ajax:getExpedientes" }
 
-
 get_usuarios:
     path: /usuarios
     defaults: { _controller: "AppBundle:Ajax:getUsuarios" }
+
+render_extracto_temario_form:
+    path: /render-extracto-temario-form
+    defaults: { _controller: "AppBundle:Ajax:renderExtractoTemarioForm" }
+
+render_extracto_dictamen_form:
+    path: /render-extracto-dictamen-form
+    defaults: { _controller: "AppBundle:Ajax:renderExtractoDictamenForm" }

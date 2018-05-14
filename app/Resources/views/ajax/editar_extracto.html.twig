@@ -1,0 +1,19 @@
+<h3>{{ expediente.expediente }}-{{ expediente.letra }}
+    -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</h3>
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-md-12">
+        {% if form.extractoTemario is defined %}
+            {{ form_widget(form.extractoTemario) }}
+        {% endif %}
+        {% if form.extractoDictamen is defined %}
+            {{ form_widget(form.extractoDictamen) }}
+        {% endif %}
+    </div>
+</div>
+<div class="row m-t-1">
+    <div class="col-md-12">
+        <button class="btn btn-primary btn-submit-extracto"><i class="fa fa-save"></i> Guardar</button>
+    </div>
+</div>
+{{ form_end(form) }}

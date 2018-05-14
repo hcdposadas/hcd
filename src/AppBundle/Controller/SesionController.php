@@ -164,10 +164,28 @@ class SesionController extends Controller {
 			}
 		}
 
+		$bae = $sesion->getBae()->first();
+		$od  = $sesion->getOd()->first();
+
+		$proyectos = [
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+		];
+
+		$dictamenes = [
+			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+		];
+
 
 		return $this->render( 'sesiones/ver.html.twig',
 			[
-				'sesion' => $sesion
+				'sesion'     => $sesion,
+				'proyectos'  => $proyectos,
+				'dictamenes' => $dictamenes,
 			] );
 	}
 
@@ -604,6 +622,44 @@ class SesionController extends Controller {
 				'sesion' => $sesion,
 				'log'    => $log,
 			) );
+	}
+
+	public function imprimirActaAction( Request $request, $sesionId ) {
+		$em     = $this->getDoctrine()->getManager();
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+
+		$title = 'Acta';
+
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( ':sesiones:acta.pdf.twig',
+			[
+				'title'  => $title . ' - ' . $sesion->getTitulo(),
+				"sesion" => $sesion,
+			] );
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+					'page-size'      => 'Legal',
+					'margin-top'     => "2.5cm",
+					'margin-bottom'  => "2.5cm",
+					'margin-left'  => "3cm",
+					'margin-right'  => "3cm",
+//					'header-html'    => $header,
+//					'header-spacing' => 5,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
+			)
+		);
+
 	}
 
 }

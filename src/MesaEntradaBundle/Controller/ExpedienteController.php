@@ -109,13 +109,19 @@ class ExpedienteController extends Controller {
 	public function showAction( Request $request, Expediente $expediente ) {
 
 
-		$referer = $request->headers
-			->get( 'referer' );
+//		$referer = $request->headers
+//			->get( 'referer' );
+//
+//		$route = $request->getUri();
+//
+////		TODO is current route
+//		if ($referer == null || ($referer == $route)) {
+//			$referer = $this->generateUrl('expedientes_legislativos_index');
+//		}
 
 		return $this->render( 'expediente/show.html.twig',
 			array(
-				'expediente' => $expediente,
-				'referer'    => $referer
+				'expediente' => $expediente
 			) );
 	}
 

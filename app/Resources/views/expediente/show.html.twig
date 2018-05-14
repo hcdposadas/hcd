@@ -7,59 +7,71 @@
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Expediente</h3>
+                    <h3 class="box-title">Expediente {{ expediente.expediente }}-{{ expediente.letra }}-
+                        {% if expediente.periodoLegislativo %}
+                            {{ expediente.periodoLegislativo }}
+                        {% else %}
+                            {{ expediente.anio }}
+                        {% endif %}
+                    </h3>
                 </div>
                 <div class="box-body">
-                    <table>
-                        <tbody>
-                        <tr>
-                            <th>Id</th>
-                            <td>{{ expediente.id }}</td>
-                        </tr>
-                        <tr>
-                            <th>Texto definitivo</th>
-                            <td>{{ expediente.textoDefinitivo }}</td>
-                        </tr>
-                        <tr>
-                            <th>Extracto</th>
-                            <td>{{ expediente.extracto }}</td>
-                        </tr>
-                        <tr>
-                            <th>Expediente</th>
-                            <td>{{ expediente.expediente }}</td>
-                        </tr>
-                        <tr>
-                            <th>Año</th>
-                            <td>{{ expediente.anio }}</td>
-                        </tr>
-                        <tr>
-                            <th>Letra</th>
-                            <td>{{ expediente.letra }}</td>
-                        </tr>
-                        <tr>
-                            <th>Fecha</th>
-                            <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>Registro municipal</th>
-                            <td>{{ expediente.registroMunicipal }}</td>
-                        </tr>
+                    <dl class="dl-horizontal">
+                        <dt>Id</dt>
+                        <dd>{{ expediente.id }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Texto definitivo</dt>
+                        <dd>{{ expediente.textoDefinitivo }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Extracto</dt>
+                        <dd>{{ expediente.extracto }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha</dt>
+                        <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Registro municipal</dt>
+                        <dd>{{ expediente.registroMunicipal }}</dd>
+                    </dl>
 
-                        <tr>
-                            <th>Activo</th>
-                            <td>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
-                                        class="label label-danger">No</span>{% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>Fecha creacion</th>
-                            <td>{% if expediente.fechaCreacion %}{{ expediente.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>Fecha actualizacion</th>
-                            <td>{% if expediente.fechaActualizacion %}{{ expediente.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <dl class="dl-horizontal">
+                        <dt>Activo</dt>
+                        <dd>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                    class="label label-danger">No</span>{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha creación</dt>
+                        <dd>{% if expediente.fechaCreacion %}{{ expediente.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha actualización</dt>
+                        <dd>{% if expediente.fechaActualizacion %}{{ expediente.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Iniciadores</dt>
+                        <dd>
+                            {% if expediente.iniciadores.count > 0 %}
+                                {% for iniciadorExpediente in expediente.iniciadores %}
+                                    {% if iniciadorExpediente.iniciador %}
+                                        {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
+                                    {% endif %}
+                                {% endfor %}
+                            {% elseif expediente.iniciadorParticular %}
+                                {{ expediente.iniciadorParticular.nombreCompleto }}
+                            {% elseif expediente.dependencia %}
+                                {{ expediente.dependencia }}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Creado Por</dt>
+                        <dd>
+                            {{ expediente.creadoPor }}
+                        </dd>
+                    </dl>
                 </div>
                 <div class="box-footer">
                     {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}

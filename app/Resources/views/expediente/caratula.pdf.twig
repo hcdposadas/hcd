@@ -81,7 +81,13 @@
             <td class="td-text-right">LETRA:</td>
             <td class="td-text-left"><strong>{{ expediente.letra }}</strong></td>
             <td class="td-text-right">FECHA:</td>
-            <td class="td-text-left"><strong>{{ expediente.fecha | date('d/m/Y') }}</strong></td>
+            <td class="td-text-left"><strong>
+                    {% if expediente.fechaPresentacion %}
+                        {{ expediente.fechaPresentacion | date('d/m/Y') }}
+                    {% else %}
+                        {{ expediente.fecha | date('d/m/Y') }}
+                    {% endif %}
+                </strong></td>
         </tr>
         <tr>
             <td>INICIADOR:</td>

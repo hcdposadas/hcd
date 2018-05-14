@@ -7,6 +7,8 @@ use AppBundle\Entity\Persona;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
 use Endroid\QrCode\QrCode;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -505,5 +507,171 @@ class AjaxController extends Controller {
 			$usuarios );
 
 		return JsonResponse::create( $usuarios );
+	}
+
+	public function renderExtractoTemarioFormAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$id = $request->get( 'id' );
+
+		$proyectoBae = $em->getRepository( 'AppBundle:ProyectoBAE' )->find( $id );
+		$expediente  = $proyectoBae->getExpediente();
+
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extractoTemario' ];
+
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $expediente->{$getter}(),
+				'getter' => $getter,
+			];
+		}
+
+		$form = $this->createFormBuilder( $expediente,
+			[
+				'attr'   => [
+					'id'      => 'editar-extracto-temario-form',
+					'data-id' => $id,
+				],
+				'method' => 'post'
+			] )
+		             ->add( 'extractoTemario',
+			             CKEditorType::class,
+			             [
+				             'required' => true,
+				             'config'   => array(
+					             'uiColor' => '#ffffff',
+				             ),
+				             'attr'     => [ 'class' => 'texto_por_defecto' ]
+			             ] )
+		             ->getForm();
+
+		if ( $request->get( 'data' ) ) {
+
+			$originalReq = $request->getContent();
+
+			parse_str( $originalReq, $aReq );
+
+			parse_str( $aReq['data'], $formReq );
+
+			$request->request->set( 'form', $formReq['form'] );
+
+			$form->handleRequest( $request );
+
+			if ( $form->isValid() ) {
+
+				$log = new LogExpediente();
+				$log->setExpediente( $expediente );
+				foreach ( $valoresOriginales as $nombre => $campo ) {
+					if ( $campo['valor'] != $expediente->{$campo['getter']}() ) {
+						$log->agregarCambio( $nombre, $campo['valor'], $expediente->{$campo['getter']}() );
+					}
+				}
+
+				if ( count( $log->getCambios() ) > 0 ) {
+					$em->persist( $log );
+				}
+
+				$em->flush();
+
+				return new JsonResponse( array( 'message' => 'Extracto Guardado Correctamente' ), 200 );
+			}
+		}
+
+		$html = $this->renderView( ':ajax:editar_extracto.html.twig',
+			[
+				'expediente' => $expediente,
+				'form'       => $form->createView()
+			] );
+
+		return new JsonResponse(
+			[ 'form' => $html ]
+		);
+	}
+
+	public function renderExtractoDictamenFormAction( Request $request ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$id = $request->get( 'id' );
+
+		$dictamenOd = $em->getRepository( 'AppBundle:DictamenOD' )->find( $id );
+		$expediente  = $dictamenOd->getExpediente();
+
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extractoDictamen' ];
+
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $expediente->{$getter}(),
+				'getter' => $getter,
+			];
+		}
+
+		$form = $this->createFormBuilder( $expediente,
+			[
+				'attr'   => [
+					'id'      => 'editar-extracto-dictamen-form',
+					'data-id' => $id,
+				],
+				'method' => 'post'
+			] )
+		             ->add( 'extractoDictamen',
+			             CKEditorType::class,
+			             [
+				             'required' => true,
+				             'config'   => array(
+					             'uiColor' => '#ffffff',
+				             ),
+				             'attr'     => [ 'class' => 'texto_por_defecto' ]
+			             ] )
+		             ->getForm();
+
+		if ( $request->get( 'data' ) ) {
+
+			$originalReq = $request->getContent();
+
+			parse_str( $originalReq, $aReq );
+
+			parse_str( $aReq['data'], $formReq );
+
+			$request->request->set( 'form', $formReq['form'] );
+
+			$form->handleRequest( $request );
+
+			if ( $form->isValid() ) {
+
+				$log = new LogExpediente();
+				$log->setExpediente( $expediente );
+				foreach ( $valoresOriginales as $nombre => $campo ) {
+					if ( $campo['valor'] != $expediente->{$campo['getter']}() ) {
+						$log->agregarCambio( $nombre, $campo['valor'], $expediente->{$campo['getter']}() );
+					}
+				}
+
+				if ( count( $log->getCambios() ) > 0 ) {
+					$em->persist( $log );
+				}
+
+				$em->flush();
+
+				return new JsonResponse( array( 'message' => 'Extracto Guardado Correctamente' ), 200 );
+			}
+		}
+
+		$html = $this->renderView( ':ajax:editar_extracto.html.twig',
+			[
+				'expediente' => $expediente,
+				'form'       => $form->createView()
+			] );
+
+		return new JsonResponse(
+			[ 'form' => $html ]
+		);
 	}
 }

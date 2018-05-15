@@ -257,7 +257,7 @@ class DictamenController extends Controller
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html,
                 array(
                     'page-size' => 'Legal',
-                    'margin-top' => "5cm",
+                    'margin-top' => "7cm",
                     'margin-bottom' => "2cm",
                     'header-html' => $header,
                     'header-spacing' => 6,

@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cargo;
 use AppBundle\Entity\Dependencia;
 use AppBundle\Entity\Persona;
+use AppBundle\Entity\Sesion;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
 use Endroid\QrCode\QrCode;
@@ -708,5 +709,42 @@ class AjaxController extends Controller {
         });
 
         return JsonResponse::create(['concejales' => $concejales]);
+    }
+
+    /**
+     * @param Request $request
+     * @param Sesion $sesion
+     * @return JsonResponse
+     */
+    public function getSesionAction(Request $request, Sesion $sesion)
+    {
+        $bae = $sesion->getBae()->first();
+        $od  = $sesion->getOd()->first();
+
+        $proyectos = [
+            'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+            'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
+            'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+        ];
+
+        $dictamenes = [
+            'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
+            'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
+            'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
+            'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+        ];
+
+
+
+        return JsonResponse::create([
+            'sesion' => [
+                'id' => $sesion->getId(),
+                'fecha' => $sesion->getFecha()->format('Y-m-d H:i:s'),
+                'titulo' => $sesion->getTitulo(),
+                'asuntosEntrados' => $sesion->getAsuntosEntrados(),
+                'proyectos' => $proyectos,
+                'dictamenes' => $dictamenes,
+            ]
+        ]);
     }
 }

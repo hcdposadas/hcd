@@ -45,6 +45,11 @@
             </b>
         </div>
     </div>
+    {% if dictamen is defined %}
+        <div style="float: right; margin-top: 1rem">
+            <b><u>EXPTE. HCD Nº {{ dictamen.expediente }}.-</u></b>
+        </div>
+    {% endif %}
 </div>
 </body>
 </html>

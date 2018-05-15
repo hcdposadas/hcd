@@ -17,11 +17,10 @@
             {% if dictamen.anexos.count > 0 %}
                 <p class="break">
                 <div class="text-center">
-                    <h2 class="text-center">Anexos</h2>
                     {% for anexo in dictamen.anexos %}
+                        <h2 class="text-center">{{ anexo.descripcion }}</h2>
                         <img class="img-responsive"
                              src="{{ absolute_url( asset('uploads/dictamenes/anexos/') ~ anexo.anexo ) }}">
-                        {{ anexo.descripcion }}
                     {% endfor %}
                 </div>
                 </p>

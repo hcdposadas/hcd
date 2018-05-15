@@ -12,16 +12,20 @@ const pub = new Redis(6379, 'localhost')
 redis.subscribe('message', function(err, count) {})
 
 function quorum() {
-    const q = pub.hlen('presentes').then((q) => {
+    const q = pub.hgetall('presentes').then((presentes) => {
+        presentes = Object.keys(presentes).map(p => parseInt(p))
+        let q = presentes.length
+
         io.emit('message', {
             type: 'quorum',
             data: {
                 quorum: q,
                 hayQuorum: q > 7,
-                ausentes: 14 - q
+                ausentes: 14 - q,
+                presentes: presentes
             }
-        });
-        console.log('quorum', q)
+        })
+        console.log('quorum', q, presentes)
     })
 }
 

@@ -22,14 +22,14 @@ import Concejal from './components/Concejal';
 import ConsultarExpediente from './components/ConsultarExpediente';
 import ConsultarSesiones from './components/ConsultarSesiones';
 import PanelDisplay from './components/PanelDisplay';
-import Quorm from './components/Quorum';
+import QuorumButton from './components/QuorumButton';
 
 Vue.component('panel-votacion', PanelVotacion);
 Vue.component('panel-concejal', Concejal);
 Vue.component('consultar-expediente', ConsultarExpediente);
 Vue.component('consultar-sesiones', ConsultarSesiones);
 Vue.component('panel-display', PanelDisplay);
-Vue.component('quorum', Quorm);
+Vue.component('quorum-button', QuorumButton);
 
 const moment = require('moment')
 require('moment/locale/es')
@@ -46,7 +46,8 @@ window.app = new Vue({
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
-        quorum: 0
+        quorum: 0,
+        presentes: []
     },
     methods: {},
     mounted: function () {
@@ -54,6 +55,7 @@ window.app = new Vue({
             switch (message.type) {
                 case 'quorum':
                     this.quorum = message.data.quorum
+                    this.presentes = message.data.presentes
                     break;
             }
         }.bind(this))

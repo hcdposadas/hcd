@@ -72,6 +72,11 @@ get_buscar_expediente:
     path: /sesion/buscar-expediente
     defaults: { _controller: "AppBundle:Ajax:buscarExpediente" }
 
+get_concejales:
+    path: /sesion/concejales
+    defaults: { _controller: "AppBundle:Ajax:getConcejales" }
+
+
 get_sesiones:
     path: /sesion/consultar-sesiones
     defaults: { _controller: "AppBundle:Ajax:consultarSesiones" }

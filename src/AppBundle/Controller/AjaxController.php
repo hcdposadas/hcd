@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Cargo;
 use AppBundle\Entity\Dependencia;
 use AppBundle\Entity\Persona;
 use AppBundle\Form\DependenciaAjaxType;
@@ -674,4 +675,38 @@ class AjaxController extends Controller {
 			[ 'form' => $html ]
 		);
 	}
+
+    /**
+     * @return JsonResponse
+     */
+    public function getConcejalesAction()
+    {
+        $concejales = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Usuario::class)
+            ->createQueryBuilder('u')
+            ->join('u.persona', 'p')
+            ->join('p.cargoPersona', 'cp')
+            ->join('cp.cargo', 'c')
+            ->where('cp.activo = true')
+            ->andWhere('p.activo = true')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', Cargo::CARGO_CONCEJAL)
+            ->getQuery()
+            ->getResult();
+
+        $concejales = array_map(function (Usuario $usuario) {
+            $persona = $usuario->getPersona();
+            return [
+                'id' => $usuario->getId(),
+                'nombre' => ucwords(strtolower($persona->getNombreCompleto())),
+            ];
+        }, $concejales);
+
+        usort($concejales, function ($c1, $c2) {
+            return $c1['nombre'] <=> $c2['nombre'];
+        });
+
+        return JsonResponse::create(['concejales' => $concejales]);
+    }
 }

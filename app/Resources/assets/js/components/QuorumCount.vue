@@ -1,7 +1,3 @@
-<template>
-    <span>{{ quorum }}</span>
-</template>
-
 <script>
     export default {
         computed: {
@@ -11,6 +7,9 @@
         },
         mounted() {
             //
+        },
+        render(h) {
+            return h('span', this.quorum)
         }
     }
 </script>

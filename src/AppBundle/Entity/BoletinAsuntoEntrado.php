@@ -12,16 +12,15 @@ use UtilBundle\Entity\Base\BaseClass;
  * @ORM\Table(name="boletin_asuntos_entrados")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\BoletinAsuntoEntradoRepository")
  */
-class BoletinAsuntoEntrado extends BaseClass
-{
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+class BoletinAsuntoEntrado extends BaseClass {
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="id", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
+	private $id;
 
 	/**
 	 * @var Sesion $sesion
@@ -47,228 +46,213 @@ class BoletinAsuntoEntrado extends BaseClass
 	private $cerrado;
 
 
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Set cerrado
+	 *
+	 * @param boolean $cerrado
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function setCerrado( $cerrado ) {
+		$this->cerrado = $cerrado;
 
-    /**
-     * Set cerrado
-     *
-     * @param boolean $cerrado
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function setCerrado($cerrado)
-    {
-        $this->cerrado = $cerrado;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get cerrado
+	 *
+	 * @return boolean
+	 */
+	public function getCerrado() {
+		return $this->cerrado;
+	}
 
-    /**
-     * Get cerrado
-     *
-     * @return boolean
-     */
-    public function getCerrado()
-    {
-        return $this->cerrado;
-    }
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set sesion
+	 *
+	 * @param \AppBundle\Entity\Sesion $sesion
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function setSesion( \AppBundle\Entity\Sesion $sesion = null ) {
+		$this->sesion = $sesion;
 
-    /**
-     * Set sesion
-     *
-     * @param \AppBundle\Entity\Sesion $sesion
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function setSesion(\AppBundle\Entity\Sesion $sesion = null)
-    {
-        $this->sesion = $sesion;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get sesion
+	 *
+	 * @return \AppBundle\Entity\Sesion
+	 */
+	public function getSesion() {
+		return $this->sesion;
+	}
 
-    /**
-     * Get sesion
-     *
-     * @return \AppBundle\Entity\Sesion
-     */
-    public function getSesion()
-    {
-        return $this->sesion;
-    }
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+		return $this;
+	}
 
-        return $this;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->proyectos = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->proyectos = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 
-    /**
-     * Add proyecto
-     *
-     * @param \AppBundle\Entity\ProyectoBAE $proyecto
-     *
-     * @return BoletinAsuntoEntrado
-     */
-    public function addProyecto(\AppBundle\Entity\ProyectoBAE $proyecto)
-    {
-    	$proyecto->setBoletinAsuntoEntrado($this);
+	/**
+	 * Add proyecto
+	 *
+	 * @param \AppBundle\Entity\ProyectoBAE $proyecto
+	 *
+	 * @return BoletinAsuntoEntrado
+	 */
+	public function addProyecto( \AppBundle\Entity\ProyectoBAE $proyecto ) {
+		$proyecto->setBoletinAsuntoEntrado( $this );
 
-        $this->proyectos->add($proyecto);
+		$this->proyectos->add( $proyecto );
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove proyecto
-     *
-     * @param \AppBundle\Entity\ProyectoBAE $proyecto
-     */
-    public function removeProyecto(\AppBundle\Entity\ProyectoBAE $proyecto)
-    {
-        $this->proyectos->removeElement($proyecto);
-    }
+	/**
+	 * Remove proyecto
+	 *
+	 * @param \AppBundle\Entity\ProyectoBAE $proyecto
+	 */
+	public function removeProyecto( \AppBundle\Entity\ProyectoBAE $proyecto ) {
+		$this->proyectos->removeElement( $proyecto );
+	}
 
-    /**
-     * Get proyectos
-     *
-     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
-     */
-    public function getProyectos()
-    {
-        return $this->proyectos;
-    }
+	/**
+	 * Get proyectos
+	 *
+	 * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+	 */
+	public function getProyectos() {
+		return $this->proyectos;
+	}
 
-    /**
-     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
-     */
-    public function getProyectosDeConcejales()
-    {
-        return $this->ordenarProyectos(
-            $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
-                return $proyectoBae->getExpediente()->esProyectoDeConcejal();
-            })
-        );
-    }
+	/**
+	 * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+	 */
+	public function getProyectosDeConcejales() {
+		return $this->ordenarProyectos(
+			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
+				return $proyectoBae->getExpediente()->esProyectoDeConcejal();
+			} )
+		);
+	}
 
-    /**
-     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
-     */
-    public function getProyectosDeDEM()
-    {
-        return $this->ordenarProyectos(
-            $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
-                return $proyectoBae->getExpediente()->esProyectoDeDEM();
-            })
-        );
-    }
+	/**
+	 * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+	 */
+	public function getProyectosDeDEM() {
+		return $this->ordenarProyectos(
+			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
+				return $proyectoBae->getExpediente()->esProyectoDeDEM()
+				       || $proyectoBae->getEsInformeDem() ;
+			} )
+		);
+	}
 
-    /**
-     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
-     */
-    public function getProyectosDeDefensor()
-    {
-        return $this->ordenarProyectos(
-            $this->proyectos->filter(function (ProyectoBAE $proyectoBae) {
-                return $proyectoBae->getExpediente()->esProyectoDeDefensor();
-            })
-        );
-    }
+	/**
+	 * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+	 */
+	public function getProyectosDeDefensor() {
+		return $this->ordenarProyectos(
+			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
+				return $proyectoBae->getExpediente()->esProyectoDeDefensor();
+			} )
+		);
+	}
 
-    /**
-     * @param \Doctrine\Common\Collections\Collection|ProyectoBAE[] $proyectos
-     * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
-     */
-    private function ordenarProyectos($proyectos)
-    {
-        $iterator = $proyectos->getIterator();
+	/**
+	 * @param \Doctrine\Common\Collections\Collection|ProyectoBAE[] $proyectos
+	 *
+	 * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+	 */
+	private function ordenarProyectos( $proyectos ) {
+		$iterator = $proyectos->getIterator();
 
-        $iterator->uasort(function (ProyectoBAE $a, ProyectoBAE $b) {
-            list($numeroa, $letraa, $anioa) = explode('-', $a->getExpediente()->__toString(), 3);
-            list($numerob, $letrab, $aniob) = explode('-', $b->getExpediente()->__toString(), 3);
+		$iterator->uasort( function ( ProyectoBAE $a, ProyectoBAE $b ) {
+			list( $numeroa, $letraa, $anioa ) = explode( '-', $a->getExpediente()->__toString(), 3 );
+			list( $numerob, $letrab, $aniob ) = explode( '-', $b->getExpediente()->__toString(), 3 );
 
 
-            if ($anioa < $aniob){
-                return -1;
-            } elseif ($anioa > $aniob) {
-                return 1;
-            } else {
-                if ($numeroa < $numerob) {
-                    return -1;
-                } elseif ($numeroa > $numerob) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
+			if ( $anioa < $aniob ) {
+				return - 1;
+			} elseif ( $anioa > $aniob ) {
+				return 1;
+			} else {
+				if ( $numeroa < $numerob ) {
+					return - 1;
+				} elseif ( $numeroa > $numerob ) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		} );
 
-        return new ArrayCollection(iterator_to_array($iterator));
-    }
+		return new ArrayCollection( iterator_to_array( $iterator ) );
+	}
 }

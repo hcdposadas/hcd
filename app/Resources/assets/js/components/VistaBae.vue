@@ -1,52 +1,42 @@
 <template>
-    {% if sesion.asuntosEntrados %}
-    {{ sesion.asuntosEntrados | raw }}
-    {% else %}
-    {% for titulo, lista in proyectos %}
-    {% if lista.count %}
-    <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
-    <div class="cuerpo">
-
-        {% for proyecto in lista %}
-        <div class="proyecto">
-            <p>
-            <dl>
-                <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
-                <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
-            </dl>
-            </p>
-            <p style="text-align: center">
-                {% if proyecto.expediente.giros.count > 1 %}
-                A las Comisiones de
-                {% else %}
-                A la Comisión de
-                {% endif %}
-
-                {% if proyecto.expediente.girosOrdenados.count <= 2 %}
-                {% if proyecto.expediente.girosOrdenados.count == 1 %}
-                {% for giro in proyecto.expediente.girosOrdenados %}
-                <strong>{{ giro.comisionDestino.abreviacion }}</strong>
-                {% endfor %}
-                {% else %}
-                {% for giro in proyecto.expediente.girosOrdenados %}
-                <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
-                {% endfor %}
-                {% endif %}
-                {% else %}
-                {% for giro in proyecto.expediente.girosOrdenados %}
-                {% set ender = '; ' %}
-                {% if loop.index == (loop.length - 1) %}
-                {% set ender = ' y de ' %}
-                {% endif %}
-                <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
-                {% endfor %}
-                {% endif %}
-
-            </p>
+    <div>
+        <div v-if="cargando">
+            <div class="text-center text-muted"><i class="fa fa-fw fa-spin fa-circle-o-notch"></i> Cargando...</div>
         </div>
-        {% endfor %}
+        <div v-else>
+            <div class="ae">
+                <div v-if="sesion.asuntosEntrados" v-html="sesion.asuntosEntrados"></div>
+                <div v-else>
+                    <template v-for="(proyectos, tipo) in sesion.proyectos">
+                        <vista-bae-grupo-proyectos :tipo="tipo" :proyectos="proyectos"></vista-bae-grupo-proyectos>
+                    </template>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
 </template>
+<script>
+    import VistaBaeGrupoProyectos from './VistaBaeGrupoProyectos'
+    export default {
+        components: {
+            'vista-bae-grupo-proyectos': VistaBaeGrupoProyectos
+        },
+        props: {
+            idSesion: {
+                default: 14
+            }
+        },
+        data() {
+            return {
+                cargando: true,
+                sesion: null,
+            }
+        },
+        mounted() {
+            axios.get(baseUrl + 'sesion/consultar-sesion/' + this.idSesion).then(({data}) => {
+                this.cargando = false
+                this.sesion = data.sesion
+            })
+        }
+    }
+</script>

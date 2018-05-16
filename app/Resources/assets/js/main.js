@@ -23,6 +23,7 @@ import ConsultarExpediente from './components/ConsultarExpediente';
 import ConsultarSesiones from './components/ConsultarSesiones';
 import PanelDisplay from './components/PanelDisplay';
 import QuorumButton from './components/QuorumButton';
+import VistaBae from './components/VistaBae';
 
 Vue.component('panel-votacion', PanelVotacion);
 Vue.component('panel-concejal', Concejal);
@@ -30,6 +31,7 @@ Vue.component('consultar-expediente', ConsultarExpediente);
 Vue.component('consultar-sesiones', ConsultarSesiones);
 Vue.component('panel-display', PanelDisplay);
 Vue.component('quorum-button', QuorumButton);
+Vue.component('vista-bae', VistaBae);
 
 const moment = require('moment')
 require('moment/locale/es')

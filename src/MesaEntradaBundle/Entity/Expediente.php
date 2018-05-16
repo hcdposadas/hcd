@@ -1214,4 +1214,36 @@ class Expediente extends BaseClass {
     {
         return $this->nota;
     }
+
+    /**
+     * @return string
+     */
+    public function getTextoDelGiro()
+    {
+        if ($this->getGiros()->count() > 1) {
+            $textoDelGiro = 'A las Comisiones de ';
+        } else {
+            $textoDelGiro = 'A la Comisión de ';
+        }
+
+        $giros = $this->getGirosOrdenados()->map(function (Giro $giro) {
+            return '<strong title="'.$giro->getComisionDestino()->getNombre().'">'.$giro->getComisionDestino()->getAbreviacion().'</strong>';
+        });
+
+        if (count($giros) == 1) {
+            $textoDelGiro .= $giros[0];
+        } else {
+            $count = count($giros);
+            foreach ($giros as $i => $giro) {
+                $textoDelGiro .= $giro;
+                if ($i == $count - 2) {
+                    $textoDelGiro .= ' y de ';
+                } elseif ($count > 1) {
+                    $textoDelGiro .= ';';
+                }
+            }
+        }
+
+        return $textoDelGiro;
+    }
 }

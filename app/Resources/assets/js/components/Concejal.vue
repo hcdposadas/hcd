@@ -60,6 +60,9 @@
                                 - {{ titulo }}
                             </b>
                         </div>
+                        <div class="col-md-12">
+                            <vista-bae></vista-bae>
+                        </div>
                     </div>
                     <div class="row m-t-5">
                         <div class="col-md-12">

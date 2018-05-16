@@ -2,14 +2,21 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BoletinAsuntoEntrado;
 use AppBundle\Entity\Cargo;
 use AppBundle\Entity\Dependencia;
+use AppBundle\Entity\DictamenOD;
+use AppBundle\Entity\OrdenDelDia;
 use AppBundle\Entity\Persona;
+use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
+use Doctrine\Common\Util\Debug;
 use Endroid\QrCode\QrCode;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use MesaEntradaBundle\Entity\Expediente;
+use MesaEntradaBundle\Entity\Giro;
 use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -737,22 +744,70 @@ class AjaxController extends Controller
      */
     public function getSesionAction(Request $request, Sesion $sesion)
     {
+        /** @var BoletinAsuntoEntrado $bae */
         $bae = $sesion->getBae()->first();
+        /** @var OrdenDelDia $od */
         $od = $sesion->getOd()->first();
+//        Debug::dump($bae); exit();
+
+        $mapExpediente = function (Expediente $exp) {
+            $giros = $exp->getGirosOrdenados()->map(function (Giro $giro) {
+                return [
+                    'id' => $giro->getId(),
+                    'cabecera' => $giro->getCabecera(),
+                    'comisionOrigen' => $giro->getComisionOrigen() ? [
+                        'id' => $giro->getComisionOrigen()->getId(),
+                        'nombre' => $giro->getComisionOrigen()->getNombre(),
+                        'abreviacion' => $giro->getComisionOrigen()->getAbreviacion(),
+                    ] : null,
+                    'comisionDestino' => $giro->getComisionDestino() ? [
+                        'id' => $giro->getComisionDestino()->getId(),
+                        'nombre' => $giro->getComisionDestino()->getNombre(),
+                        'abreviacion' => $giro->getComisionDestino()->getAbreviacion(),
+                    ] : null,
+                    'archivado' => $giro->getArchivado(),
+                    'texto' => $giro->getTexto(),
+                ];
+            });
+
+            return [
+                'id' => $exp->getId(),
+                'fecha' => $exp->getFecha() ? $exp->getFecha()->format('Y-m-d H:i:s') : null,
+                'expediente' => $exp->__toString(),
+                'extracto' => $exp->getExtracto(),
+                'extractoDictamen' => $exp->getExtractoDictamen(),
+                'extractoTemario' => $exp->getExtractoTemario(),
+                'giros' => $giros,
+                'textoDelGiro' => $exp->getTextoDelGiro(),
+            ];
+        };
+
+        $mapBae = function (ProyectoBAE $bae) use ($mapExpediente) {
+            return [
+                'id' => $bae->getId(),
+                'expediente' => $bae->getExpediente() ? $mapExpediente($bae->getExpediente()) : null,
+            ];
+        };
+
+        $mapOd = function (DictamenOD $od) use ($mapExpediente) {
+            return [
+                'id' => $od->getId(),
+                'expediente' => $od->getExpediente() ? $mapExpediente($od->getExpediente()) : null,
+            ];
+        };
 
         $proyectos = [
-            'ejecutivo' => $bae->getProyectosDeDEM(),
-            'concejales' => $bae->getProyectosDeConcejales(),
-            'defensor' => $bae->getProyectosDeDefensor(),
+            'ejecutivo' => array_map($mapBae, $bae->getProyectosDeDEM()->toArray()),
+            'concejales' => array_map($mapBae, $bae->getProyectosDeConcejales()->toArray()),
+            'defensor' => array_map($mapBae, $bae->getProyectosDeDefensor()->toArray()),
         ];
 
         $dictamenes = [
-            'declaracion' => $od->getDictamenesDeDeclaracion(),
-            'comunicacion' => $od->getDictamenesDeComunicacion(),
-            'resolucion' => $od->getDictamenesDeResolucion(),
-            'ordenanza' => $od->getDictamenesDeOrdenanza(),
+            'declaracion' => array_map($mapOd, $od->getDictamenesDeDeclaracion()->toArray()),
+            'comunicacion' => array_map($mapOd, $od->getDictamenesDeComunicacion()->toArray()),
+            'resolucion' => array_map($mapOd, $od->getDictamenesDeResolucion()->toArray()),
+            'ordenanza' => array_map($mapOd, $od->getDictamenesDeOrdenanza()->toArray()),
         ];
-
 
         return JsonResponse::create([
             'sesion' => [
@@ -760,10 +815,10 @@ class AjaxController extends Controller
                 'fecha' => $sesion->getFecha()->format('Y-m-d H:i:s'),
                 'titulo' => $sesion->getTitulo(),
                 'asuntosEntrados' => $sesion->getAsuntosEntrados(),
-                'acta' => $sesion->getActa(),
                 'tipoSesion' => $sesion->getTipoSesion()->getValor(),
                 'proyectos' => $proyectos,
                 'dictamenes' => $dictamenes,
+                'acta' => $sesion->getActa(),
             ]
         ]);
     }

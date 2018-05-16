@@ -87,8 +87,10 @@
                                         <p>
                                         <dl class="dl-horizontal">
                                             {% for dictamen in lista %}
+                                                {# TODO considerar que puede haber mas de un dictamen por expediente #}
                                                 <dt><strong><a  class="ver-dictamen"
-                                                               data-id-expediente="{{ dictamen.id }}">EXPTE.
+                                                               data-id-expediente="{{ dictamen.expediente.dictamenes[0].id }}">
+                                                            EXPTE.
                                                             Nº {{ dictamen.expediente }}</a></strong></dt>
                                                 <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
                                             {% endfor %}

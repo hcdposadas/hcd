@@ -197,7 +197,8 @@ class BoletinAsuntoEntrado extends BaseClass {
 	public function getProyectosDeConcejales() {
 		return $this->ordenarProyectos(
 			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
-				return $proyectoBae->getExpediente()->esProyectoDeConcejal();
+				return $proyectoBae->getExpediente()->esProyectoDeConcejal()
+					&& !$proyectoBae->getEsInformeDem();
 			} )
 		);
 	}

@@ -45,6 +45,20 @@ class ProyectoBAE extends BaseClass {
 	 */
 	private $boletinAsuntoEntrado;
 
+	/**
+	 * @var $informeDem
+	 *
+	 * @ORM\Column(name="es_informe_dem", type="boolean", nullable=true)
+	 */
+	private $esInformeDem;
+//
+//	/**
+//	 * @var string
+//	 *
+//	 * @ORM\Column(name="extracto_temario", type="text", nullable=true)
+//	 */
+//	private $extractoTemario;
+
 
 	/**
 	 * Get id
@@ -150,4 +164,28 @@ class ProyectoBAE extends BaseClass {
 
 		return $this;
 	}
+
+    /**
+     * Set esInformeDem
+     *
+     * @param boolean $esInformeDem
+     *
+     * @return ProyectoBAE
+     */
+    public function setEsInformeDem($esInformeDem)
+    {
+        $this->esInformeDem = $esInformeDem;
+
+        return $this;
+    }
+
+    /**
+     * Get esInformeDem
+     *
+     * @return boolean
+     */
+    public function getEsInformeDem()
+    {
+        return $this->esInformeDem;
+    }
 }

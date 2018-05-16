@@ -113,7 +113,7 @@ class Expediente extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="numero_nota", type="text", nullable=true)
+	 * @ORM\Column(name="numero_nota", type="string", length=255, nullable=true)
 	 */
 	private $numeroNota;
 

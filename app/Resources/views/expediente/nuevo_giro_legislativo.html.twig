@@ -11,19 +11,32 @@
         </div>
         <div class="box-body">
 
-            {% if expediente.giros.count > 0 %}
-                <h3>Giros a Comisiones</h3>
-                {% for giro in expediente.giros %}
-                    {{ giro.fechaGiro | date ('d/m/Y') }} - {{ giro.comisionDestino }}<br>
-                {% endfor %}
-            {% endif %}
+            <div class="row">
+                <div class="col-md-6">
+                    {% if expediente.giros.count > 0 %}
+                        <h3>Giros a Comisiones</h3>
+                        {% for giro in expediente.giros %}
+                            {{ giro.fechaGiro | date ('d/m/Y') }} - {{ giro.comisionDestino }}<br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label>Aprobado en Sesión:</label> {{ expediente.sesionNumero }}
+                </div>
+            </div>
 
-            {% if expediente.giroAdministrativos.count > 0 %}
-                <h3>Giros Administrativos</h3>
-                {% for giroAdministrativo in expediente.giroAdministrativos %}
-                    {{ giroAdministrativo.fechaGiro | date ('d/m/Y') }} - {{ giroAdministrativo.areaDestino }}<br>
-                {% endfor %}
-            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    {% if expediente.giroAdministrativos.count > 0 %}
+                        <h3>Giros Administrativos</h3>
+                        {% for giroAdministrativo in expediente.giroAdministrativos %}
+                            {{ giroAdministrativo.fechaGiro | date ('d/m/Y') }} - {{ giroAdministrativo.areaDestino }} - {{ giroAdministrativo.texto }}
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
 
             <div class="m-b-5"></div>
 

@@ -23,6 +23,7 @@
             background-color: #17a867;
             padding: 1%;
         }
+
         .container {
             margin-top: 8rem;
         }
@@ -51,6 +52,24 @@
 <body>
 
 <div class="container" id="app">
+    {#modal#}
+    <div id="modal-dictamen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+         aria-labelledby="modal-dictamen">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Expte
+                </div>
+                <div class="modal-body">
+                    <div class="cuerpo">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {#modal#}
     <div class="row">
         <div data-spy="scroll" data-target=".navbar" data-offset="50">
 
@@ -167,8 +186,9 @@
                                                 {% for proyecto in lista %}
                                                     <div class="proyecto">
                                                         <p>
-                                                        <dl>
-                                                            <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
+                                                        <dl class="dl-horizontal">
+                                                            <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong>
+                                                            </dt>
                                                             <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
                                                         </dl>
                                                         </p>
@@ -223,12 +243,15 @@
                                             <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
                                             <div class="cuerpo">
                                                 <p>
+                                                <dl class="dl-horizontal">
                                                     {% for dictamen in lista %}
-                                                <dl>
-                                                    <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
-                                                    <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                                        {# TODO considerar que puede haber mas de un dictamen por expediente #}
+                                                        <dt><strong><a class="ver-dictamen"
+                                                                       data-id-expediente="{{ dictamen.expediente.dictamenes[0].id }}">EXPTE.
+                                                                    Nº {{ dictamen.expediente }}</a></strong></dt>
+                                                        <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                                    {% endfor %}
                                                 </dl>
-                                                {% endfor %}
                                                 </p>
                                             </div>
                                         {% endif %}
@@ -283,6 +306,50 @@
 <script src="{{ asset('build/app.js') }}"></script>
 {% block javascripts %}
 {% endblock javascripts %}
+
+<script>
+    $(document).ready(function () {
+        $(document).ajaxStop($.unblockUI);
+    });
+    $(document).on('click', '.ver-dictamen', function () {
+        console.log('id', $(this).data('id-expediente'))
+
+        var idExpte = $(this).data('id-expediente');
+
+        $.blockUI({
+            message: '<div class="progress">\n' +
+            '                <div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">\n' +
+            '                </div>\n' +
+            '              </div>',
+            css: {border: 'none', background: ''}
+        });
+        $('#modal-dictamen .modal-body').html('');
+
+        $.ajax({
+            type: 'get',
+            url: '{{ path('ver_dictamen') }}',
+            data: {id: idExpte},
+            success: function (data) {
+
+                $('#modal-dictamen .modal-header').html(data.expediente);
+
+                $('#modal-dictamen .modal-body').html(data.texto);
+
+                $('#modal-dictamen .modal-body').append('<h4>Firmantes</h4>');
+                data.firmantes.forEach(function(element) {
+                    $('#modal-dictamen .modal-body').append(element + '<br>');
+                });
+
+                $('#modal-dictamen').modal('toggle')
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+
+            }
+        });
+    })
+</script>
 
 <script>
 

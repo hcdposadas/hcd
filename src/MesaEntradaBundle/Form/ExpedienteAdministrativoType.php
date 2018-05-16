@@ -72,14 +72,14 @@ class ExpedienteAdministrativoType extends AbstractType {
 					'placeholder'  => 'Por Nombre'
 
 				] )
-//			->add( 'iniciadorParticular',
-//				Select2EntityType::class,
-//				[
-//					'remote_route' => 'get_persona_por_dni',
-//					'class'        => 'AppBundle\Entity\Persona',
-//					'required'     => false,
-//
-//				] )
+			->add( 'iniciadorParticular',
+				Select2EntityType::class,
+				[
+					'remote_route' => 'get_persona_por_dni',
+					'class'        => 'AppBundle\Entity\Persona',
+					'required'     => false,
+
+				] )
 			->add( 'giroAdministrativos',
 				BootstrapCollectionType::class,
 				[

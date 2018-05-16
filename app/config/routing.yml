@@ -85,4 +85,8 @@ get_actas:
     path: /sesion/consultar-actas
     defaults: { _controller: "AppBundle:Ajax:consultarActas" }
 
+ver_dictamen:
+    path: /sesion/ver-dictamen
+    defaults: { _controller: "AppBundle:Ajax:verDictamen" }
+
 #sesion secretario

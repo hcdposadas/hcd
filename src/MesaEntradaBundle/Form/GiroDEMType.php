@@ -18,11 +18,11 @@ class GiroDEMType extends AbstractType {
 			[
 				'class'         => AreaAdministrativa::class,
 				'attr'          => [ 'class' => 'select2' ],
-				'query_builder' => function ( EntityRepository $er ) {
-					return $er->createQueryBuilder( 'aa' )
-					          ->where( 'aa.id = :id' )
-					          ->setParameter( 'id', AreaAdministrativa::AREA_ADMINISTRATIVA_DEM );
-				},
+//				'query_builder' => function ( EntityRepository $er ) {
+//					return $er->createQueryBuilder( 'aa' )
+//					          ->where( 'aa.id = :id' )
+//					          ->setParameter( 'id', AreaAdministrativa::AREA_ADMINISTRATIVA_DEM );
+//				},
 			]
 		)
 		        ->add( 'texto' )

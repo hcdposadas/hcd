@@ -968,7 +968,7 @@ class ExpedienteController extends Controller {
 				'El expediente se ha girado a la/s comision/es'
 			);
 
-			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+			return $this->redirectToRoute( 'expediente_nuevo_giro_legislativo', ['id'=> $id] );
 
 		}
 

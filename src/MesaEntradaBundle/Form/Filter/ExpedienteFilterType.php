@@ -27,6 +27,7 @@ class ExpedienteFilterType extends AbstractType {
 //					'empty_data'   => ''
 //				] )
 			->add( 'textoDefinitivo' )
+			->add( 'texto' )
 			->add( 'extracto' )
 			->add( 'expediente',
 				null,

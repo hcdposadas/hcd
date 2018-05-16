@@ -600,7 +600,7 @@ class AjaxController extends Controller {
 		$id = $request->get( 'id' );
 
 		$dictamenOd = $em->getRepository( 'AppBundle:DictamenOD' )->find( $id );
-		$expediente  = $dictamenOd->getExpediente();
+		$expediente = $dictamenOd->getExpediente();
 
 		// Estos son los campos a auditar en el log
 		$campos = [ 'extractoDictamen' ];
@@ -676,37 +676,59 @@ class AjaxController extends Controller {
 		);
 	}
 
-    /**
-     * @return JsonResponse
-     */
-    public function getConcejalesAction()
-    {
-        $concejales = $this->getDoctrine()
-            ->getManager()
-            ->getRepository(Usuario::class)
-            ->createQueryBuilder('u')
-            ->join('u.persona', 'p')
-            ->join('p.cargoPersona', 'cp')
-            ->join('cp.cargo', 'c')
-            ->where('cp.activo = true')
-            ->andWhere('p.activo = true')
-            ->andWhere('c.id = :id')
-            ->setParameter('id', Cargo::CARGO_CONCEJAL)
-            ->getQuery()
-            ->getResult();
+	/**
+	 * @return JsonResponse
+	 */
+	public function getConcejalesAction() {
+		$concejales = $this->getDoctrine()
+		                   ->getManager()
+		                   ->getRepository( Usuario::class )
+		                   ->createQueryBuilder( 'u' )
+		                   ->join( 'u.persona', 'p' )
+		                   ->join( 'p.cargoPersona', 'cp' )
+		                   ->join( 'cp.cargo', 'c' )
+		                   ->where( 'cp.activo = true' )
+		                   ->andWhere( 'p.activo = true' )
+		                   ->andWhere( 'c.id = :id' )
+		                   ->setParameter( 'id', Cargo::CARGO_CONCEJAL )
+		                   ->getQuery()
+		                   ->getResult();
 
-        $concejales = array_map(function (Usuario $usuario) {
-            $persona = $usuario->getPersona();
-            return [
-                'id' => $usuario->getId(),
-                'nombre' => ucwords(strtolower($persona->getNombreCompleto())),
-            ];
-        }, $concejales);
+		$concejales = array_map( function ( Usuario $usuario ) {
+			$persona = $usuario->getPersona();
 
-        usort($concejales, function ($c1, $c2) {
-            return $c1['nombre'] <=> $c2['nombre'];
-        });
+			return [
+				'id'     => $usuario->getId(),
+				'nombre' => ucwords( strtolower( $persona->getNombreCompleto() ) ),
+			];
+		},
+			$concejales );
 
-        return JsonResponse::create(['concejales' => $concejales]);
-    }
+		usort( $concejales,
+			function ( $c1, $c2 ) {
+				return $c1['nombre'] <=> $c2['nombre'];
+			} );
+
+		return JsonResponse::create( [ 'concejales' => $concejales ] );
+	}
+
+	public function verDictamenAction( Request $request ) {
+		$em = $this->getDoctrine()->getManager();
+
+		$id = $request->get( 'id' );
+
+		$dictamen = $em->getRepository( 'MesaEntradaBundle:Dictamen' )->find( $id );
+
+		$json = [];
+		if ( $dictamen ) {
+			$json['texto'] = $dictamen->getTextoDictamen();
+
+			$json['expediente'] = $dictamen->getExpediente()->__toString();
+			foreach ( $dictamen->getFirmantes() as $firmante ) {
+				$json['firmantes'][] = $firmante->getIniciador()->__toString();
+			}
+		}
+
+		return new JsonResponse( $json );
+	}
 }

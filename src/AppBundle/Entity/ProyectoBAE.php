@@ -51,13 +51,13 @@ class ProyectoBAE extends BaseClass {
 	 * @ORM\Column(name="es_informe_dem", type="boolean", nullable=true)
 	 */
 	private $esInformeDem;
-//
-//	/**
-//	 * @var string
-//	 *
-//	 * @ORM\Column(name="extracto_temario", type="text", nullable=true)
-//	 */
-//	private $extractoTemario;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="extracto", type="text", nullable=true)
+	 */
+	private $extracto;
 
 
 	/**
@@ -187,5 +187,29 @@ class ProyectoBAE extends BaseClass {
     public function getEsInformeDem()
     {
         return $this->esInformeDem;
+    }
+
+    /**
+     * Set extracto
+     *
+     * @param string $extracto
+     *
+     * @return ProyectoBAE
+     */
+    public function setExtracto($extracto)
+    {
+        $this->extracto = $extracto;
+
+        return $this;
+    }
+
+    /**
+     * Get extracto
+     *
+     * @return string
+     */
+    public function getExtracto()
+    {
+        return $this->extracto;
     }
 }

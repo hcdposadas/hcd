@@ -108,15 +108,6 @@
                                            href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Extracto"
-                                           href="{{ path('expediente_editar_extracto', { 'id': expediente.id }) }}">
-                                            <i class="fa fa-file-text-o"></i>
-                                        </a>
-                                        {#{% else %}#}
-                                        {#<a class="btn btn-default"#}
-                                        {#href="{{ path('expediente_edit', { 'id': expediente.id }) }}">#}
-                                        {#<i class="fa fa-edit"></i>#}
-                                        {#</a>#}
                                     {% endif %}
                                     {% if is_granted('ROLE_MESA_ENTRADA') %}
                                         <a class="btn btn-default" data-toggle="tooltip" title="Cargar Extracto"

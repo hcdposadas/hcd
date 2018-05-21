@@ -22,7 +22,9 @@ class DictamenODType extends AbstractType {
 					'required'     => false,
 					'placeholder'  => 'Por Expte'
 
-				] );
+				] )
+			->add('extracto')
+		;
 	}
 
 	/**

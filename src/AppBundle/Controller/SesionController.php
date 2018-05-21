@@ -239,18 +239,45 @@ class SesionController extends Controller {
 
 		$bae = $sesion->getBae()->first();
 
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extracto' ];
 
 		$proyectosBaeOriginales = new ArrayCollection();
 
 		// Create an ArrayCollection of the current Tag objects in the database
 		foreach ( $bae->getProyectos() as $proyectoBae ) {
 			$proyectosBaeOriginales->add( $proyectoBae );
+
+			//esto es para el log de cambios
+			foreach ( $campos as $campo ) {
+				$getter                      = 'get' . ucfirst( $campo );
+				$valoresOriginales[ $campo ] = [
+					'valor'  => $proyectoBae->{$getter}(),
+					'getter' => $getter,
+				];
+			}
 		}
 
 		$form = $this->createForm( BoletinAsuntoEntradoType::class, $bae );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			foreach ( $bae->getProyectos() as $proyectoBae ) {
+				$log = new LogExpediente();
+				$log->setExpediente( $proyectoBae->getExpediente() );
+				$log->setSesion($sesion);
+				foreach ( $valoresOriginales as $nombre => $campo ) {
+					if ( $campo['valor'] != $proyectoBae->{$campo['getter']}() ) {
+						$log->agregarCambio( $nombre, $campo['valor'], $proyectoBae->{$campo['getter']}() );
+					}
+				}
+
+				$em = $this->getDoctrine()->getManager();
+				if ( count( $log->getCambios() ) > 0 ) {
+					$em->persist( $log );
+				}
+			}
 
 			foreach ( $proyectosBaeOriginales as $proyectoBae ) {
 				if ( false === $bae->getProyectos()->contains( $proyectoBae ) ) {
@@ -282,10 +309,41 @@ class SesionController extends Controller {
 
 		$od = $sesion->getOd()->first();
 
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extracto' ];
+
+		$valoresOriginales = [];
+		foreach ( $od->getDictamenes() as $dictamenOd ) {
+			foreach ( $campos as $campo ) {
+				$getter                      = 'get' . ucfirst( $campo );
+				$valoresOriginales[ $campo ] = [
+					'valor'  => $dictamenOd->{$getter}(),
+					'getter' => $getter,
+				];
+			}
+		}
+
 		$form = $this->createForm( OrdenDelDiaType::class, $od );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
+
+
+			foreach ( $od->getDictamenes() as $dictamenOd ) {
+				$log = new LogExpediente();
+				$log->setExpediente( $dictamenOd->getExpediente() );
+				$log->setSesion($sesion);
+				foreach ( $valoresOriginales as $nombre => $campo ) {
+					if ( $campo['valor'] != $dictamenOd->{$campo['getter']}() ) {
+						$log->agregarCambio( $nombre, $campo['valor'], $dictamenOd->{$campo['getter']}() );
+					}
+				}
+
+				$em = $this->getDoctrine()->getManager();
+				if ( count( $log->getCambios() ) > 0 ) {
+					$em->persist( $log );
+				}
+			}
 
 			$em->flush();
 

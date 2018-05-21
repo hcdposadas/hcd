@@ -46,7 +46,11 @@
                     {% for dictamen in lista %}
                 <dl>
                     <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
-                    <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                    {% if dictamen.extracto %}
+                        <dd>{{ dictamen.extracto | raw }}</dd>
+                    {% else %}
+                        <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                    {% endif %}
                 </dl>
                 {% endfor %}
                 </p>

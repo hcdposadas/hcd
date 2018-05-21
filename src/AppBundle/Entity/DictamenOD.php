@@ -44,6 +44,13 @@ class DictamenOD extends BaseClass
 	 */
 	private $ordenDelDia;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="extracto", type="text", nullable=true)
+	 */
+	private $extracto;
+
 
     /**
      * Get id
@@ -157,5 +164,29 @@ class DictamenOD extends BaseClass
         $this->actualizadoPor = $actualizadoPor;
 
         return $this;
+    }
+
+    /**
+     * Set extracto
+     *
+     * @param string $extracto
+     *
+     * @return DictamenOD
+     */
+    public function setExtracto($extracto)
+    {
+        $this->extracto = $extracto;
+
+        return $this;
+    }
+
+    /**
+     * Get extracto
+     *
+     * @return string
+     */
+    public function getExtracto()
+    {
+        return $this->extracto;
     }
 }

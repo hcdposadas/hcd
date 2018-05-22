@@ -4,11 +4,11 @@
             <div class="text-center text-muted"><i class="fa fa-fw fa-spin fa-circle-o-notch"></i> Cargando...</div>
         </div>
         <div v-else>
-            <div class="ae">
-                <div v-if="sesion.asuntosEntrados" v-html="sesion.asuntosEntrados"></div>
+            <div class="od">
+                <div v-if="sesion.ordenDelDia" v-html="sesion.ordenDelDia"></div>
                 <div v-else>
-                    <template v-for="proyectos in sesion.proyectos">
-                        <vista-bae-grupo-proyectos :proyectos="proyectos"></vista-bae-grupo-proyectos>
+                    <template v-for="dictamenes in sesion.dictamenes">
+                        <vista-od-grupo-dictamenes :dictamenes="dictamenes"></vista-od-grupo-dictamenes>
                     </template>
                 </div>
             </div>
@@ -16,10 +16,10 @@
     </div>
 </template>
 <script>
-    import VistaBaeGrupoProyectos from './VistaBaeGrupoProyectos'
+    import VistaOdGrupoDictamenes from './VistaOdGrupoDictamenes'
     export default {
         components: {
-            'vista-bae-grupo-proyectos': VistaBaeGrupoProyectos
+            'vista-od-grupo-dictamenes': VistaOdGrupoDictamenes
         },
         props: {
             idSesion: {

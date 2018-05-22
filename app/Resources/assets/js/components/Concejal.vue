@@ -61,14 +61,13 @@
                             </b>
                         </div>
                         <div class="col-md-12">
-                            <vista-bae></vista-bae>
+
                         </div>
                     </div>
                     <div class="row m-t-5">
                         <div class="col-md-12">
-                            <slot name="bae" v-if="showBae"></slot>
-
-                            <slot name="od" v-if="showOd"></slot>
+                            <vista-bae v-if="showBae"></vista-bae>
+                            <vista-od v-if="showOd"></vista-od>
 
                             <!--<div v-html="texto" v-show="showTexto" data-spy="scroll"-->
                             <!--data-target="#navbar-example2" data-offset="0">-->

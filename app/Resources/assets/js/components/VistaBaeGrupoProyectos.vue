@@ -1,8 +1,8 @@
 <template>
-    <div v-if="proyectos.length > 0">
-        <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+    <div v-if="Object.keys(proyectos.proyectos).length > 0">
+        <h3 style="text-align: center; margin-top: 5%"><u>{{ proyectos.titulo }}</u></h3>
         <div class="cuerpo">
-            <template v-for="proyecto in proyectos">
+            <template v-for="proyecto in proyectos.proyectos">
                 <vista-bae-proyecto :proyecto="proyecto"></vista-bae-proyecto>
             </template>
         </div>
@@ -17,14 +17,6 @@
         props: {
             proyectos: {
                 required: true
-            },
-            tipo: {
-                required: true
-            }
-        },
-        computed: {
-            titulo() {
-                return this.tipo
             }
         }
     }

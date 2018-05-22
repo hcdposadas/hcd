@@ -42,3 +42,13 @@ sesiones_show_log_cambios_acta:
 sesiones_imprimir_acta:
     path: /{sesionId}/imprimir-acta
     defaults: { _controller: "AppBundle:Sesion:imprimirActa" }
+
+editar_extracto_bae:
+    path:     /editar-extracto-bae/{expediente}
+    defaults: { _controller: "AppBundle:Sesion:editarExtractoBAE" }
+    methods:  [GET, POST]
+
+editar_extracto_od:
+    path:     /editar-extracto-od/{expediente}
+    defaults: { _controller: "AppBundle:Sesion:editarExtractoOD" }
+    methods:  [GET, POST]

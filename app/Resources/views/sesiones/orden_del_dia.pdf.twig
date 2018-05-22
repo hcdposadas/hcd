@@ -8,6 +8,10 @@
     <title>{{ title }}</title>
 </head>
 <style>
+    dl {
+        page-break-inside: avoid;
+    }
+
     dl dt {
         float: left;
         width: 33%;
@@ -44,14 +48,29 @@
             <div class="cuerpo">
                 <p>
                     {% for dictamen in lista %}
+
+                    {% set expte = dictamen.expediente |split(' ') %}
+                    {% if expte | length > 1 %}
                 <dl>
-                    <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                    <dt><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
                     {% if dictamen.extracto %}
-                        <dd>{{ dictamen.extracto | raw }}</dd>
+                        <dd style="margin-left: 40%">{{ dictamen.extracto | raw }}</dd>
                     {% else %}
                         <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
                     {% endif %}
                 </dl>
+                {% else %}
+                    <dl>
+                        <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                        {% if dictamen.extracto %}
+                            <dd>{{ dictamen.extracto | raw }}</dd>
+                        {% else %}
+                            <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                        {% endif %}
+                    </dl>
+                {% endif %}
+
+
                 {% endfor %}
                 </p>
             </div>

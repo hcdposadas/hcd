@@ -288,7 +288,7 @@ class ExpedienteRepository extends EntityRepository {
 		$qb->join( 'e.periodoLegislativo', 'pl' );
 		$qb->addSelect( 'pl' );
 
-		$qb->andWhere( 'e.extractoDictamen is not null' );
+//		$qb->andWhere( 'e.extractoDictamen is not null' );
 
 		return $qb->getQuery()->getArrayResult();
 	}

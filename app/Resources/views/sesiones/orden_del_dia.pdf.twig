@@ -52,11 +52,11 @@
                     {% set expte = dictamen.expediente |split(' ') %}
                     {% if expte | length > 1 %}
                 <dl>
-                    <dt><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
+                    <dt style="width:40%"><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
                     {% if dictamen.extracto %}
-                        <dd style="margin-left: 40%">{{ dictamen.extracto | raw }}</dd>
+                        <dd style="margin-left: 42%">{{ dictamen.extracto | raw }}</dd>
                     {% else %}
-                        <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                        <dd style="margin-left: 42%">{{ dictamen.expediente.extractoDictamen | raw }}</dd>
                     {% endif %}
                 </dl>
                 {% else %}

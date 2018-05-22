@@ -23,10 +23,11 @@ class ProyectoBAEType extends AbstractType {
 					'placeholder'  => 'Por Expte'
 
 				] )
-			->add('extracto')
-			->add( 'esInformeDem', null, [
-				'label'=> 'Informe DEM'
-			] );
+			->add( 'esInformeDem',
+				null,
+				[
+					'label' => 'Informe DEM'
+				] );
 	}
 
 	/**

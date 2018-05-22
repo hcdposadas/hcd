@@ -255,6 +255,15 @@ class Expediente extends BaseClass {
 	private $fechaPresentacion;
 
 	/**
+	 * @var Usuario $asignadoPor
+	 *
+	 *
+	 * @ORM\ManyToOne(targetEntity="UsuariosBundle\Entity\Usuario")
+	 * @ORM\JoinColumn(name="asignado_por_id", referencedColumnName="id", nullable=true)
+	 */
+	private $asignadoPor;
+
+	/**
 	 * @var
 	 *
 	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Dictamen", mappedBy="expediente", cascade={"persist", "remove"})
@@ -1213,5 +1222,29 @@ class Expediente extends BaseClass {
     public function getNota()
     {
         return $this->nota;
+    }
+
+    /**
+     * Set asignadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $asignadoPor
+     *
+     * @return Expediente
+     */
+    public function setAsignadoPor(\UsuariosBundle\Entity\Usuario $asignadoPor = null)
+    {
+        $this->asignadoPor = $asignadoPor;
+
+        return $this;
+    }
+
+    /**
+     * Get asignadoPor
+     *
+     * @return \UsuariosBundle\Entity\Usuario
+     */
+    public function getAsignadoPor()
+    {
+        return $this->asignadoPor;
     }
 }

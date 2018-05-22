@@ -6,10 +6,13 @@ use AppBundle\Entity\BoletinAsuntoEntrado;
 use AppBundle\Entity\OrdenDelDia;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\BoletinAsuntoEntradoType;
+use AppBundle\Form\ExtractoDictamenODType;
+use AppBundle\Form\ExtractoProyectoBAEType;
 use AppBundle\Form\Filter\SesionFilterType;
 use AppBundle\Form\OrdenDelDiaType;
 use AppBundle\Form\SesionCargarActaType;
 use Doctrine\Common\Collections\ArrayCollection;
+use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -239,45 +242,17 @@ class SesionController extends Controller {
 
 		$bae = $sesion->getBae()->first();
 
-		// Estos son los campos a auditar en el log
-		$campos = [ 'extracto' ];
-
 		$proyectosBaeOriginales = new ArrayCollection();
 
 		// Create an ArrayCollection of the current Tag objects in the database
 		foreach ( $bae->getProyectos() as $proyectoBae ) {
 			$proyectosBaeOriginales->add( $proyectoBae );
-
-			//esto es para el log de cambios
-			foreach ( $campos as $campo ) {
-				$getter                      = 'get' . ucfirst( $campo );
-				$valoresOriginales[ $campo ] = [
-					'valor'  => $proyectoBae->{$getter}(),
-					'getter' => $getter,
-				];
-			}
 		}
 
 		$form = $this->createForm( BoletinAsuntoEntradoType::class, $bae );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-
-			foreach ( $bae->getProyectos() as $proyectoBae ) {
-				$log = new LogExpediente();
-				$log->setExpediente( $proyectoBae->getExpediente() );
-				$log->setSesion($sesion);
-				foreach ( $valoresOriginales as $nombre => $campo ) {
-					if ( $campo['valor'] != $proyectoBae->{$campo['getter']}() ) {
-						$log->agregarCambio( $nombre, $campo['valor'], $proyectoBae->{$campo['getter']}() );
-					}
-				}
-
-				$em = $this->getDoctrine()->getManager();
-				if ( count( $log->getCambios() ) > 0 ) {
-					$em->persist( $log );
-				}
-			}
 
 			foreach ( $proyectosBaeOriginales as $proyectoBae ) {
 				if ( false === $bae->getProyectos()->contains( $proyectoBae ) ) {
@@ -302,6 +277,78 @@ class SesionController extends Controller {
 			) );
 	}
 
+	public function editarExtractoBAEAction( Request $request, Expediente $expediente ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
+
+		$sesion = $sesionQb->getQuery()->getSingleResult();
+
+		$bae         = $sesion->getBae()->first();
+		$proyectoBAE = $em->getRepository( 'AppBundle:ProyectoBAE' )->findOneBy(
+			[
+				'expediente'           => $expediente,
+				'boletinAsuntoEntrado' => $bae,
+			]
+		);
+
+		if ( ! $proyectoBAE ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'El Proyecto no está asignado al BAE'
+			);
+
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+		}
+
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extracto' ];
+
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $proyectoBAE->{$getter}(),
+				'getter' => $getter,
+			];
+		}
+
+		$editForm = $this->createForm( ExtractoProyectoBAEType::class, $proyectoBAE );
+		$editForm->handleRequest( $request );
+
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+			$log = new LogExpediente();
+			$log->setExpediente( $expediente );
+			$log->setSesion( $sesion );
+			foreach ( $valoresOriginales as $nombre => $campo ) {
+				if ( $campo['valor'] != $proyectoBAE->{$campo['getter']}() ) {
+					$log->agregarCambio( $nombre, $campo['valor'], $proyectoBAE->{$campo['getter']}() );
+				}
+			}
+
+			if ( count( $log->getCambios() ) > 0 ) {
+				$em->persist( $log );
+			}
+			$em->persist( $proyectoBAE );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Extracto BAE guardado correctamente'
+			);
+
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+		}
+
+		return $this->render( 'expediente/editarExtracto.html.twig',
+			array(
+				'expediente' => $expediente,
+				'edit_form'  => $editForm->createView(),
+				'sesion'     => $sesion,
+			) );
+	}
+
 	public function asignarDictamenesAODAction( Request $request, $sesionId ) {
 
 		$em     = $this->getDoctrine()->getManager();
@@ -309,18 +356,11 @@ class SesionController extends Controller {
 
 		$od = $sesion->getOd()->first();
 
-		// Estos son los campos a auditar en el log
-		$campos = [ 'extracto' ];
+		$dictamenesOdOriginales = new ArrayCollection();
 
-		$valoresOriginales = [];
+		// Create an ArrayCollection of the current Tag objects in the database
 		foreach ( $od->getDictamenes() as $dictamenOd ) {
-			foreach ( $campos as $campo ) {
-				$getter                      = 'get' . ucfirst( $campo );
-				$valoresOriginales[ $campo ] = [
-					'valor'  => $dictamenOd->{$getter}(),
-					'getter' => $getter,
-				];
-			}
+			$dictamenesOdOriginales->add( $dictamenOd );
 		}
 
 		$form = $this->createForm( OrdenDelDiaType::class, $od );
@@ -328,20 +368,10 @@ class SesionController extends Controller {
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
-
-			foreach ( $od->getDictamenes() as $dictamenOd ) {
-				$log = new LogExpediente();
-				$log->setExpediente( $dictamenOd->getExpediente() );
-				$log->setSesion($sesion);
-				foreach ( $valoresOriginales as $nombre => $campo ) {
-					if ( $campo['valor'] != $dictamenOd->{$campo['getter']}() ) {
-						$log->agregarCambio( $nombre, $campo['valor'], $dictamenOd->{$campo['getter']}() );
-					}
-				}
-
-				$em = $this->getDoctrine()->getManager();
-				if ( count( $log->getCambios() ) > 0 ) {
-					$em->persist( $log );
+			foreach ( $dictamenesOdOriginales as $dictamenOd ) {
+				if ( false === $od->getDictamenes()->contains( $dictamenOd ) ) {
+					$dictamenOd->setOrdenDelDia( null );
+					$em->remove( $dictamenOd );
 				}
 			}
 
@@ -358,6 +388,78 @@ class SesionController extends Controller {
 			array(
 				'sesion' => $sesion,
 				'form'   => $form->createView()
+			) );
+	}
+
+	public function editarExtractoODAction( Request $request, Expediente $expediente ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
+
+		$sesion = $sesionQb->getQuery()->getSingleResult();
+
+		$od         = $sesion->getOd()->first();
+		$dictamenOD = $em->getRepository( 'AppBundle:DictamenOD' )->findOneBy(
+			[
+				'expediente'  => $expediente,
+				'ordenDelDia' => $od,
+			]
+		);
+
+		if ( ! $dictamenOD ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'El Dictamen no está asignado al OD'
+			);
+
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+		}
+
+		// Estos son los campos a auditar en el log
+		$campos = [ 'extracto' ];
+
+		$valoresOriginales = [];
+		foreach ( $campos as $campo ) {
+			$getter                      = 'get' . ucfirst( $campo );
+			$valoresOriginales[ $campo ] = [
+				'valor'  => $dictamenOD->{$getter}(),
+				'getter' => $getter,
+			];
+		}
+
+		$editForm = $this->createForm( ExtractoDictamenODType::class, $dictamenOD );
+		$editForm->handleRequest( $request );
+
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+			$log = new LogExpediente();
+			$log->setExpediente( $expediente );
+			$log->setSesion( $sesion );
+			foreach ( $valoresOriginales as $nombre => $campo ) {
+				if ( $campo['valor'] != $dictamenOD->{$campo['getter']}() ) {
+					$log->agregarCambio( $nombre, $campo['valor'], $dictamenOD->{$campo['getter']}() );
+				}
+			}
+
+			if ( count( $log->getCambios() ) > 0 ) {
+				$em->persist( $log );
+			}
+			$em->persist( $dictamenOD );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Extracto OD guardado correctamente'
+			);
+
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+		}
+
+		return $this->render( 'expediente/editarExtracto.html.twig',
+			array(
+				'expediente' => $expediente,
+				'edit_form'  => $editForm->createView(),
+				'sesion'     => $sesion,
 			) );
 	}
 
@@ -704,8 +806,8 @@ class SesionController extends Controller {
 					'page-size'      => 'Legal',
 					'margin-top'     => "2.5cm",
 					'margin-bottom'  => "2.5cm",
-					'margin-left'  => "3cm",
-					'margin-right'  => "3cm",
+					'margin-left'    => "3cm",
+					'margin-right'   => "3cm",
 //					'header-html'    => $header,
 //					'header-spacing' => 5,
 					'footer-spacing' => 5,

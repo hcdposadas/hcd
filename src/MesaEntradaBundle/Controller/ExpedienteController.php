@@ -789,11 +789,6 @@ class ExpedienteController extends Controller {
 			$form->handleRequest( $request );
 
 			if ( $form->get( 'asignar' )->isClicked() ) {
-//				$form->submit($request->request->get($form->getName()));
-//				$codigoReferencia = $request->get( 'codigoReferencia' );
-//
-//				$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->findOneByCodigoReferencia( $codigoReferencia );
-//				$form->setData( $expediente );
 
 
 				if ( $form->isSubmitted() && $form->isValid() ) {
@@ -833,13 +828,11 @@ class ExpedienteController extends Controller {
 						$expediente->addGiroAdministrativo( $giroAdministrativo );
 						$em->persist( $giroAdministrativo );
 
-//					$periodoLegislativo = $form->getData()->getPeriodoLegislativo();
-//					$expediente->setPeriodoLegislativo($periodoLegislativo);
 						$expediente->setExpediente( $form->getData()->getExpediente() );
 						$expediente->setLetra( $form->getData()->getLetra() );
 						$expediente->setFechaPresentacion( new \DateTime( 'now' ) );
+						$expediente->setAsignadoPor( $this->getUser() );
 
-//					$em->persist( $expediente );
 						$em->flush();
 
 						return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
@@ -968,7 +961,7 @@ class ExpedienteController extends Controller {
 				'El expediente se ha girado a la/s comision/es'
 			);
 
-			return $this->redirectToRoute( 'expediente_nuevo_giro_legislativo', ['id'=> $id] );
+			return $this->redirectToRoute( 'expediente_nuevo_giro_legislativo', [ 'id' => $id ] );
 
 		}
 
@@ -1381,7 +1374,6 @@ class ExpedienteController extends Controller {
 				'Extracto guardado correctamente'
 			);
 
-//			return $this->redirectToRoute( 'expediente_show', array( 'id' => $expediente->getId() ) );
 			return $this->redirectToRoute( 'expedientes_legislativos_index' );
 		}
 

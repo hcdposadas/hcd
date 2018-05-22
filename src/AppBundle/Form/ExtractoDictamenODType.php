@@ -2,29 +2,25 @@
 
 namespace AppBundle\Form;
 
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use UtilBundle\Form\Type\Select2EntityType;
-use Symfony\Component\Validator\Constraints\Valid;
 
-class DictamenODType extends AbstractType {
+class ExtractoDictamenODType extends AbstractType {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'expediente',
-				Select2EntityType::class,
+			->add( 'extracto',
+				CKEditorType::class,
 				[
-					'remote_route' => 'get_dictamenes_od',
-					'class'        => 'MesaEntradaBundle\Entity\Expediente',
-					'required'     => false,
-					'placeholder'  => 'Por Expte'
-
-				] )
-//			->add('extracto')
-		;
+					'required' => true,
+					'config'   => array(
+						'uiColor' => '#ffffff',
+					)
+				] );
 	}
 
 	/**
@@ -33,7 +29,6 @@ class DictamenODType extends AbstractType {
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
 			'data_class' => 'AppBundle\Entity\DictamenOD',
-			'constraints' => new Valid()
 		) );
 	}
 
@@ -41,7 +36,7 @@ class DictamenODType extends AbstractType {
 	 * {@inheritdoc}
 	 */
 	public function getBlockPrefix() {
-		return 'appbundle_dictamenod';
+		return 'appbundle_extracto_dictamen_ods';
 	}
 
 

@@ -50,15 +50,28 @@
                 {% for proyecto in lista %}
                     <div class="proyecto">
                         <p>
-                        <dl>
-                            <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
-                            {% if proyecto.extracto %}
-                                <dd>{{ proyecto.extracto | raw }}</dd>
-                            {% else %}
-                                <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
-                            {% endif %}
+                            {% set expte = proyecto.expediente |split(' ') %}
+                            {% if expte | length > 1 %}
+                                <dl>
+                                    <dt style="width:40%"><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
+                                    {% if proyecto.extracto %}
+                                        <dd style="margin-left: 42%">{{ proyecto.extracto | raw }}</dd>
+                                    {% else %}
+                                        <dd style="margin-left: 42%">{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                    {% endif %}
 
-                        </dl>
+                                </dl>
+                            {% else %}
+                                <dl>
+                                    <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
+                                    {% if proyecto.extracto %}
+                                        <dd>{{ proyecto.extracto | raw }}</dd>
+                                    {% else %}
+                                        <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                    {% endif %}
+
+                                </dl>
+                            {% endif %}
                         </p>
                         <p style="text-align: center">
                             {% if proyecto.expediente.giros.count > 1 %}

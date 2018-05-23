@@ -2,8 +2,10 @@
     <div class="proyecto">
         <modal-expediente v-if="expediente" :expediente="expediente" @hidden="modalOcultado"></modal-expediente>
         <p>
-            <dl>
-                <dt><a @click="mostrarExpediente">EXPTE. Nº {{ proyecto.expediente.expediente }}</a></dt>
+            <dl class="dl-horizontal">
+                <dt>
+                    <strong><a @click="mostrarExpediente">EXPTE. Nº {{ proyecto.expediente.expediente }}</a></strong>
+                </dt>
                 <dd v-html="proyecto.expediente.extractoTemario"></dd>
             </dl>
         </p>

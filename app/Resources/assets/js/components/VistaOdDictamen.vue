@@ -1,8 +1,7 @@
 <template>
-    <dl>
+    <dl class="dl-horizontal">
         <dt>
-            <!--data-id-expediente="{{ dictamen.expediente.dictamenes[0].id }}"-->
-            <a @click="mostrarDictamen">EXPTE. Nº {{ dictamen.expediente.expediente }}</a>
+            <strong><a @click="mostrarDictamen">EXPTE. Nº {{ dictamen.expediente.expediente }}</a></strong>
         </dt>
         <dd v-html="dictamen.expediente.extractoDictamen"></dd>
     </dl>

@@ -39,7 +39,11 @@
                                                 {% for dictamen in lista %}
                                             <dl class="dl-horizontal">
                                                 <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
-                                                <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                                {% if dictamen.extracto %}
+                                                    <dd>{{ dictamen.extracto | raw }}</dd>
+                                                {% else %}
+                                                    <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                                {% endif %}
                                             </dl>
                                             {% endfor %}
                                             </p>
@@ -58,7 +62,11 @@
                                                 <p>
                                                 <dl class="dl-horizontal">
                                                     <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
-                                                    <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                                    {% if proyecto.extracto %}
+                                                        <dd>{{ proyecto.extracto | raw }}</dd>
+                                                    {% else %}
+                                                        <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                                    {% endif %}
                                                 </dl>
                                                 </p>
                                                 <p style="text-align: center">
@@ -111,9 +119,14 @@
                                     <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
                                     <div class="cuerpo">
                                         <p>
-                                            {% for dictamen in lista %}
+                                        {% for dictamen in lista %}
+                                        {% set expte = dictamen.expediente |split(' ') %}
                                         <dl class="dl-horizontal">
-                                            <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                                            {% if expte | length > 1 %}
+                                                <dt style="width: 16%"><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
+                                            {% else %}
+                                                <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                                            {% endif %}
                                             <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
                                         </dl>
                                         {% endfor %}

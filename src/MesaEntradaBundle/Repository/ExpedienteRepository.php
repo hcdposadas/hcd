@@ -80,11 +80,12 @@ class ExpedienteRepository extends EntityRepository {
 		}
 		if ( $data['textoDefinitivo'] ) {
 			$q = $data['textoDefinitivo'];
-			$qb->andWhere( "upper(e.textoDefinitivo) LIKE upper(:textoDefinitivo)" )
+			$qb->andWhere( "UPPER(e.textoDefinitivo) LIKE UPPER(:textoDefinitivo)" )
 			   ->setParameter( 'textoDefinitivo', "%$q%" );
 		}
 		if ( $data['extracto'] ) {
 			$q = $data['extracto'];
+			//			todo ver acentos
 			$qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
 			   ->setParameter( 'extracto', "%$q%" );
 		}
@@ -97,6 +98,11 @@ class ExpedienteRepository extends EntityRepository {
 			$q = $data['letra'];
 			$qb->andWhere( 'UPPER(e.letra) LIKE UPPER(:letra)' )
 			   ->setParameter( 'letra', "%$q%" );
+		}
+		if ( $data['texto'] ) {
+			$q = $data['texto'];
+			$qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
+			   ->setParameter( 'texto', "%$q%" );
 		}
 		if ( $data['registroMunicipal'] ) {
 			$q = $data['registroMunicipal'];
@@ -282,7 +288,7 @@ class ExpedienteRepository extends EntityRepository {
 		$qb->join( 'e.periodoLegislativo', 'pl' );
 		$qb->addSelect( 'pl' );
 
-		$qb->andWhere( 'e.extractoDictamen is not null' );
+//		$qb->andWhere( 'e.extractoDictamen is not null' );
 
 		return $qb->getQuery()->getArrayResult();
 	}

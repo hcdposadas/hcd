@@ -72,6 +72,12 @@
                             {{ expediente.creadoPor }}
                         </dd>
                     </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Expediente Asignado Por</dt>
+                        <dd>
+                            {{ expediente.asignadoPor }}
+                        </dd>
+                    </dl>
                 </div>
                 <div class="box-footer">
                     {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
@@ -95,12 +101,7 @@
                             <i class="fa fa-print"></i> Imprimir Etiqueta
                         </a>
                     {% endif %}
-                    {% if is_granted('ROLE_LEGISLATIVO') %}
-                        <a class="btn btn-default margin" title="Editar Extracto"
-                           href="{{ path('expediente_editar_extracto', {id: expediente.id}) }}">
-                            <i class="fa fa-file-text-o"></i> Editar extractos
-                        </a>
-                    {% endif %}
+
 
                 </div>
 

@@ -45,8 +45,7 @@
             }
         },
         mounted() {
-            let urlBase = window.location.href.replace(/(app(_dev)?\.php).*/, '$1')
-            axios.get(urlBase + '/sesion/concejales').then(({data}) => {
+            axios.get(baseUrl + 'sesion/concejales').then(({data}) => {
                 this.concejales = data.concejales
             })
         }

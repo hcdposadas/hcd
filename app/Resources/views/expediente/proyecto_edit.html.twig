@@ -128,11 +128,11 @@
             </div>
 
             {% if is_granted('ROLE_LEGISLATIVO') %}
-                <div class="row">
-                    <div class="col-md-12">
-                        {{ form_row(edit_form.extracto) }}
-                    </div>
-                </div>
+                {#<div class="row">#}
+                    {#<div class="col-md-12">#}
+                        {#{{ form_row(edit_form.extracto) }}#}
+                    {#</div>#}
+                {#</div>#}
                 <div class="row">
                     <div class="col-md-12">
                         {{ form_row(edit_form.giros) }}

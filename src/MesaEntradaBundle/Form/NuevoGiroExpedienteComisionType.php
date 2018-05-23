@@ -14,15 +14,16 @@ class NuevoGiroExpedienteComisionType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'giros',
-				BootstrapCollectionType::class,
-				[
-					'entry_type'      => GiroType::class,
-					'allow_add'       => true,
-					'allow_delete'    => true,
-					'by_reference'    => false,
-					'display_history' => false
-				] )
+//			->add( 'giros',
+//				BootstrapCollectionType::class,
+//				[
+//					'entry_type'      => GiroType::class,
+//					'allow_add'       => true,
+//					'allow_delete'    => true,
+//					'by_reference'    => false,
+//					'display_history' => false
+//				] )
+			->add( 'numeroNota' )
 			->add( 'giroAdministrativos',
 				BootstrapCollectionType::class,
 				[
@@ -31,7 +32,7 @@ class NuevoGiroExpedienteComisionType extends AbstractType {
 					'allow_delete'    => true,
 					'by_reference'    => false,
 					'display_history' => false,
-					'label'           => 'Giro al DEM'
+					'label'           => 'Giros'
 				] );
 	}
 

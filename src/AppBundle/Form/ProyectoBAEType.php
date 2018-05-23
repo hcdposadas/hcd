@@ -22,6 +22,11 @@ class ProyectoBAEType extends AbstractType {
 					'required'     => false,
 					'placeholder'  => 'Por Expte'
 
+				] )
+			->add( 'esInformeDem',
+				null,
+				[
+					'label' => 'Informe DEM'
 				] );
 	}
 
@@ -30,7 +35,7 @@ class ProyectoBAEType extends AbstractType {
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( array(
-			'data_class' => 'AppBundle\Entity\ProyectoBAE',
+			'data_class'  => 'AppBundle\Entity\ProyectoBAE',
 			'constraints' => new Valid()
 		) );
 	}

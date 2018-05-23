@@ -20,9 +20,9 @@ class OrdenDelDiaType extends AbstractType {
 					'allow_add'     => true,
 					'allow_delete'  => true,
 					'by_reference'  => false,
-					'extra_actions' => [
-						[ 'icon' => 'fa-file-text-o', 'class' => 'btn-editar-extracto', 'title' => 'Editar Extracto' ]
-					]
+//					'extra_actions' => [
+//						[ 'icon' => 'fa-file-text-o', 'class' => 'btn-editar-extracto', 'title' => 'Editar Extracto' ]
+//					]
 				] )
 			->add( 'cerrado' );
 	}

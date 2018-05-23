@@ -7,6 +7,7 @@ use AppBundle\Entity\Cargo;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Entity\Base\BaseClass;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -113,7 +114,7 @@ class Expediente extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="numero_nota", type="text", nullable=true)
+	 * @ORM\Column(name="numero_nota", type="string", length=255, nullable=true)
 	 */
 	private $numeroNota;
 
@@ -253,6 +254,15 @@ class Expediente extends BaseClass {
 	 * @ORM\Column(name="fecha_presentacion", type="datetime", nullable=true)
 	 */
 	private $fechaPresentacion;
+
+	/**
+	 * @var Usuario $asignadoPor
+	 *
+	 *
+	 * @ORM\ManyToOne(targetEntity="UsuariosBundle\Entity\Usuario")
+	 * @ORM\JoinColumn(name="asignado_por_id", referencedColumnName="id", nullable=true)
+	 */
+	private $asignadoPor;
 
 	/**
 	 * @var
@@ -1216,6 +1226,30 @@ class Expediente extends BaseClass {
     }
 
     /**
+     * Set asignadoPor
+     *
+     * @param \UsuariosBundle\Entity\Usuario $asignadoPor
+     *
+     * @return Expediente
+     */
+    public function setAsignadoPor(\UsuariosBundle\Entity\Usuario $asignadoPor = null)
+    {
+        $this->asignadoPor = $asignadoPor;
+
+        return $this;
+    }
+
+    /**
+     * Get asignadoPor
+     *
+     * @return \UsuariosBundle\Entity\Usuario
+     */
+    public function getAsignadoPor()
+    {
+        return $this->asignadoPor;
+    }
+
+	/**
      * @return string
      */
     public function getTextoDelGiro()

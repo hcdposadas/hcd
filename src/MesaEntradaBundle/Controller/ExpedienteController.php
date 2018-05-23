@@ -571,6 +571,13 @@ class ExpedienteController extends Controller {
 			$anexosOriginales->add( $anexo );
 		}
 
+		$girosAComisionOriginal = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getGiros() as $giro ) {
+			$girosAComisionOriginal->add( $giro );
+		}
+
 
 		$editForm = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType', $expediente );
 		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
@@ -594,6 +601,13 @@ class ExpedienteController extends Controller {
 				if ( false === $expediente->getAnexos()->contains( $anexo ) ) {
 					$anexo->setExpediente( null );
 					$em->remove( $anexo );
+				}
+			}
+
+			foreach ( $girosAComisionOriginal as $giro ) {
+				if ( false === $expediente->getGiros()->contains( $giro ) ) {
+					$giro->setExpediente( null );
+					$em->remove( $giro );
 				}
 			}
 

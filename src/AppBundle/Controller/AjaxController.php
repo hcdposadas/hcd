@@ -12,12 +12,14 @@ use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
+use Doctrine\Common\Util\Debug;
 use Endroid\QrCode\QrCode;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use MesaEntradaBundle\Entity\AnexoExpediente;
 use MesaEntradaBundle\Entity\Dictamen;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\Giro;
+use MesaEntradaBundle\Entity\IniciadorExpediente;
 use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -276,9 +278,13 @@ class AjaxController extends Controller {
 			}
 		}
 
-		$json = $this->getDoctrine()->getRepository( 'MesaEntradaBundle:Expediente' )->buscarExpedientesSesion( $data );
+		$expedientes = $this->getDoctrine()
+            ->getRepository( 'MesaEntradaBundle:Expediente' )
+            ->buscarExpedientesSesion($data);
 
-		return new JsonResponse( $json );
+		$expedientes = array_map([$this, 'mapExpediente'], $expedientes);
+
+		return JsonResponse::create($expedientes);
 	}
 
 	public function enviarMailCodigoProyectoAction( Request $request ) {
@@ -812,14 +818,14 @@ class AjaxController extends Controller {
             ];
         };
 
-        $mapBae = function (ProyectoBAE $bae) use ($mapExpediente) {
+        $mapBae = function (ProyectoBAE $bae) {
             return [
                 'id' => $bae->getId(),
-                'expediente' => $bae->getExpediente() ? $mapExpediente($bae->getExpediente()) : null,
+                'expediente' => $bae->getExpediente() ? $this->mapExpediente($bae->getExpediente()) : null,
             ];
         };
 
-        $mapOd = function (DictamenOD $od) use ($mapExpediente) {
+        $mapOd = function (DictamenOD $od) {
             $firmantes = [];
             /** @var Dictamen $dictamen */
             $dictamen = $od->getExpediente()->getDictamenes()[0];
@@ -829,7 +835,7 @@ class AjaxController extends Controller {
             return [
                 'id' => $od->getId(),
                 'extracto' => $od->getExtracto(),
-                'expediente' => $od->getExpediente() ? $mapExpediente($od->getExpediente()) : null,
+                'expediente' => $od->getExpediente() ? $this->mapExpediente($od->getExpediente()) : null,
                 'dictamen' => [
                     'id' => $dictamen->getId(),
                     'texto' => $dictamen->getTextoDictamen(),
@@ -884,5 +890,70 @@ class AjaxController extends Controller {
                 'acta' => $sesion->getActa(),
             ]
         ]);
+    }
+
+    private function mapExpediente(Expediente $exp) {
+        $anexos = $exp->getAnexos()->map(function (AnexoExpediente $anexo) {
+            return [
+                'id' => $anexo->getId(),
+                'descripcion' => $anexo->getDescripcion(),
+                'anexo' => $anexo->getAnexo(),
+            ];
+        })->toArray();
+
+        $giros = $exp->getGirosOrdenados()->map(function (Giro $giro) {
+            return [
+                'id' => $giro->getId(),
+                'cabecera' => $giro->getCabecera(),
+                'comisionOrigen' => $giro->getComisionOrigen() ? [
+                    'id' => $giro->getComisionOrigen()->getId(),
+                    'nombre' => $giro->getComisionOrigen()->getNombre(),
+                    'abreviacion' => $giro->getComisionOrigen()->getAbreviacion(),
+                ] : null,
+                'comisionDestino' => $giro->getComisionDestino() ? [
+                    'id' => $giro->getComisionDestino()->getId(),
+                    'nombre' => $giro->getComisionDestino()->getNombre(),
+                    'abreviacion' => $giro->getComisionDestino()->getAbreviacion(),
+                ] : null,
+                'archivado' => $giro->getArchivado(),
+                'texto' => $giro->getTexto(),
+            ];
+        })->toArray();
+
+        $autor = null;
+        $iniciadores = $exp->getIniciadores()->map(function (IniciadorExpediente $ie) use (&$autor) {
+            if ($ie->getAutor()) {
+                $autor = [
+                    'nombre' => $ie->getIniciador()->getCargoPersona()->getPersona()->getNombreCompleto(),
+                    'cargo' => $ie->getIniciador()->getCargoPersona()->getCargo()->getNombre(),
+                ];
+            }
+            if ($ie->getIniciador()) {
+                return [
+                    'nombre' => $ie->getIniciador()->getCargoPersona()->getPersona()->getNombreCompleto(),
+                    'cargo' => $ie->getIniciador()->getCargoPersona()->getCargo()->getNombre(),
+                    'esAutor' => $ie->getAutor(),
+                ];
+            } else {
+                return [];
+            }
+        });
+
+        return [
+            'id' => $exp->getId(),
+            'fecha' => $exp->getFecha() ? $exp->getFecha()->format('Y-m-d H:i:s') : null,
+            'fechaPresentacion' => $exp->getFechaPresentacion() ? $exp->getFechaPresentacion()->format('Y-m-d H:i:s') : null,
+            'expediente' => $exp->__toString(),
+            'autor' => $autor,
+            'iniciadores' => $iniciadores,
+            'extracto' => $exp->getExtracto(),
+            'extractoDictamen' => $exp->getExtractoDictamen(),
+            'extractoTemario' => $exp->getExtractoTemario(),
+            'giros' => $giros,
+            'textoDelGiro' => $exp->getGiros()->count() ? $exp->getTextoDelGiro() : null,
+            'texto' => $exp->getTexto(),
+            'textoDefinitivo' => $exp->getTextoDefinitivo(),
+            'anexos' => $anexos,
+        ];
     }
 }

@@ -1,33 +1,6 @@
 <template>
     <div class="row">
-
-        <div id="modal-expte" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-
-             aria-labelledby="myLargeModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        Expte
-                    </div>
-                    <div class="modal-body">
-                        <div class="cuerpo">
-
-                        </div>
-                        <div class="anexos">
-                            <template v-for="iAnexo in anexos">
-                                <img class="img-responsive" :src="baseUrl+'/uploads/expedientes/anexos/'+iAnexo.anexo">
-                                <span>
-                                {{ iAnexo.descripcion}}
-                            </span>
-                            </template>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <modal-expediente v-if="expediente" :expediente="expediente" @hidden="modalOcultado"></modal-expediente>
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
@@ -91,13 +64,8 @@
                             </th>
                         </tr>
                         <tr v-for="expediente in expedientes">
-                            <td>
-                                {{ expediente.expediente }}-{{ expediente.letra }}-{{ expediente.periodoLegislativo ?
-                                expediente.periodoLegislativo.anio : expediente.anio }}
-                            </td>
-                            <td>
-                                {{ expediente.extracto }}
-                            </td>
+                            <td>{{ expediente.expediente }}</td>
+                            <td>{{ expediente.extracto }}</td>
                             <td>
                                 <a href="#" @click="verExpte(expediente)">
                                     <i class="fa fa-file"></i>
@@ -123,9 +91,9 @@
                 tema: null,
                 contenido: null,
                 expedientes: [],
+                expediente: null,
                 buscando: false,
                 anexos: [],
-                baseUrl: window.baseUrl
             }
         },
         methods: {
@@ -142,7 +110,8 @@
                         }
                     }
                 }
-
+                console.log('baseUrl', baseUrl)
+                console.log('window.baseUrl', window.baseUrl)
                 axios.get(window.baseUrl + 'sesion/buscar-expediente', params).then(response => {
                     console.log('response expte', response);
                     this.expedientes = response.data;
@@ -150,12 +119,18 @@
                 })
             },
             verExpte(expediente) {
-                console.log(expediente);
-                window.$('#modal-expte').modal('toggle')
-                var anio = expediente.periodoLegislativo ? expediente.periodoLegislativo.anio : expediente.anio
-                window.$('#modal-expte .modal-header').html(expediente.expediente + '-' + expediente.letra + '-' + anio);
-                this.anexos = expediente.anexos;
-                window.$('#modal-expte .modal-body').html(expediente.texto);
+                this.expediente = expediente
+                // window.$('#modal-expte .modal-header').html(expediente.expediente);
+                // // this.anexos = expediente.anexos;
+                // window.$('#modal-expte .modal-body').html(expediente.texto);
+                //
+                // window.$('#modal-expte').modal('toggle')
+            },
+            // mostrarExpediente() {
+            //     this.expediente = this.proyecto.expediente
+            // },
+            modalOcultado() {
+                this.expediente = null
             }
         },
         mounted() {

@@ -247,9 +247,9 @@ class ExpedienteRepository extends EntityRepository {
 		$qb->leftJoin('e.periodoLegislativo', 'pl');
 		$qb->addSelect( 'pl' );
 		$qb->leftJoin( 'e.anexos', 'anexos' );
-		$qb->addSelect( 'anexos' );
+//		$qb->addSelect( 'anexos' );
 
-		return $qb->getQuery()->getArrayResult();
+		return $qb->getQuery()->getResult();
 	}
 
 	public function getQbExpedientesLegislativosExternos() {

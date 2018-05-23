@@ -40,6 +40,7 @@ Encore
 
     .configureDefinePlugin((options) => {
         options.nodeHost = JSON.stringify(env.nodeHost);
+        // options.baseUrl = JSON.stringify(env.baseUrl);
     })
 
     .enableSourceMaps(!Encore.isProduction())

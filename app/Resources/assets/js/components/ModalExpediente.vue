@@ -4,12 +4,27 @@
             <div class="modal-content">
                 <div class="modal-header">
                     {{ expediente.expediente }}
+                    <div v-if="expediente.fechaPresentacion" class="pull-right">Presentado el {{ fecha(expediente.fechaPresentacion) }}</div>
                 </div>
                 <div class="modal-body">
                     <div class="cuerpo" v-html="expediente.texto"></div>
-                    <div class="anexos">
+                    <div v-if="expediente.giros && expediente.giros.length" class="giros">
+                        <hr>
+                        <h3>Giros</h3>
+                        <div v-html="expediente.textoDelGiro"></div>
+                    </div>
+                    <div v-if="expediente.autor" class="autor">
+                        <hr>
+                        <h3>Autor</h3>
+                        <div>
+                            {{ expediente.autor.cargo }} {{ expediente.autor.nombre }}
+                        </div>
+                    </div>
+                    <div v-if="expediente.anexos && expediente.anexos.length" class="anexos">
+                        <hr>
+                        <h3>Anexos</h3>
                         <template v-for="anexo in expediente.anexos">
-                            <img class="img-responsive" :src="baseUrl + '/uploads/expedientes/anexos/' + anexo.id">
+                            <img class="img-responsive" :src="imgSrc(anexo)">
                             <span>{{ anexo.descripcion }}</span>
                         </template>
                     </div>
@@ -23,6 +38,17 @@
         props: {
             expediente: {
                 required: true
+            }
+        },
+        methods: {
+            fecha(fecha) {
+                return fecha.substring(0, 10)
+                            .split('-')
+                            .reverse()
+                            .join('/')
+            },
+            imgSrc(anexo) {
+                return assetPath + 'expedientes/anexos/' + anexo.anexo
             }
         },
         mounted() {

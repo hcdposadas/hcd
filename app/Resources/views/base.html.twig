@@ -52,6 +52,7 @@
     <script>
         {#window.user = { id: {{ app.user.id }} };#}
         window.baseUrl = '{{ path('app_homepage') }}';
+        window.assetPath = '{{ asset('uploads/') }}';
     </script>
 </head>
 <body class="hold-transition skin-green sidebar-mini">

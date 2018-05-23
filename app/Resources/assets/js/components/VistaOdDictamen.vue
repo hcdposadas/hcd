@@ -33,6 +33,11 @@
                 if (this.dictamen.dictamen.firmantes){
                     window.$('#modal-dictamen .modal-body').append('<h4>Firmantes</h4>');
                     this.dictamen.dictamen.firmantes.forEach(function(firmante) {
+                        firmante = firmante.toLocaleLowerCase().split(' ').map(
+                            (w) => {
+                                return w.charAt(0).toLocaleUpperCase() + w.substr(1)
+                            }).join(' ')
+
                         window.$('#modal-dictamen .modal-body').append(firmante + '<br>');
                     });
                 }

@@ -12,7 +12,6 @@ use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
-use Doctrine\Common\Util\Debug;
 use Endroid\QrCode\QrCode;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use MesaEntradaBundle\Entity\AnexoExpediente;
@@ -281,7 +280,6 @@ class AjaxController extends Controller {
 		$expedientes = $this->getDoctrine()
             ->getRepository( 'MesaEntradaBundle:Expediente' )
             ->buscarExpedientesSesion($data);
-
 		$expedientes = array_map([$this, 'mapExpediente'], $expedientes);
 
 		return JsonResponse::create($expedientes);
@@ -774,49 +772,6 @@ class AjaxController extends Controller {
         $bae = $sesion->getBae()->first();
         /** @var OrdenDelDia $od */
         $od = $sesion->getOd()->first();
-//        Debug::dump($bae); exit();
-
-        $mapExpediente = function (Expediente $exp) {
-            $anexos = $exp->getAnexos()->map(function (AnexoExpediente $anexo) {
-                return [
-                    'id' => $anexo->getId(),
-                    'descripcion' => $anexo->getDescripcion(),
-                ];
-            });
-
-            $giros = $exp->getGirosOrdenados()->map(function (Giro $giro) {
-                return [
-                    'id' => $giro->getId(),
-                    'cabecera' => $giro->getCabecera(),
-                    'comisionOrigen' => $giro->getComisionOrigen() ? [
-                        'id' => $giro->getComisionOrigen()->getId(),
-                        'nombre' => $giro->getComisionOrigen()->getNombre(),
-                        'abreviacion' => $giro->getComisionOrigen()->getAbreviacion(),
-                    ] : null,
-                    'comisionDestino' => $giro->getComisionDestino() ? [
-                        'id' => $giro->getComisionDestino()->getId(),
-                        'nombre' => $giro->getComisionDestino()->getNombre(),
-                        'abreviacion' => $giro->getComisionDestino()->getAbreviacion(),
-                    ] : null,
-                    'archivado' => $giro->getArchivado(),
-                    'texto' => $giro->getTexto(),
-                ];
-            });
-
-            return [
-                'id' => $exp->getId(),
-                'fecha' => $exp->getFecha() ? $exp->getFecha()->format('Y-m-d H:i:s') : null,
-                'expediente' => $exp->__toString(),
-                'extracto' => $exp->getExtracto(),
-                'extractoDictamen' => $exp->getExtractoDictamen(),
-                'extractoTemario' => $exp->getExtractoTemario(),
-                'giros' => $giros,
-                'textoDelGiro' => $exp->getTextoDelGiro(),
-                'texto' => $exp->getTexto(),
-                'textoDefinitivo' => $exp->getTextoDefinitivo(),
-                'anexos' => $anexos,
-            ];
-        };
 
         $mapBae = function (ProyectoBAE $bae) {
             return [
@@ -937,7 +892,7 @@ class AjaxController extends Controller {
             } else {
                 return [];
             }
-        });
+        })->toArray();
 
         return [
             'id' => $exp->getId(),

@@ -1260,7 +1260,9 @@ class Expediente extends BaseClass {
             $textoDelGiro = 'A la Comisión de ';
         }
 
-        $giros = $this->getGirosOrdenados()->map(function (Giro $giro) {
+        $giros = $this->getGirosOrdenados()->filter(function(Giro $giro) {
+            return $giro->getComisionDestino() != null;
+        })->map(function (Giro $giro) {
             return '<strong title="'.$giro->getComisionDestino()->getNombre().'">'.$giro->getComisionDestino()->getAbreviacion().'</strong>';
         });
 

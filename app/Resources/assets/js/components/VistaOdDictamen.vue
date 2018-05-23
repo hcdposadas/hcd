@@ -15,8 +15,19 @@
             }
         },
         methods: {
+            fecha(fecha) {
+                return fecha.substring(0, 10)
+                    .split('-')
+                    .reverse()
+                    .join('/')
+            },
             mostrarDictamen() {
-                window.$('#modal-dictamen .modal-header').html(this.dictamen.expediente.expediente);
+                let header = this.dictamen.expediente.expediente
+
+                if (this.dictamen.expediente.fechaPresentacion) {
+                    header += '<div class="pull-right">Presentado el ' +this.fecha(this.dictamen.expediente.fechaPresentacion) + '</div>'
+                }
+                window.$('#modal-dictamen .modal-header').html(header);
 
                 window.$('#modal-dictamen .modal-body').html(this.dictamen.dictamen.texto);
 

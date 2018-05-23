@@ -15,9 +15,13 @@
                     </div>
                     <div v-if="expediente.autor" class="autor">
                         <hr>
-                        <h3>Autor</h3>
+                        <h3>Iniciadores</h3>
                         <div>
-                            {{ expediente.autor.cargo }} {{ expediente.autor.nombre }}
+                            <ul>
+                                <li v-for="iniciador in expediente.iniciadores">
+                                    {{ iniciador.cargo }} {{ iniciador.nombre }} <span v-if="iniciador.esAutor">(Autor)</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div v-if="expediente.anexos && expediente.anexos.length" class="anexos">

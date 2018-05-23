@@ -240,44 +240,6 @@
     $(document).ready(function () {
         $(document).ajaxStop($.unblockUI);
     });
-    $(document).on('click', '.ver-dictamen', function () {
-        console.log('id', $(this).data('id-expediente'))
-
-        var idExpte = $(this).data('id-expediente');
-
-        $.blockUI({
-            message: '<div class="progress">\n' +
-            '                <div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">\n' +
-            '                </div>\n' +
-            '              </div>',
-            css: {border: 'none', background: ''}
-        });
-        $('#modal-dictamen .modal-body').html('');
-
-        $.ajax({
-            type: 'get',
-            url: '{{ path('ver_dictamen') }}',
-            data: {id: idExpte},
-            success: function (data) {
-
-                $('#modal-dictamen .modal-header').html(data.expediente);
-
-                $('#modal-dictamen .modal-body').html(data.texto);
-
-                $('#modal-dictamen .modal-body').append('<h4>Firmantes</h4>');
-                data.firmantes.forEach(function(element) {
-                    $('#modal-dictamen .modal-body').append(element + '<br>');
-                });
-
-                $('#modal-dictamen').modal('toggle')
-
-
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-
-            }
-        });
-    })
 </script>
 
 <script>

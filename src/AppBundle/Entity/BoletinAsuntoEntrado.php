@@ -209,7 +209,7 @@ class BoletinAsuntoEntrado extends BaseClass {
 	public function getProyectosDeDEM() {
 		return $this->ordenarProyectos(
 			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
-				return $proyectoBae->getExpediente()->esProyectoDeDEM()
+				return $proyectoBae->getExpediente() && $proyectoBae->getExpediente()->esProyectoDeDEM()
 				       || $proyectoBae->getEsInformeDem() ;
 			} )
 		);

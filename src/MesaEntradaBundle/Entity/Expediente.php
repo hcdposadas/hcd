@@ -7,6 +7,7 @@ use AppBundle\Entity\Cargo;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use UsuariosBundle\Entity\Usuario;
 use UtilBundle\Entity\Base\BaseClass;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -1246,5 +1247,39 @@ class Expediente extends BaseClass {
     public function getAsignadoPor()
     {
         return $this->asignadoPor;
+    }
+
+	/**
+     * @return string
+     */
+    public function getTextoDelGiro()
+    {
+        if ($this->getGiros()->count() > 1) {
+            $textoDelGiro = 'A las Comisiones de ';
+        } else {
+            $textoDelGiro = 'A la Comisión de ';
+        }
+
+        $giros = $this->getGirosOrdenados()->filter(function(Giro $giro) {
+            return $giro->getComisionDestino() != null;
+        })->map(function (Giro $giro) {
+            return '<strong title="'.$giro->getComisionDestino()->getNombre().'">'.$giro->getComisionDestino()->getAbreviacion().'</strong>';
+        });
+
+        if (count($giros) == 1) {
+            $textoDelGiro .= $giros[0];
+        } else {
+            $count = count($giros);
+            foreach ($giros as $i => $giro) {
+                $textoDelGiro .= $giro;
+                if ($i == $count - 2) {
+                    $textoDelGiro .= ' y de ';
+                } elseif ($count > 1) {
+                    $textoDelGiro .= ';';
+                }
+            }
+        }
+
+        return $textoDelGiro;
     }
 }

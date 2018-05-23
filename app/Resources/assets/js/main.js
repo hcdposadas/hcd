@@ -1,7 +1,6 @@
 
 
 import Vue from 'vue';
-// const Vue = require('vue');
 global.Vue = Vue;
 
 global.axios = require('axios');
@@ -23,6 +22,9 @@ import ConsultarExpediente from './components/ConsultarExpediente';
 import ConsultarSesiones from './components/ConsultarSesiones';
 import PanelDisplay from './components/PanelDisplay';
 import QuorumButton from './components/QuorumButton';
+import VistaBae from './components/VistaBae';
+import VistaOd from './components/VistaOd';
+import ModalExpediente from './components/ModalExpediente';
 
 Vue.component('panel-votacion', PanelVotacion);
 Vue.component('panel-concejal', Concejal);
@@ -30,6 +32,9 @@ Vue.component('consultar-expediente', ConsultarExpediente);
 Vue.component('consultar-sesiones', ConsultarSesiones);
 Vue.component('panel-display', PanelDisplay);
 Vue.component('quorum-button', QuorumButton);
+Vue.component('vista-bae', VistaBae);
+Vue.component('vista-od', VistaOd);
+Vue.component('modal-expediente', ModalExpediente);
 
 const moment = require('moment')
 require('moment/locale/es')

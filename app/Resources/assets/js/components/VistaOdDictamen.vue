@@ -1,0 +1,45 @@
+<template>
+    <dl>
+        <dt>
+            <!--data-id-expediente="{{ dictamen.expediente.dictamenes[0].id }}"-->
+            <a @click="mostrarDictamen">EXPTE. Nº {{ dictamen.expediente.expediente }}</a>
+        </dt>
+        <dd v-html="dictamen.expediente.extractoDictamen"></dd>
+    </dl>
+</template>
+<script>
+    export default {
+        props: {
+            dictamen: {
+                required: true
+            }
+        },
+        methods: {
+            fecha(fecha) {
+                return fecha.substring(0, 10)
+                    .split('-')
+                    .reverse()
+                    .join('/')
+            },
+            mostrarDictamen() {
+                let header = this.dictamen.expediente.expediente
+
+                if (this.dictamen.expediente.fechaPresentacion) {
+                    header += '<div class="pull-right">Presentado el ' +this.fecha(this.dictamen.expediente.fechaPresentacion) + '</div>'
+                }
+                window.$('#modal-dictamen .modal-header').html(header);
+
+                window.$('#modal-dictamen .modal-body').html(this.dictamen.dictamen.texto);
+
+                if (this.dictamen.dictamen.firmantes){
+                    window.$('#modal-dictamen .modal-body').append('<h4>Firmantes</h4>');
+                    this.dictamen.dictamen.firmantes.forEach(function(firmante) {
+                        window.$('#modal-dictamen .modal-body').append(firmante + '<br>');
+                    });
+                }
+
+                window.$('#modal-dictamen').modal('toggle')
+            }
+        }
+    }
+</script>

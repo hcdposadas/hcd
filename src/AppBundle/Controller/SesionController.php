@@ -36,29 +36,11 @@ class SesionController extends Controller {
 
 			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-			$bae = $sesion->getBae()->first();
-			$od  = $sesion->getOd()->first();
-
-			$proyectos = [
-				'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
-				'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
-				'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
-			];
-
-			$dictamenes = [
-				'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
-				'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
-				'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
-				'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
-			];
-
 			return $this->render( 'sesion/index.html.twig',
 				array(
 					'concejal'      => $personaUsuario,
 					'cartaOrganica' => $cartaOrganica,
 					'sesion'        => $sesion,
-					'proyectos'     => $proyectos,
-					'dictamenes'    => $dictamenes,
 				) );
 		}
 
@@ -69,30 +51,11 @@ class SesionController extends Controller {
 		) {
 			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
-			$bae = $sesion->getBae()->first();
-			$od  = $sesion->getOd()->first();
-
-			$proyectos = [
-				'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
-				'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
-				'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
-			];
-
-			$dictamenes = [
-				'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
-				'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
-				'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
-				'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
-			];
-
-
 			return $this->render( 'sesion/autoridades.html.twig',
 				array(
 					'sesion'        => $sesion,
 					'concejal'      => $personaUsuario,
 					'cartaOrganica' => $cartaOrganica,
-					'proyectos'     => $proyectos,
-					'dictamenes'    => $dictamenes,
 				) );
 		}
 

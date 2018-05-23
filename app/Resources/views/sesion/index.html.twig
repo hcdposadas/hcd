@@ -44,12 +44,12 @@
     <script>
         window.user = {id: {{ app.user.id }} };
         window.baseUrl = '{{ path('app_homepage') }}';
+        window.assetPath = '{{ asset('uploads/') }}';
     </script>
 </head>
 <body>
 
 <div class="container">
-
     {#modal#}
     <div id="modal-dictamen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
          aria-labelledby="modal-dictamen">
@@ -68,91 +68,12 @@
         </div>
     </div>
     {#modal#}
-
     <div class="row">
         {% if is_granted('ROLE_CONCEJAL') %}
             <div id="app">
                 <panel-concejal path-logout="{{ path('sesion_logout') }}"
                                 path-carta-organica="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}"
                                 concejal="{{ concejal }}">
-
-                    <template slot="od">
-                        {% if sesion.ordenDelDia %}
-                            {{ sesion.ordenDelDia | raw }}
-                        {% else %}
-                            {% for titulo, lista in dictamenes %}
-                                {% if lista.count %}
-                                    <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
-                                    <div class="cuerpo">
-                                        <p>
-                                        <dl class="dl-horizontal">
-                                            {% for dictamen in lista %}
-                                                {# TODO considerar que puede haber mas de un dictamen por expediente #}
-                                                <dt><strong><a  class="ver-dictamen"
-                                                               data-id-expediente="{{ dictamen.expediente.dictamenes[0].id }}">
-                                                            EXPTE.
-                                                            Nº {{ dictamen.expediente }}</a></strong></dt>
-                                                <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
-                                            {% endfor %}
-                                        </dl>
-                                        </p>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </template>
-                    <template slot="bae">
-                        {% if sesion.asuntosEntrados %}
-                            {{ sesion.asuntosEntrados | raw }}
-                        {% else %}
-                            {% for titulo, lista in proyectos %}
-                                {% if lista.count %}
-                                    <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
-                                    <div class="cuerpo">
-
-                                        {% for proyecto in lista %}
-                                            <div class="proyecto">
-                                                <p>
-                                                <dl class="dl-horizontal">
-                                                    <dt><strong>EXPTE. Nº {{ proyecto.expediente }}</strong></dt>
-                                                    <dd>{{ proyecto.expediente.extractoTemario | raw }}</dd>
-                                                </dl>
-                                                </p>
-                                                <p style="text-align: center">
-                                                    {% if proyecto.expediente.giros.count > 1 %}
-                                                        A las Comisiones de
-                                                    {% else %}
-                                                        A la Comisión de
-                                                    {% endif %}
-
-                                                    {% if proyecto.expediente.girosOrdenados.count <= 2 %}
-                                                        {% if proyecto.expediente.girosOrdenados.count == 1 %}
-                                                            {% for giro in proyecto.expediente.girosOrdenados %}
-                                                                <strong>{{ giro.comisionDestino.abreviacion }}</strong>
-                                                            {% endfor %}
-                                                        {% else %}
-                                                            {% for giro in proyecto.expediente.girosOrdenados %}
-                                                                <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    {% else %}
-                                                        {% for giro in proyecto.expediente.girosOrdenados %}
-                                                            {% set ender = '; ' %}
-                                                            {% if loop.index == (loop.length - 1) %}
-                                                                {% set ender = ' y de ' %}
-                                                            {% endif %}
-                                                            <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
-                                                        {% endfor %}
-                                                    {% endif %}
-
-                                                </p>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </template>
                 </panel-concejal>
             </div>
         {% endif %}
@@ -186,44 +107,6 @@
     $(document).ready(function () {
         $(document).ajaxStop($.unblockUI);
     });
-    $(document).on('click', '.ver-dictamen', function () {
-        console.log('id', $(this).data('id-expediente'))
-
-        var idExpte = $(this).data('id-expediente');
-
-        $.blockUI({
-            message: '<div class="progress">\n' +
-            '                <div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">\n' +
-            '                </div>\n' +
-            '              </div>',
-            css: {border: 'none', background: ''}
-        });
-
-        $.ajax({
-            type: 'get',
-            url: '{{ path('ver_dictamen') }}',
-            data: {id: idExpte},
-            success: function (data) {
-
-                $('#modal-dictamen .modal-header').html(data.expediente);
-
-                $('#modal-dictamen .modal-body').html(data.texto);
-
-                if (data.firmantes){
-                    $('#modal-dictamen .modal-body').append('<h4>Firmantes</h4>');
-                    data.firmantes.forEach(function(element) {
-                        $('#modal-dictamen .modal-body').append(element + '<br>');
-                    });
-                }
-
-                $('#modal-dictamen').modal('toggle')
-
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-
-            }
-        });
-    })
 </script>
 <script src="{{ asset('build/app.js') }}"></script>
 </html>

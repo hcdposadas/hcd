@@ -176,7 +176,7 @@
                         <div data-spy="scroll"
                              data-target="#navbar-example2" data-offset="0">
                             <div class="ae" style="display: none;">
-                                <vista-bae></vista-bae>
+                                <vista-bae id-sesion="{{ sesion.id }}"></vista-bae>
                             </div>
                             <div class="consultar-expedientes" style="display: none;">
                                 <consultar-expediente></consultar-expediente>
@@ -186,7 +186,7 @@
                                 {% endblock body %}
                             </div>
                             <div class="od" style="display: none;">
-                                <vista-od></vista-od>
+                                <vista-od id-sesion="{{ sesion.id }}"></vista-od>
                             </div>
                             <div class="carta-organica" style="display: none;">
                                 <div class="embed-responsive embed-responsive-16by9">

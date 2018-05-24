@@ -66,8 +66,8 @@
                     </div>
                     <div class="row m-t-5">
                         <div class="col-md-12">
-                            <vista-bae v-if="showBae"></vista-bae>
-                            <vista-od v-if="showOd"></vista-od>
+                            <vista-bae v-if="idSesion && showBae" :id-sesion="idSesion"></vista-bae>
+                            <vista-od v-if="idSesion && showOd" :id-sesion="idSesion"></vista-od>
 
                             <!--<div v-html="texto" v-show="showTexto" data-spy="scroll"-->
                             <!--data-target="#navbar-example2" data-offset="0">-->
@@ -112,7 +112,8 @@
                 showActas: false,
                 titulo: null,
                 fecha: null,
-                texto: null
+                texto: null,
+                idSesion: null
             }
         },
         methods: {
@@ -171,6 +172,7 @@
                 // this.ae = data.s_asuntosEntrados;
                 this.titulo = data.s_titulo;
                 this.fecha = data.s_fecha;
+                this.idSesion = data.s_id;
 
                 this.loading = false;
 

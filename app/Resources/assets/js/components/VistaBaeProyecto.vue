@@ -6,7 +6,7 @@
                 <dt>
                     <strong><a @click="mostrarExpediente">EXPTE. Nº {{ proyecto.expediente.expediente }}</a></strong>
                 </dt>
-                <dd v-html="proyecto.expediente.extractoTemario"></dd>
+                <dd v-html="proyecto.extracto"></dd>
             </dl>
         </p>
         <p style="text-align: center" v-html="proyecto.expediente.textoDelGiro"></p>

@@ -776,6 +776,7 @@ class AjaxController extends Controller {
         $mapBae = function (ProyectoBAE $bae) {
             return [
                 'id' => $bae->getId(),
+                'extracto' => $bae->getExtracto(),
                 'expediente' => $bae->getExpediente() ? $this->mapExpediente($bae->getExpediente()) : null,
             ];
         };

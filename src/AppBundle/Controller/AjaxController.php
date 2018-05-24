@@ -803,36 +803,72 @@ class AjaxController extends Controller {
         $proyectos = [
             'ejecutivo' => [
                 'titulo' => 'INFORMES DEL DEPARTAMENTO EJECUTIVO',
-                'proyectos' => array_map($mapBae, $bae->getProyectosDeDEM()->toArray()),
+                'proyectos' => [],
             ],
             'concejales' => [
                 'titulo' => 'PROYECTOS DE CONCEJALES',
-                'proyectos' => array_map($mapBae, $bae->getProyectosDeConcejales()->toArray()),
+                'proyectos' => [],
             ],
             'defensor' => [
                 'titulo' => 'PROYECTOS DEL DEFENSOR DEL PUEBLO',
-                'proyectos' => array_map($mapBae, $bae->getProyectosDeDefensor()->toArray()),
+                'proyectos' => [],
             ],
         ];
+
+        $i = 0;
+        foreach (array_map($mapBae, $bae->getProyectosDeDEM()->toArray()) as $proyecto) {
+            $proyectos['ejecutivo']['proyectos'][$i++] = $proyecto;
+        }
+
+        $i = 0;
+        foreach (array_map($mapBae, $bae->getProyectosDeConcejales()->toArray()) as $proyecto) {
+            $proyectos['concejales']['proyectos'][$i++] = $proyecto;
+        }
+
+        $i = 0;
+        foreach (array_map($mapBae, $bae->getProyectosDeDefensor()->toArray()) as $proyecto) {
+            $proyectos['defensor']['proyectos'][$i++] = $proyecto;
+        }
+
 
         $dictamenes = [
             'declaracion' => [
                 'titulo' => 'DICTÁMENES DE DECLARACIÓN',
-                'dictamenes' => array_map($mapOd, $od->getDictamenesDeDeclaracion()->toArray()),
+                'dictamenes' => [],
             ],
             'comunicacion' => [
                 'titulo' => 'DICTÁMENES DE COMUNICACIÓN',
-                'dictamenes' => array_map($mapOd, $od->getDictamenesDeComunicacion()->toArray()),
+                'dictamenes' => [],
             ],
             'resolucion' => [
                 'titulo' => 'DICTÁMENES DE RESOLUCIÓN',
-                'dictamenes' => array_map($mapOd, $od->getDictamenesDeResolucion()->toArray()),
+                'dictamenes' => [],
             ],
             'ordenanza' => [
                 'titulo' => 'DICTÁMENES DE ORDENANZA',
-                'dictamenes' => array_map($mapOd, $od->getDictamenesDeOrdenanza()->toArray()),
+                'dictamenes' => [],
             ],
         ];
+
+        $i = 0;
+        foreach (array_map($mapOd, $od->getDictamenesDeDeclaracion()->toArray()) as $dictamen) {
+            $dictamenes['declaracion']['dictamenes'][$i++] = $dictamen;
+        }
+
+        $i = 0;
+        foreach (array_map($mapOd, $od->getDictamenesDeComunicacion()->toArray()) as $dictamen) {
+            $dictamenes['comunicacion']['dictamenes'][$i++] = $dictamen;
+        }
+
+        $i = 0;
+        foreach (array_map($mapOd, $od->getDictamenesDeResolucion()->toArray()) as $dictamen) {
+            $dictamenes['resolucion']['dictamenes'][$i++] = $dictamen;
+        }
+
+        $i = 0;
+        foreach (array_map($mapOd, $od->getDictamenesDeOrdenanza()->toArray()) as $dictamen) {
+            $dictamenes['ordenanza']['dictamenes'][$i++] = $dictamen;
+        }
 
         return JsonResponse::create([
             'sesion' => [

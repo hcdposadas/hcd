@@ -104,7 +104,7 @@
                                     </a>
                                     {% if is_granted('ROLE_LEGISLATIVO') %}
                                         <a class="btn btn-default" data-toggle="tooltip" title="Cargar Giros"
-                                           href="{{ path('proyecto_edit', { 'id': expediente.id }) }}">
+                                           href="{{ path('proyecto_bae_giro', { 'expediente': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                         <a class="btn btn-default" data-toggle="tooltip" title="Editar Extracto BAE"

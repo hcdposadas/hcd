@@ -52,3 +52,8 @@ editar_extracto_od:
     path:     /editar-extracto-od/{expediente}
     defaults: { _controller: "AppBundle:Sesion:editarExtractoOD" }
     methods:  [GET, POST]
+
+proyecto_bae_giro:
+    path:     /proyecto-bae-giro/{expediente}
+    defaults: { _controller: "AppBundle:Sesion:proyectoBaeGiro" }
+    methods:  [GET, POST]

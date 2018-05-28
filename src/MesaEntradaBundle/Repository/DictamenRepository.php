@@ -13,7 +13,9 @@ class DictamenRepository extends \Doctrine\ORM\EntityRepository
 
     public function getQbAll()
     {
-        return $this->createQueryBuilder('d');
+        $qb = $this->createQueryBuilder('d');
+        $qb->orderBy('d.id', 'DESC');
+        return $qb;
 
     }
 

@@ -81,6 +81,14 @@ class Giro extends BaseClass {
 	private $orden;
 
     /**
+     * @var
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ProyectoBAE", inversedBy="giros")
+     * @ORM\JoinColumn(name="proyecto_bae_id", referencedColumnName="id")
+     */
+    private $proyectoBae;
+
+    /**
      * Get id
      *
      * @return integer
@@ -336,5 +344,29 @@ class Giro extends BaseClass {
     public function getOrden()
     {
         return $this->orden;
+    }
+
+    /**
+     * Set proyectoBae
+     *
+     * @param \AppBundle\Entity\ProyectoBAE $proyectoBae
+     *
+     * @return Giro
+     */
+    public function setProyectoBae(\AppBundle\Entity\ProyectoBAE $proyectoBae = null)
+    {
+        $this->proyectoBae = $proyectoBae;
+
+        return $this;
+    }
+
+    /**
+     * Get proyectoBae
+     *
+     * @return \AppBundle\Entity\ProyectoBAE
+     */
+    public function getProyectoBae()
+    {
+        return $this->proyectoBae;
     }
 }

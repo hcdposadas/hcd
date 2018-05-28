@@ -34,7 +34,7 @@
         {% endif %}
 
         <h4>Firmantes</h4>
-        {% for firmante in dictamen.firmantes %}
+        {% for firmante in dictamen.firmantes | sort %}
             {{ firmante.iniciador | title}}<br>
         {% endfor %}
 

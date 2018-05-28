@@ -4,12 +4,14 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\BoletinAsuntoEntrado;
 use AppBundle\Entity\OrdenDelDia;
+use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\BoletinAsuntoEntradoType;
 use AppBundle\Form\ExtractoDictamenODType;
 use AppBundle\Form\ExtractoProyectoBAEType;
 use AppBundle\Form\Filter\SesionFilterType;
 use AppBundle\Form\OrdenDelDiaType;
+use AppBundle\Form\ProyectoBAEGiroType;
 use AppBundle\Form\SesionCargarActaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
@@ -784,5 +786,77 @@ class SesionController extends Controller {
 		);
 
 	}
+
+    public function proyectoBaeGiroAction(Request $request, Expediente $expediente)
+    {
+
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No tiene permisos para modificar los giros.'
+            );
+
+            return $this->redirectToRoute('app_homepage');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
+
+        $sesion = $sesionQb->getQuery()->getSingleResult();
+
+        $bae         = $sesion->getBae()->first();
+        $proyectoBAE = $em->getRepository( ProyectoBAE::class )->findOneBy(
+            [
+                'expediente'           => $expediente,
+                'boletinAsuntoEntrado' => $bae,
+            ]
+        );
+
+        if ( ! $proyectoBAE ) {
+            $this->get( 'session' )->getFlashBag()->add(
+                'warning',
+                'El Proyecto no está asignado al BAE'
+            );
+
+            return $this->redirectToRoute( 'expedientes_legislativos_index' );
+        }
+
+        $girosAComisionOriginal = new ArrayCollection();
+
+        // Create an ArrayCollection of the current Tag objects in the database
+        foreach ($proyectoBAE->getGiros() as $giro) {
+            $girosAComisionOriginal->add($giro);
+        }
+
+
+        $editForm = $this->createForm(ProyectoBAEGiroType::class, $proyectoBAE);
+
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+
+            foreach ($girosAComisionOriginal as $giro) {
+                if (false === $proyectoBAE->getGiros()->contains($giro)) {
+                    $giro->setProyectoBae(null);
+                    $em->remove($giro);
+                }
+            }
+
+            $em->flush();
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Giro/s modificado/s correctamente'
+            );
+
+            return $this->redirectToRoute('proyecto_bae_giro', array('expediente' => $expediente->getId()));
+        }
+
+        return $this->render('expediente/proyecto_bae_giro.html.twig',
+            array(
+                'expediente' => $expediente,
+                'edit_form' => $editForm->createView(),
+            ));
+    }
 
 }

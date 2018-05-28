@@ -21,13 +21,10 @@ class GiroType extends AbstractType {
 			->add('texto')
 			->add( 'fechaGiro',
 				DateType::class,
-				array(
-					'widget' => 'single_text',
-					'format' => 'dd/MM/yyyy',
-					'attr'   => array(
-						'class' => 'datepicker',
-					),
-				) )
+                array(
+                    'widget' => 'single_text',
+                    'html5'  => true
+                ) )
 			->add('orden')
 			->add( 'cabecera',
 				null,

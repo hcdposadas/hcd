@@ -74,7 +74,7 @@
                             {% endif %}
                         </p>
                         <p style="text-align: center">
-                            {% if proyecto.expediente.giros.count > 1 %}
+                            {% if proyecto.expediente.giros.count > 1 or proyecto.giros.count > 1  %}
                                 A las Comisiones de
                             {% else %}
                                 A la Comisión de
@@ -92,6 +92,28 @@
                                 {% endif %}
                             {% else %}
                                 {% for giro in proyecto.expediente.girosOrdenados %}
+                                    {% set ender = '; ' %}
+                                    {% if loop.index == (loop.length - 1) %}
+                                        {% set ender = ' y de ' %}
+                                    {% endif %}
+                                    <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
+                                {% endfor %}
+                            {% endif %}
+
+                            {#TODO doble if para mas placer, sacar los if de arriba cuando se migruen los giros#}
+
+                            {% if proyecto.girosOrdenados.count <= 2 %}
+                                {% if proyecto.girosOrdenados.count == 1 %}
+                                    {% for giro in proyecto.girosOrdenados %}
+                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for giro in proyecto.girosOrdenados %}
+                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% else %}
+                                {% for giro in proyecto.girosOrdenados %}
                                     {% set ender = '; ' %}
                                     {% if loop.index == (loop.length - 1) %}
                                         {% set ender = ' y de ' %}

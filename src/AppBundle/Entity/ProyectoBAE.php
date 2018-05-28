@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use MesaEntradaBundle\Entity\Expediente;
+use MesaEntradaBundle\Entity\Giro;
 use UtilBundle\Entity\Base\BaseClass;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -58,6 +59,14 @@ class ProyectoBAE extends BaseClass {
 	 * @ORM\Column(name="extracto", type="text", nullable=true)
 	 */
 	private $extracto;
+
+    /**
+     * @var
+     *
+     * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Giro", mappedBy="proyectoBae", cascade={"persist"})
+     *
+     */
+    private $giros;
 
 
 	/**
@@ -211,5 +220,65 @@ class ProyectoBAE extends BaseClass {
     public function getExtracto()
     {
         return $this->extracto;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->giros = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add giro
+     *
+     * @param \MesaEntradaBundle\Entity\Giro $giro
+     *
+     * @return ProyectoBAE
+     */
+    public function addGiro(\MesaEntradaBundle\Entity\Giro $giro)
+    {
+        $giro->setProyectoBae( $this );
+
+        $this->giros->add( $giro );
+
+        return $this;
+    }
+
+    /**
+     * Remove giro
+     *
+     * @param \MesaEntradaBundle\Entity\Giro $giro
+     */
+    public function removeGiro(\MesaEntradaBundle\Entity\Giro $giro)
+    {
+        $this->giros->removeElement($giro);
+    }
+
+    /**
+     * Get giros
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGiros()
+    {
+        return $this->giros;
+    }
+
+    public function getGirosOrdenados()
+    {
+        $iterator = $this->getGiros()->getIterator();
+
+        $iterator->uasort(function (Giro $a, Giro $b) {
+            if ($a->getCabecera()) {
+                return -1;
+            } elseif ($b->getCabecera()) {
+                return 1;
+            } else {
+                return ($a->getOrden() < $b->getOrden()) ? -1 : 1;
+            }
+        });
+
+        return new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));
     }
 }

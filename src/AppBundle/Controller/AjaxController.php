@@ -391,6 +391,12 @@ class AjaxController extends Controller
         return new JsonResponse($json);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getDictamenesODAction(Request $request)
     {
         $em = $this->getDoctrine();
@@ -451,7 +457,11 @@ class AjaxController extends Controller
                 if (count($dictamenOd)) {
                     $dictamenOd = $dictamenOd[0];
                     /** @var Sesion $sesion */
-                    $sesion = $em->getRepository(Sesion::class)->findOneBy(['activo' => true]);
+                    $sesion = $em->getRepository(Sesion::class)
+                        ->findQbUltimaSesion()
+                        ->getQuery()
+                        ->getSingleResult();
+
                     if ($dictamenOd->getOrdenDelDia()->getSesion()->getId() == $sesion->getId()) {
                         $dictamenOd = null;
                     }
@@ -821,15 +831,14 @@ class AjaxController extends Controller
 
         $mapOd = function (DictamenOD $od) {
             $firmantes = [];
-            /** @var Dictamen $dictamen */
-            $dictamen = $od->getExpediente()->getDictamenes()[0];
+            $dictamen = $od->getDictamen();
             foreach ($dictamen->getFirmantes() as $firmante) {
                 $firmantes[] = $firmante->getIniciador()->__toString();
             }
             return [
                 'id' => $od->getId(),
                 'extracto' => $od->getExtracto(),
-                'expediente' => $od->getExpediente() ? $this->mapExpediente($od->getExpediente()) : null,
+                'expediente' => $this->mapExpediente($od->getDictamen()->getExpediente()),
                 'dictamen' => [
                     'id' => $dictamen->getId(),
                     'texto' => $dictamen->getTextoDictamen(),

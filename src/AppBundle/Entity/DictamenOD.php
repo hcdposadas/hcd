@@ -101,30 +101,6 @@ class DictamenOD extends BaseClass
     }
 
     /**
-     * Set expediente
-     *
-     * @param \MesaEntradaBundle\Entity\Expediente $expediente
-     *
-     * @return DictamenOD
-     */
-    public function setExpediente(\MesaEntradaBundle\Entity\Expediente $expediente = null)
-    {
-        $this->expediente = $expediente;
-
-        return $this;
-    }
-
-    /**
-     * Get expediente
-     *
-     * @return \MesaEntradaBundle\Entity\Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
-
-    /**
      * @return Dictamen
      */
     public function getDictamen()

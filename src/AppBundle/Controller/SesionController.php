@@ -356,21 +356,37 @@ class SesionController extends Controller {
 			) );
 	}
 
+    /**
+     * @param Request $request
+     * @param Expediente $expediente
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
 	public function editarExtractoODAction( Request $request, Expediente $expediente ) {
 
 		$em = $this->getDoctrine()->getManager();
 
 		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
 
+		/** @var Sesion $sesion */
 		$sesion = $sesionQb->getQuery()->getSingleResult();
 
+		/** @var OrdenDelDia $od */
 		$od         = $sesion->getOd()->first();
-		$dictamenOD = $em->getRepository( 'AppBundle:DictamenOD' )->findOneBy(
-			[
-				'expediente'  => $expediente,
-				'ordenDelDia' => $od,
-			]
-		);
+
+		foreach ($od->getDictamenes() as $dod) {
+		    if ($dod->getDictamen()->getExpediente()->getId() == $expediente->getId()) {
+		        $dictamenOD = $dod;
+		        break;
+            }
+        }
+//		$dictamenOD = $em->getRepository( 'AppBundle:DictamenOD' )->findOneBy(
+//			[
+//				'expediente'  => $expediente,
+//				'ordenDelDia' => $od,
+//			]
+//		);
 
 		if ( ! $dictamenOD ) {
 			$this->get( 'session' )->getFlashBag()->add(

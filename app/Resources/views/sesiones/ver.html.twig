@@ -119,15 +119,15 @@
                                     <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
                                     <div class="cuerpo">
                                         <p>
-                                        {% for dictamen in lista %}
-                                        {% set expte = dictamen.expediente |split(' ') %}
+                                        {% for dictamenOD in lista %}
+                                        {% set expte = dictamenOD.dictamen.expediente |split(' ') %}
                                         <dl class="dl-horizontal">
                                             {% if expte | length > 1 %}
                                                 <dt style="width: 16%"><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
                                             {% else %}
-                                                <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
+                                                <dt><strong>EXPTE. Nº {{ dictamenOD.dictamen.expediente }}</strong></dt>
                                             {% endif %}
-                                            <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                            <dd>{{ dictamenOD.extracto | raw }}</dd>
                                         </dl>
                                         {% endfor %}
                                         </p>

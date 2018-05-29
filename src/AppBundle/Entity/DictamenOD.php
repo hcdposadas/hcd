@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use MesaEntradaBundle\Entity\Dictamen;
+use MesaEntradaBundle\Entity\Expediente;
 use UtilBundle\Entity\Base\BaseClass;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -35,6 +37,14 @@ class DictamenOD extends BaseClass
 	 * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id", nullable=true)
 	 */
 	private $expediente;
+
+    /**
+     * @var Dictamen $dictamen
+     *
+     * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Dictamen")
+     * @ORM\JoinColumn(name="dictamen_id", referencedColumnName="id", nullable=true)
+     */
+    private $dictamen;
 
 	/**
 	 * @var OrdenDelDia $ordenDelDia
@@ -112,6 +122,22 @@ class DictamenOD extends BaseClass
     public function getExpediente()
     {
         return $this->expediente;
+    }
+
+    /**
+     * @return Dictamen
+     */
+    public function getDictamen(): Dictamen
+    {
+        return $this->dictamen;
+    }
+
+    /**
+     * @param Dictamen $dictamen
+     */
+    public function setDictamen(Dictamen $dictamen)
+    {
+        $this->dictamen = $dictamen;
     }
 
     /**

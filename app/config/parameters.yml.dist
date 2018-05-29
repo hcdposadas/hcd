@@ -12,6 +12,8 @@ parameters:
 
     mailer_transport: smtp
     mailer_host: 127.0.0.1
+    mailer_port: 587
+    mailer_encryption: tls
     mailer_user: ~
     mailer_sender: ~
     mailer_sender_as: ~

@@ -142,6 +142,13 @@ class DictamenController extends Controller
             $firmantesOriginales->add($firmanteDictamen);
         }
 
+	    $anexosOriginales = new ArrayCollection();
+
+	    // Create an ArrayCollection of the current Tag objects in the database
+	    foreach ($dictamen->getAnexos() as $anexo) {
+		    $anexosOriginales->add($anexo);
+	    }
+
         // Log
 
         $campos = ['extractoDictamen'];
@@ -171,6 +178,17 @@ class DictamenController extends Controller
                     $em->remove($firmanteDictamen);
                 }
             }
+
+	        foreach ($anexosOriginales as $anexo) {
+		        if (false === $dictamen->getAnexos()->contains($anexo)) {
+
+			        $anexo->setDictamen(null);
+
+			        $em->persist($anexo);
+
+			        $em->remove($anexo);
+		        }
+	        }
 
             // Log
             $log = new LogExpediente();

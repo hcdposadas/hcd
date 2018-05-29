@@ -127,7 +127,7 @@ class DictamenOD extends BaseClass
     /**
      * @return Dictamen
      */
-    public function getDictamen(): Dictamen
+    public function getDictamen()
     {
         return $this->dictamen;
     }

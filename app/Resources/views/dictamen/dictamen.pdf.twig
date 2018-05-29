@@ -26,9 +26,11 @@
         {% if dictamen.anexos.count > 0 %}
             <p class="break">
             {% for anexo in dictamen.anexos %}
+                {% if (anexo.anexo|split('.'))[1] != 'pdf' %}
                 <h2 class="text-center">{{ anexo.descripcion }}</h2>
                 <img style="max-width: 100%; height: auto; max-height: 24cm;"
                      src="{{ absolute_url( asset('uploads/dictamenes/anexos/') ~ anexo.anexo ) }}">
+                {% endif %}
             {% endfor %}
             </p>
         {% endif %}

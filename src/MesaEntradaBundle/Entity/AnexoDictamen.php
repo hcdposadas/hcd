@@ -52,7 +52,6 @@ class AnexoDictamen extends BaseClass {
 	/**
 	 * @Vich\UploadableField(mapping="dictamenes_anexos", fileNameProperty="anexo")
 	 * @var File
-	 * @Assert\Image(mimeTypes={ "image/*" })
 	 */
 	private $anexoFile;
 

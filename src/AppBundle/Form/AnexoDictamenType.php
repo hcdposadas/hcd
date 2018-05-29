@@ -17,7 +17,7 @@ class AnexoDictamenType extends AbstractType {
 		$builder
 			->add( 'descripcion' )
 			->add( 'anexoFile',
-				VichImageType::class,
+				VichFileType::class,
 				[
 					'label'       => 'Archivo',
 					'required'    => false,
@@ -25,9 +25,10 @@ class AnexoDictamenType extends AbstractType {
 						new File( [
 							'maxSize'          => '8M',
 							'mimeTypes'        => [
-								'image/*'
+								'image/*',
+								'application/pdf'
 							],
-							'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg',
+							'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg, .pdf',
 						] )
 					]
 				] );

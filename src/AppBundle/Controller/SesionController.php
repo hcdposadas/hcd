@@ -16,7 +16,7 @@ use AppBundle\Form\ProyectoBAEGiroType;
 use AppBundle\Form\SesionCargarActaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
-use MesaEntradaBundle\Entity\LogExpediente;
+use MesaEntradaBundle\Entity\Log;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -284,16 +284,14 @@ class SesionController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = new LogExpediente();
-			$log->setExpediente( $expediente );
-			$log->setSesion( $sesion );
+			$log = Log::forEntity($proyectoBAE);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $proyectoBAE->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $proyectoBAE->{$campo['getter']}() );
 				}
 			}
 
-			if ( count( $log->getCambios() ) > 0 ) {
+			if ($log->hasCambios()) {
 				$em->persist( $log );
 			}
 			$em->persist( $proyectoBAE );
@@ -368,7 +366,7 @@ class SesionController extends Controller {
 
 		$em = $this->getDoctrine()->getManager();
 
-		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
+		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
 
 		/** @var Sesion $sesion */
 		$sesion = $sesionQb->getQuery()->getSingleResult();
@@ -409,17 +407,15 @@ class SesionController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = new LogExpediente();
-			$log->setExpediente( $expediente );
-			$log->setSesion( $sesion );
+			$log = Log::forEntity($dictamenOD);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $dictamenOD->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $dictamenOD->{$campo['getter']}() );
 				}
 			}
 
-			if ( count( $log->getCambios() ) > 0 ) {
-				$em->persist( $log );
+			if ( $log->hasCambios() ) {
+				$em->persist($log);
 			}
 			$em->persist( $dictamenOD );
 			$em->flush();
@@ -719,15 +715,14 @@ class SesionController extends Controller {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$log = new LogExpediente();
-			$log->setSesion( $sesion );
+			$log = Log::forEntity($sesion);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $sesion->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $sesion->{$campo['getter']}() );
 				}
 			}
 
-			if ( count( $log->getCambios() ) > 0 ) {
+			if ($log->hasCambios()) {
 				$em->persist( $log );
 			}
 
@@ -750,7 +745,7 @@ class SesionController extends Controller {
 	public function verCambiosActaAction(
 		Request $request,
 		Sesion $sesion,
-		LogExpediente $log
+		Log $log
 	) {
 		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
 

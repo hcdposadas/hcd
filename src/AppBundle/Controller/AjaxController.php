@@ -19,7 +19,7 @@ use MesaEntradaBundle\Entity\Dictamen;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\Giro;
 use MesaEntradaBundle\Entity\IniciadorExpediente;
-use MesaEntradaBundle\Entity\LogExpediente;
+use MesaEntradaBundle\Entity\Log;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -638,15 +638,14 @@ class AjaxController extends Controller
 
             if ($form->isValid()) {
 
-                $log = new LogExpediente();
-                $log->setExpediente($expediente);
+                $log = Log::forEntity($expediente);
                 foreach ($valoresOriginales as $nombre => $campo) {
                     if ($campo['valor'] != $expediente->{$campo['getter']}()) {
                         $log->agregarCambio($nombre, $campo['valor'], $expediente->{$campo['getter']}());
                     }
                 }
 
-                if (count($log->getCambios()) > 0) {
+                if ($log->hasCambios()) {
                     $em->persist($log);
                 }
 
@@ -722,15 +721,14 @@ class AjaxController extends Controller
 
             if ($form->isValid()) {
 
-                $log = new LogExpediente();
-                $log->setExpediente($expediente);
+                $log = Log::forEntity($expediente);
                 foreach ($valoresOriginales as $nombre => $campo) {
                     if ($campo['valor'] != $expediente->{$campo['getter']}()) {
                         $log->agregarCambio($nombre, $campo['valor'], $expediente->{$campo['getter']}());
                     }
                 }
 
-                if (count($log->getCambios()) > 0) {
+                if ($log->hasCambios()) {
                     $em->persist($log);
                 }
 

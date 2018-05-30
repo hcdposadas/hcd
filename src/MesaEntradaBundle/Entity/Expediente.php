@@ -165,14 +165,6 @@ class Expediente extends BaseClass {
 	private $giros;
 
 	/**
-	 * @var LogExpediente[] $logs
-	 *
-	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\LogExpediente", mappedBy="expediente", cascade={"persist"})
-	 * @ORM\OrderBy({"id" = "DESC"})
-	 */
-	private $logs;
-
-	/**
 	 * @ORM\Column(name="sesion_numero", type="integer", nullable=true)
 	 * @var string
 	 */
@@ -1120,37 +1112,6 @@ class Expediente extends BaseClass {
 	 */
 	public function getFechaPresentacion() {
 		return $this->fechaPresentacion;
-	}
-
-	/**
-	 * Add log
-	 *
-	 * @param \MesaEntradaBundle\Entity\LogExpediente $log
-	 *
-	 * @return Expediente
-	 */
-	public function addLog( \MesaEntradaBundle\Entity\LogExpediente $log ) {
-		$this->logs[] = $log;
-
-		return $this;
-	}
-
-	/**
-	 * Remove log
-	 *
-	 * @param \MesaEntradaBundle\Entity\LogExpediente $log
-	 */
-	public function removeLog( \MesaEntradaBundle\Entity\LogExpediente $log ) {
-		$this->logs->removeElement( $log );
-	}
-
-	/**
-	 * Get logs
-	 *
-	 * @return \Doctrine\Common\Collections\Collection
-	 */
-	public function getLogs() {
-		return $this->logs;
 	}
 
     /**

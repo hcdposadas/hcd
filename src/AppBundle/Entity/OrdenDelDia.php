@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use MesaEntradaBundle\Entity\Dictamen;
+use MesaEntradaBundle\Entity\Expediente;
 use UtilBundle\Entity\Base\BaseClass;
 
 /**
@@ -214,17 +215,10 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                $exp = $dod->getExpediente();
-                if (!$exp) {
+                $dictamen = $dod->getDictamen();
+                if (!$dictamen) {
                     return false;
                 }
-
-                if (!count($exp->getDictamenes())) {
-                    return false;
-                }
-
-                /** @var Dictamen $dictamen */
-                $dictamen = $exp->getDictamenes()->last();
 
                 return $dictamen->getTipoProyecto()
                     && $dictamen->getTipoProyecto()->esTipoDeclaracion();
@@ -239,17 +233,10 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                $exp = $dod->getExpediente();
-                if (!$exp) {
+                $dictamen = $dod->getDictamen();
+                if (!$dictamen) {
                     return false;
                 }
-
-                if (!count($exp->getDictamenes())) {
-                    return false;
-                }
-
-                /** @var Dictamen $dictamen */
-                $dictamen = $exp->getDictamenes()->last();
 
                 return $dictamen->getTipoProyecto()
                     && $dictamen->getTipoProyecto()->esTipoComunicacion();
@@ -264,17 +251,10 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                $exp = $dod->getExpediente();
-                if (!$exp) {
+                $dictamen = $dod->getDictamen();
+                if (!$dictamen) {
                     return false;
                 }
-
-                if (!count($exp->getDictamenes())) {
-                    return false;
-                }
-
-                /** @var Dictamen $dictamen */
-                $dictamen = $exp->getDictamenes()->last();
 
                 return $dictamen->getTipoProyecto()
                     && $dictamen->getTipoProyecto()->esTipoResolucion();
@@ -289,17 +269,10 @@ class OrdenDelDia extends BaseClass
     {
         return $this->ordenarProyectos(
             $this->getDictamenes()->filter(function (DictamenOD $dod) {
-                $exp = $dod->getExpediente();
-                if (!$exp) {
+                $dictamen = $dod->getDictamen();
+                if (!$dictamen) {
                     return false;
                 }
-
-                if (!count($exp->getDictamenes())) {
-                    return false;
-                }
-
-                /** @var Dictamen $dictamen */
-                $dictamen = $exp->getDictamenes()->last();
 
                 return $dictamen->getTipoProyecto()
                     && $dictamen->getTipoProyecto()->esTipoOrdenanza();
@@ -316,8 +289,8 @@ class OrdenDelDia extends BaseClass
         $iterator = $proyectos->getIterator();
 
         $iterator->uasort(function (DictamenOD $a, DictamenOD $b) {
-            list($numeroa, $letraa, $anioa) = explode('-', $a->getExpediente()->__toString(), 3);
-            list($numerob, $letrab, $aniob) = explode('-', $b->getExpediente()->__toString(), 3);
+            list($numeroa, $letraa, $anioa) = explode('-', $a->getDictamen()->getExpediente()->__toString(), 3);
+            list($numerob, $letrab, $aniob) = explode('-', $b->getDictamen()->getExpediente()->__toString(), 3);
 
 
             if ($anioa < $aniob){

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\BoletinAsuntoEntrado;
+use AppBundle\Entity\DictamenOD;
 use AppBundle\Entity\OrdenDelDia;
 use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
@@ -15,7 +16,7 @@ use AppBundle\Form\ProyectoBAEGiroType;
 use AppBundle\Form\SesionCargarActaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
-use MesaEntradaBundle\Entity\LogExpediente;
+use MesaEntradaBundle\Entity\Log;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -283,16 +284,14 @@ class SesionController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = new LogExpediente();
-			$log->setExpediente( $expediente );
-			$log->setSesion( $sesion );
+			$log = Log::forEntity($proyectoBAE);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $proyectoBAE->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $proyectoBAE->{$campo['getter']}() );
 				}
 			}
 
-			if ( count( $log->getCambios() ) > 0 ) {
+			if ($log->hasCambios()) {
 				$em->persist( $log );
 			}
 			$em->persist( $proyectoBAE );
@@ -356,21 +355,32 @@ class SesionController extends Controller {
 			) );
 	}
 
+    /**
+     * @param Request $request
+     * @param Expediente $expediente
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
 	public function editarExtractoODAction( Request $request, Expediente $expediente ) {
 
 		$em = $this->getDoctrine()->getManager();
 
-		$sesionQb = $em->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion();
+		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
 
+		/** @var Sesion $sesion */
 		$sesion = $sesionQb->getQuery()->getSingleResult();
 
+		/** @var OrdenDelDia $od */
 		$od         = $sesion->getOd()->first();
-		$dictamenOD = $em->getRepository( 'AppBundle:DictamenOD' )->findOneBy(
-			[
-				'expediente'  => $expediente,
-				'ordenDelDia' => $od,
-			]
-		);
+
+        $dictamenOD = null;
+		foreach ($od->getDictamenes() as $dod) {
+		    if ($dod->getDictamen()->getExpediente()->getId() == $expediente->getId()) {
+		        $dictamenOD = $dod;
+		        break;
+            }
+        }
 
 		if ( ! $dictamenOD ) {
 			$this->get( 'session' )->getFlashBag()->add(
@@ -397,17 +407,15 @@ class SesionController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = new LogExpediente();
-			$log->setExpediente( $expediente );
-			$log->setSesion( $sesion );
+			$log = Log::forEntity($dictamenOD);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $dictamenOD->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $dictamenOD->{$campo['getter']}() );
 				}
 			}
 
-			if ( count( $log->getCambios() ) > 0 ) {
-				$em->persist( $log );
+			if ( $log->hasCambios() ) {
+				$em->persist($log);
 			}
 			$em->persist( $dictamenOD );
 			$em->flush();
@@ -707,15 +715,14 @@ class SesionController extends Controller {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$log = new LogExpediente();
-			$log->setSesion( $sesion );
+			$log = Log::forEntity($sesion);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $sesion->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $sesion->{$campo['getter']}() );
 				}
 			}
 
-			if ( count( $log->getCambios() ) > 0 ) {
+			if ($log->hasCambios()) {
 				$em->persist( $log );
 			}
 
@@ -738,7 +745,7 @@ class SesionController extends Controller {
 	public function verCambiosActaAction(
 		Request $request,
 		Sesion $sesion,
-		LogExpediente $log
+		Log $log
 	) {
 		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
 

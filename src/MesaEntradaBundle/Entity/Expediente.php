@@ -3,7 +3,11 @@
 namespace MesaEntradaBundle\Entity;
 
 use AppBundle\Entity\AreaAdministrativa;
+use AppBundle\Entity\BoletinAsuntoEntrado;
 use AppBundle\Entity\Cargo;
+use AppBundle\Entity\ProyectoBAE;
+use AppBundle\Entity\Sesion;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -159,14 +163,6 @@ class Expediente extends BaseClass {
 	 *
 	 */
 	private $giros;
-
-	/**
-	 * @var LogExpediente[] $logs
-	 *
-	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\LogExpediente", mappedBy="expediente", cascade={"persist"})
-	 * @ORM\OrderBy({"id" = "DESC"})
-	 */
-	private $logs;
 
 	/**
 	 * @ORM\Column(name="sesion_numero", type="integer", nullable=true)
@@ -805,9 +801,25 @@ class Expediente extends BaseClass {
 		return $this->giros;
 	}
 
-	public function getGirosOrdenados()
+	public function getGirosOrdenados(Sesion $sesion = null)
     {
-        $iterator = $this->getGiros()->getIterator();
+        $giros = new ArrayCollection();
+        if (!$sesion) {
+            $giros = $this->getGiros();
+        } else {
+            /** @var BoletinAsuntoEntrado $bae */
+            $bae = $sesion->getBae()->first();
+            $proyectoBAE = $bae->getProyectos()->filter(function (ProyectoBAE $proyectoBAE) {
+                return $proyectoBAE->getExpediente()->getId() == $this->getId();
+            });
+            if ($proyectoBAE->count()) {
+                /** @var ProyectoBAE $proyectoBAE */
+                $proyectoBAE = $proyectoBAE->first();
+                $giros = $proyectoBAE->getGiros();
+            }
+        }
+
+        $iterator = $giros->getIterator();
 
         $iterator->uasort(function (Giro $a, Giro $b) {
             if ($a->getCabecera()) {
@@ -819,7 +831,7 @@ class Expediente extends BaseClass {
             }
         });
 
-        return new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));
+        return new ArrayCollection(iterator_to_array($iterator));
     }
 
 	/**
@@ -1102,37 +1114,6 @@ class Expediente extends BaseClass {
 		return $this->fechaPresentacion;
 	}
 
-	/**
-	 * Add log
-	 *
-	 * @param \MesaEntradaBundle\Entity\LogExpediente $log
-	 *
-	 * @return Expediente
-	 */
-	public function addLog( \MesaEntradaBundle\Entity\LogExpediente $log ) {
-		$this->logs[] = $log;
-
-		return $this;
-	}
-
-	/**
-	 * Remove log
-	 *
-	 * @param \MesaEntradaBundle\Entity\LogExpediente $log
-	 */
-	public function removeLog( \MesaEntradaBundle\Entity\LogExpediente $log ) {
-		$this->logs->removeElement( $log );
-	}
-
-	/**
-	 * Get logs
-	 *
-	 * @return \Doctrine\Common\Collections\Collection
-	 */
-	public function getLogs() {
-		return $this->logs;
-	}
-
     /**
      * @return bool
      */
@@ -1249,12 +1230,13 @@ class Expediente extends BaseClass {
         return $this->asignadoPor;
     }
 
-	/**
+    /**
+     * @param Sesion|null $sesion
      * @return string
      */
-    public function getTextoDelGiro()
+    public function getTextoDelGiro(Sesion $sesion = null)
     {
-        $giros = $this->getGirosOrdenados()->filter(function(Giro $giro) {
+        $giros = $this->getGirosOrdenados($sesion)->filter(function(Giro $giro) {
             return $giro->getComisionDestino() != null;
         })->map(function (Giro $giro) {
             return '<strong title="'.$giro->getComisionDestino()->getNombre().'">'.$giro->getComisionDestino()->getAbreviacion().'</strong>';

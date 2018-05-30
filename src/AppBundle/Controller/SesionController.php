@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\BoletinAsuntoEntrado;
+use AppBundle\Entity\DictamenOD;
 use AppBundle\Entity\OrdenDelDia;
 use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
@@ -375,18 +376,13 @@ class SesionController extends Controller {
 		/** @var OrdenDelDia $od */
 		$od         = $sesion->getOd()->first();
 
+        $dictamenOD = null;
 		foreach ($od->getDictamenes() as $dod) {
 		    if ($dod->getDictamen()->getExpediente()->getId() == $expediente->getId()) {
 		        $dictamenOD = $dod;
 		        break;
             }
         }
-//		$dictamenOD = $em->getRepository( 'AppBundle:DictamenOD' )->findOneBy(
-//			[
-//				'expediente'  => $expediente,
-//				'ordenDelDia' => $od,
-//			]
-//		);
 
 		if ( ! $dictamenOD ) {
 			$this->get( 'session' )->getFlashBag()->add(

@@ -36,16 +36,6 @@ class AltaExpedienteDictamenType extends AbstractType {
 				[
 					'attr' => [ 'class' => 'select2' ]
 				] )
-			->add( 'extractoDictamen',
-				CKEditorType::class,
-				[
-					'required' => true,
-					'config'   => array(
-						'uiColor' => '#ffffff',
-//						'height'  => '600px'
-					),
-					'attr'     => [ 'class' => 'texto_por_defecto' ]
-				] )
 		;
 
 	}

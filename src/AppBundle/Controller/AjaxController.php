@@ -821,11 +821,11 @@ class AjaxController extends Controller
         /** @var OrdenDelDia $od */
         $od = $sesion->getOd()->first();
 
-        $mapBae = function (ProyectoBAE $bae) {
+        $mapBae = function (ProyectoBAE $bae) use ($sesion) {
             return [
                 'id' => $bae->getId(),
                 'extracto' => $bae->getExtracto(),
-                'expediente' => $bae->getExpediente() ? $this->mapExpediente($bae->getExpediente()) : null,
+                'expediente' => $bae->getExpediente() ? $this->mapExpediente($bae->getExpediente(), $sesion) : null,
             ];
         };
 
@@ -931,7 +931,7 @@ class AjaxController extends Controller
         ]);
     }
 
-    private function mapExpediente(Expediente $exp)
+    private function mapExpediente(Expediente $exp, Sesion $sesion = null)
     {
         $anexos = $exp->getAnexos()->map(function (AnexoExpediente $anexo) {
             return [
@@ -941,7 +941,7 @@ class AjaxController extends Controller
             ];
         })->toArray();
 
-        $giros = $exp->getGirosOrdenados()->map(function (Giro $giro) {
+        $giros = $exp->getGirosOrdenados($sesion)->map(function (Giro $giro) {
             return [
                 'id' => $giro->getId(),
                 'cabecera' => $giro->getCabecera(),
@@ -987,10 +987,10 @@ class AjaxController extends Controller
             'autor' => $autor,
             'iniciadores' => $iniciadores,
             'extracto' => $exp->getExtracto(),
-            'extractoDictamen' => $exp->getExtractoDictamen(),
-            'extractoTemario' => $exp->getExtractoTemario(),
+//            'extractoDictamen' => $exp->getExtractoDictamen(),
+//            'extractoTemario' => $exp->getExtractoTemario(),
             'giros' => $giros,
-            'textoDelGiro' => $exp->getGiros()->count() ? $exp->getTextoDelGiro() : null,
+            'textoDelGiro' => $exp->getGirosOrdenados($sesion)->count() ? $exp->getTextoDelGiro($sesion) : null,
             'texto' => $exp->getTexto(),
             'textoDefinitivo' => $exp->getTextoDefinitivo(),
             'anexos' => $anexos,

@@ -3,7 +3,7 @@
         <dt>
             <strong><a @click="mostrarDictamen">EXPTE. Nº {{ dictamen.expediente.expediente }}</a></strong>
         </dt>
-        <dd v-html="dictamen.expediente.extractoDictamen"></dd>
+        <dd v-html="dictamen.extracto"></dd>
     </dl>
 </template>
 <script>

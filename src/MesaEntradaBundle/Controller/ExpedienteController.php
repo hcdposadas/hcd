@@ -3,17 +3,15 @@
 namespace MesaEntradaBundle\Controller;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Util\Debug;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\GiroAdministrativo;
 use MesaEntradaBundle\Entity\IniciadorExpediente;
-use MesaEntradaBundle\Entity\LogExpediente;
+use MesaEntradaBundle\Entity\Log;
 use MesaEntradaBundle\Form\EditarExtractoType;
 use MesaEntradaBundle\Form\ExpedienteAdministrativoExternoType;
 use MesaEntradaBundle\Form\ExpedienteAdministrativoType;
 use MesaEntradaBundle\Form\ExpedienteExtractoType;
 use MesaEntradaBundle\Form\ExpedienteLegislativoExternoType;
-use MesaEntradaBundle\Form\ExpedienteType;
 use MesaEntradaBundle\Form\Filter\ExpedienteFilterType;
 use MesaEntradaBundle\Form\Filter\ProyectoFilterType;
 use MesaEntradaBundle\Form\Filter\SeguimientoExpedienteFilterType;
@@ -1353,7 +1351,7 @@ class ExpedienteController extends Controller {
 		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
 
 		// Estos son los campos a auditar en el log
-		$campos = [ 'extractoDictamen', 'extractoTemario' ];
+		$campos = [ 'extracto' ];
 
 		$valoresOriginales = [];
 		foreach ( $campos as $campo ) {
@@ -1368,8 +1366,7 @@ class ExpedienteController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = new LogExpediente();
-			$log->setExpediente( $expediente );
+			$log = Log::forEntity($expediente);
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $expediente->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $expediente->{$campo['getter']}() );
@@ -1377,7 +1374,7 @@ class ExpedienteController extends Controller {
 			}
 
 			$em = $this->getDoctrine()->getManager();
-			if ( count( $log->getCambios() ) > 0 ) {
+			if ($log->hasCambios()) {
 				$em->persist( $log );
 			}
 			$em->persist( $expediente );
@@ -1407,7 +1404,7 @@ class ExpedienteController extends Controller {
 	public function showEdicionExtractoAction(
 		Request $request,
 		Expediente $expediente,
-		LogExpediente $logExpediente
+		Log $logExpediente
 	) {
 		$this->denyAccessUnlessGranted( 'ROLE_LEGISLATIVO', null, 'No tiene permiso para acceder a esta opción.' );
 

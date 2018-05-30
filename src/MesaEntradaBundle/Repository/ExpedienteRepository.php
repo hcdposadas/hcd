@@ -3,6 +3,8 @@
 namespace MesaEntradaBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use MesaEntradaBundle\Entity\Dictamen;
+use MesaEntradaBundle\Entity\Expediente;
 
 /**
  * ExpedienteRepository
@@ -275,14 +277,28 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb->getQuery()->getArrayResult();
 	}
 
-	public function getDictamenesOD( $data ) {
+    /**
+     * @param $data
+     * @return Dictamen[]
+     */
+	public function getDictamenesOD( $data )
+    {
 		$qb = $this->getQbExpedientes( $data );
 
 		$qb->join( 'e.periodoLegislativo', 'pl' );
 		$qb->addSelect( 'pl' );
 
-//		$qb->andWhere( 'e.extractoDictamen is not null' );
+        /** @var Expediente[] $expedientes */
+        $expedientes = $qb->getQuery()->getResult();
 
-		return $qb->getQuery()->getArrayResult();
+        $dictamenes = [];
+        foreach ($expedientes as $expediente) {
+            /** @var Dictamen $dictamen */
+            foreach ($expediente->getDictamenes() as $dictamen) {
+                $dictamenes[] = $dictamen;
+            }
+        }
+
+		return $dictamenes;
 	}
 }

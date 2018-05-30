@@ -47,25 +47,25 @@
             <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
             <div class="cuerpo">
                 <p>
-                    {% for dictamen in lista %}
+                    {% for dictamenOD in lista %}
 
-                    {% set expte = dictamen.expediente |split(' ') %}
+                    {% set expte = dictamenOD.dictamen.expediente |split(' ') %}
                     {% if expte | length > 1 %}
                 <dl>
                     <dt style="width:40%"><strong>EXPTE. {{ expte[0] }} Nº {{ expte[1] }}</strong></dt>
-                    {% if dictamen.extracto %}
-                        <dd style="margin-left: 42%">{{ dictamen.extracto | raw }}</dd>
+                    {% if dictamenOD.extracto %}
+                        <dd style="margin-left: 42%">{{ dictamenOD.extracto | raw }}</dd>
                     {% else %}
-                        <dd style="margin-left: 42%">{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                        <dd style="margin-left: 42%">{{ dictamenOD.dictamen.expediente.extractoDictamen | raw }}</dd>
                     {% endif %}
                 </dl>
                 {% else %}
                     <dl>
-                        <dt><strong>EXPTE. Nº {{ dictamen.expediente }}</strong></dt>
-                        {% if dictamen.extracto %}
-                            <dd>{{ dictamen.extracto | raw }}</dd>
+                        <dt><strong>EXPTE. Nº {{ dictamenOD.dictamen.expediente }}</strong></dt>
+                        {% if dictamenOD.extracto %}
+                            <dd>{{ dictamenOD.extracto | raw }}</dd>
                         {% else %}
-                            <dd>{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                            <dd>{{ dictamenOD.dictamen.expediente.extractoDictamen | raw }}</dd>
                         {% endif %}
                     </dl>
                 {% endif %}

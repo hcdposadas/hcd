@@ -4,12 +4,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Form\AltaDictamenType;
 use AppBundle\Form\AsignarDictamenAExpteType;
-use AppBundle\Form\CargarDictamenType;
 use AppBundle\Form\CrearDictamenType;
 use AppBundle\Form\Filter\DictamenFilterType;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Dictamen;
-use MesaEntradaBundle\Entity\LogExpediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -132,7 +130,7 @@ class DictamenController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $dictamen = $em->getRepository('MesaEntradaBundle:Dictamen')->find($id);
+        $dictamen = $em->getRepository(Dictamen::class)->find($id);
         $expediente = $dictamen->getExpediente();
 
         $firmantesOriginales = new ArrayCollection();
@@ -148,19 +146,6 @@ class DictamenController extends Controller
 	    foreach ($dictamen->getAnexos() as $anexo) {
 		    $anexosOriginales->add($anexo);
 	    }
-
-        // Log
-
-        $campos = ['extractoDictamen'];
-
-        $valoresOriginales = [];
-        foreach ($campos as $campo) {
-            $getter = 'get' . ucfirst($campo);
-            $valoresOriginales[$campo] = [
-                'valor' => $expediente->{$getter}(),
-                'getter' => $getter,
-            ];
-        }
 
         $form = $this->createForm(AltaDictamenType::class, $dictamen);
 
@@ -189,20 +174,6 @@ class DictamenController extends Controller
 			        $em->remove($anexo);
 		        }
 	        }
-
-            // Log
-            $log = new LogExpediente();
-            $log->setExpediente($expediente);
-            foreach ($valoresOriginales as $nombre => $campo) {
-                if ($campo['valor'] != $expediente->{$campo['getter']}()) {
-                    $log->agregarCambio($nombre, $campo['valor'], $expediente->{$campo['getter']}());
-                }
-            }
-
-            $em = $this->getDoctrine()->getManager();
-            if (count($log->getCambios()) > 0) {
-                $em->persist($log);
-            }
 
             $em->flush();
             $this->get('session')->getFlashBag()->add(

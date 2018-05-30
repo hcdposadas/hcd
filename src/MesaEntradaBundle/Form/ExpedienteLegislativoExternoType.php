@@ -16,6 +16,13 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
 			->add( 'expediente' )
+			->add( 'tipoProyecto',
+				null,
+				[
+					'required'    => false,
+					'placeholder' => 'Seleccionar',
+					'attr'        => [ 'class' => 'select2' ]
+				] )
 			->add( 'letra' )
 			->add( 'periodoLegislativo',
 				null,

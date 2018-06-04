@@ -239,7 +239,7 @@ class Expediente extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\AnexoExpediente", mappedBy="expediente", cascade={"persist", "remove"})
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\AnexoExpediente", mappedBy="expediente", cascade={"persist", "remove"}, orphanRemoval=true)
 	 *
 	 */
 	private $anexos;

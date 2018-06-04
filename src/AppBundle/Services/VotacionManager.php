@@ -81,7 +81,7 @@ class VotacionManager
             throw new \RuntimeException('No se puede lanzar la votación porque la Moción ' . $mensaje . ' se encuentra en votación.');
         }
 
-        $duracion = 15;
+        $duracion = $this->getTiempoMocion();
 
         $mocion->setEstado($this->getEstado(Mocion::ESTADO_EN_VOTACION));
         $votacion = new Votacion();
@@ -109,7 +109,7 @@ class VotacionManager
             throw new \RuntimeException('No se puede extender votación de la moción');
         }
 
-        $duracion = 10;
+        $duracion = $this->getTiempoMocionExtension();
 
         $votacion = new Votacion();
         $votacion->setMocion($mocion);
@@ -322,6 +322,26 @@ class VotacionManager
     protected function getEstado($estado)
     {
         return $this->entityManager->getRepository(Parametro::class)->getBySlug($estado);
+    }
+
+    /**
+     * @return integer
+     */
+    protected function getTiempoMocion()
+    {
+        /** @var Parametro $tiempo */
+        $tiempo = $this->entityManager->getRepository(Parametro::class)->getBySlug('tiempo-mocion');
+        return $tiempo ? $tiempo->getValor() : 10;
+    }
+
+    /**
+     * @return integer
+     */
+    protected function getTiempoMocionExtension()
+    {
+        /** @var Parametro $tiempo */
+        $tiempo = $this->entityManager->getRepository(Parametro::class)->getBySlug('tiempo-mocion-extension');
+        return $tiempo ? $tiempo->getValor() : 5;
     }
 
     /**

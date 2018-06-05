@@ -862,6 +862,7 @@ class SesionController extends Controller {
         return $this->render('expediente/proyecto_bae_giro.html.twig',
             array(
                 'expediente' => $expediente,
+                'sesion' => $sesion,
                 'edit_form' => $editForm->createView(),
             ));
     }

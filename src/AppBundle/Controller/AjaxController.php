@@ -353,16 +353,33 @@ class AjaxController extends Controller
 
         if ($value) {
             $expediente = explode(' ', $value);
-            if (count($expediente) == 3) {
-                $data['expediente'] = $expediente[0];
-                $data['letra'] = $expediente[1];
-                $data['anio'] = $expediente[2];
-            } else if (count($expediente) == 2) {
-                $data['expediente'] = $expediente[0];
-                $data['letra'] = $expediente[1];
-            } else if (count($expediente) == 1) {
-                $data['expediente'] = $expediente[0];
+            if (is_numeric($expediente[0][0])) {
+                if (count($expediente) == 3) {
+                    $data['expediente'] = $expediente[0];
+                    $data['letra'] = $expediente[1];
+                    $data['anio'] = $expediente[2];
+                } else if (count($expediente) == 2) {
+                    $data['expediente'] = $expediente[0];
+                    $data['letra'] = $expediente[1];
+                } else if (count($expediente) == 1) {
+                    $data['expediente'] = $expediente[0];
+                }
+            } else {
+                if (count($expediente) == 4) {
+                    $data['expediente'] = $expediente[0] . ' ' . $expediente[1];
+                    $data['letra'] = $expediente[2];
+                    $data['anio'] = $expediente[2];
+                } else if (count($expediente) == 3) {
+                    $data['expediente'] = $expediente[0] . ' ' . $expediente[1];
+                    $data['letra'] = $expediente[1];
+                    $data['anio'] = $expediente[2];
+                } else if (count($expediente) == 2) {
+                    $data['expediente'] = $expediente[0] . ' ' . $expediente[1];
+                } else if (count($expediente) == 1) {
+                    $data['expediente'] = $expediente[0];
+                }
             }
+
         }
 
 

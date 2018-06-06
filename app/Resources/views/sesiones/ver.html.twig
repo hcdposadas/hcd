@@ -73,6 +73,7 @@
                                                     {% if proyecto.expediente.textoDelGiro(sesion) | length > 19 %}
                                                         {{ proyecto.expediente.textoDelGiro(sesion) | raw}}
                                                     {% else %}
+                                                        {#TODO este else borrar cuando se migren los giros #13#}
                                                         {% if proyecto.expediente.giros.count > 1 %}
                                                             A las Comisiones de
                                                         {% else %}

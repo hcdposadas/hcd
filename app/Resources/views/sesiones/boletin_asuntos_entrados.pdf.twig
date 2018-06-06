@@ -80,25 +80,25 @@
                                 A la Comisión de
                             {% endif %}
 
-                            {% if proyecto.expediente.girosOrdenados.count <= 2 %}
-                                {% if proyecto.expediente.girosOrdenados.count == 1 %}
-                                    {% for giro in proyecto.expediente.girosOrdenados %}
-                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong>
-                                    {% endfor %}
-                                {% else %}
-                                    {% for giro in proyecto.expediente.girosOrdenados %}
-                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                            {% else %}
-                                {% for giro in proyecto.expediente.girosOrdenados %}
-                                    {% set ender = '; ' %}
-                                    {% if loop.index == (loop.length - 1) %}
-                                        {% set ender = ' y de ' %}
-                                    {% endif %}
-                                    <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
-                                {% endfor %}
-                            {% endif %}
+                            {#{% if proyecto.expediente.girosOrdenados.count <= 2 %}#}
+                                {#{% if proyecto.expediente.girosOrdenados.count == 1 %}#}
+                                    {#{% for giro in proyecto.expediente.girosOrdenados %}#}
+                                        {#<strong>{{ giro.comisionDestino.abreviacion }}</strong>#}
+                                    {#{% endfor %}#}
+                                {#{% else %}#}
+                                    {#{% for giro in proyecto.expediente.girosOrdenados %}#}
+                                        {#<strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}#}
+                                    {#{% endfor %}#}
+                                {#{% endif %}#}
+                            {#{% else %}#}
+                                {#{% for giro in proyecto.expediente.girosOrdenados %}#}
+                                    {#{% set ender = '; ' %}#}
+                                    {#{% if loop.index == (loop.length - 1) %}#}
+                                        {#{% set ender = ' y de ' %}#}
+                                    {#{% endif %}#}
+                                    {#<strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}#}
+                                {#{% endfor %}#}
+                            {#{% endif %}#}
 
                             {#TODO doble if para mas placer, sacar los if de arriba cuando se migruen los giros#}
 
@@ -117,6 +117,9 @@
                                     {% set ender = '; ' %}
                                     {% if loop.index == (loop.length - 1) %}
                                         {% set ender = ' y de ' %}
+                                    {% endif %}
+                                    {% if loop.index == (loop.length) %}
+                                        {% set ender = '' %}
                                     {% endif %}
                                     <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
                                 {% endfor %}

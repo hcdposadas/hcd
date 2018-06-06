@@ -847,9 +847,11 @@ class AjaxController extends Controller
         $mapOd = function (DictamenOD $od) {
             $firmantes = [];
             $dictamen = $od->getDictamen();
-            foreach ($dictamen->getFirmantes() as $firmante) {
-                $firmantes[] = $firmante->getIniciador()->__toString();
-            }
+	        foreach ( $dictamen->getFirmantes() as $firmante ) {
+		        if ( $firmante->getIniciador() ) {
+			        $firmantes[] = $firmante->getIniciador()->__toString();
+		        }
+	        }
             return [
                 'id' => $od->getId(),
                 'extracto' => $od->getExtracto(),

@@ -14,6 +14,10 @@ get_cargos_por_nombre:
     path: /get_cargos_por_nombre
     defaults: { _controller: "AppBundle:Ajax:getCargosPorNombre" }
 
+get_cargos_por_nombre_legacy:
+    path: /get_cargos_por_nombre_legacy
+    defaults: { _controller: "AppBundle:Ajax:getCargosPorNombreLegacy" }
+
 get_persona_por_dni:
     path: /get_persona_por_dni
     defaults: { _controller: "AppBundle:Ajax:getPersonaPorDni" }

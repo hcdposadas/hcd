@@ -269,6 +269,14 @@ class Expediente extends BaseClass {
 	private $dictamenes;
 
 	/**
+	 * @var IniciadorExpediente[]
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\ExpedienteAdjunto", mappedBy="expediente", cascade={"persist"}, orphanRemoval=true)
+	 *
+	 */
+	private $expedientesAdjunto;
+
+	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
 	 * @var File
 	 */
@@ -392,6 +400,7 @@ class Expediente extends BaseClass {
 		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->expedientesAdjunto  = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -735,9 +744,6 @@ class Expediente extends BaseClass {
 	 * @return Expediente
 	 */
 	public function addGiroAdministrativo( \MesaEntradaBundle\Entity\GiroAdministrativo $giroAdministrativo ) {
-//		$this->giroAdministrativos[] = $giroAdministrativo;
-//
-//		return $this;
 
 		$giroAdministrativo->setExpediente( $this );
 
@@ -801,38 +807,37 @@ class Expediente extends BaseClass {
 		return $this->giros;
 	}
 
-	public function getGirosOrdenados(Sesion $sesion = null)
-    {
-        $giros = new ArrayCollection();
-        if (!$sesion) {
-            $giros = $this->getGiros();
-        } else {
-            /** @var BoletinAsuntoEntrado $bae */
-            $bae = $sesion->getBae()->first();
-            $proyectoBAE = $bae->getProyectos()->filter(function (ProyectoBAE $proyectoBAE) {
-                return $proyectoBAE->getExpediente()->getId() == $this->getId();
-            });
-            if ($proyectoBAE->count()) {
-                /** @var ProyectoBAE $proyectoBAE */
-                $proyectoBAE = $proyectoBAE->first();
-                $giros = $proyectoBAE->getGiros();
-            }
-        }
+	public function getGirosOrdenados( Sesion $sesion = null ) {
+		$giros = new ArrayCollection();
+		if ( ! $sesion ) {
+			$giros = $this->getGiros();
+		} else {
+			/** @var BoletinAsuntoEntrado $bae */
+			$bae         = $sesion->getBae()->first();
+			$proyectoBAE = $bae->getProyectos()->filter( function ( ProyectoBAE $proyectoBAE ) {
+				return $proyectoBAE->getExpediente()->getId() == $this->getId();
+			} );
+			if ( $proyectoBAE->count() ) {
+				/** @var ProyectoBAE $proyectoBAE */
+				$proyectoBAE = $proyectoBAE->first();
+				$giros       = $proyectoBAE->getGiros();
+			}
+		}
 
-        $iterator = $giros->getIterator();
+		$iterator = $giros->getIterator();
 
-        $iterator->uasort(function (Giro $a, Giro $b) {
-            if ($a->getCabecera()) {
-                return -1;
-            } elseif ($b->getCabecera()) {
-                return 1;
-            } else {
-                return ($a->getOrden() < $b->getOrden()) ? -1 : 1;
-            }
-        });
+		$iterator->uasort( function ( Giro $a, Giro $b ) {
+			if ( $a->getCabecera() ) {
+				return - 1;
+			} elseif ( $b->getCabecera() ) {
+				return 1;
+			} else {
+				return ( $a->getOrden() < $b->getOrden() ) ? - 1 : 1;
+			}
+		} );
 
-        return new ArrayCollection(iterator_to_array($iterator));
-    }
+		return new ArrayCollection( iterator_to_array( $iterator ) );
+	}
 
 	/**
 	 * Set creadoPor
@@ -1114,158 +1119,184 @@ class Expediente extends BaseClass {
 		return $this->fechaPresentacion;
 	}
 
-    /**
-     * @return bool
-     */
-	public function esProyectoDeConcejal()
-    {
-        return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
-            return $ie->getAutor()
-                && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_CONCEJAL;
-        });
-    }
+	/**
+	 * @return bool
+	 */
+	public function esProyectoDeConcejal() {
+		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
+			return $ie->getAutor()
+			       && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_CONCEJAL;
+		} );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function esProyectoDeDEM() {
+		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
+			return $ie->getAutor()
+			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
+			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
+		} );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function esProyectoDeDefensor() {
+		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
+			return $ie->getAutor()
+			       && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_DEFENSOR;
+		} );
+	}
+
+	/**
+	 * Add dictamene
+	 *
+	 * @param \MesaEntradaBundle\Entity\Dictamen $dictamene
+	 *
+	 * @return Expediente
+	 */
+	public function addDictamene( \MesaEntradaBundle\Entity\Dictamen $dictamene ) {
+		$this->dictamenes[] = $dictamene;
+
+		return $this;
+	}
+
+	/**
+	 * Remove dictamene
+	 *
+	 * @param \MesaEntradaBundle\Entity\Dictamen $dictamene
+	 */
+	public function removeDictamene( \MesaEntradaBundle\Entity\Dictamen $dictamene ) {
+		$this->dictamenes->removeElement( $dictamene );
+	}
+
+	/**
+	 * Get dictamenes
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getDictamenes() {
+		return $this->dictamenes;
+	}
+
+	/**
+	 * Set nota
+	 *
+	 * @param boolean $nota
+	 *
+	 * @return Expediente
+	 */
+	public function setNota( $nota ) {
+		$this->nota = $nota;
+
+		return $this;
+	}
+
+	/**
+	 * Get nota
+	 *
+	 * @return boolean
+	 */
+	public function getNota() {
+		return $this->nota;
+	}
+
+	/**
+	 * Set asignadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $asignadoPor
+	 *
+	 * @return Expediente
+	 */
+	public function setAsignadoPor( \UsuariosBundle\Entity\Usuario $asignadoPor = null ) {
+		$this->asignadoPor = $asignadoPor;
+
+		return $this;
+	}
+
+	/**
+	 * Get asignadoPor
+	 *
+	 * @return \UsuariosBundle\Entity\Usuario
+	 */
+	public function getAsignadoPor() {
+		return $this->asignadoPor;
+	}
+
+	/**
+	 * @param Sesion|null $sesion
+	 *
+	 * @return string
+	 */
+	public function getTextoDelGiro( Sesion $sesion = null ) {
+		$giros = $this->getGirosOrdenados( $sesion )->filter( function ( Giro $giro ) {
+			return $giro->getComisionDestino() != null;
+		} )->map( function ( Giro $giro ) {
+			return '<strong title="' . $giro->getComisionDestino()->getNombre() . '">' . $giro->getComisionDestino()->getAbreviacion() . '</strong>';
+		} );
+
+		if ( count( $giros ) > 1 ) {
+			$textoDelGiro = 'A las Comisiones de ';
+		} else {
+			$textoDelGiro = 'A la Comisión de ';
+		}
+
+
+		if ( count( $giros ) == 1 ) {
+			$textoDelGiro .= $giros[0];
+		} else {
+			$count = count( $giros );
+			$pos   = 0;
+			foreach ( $giros as $i => $giro ) {
+				if ( $pos == $count - 1 ) {
+					$textoDelGiro .= ' y de ';
+				} elseif ( $pos != 0 ) {
+					$textoDelGiro .= '; ';
+				}
+
+				$textoDelGiro .= $giro;
+				$pos ++;
+			}
+		}
+
+		return $textoDelGiro;
+	}
 
     /**
-     * @return bool
-     */
-    public function esProyectoDeDEM()
-    {
-        return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
-            return $ie->getAutor()
-                && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
-                && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
-        });
-    }
-
-    /**
-     * @return bool
-     */
-    public function esProyectoDeDefensor()
-    {
-        return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
-            return $ie->getAutor()
-                && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_DEFENSOR;
-        });
-    }
-
-    /**
-     * Add dictamene
+     * Add expedientesAdjunto
      *
-     * @param \MesaEntradaBundle\Entity\Dictamen $dictamene
+     * @param \MesaEntradaBundle\Entity\ExpedienteAdjunto $expedientesAdjunto
      *
      * @return Expediente
      */
-    public function addDictamene(\MesaEntradaBundle\Entity\Dictamen $dictamene)
+    public function addExpedientesAdjunto(\MesaEntradaBundle\Entity\ExpedienteAdjunto $expedientesAdjunto)
     {
-        $this->dictamenes[] = $dictamene;
+	    $expedientesAdjunto->setExpediente( $this );
 
-        return $this;
+	    $this->expedientesAdjunto->add( $expedientesAdjunto );
+
+	    return $this;
     }
 
     /**
-     * Remove dictamene
+     * Remove expedientesAdjunto
      *
-     * @param \MesaEntradaBundle\Entity\Dictamen $dictamene
+     * @param \MesaEntradaBundle\Entity\ExpedienteAdjunto $expedientesAdjunto
      */
-    public function removeDictamene(\MesaEntradaBundle\Entity\Dictamen $dictamene)
+    public function removeExpedientesAdjunto(\MesaEntradaBundle\Entity\ExpedienteAdjunto $expedientesAdjunto)
     {
-        $this->dictamenes->removeElement($dictamene);
+        $this->expedientesAdjunto->removeElement($expedientesAdjunto);
     }
 
     /**
-     * Get dictamenes
+     * Get expedientesAdjunto
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getDictamenes()
+    public function getExpedientesAdjunto()
     {
-        return $this->dictamenes;
-    }
-
-    /**
-     * Set nota
-     *
-     * @param boolean $nota
-     *
-     * @return Expediente
-     */
-    public function setNota($nota)
-    {
-        $this->nota = $nota;
-
-        return $this;
-    }
-
-    /**
-     * Get nota
-     *
-     * @return boolean
-     */
-    public function getNota()
-    {
-        return $this->nota;
-    }
-
-    /**
-     * Set asignadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $asignadoPor
-     *
-     * @return Expediente
-     */
-    public function setAsignadoPor(\UsuariosBundle\Entity\Usuario $asignadoPor = null)
-    {
-        $this->asignadoPor = $asignadoPor;
-
-        return $this;
-    }
-
-    /**
-     * Get asignadoPor
-     *
-     * @return \UsuariosBundle\Entity\Usuario
-     */
-    public function getAsignadoPor()
-    {
-        return $this->asignadoPor;
-    }
-
-    /**
-     * @param Sesion|null $sesion
-     * @return string
-     */
-    public function getTextoDelGiro(Sesion $sesion = null)
-    {
-        $giros = $this->getGirosOrdenados($sesion)->filter(function(Giro $giro) {
-            return $giro->getComisionDestino() != null;
-        })->map(function (Giro $giro) {
-            return '<strong title="'.$giro->getComisionDestino()->getNombre().'">'.$giro->getComisionDestino()->getAbreviacion().'</strong>';
-        });
-
-        if (count($giros) > 1) {
-            $textoDelGiro = 'A las Comisiones de ';
-        } else {
-            $textoDelGiro = 'A la Comisión de ';
-        }
-
-
-        if (count($giros) == 1) {
-            $textoDelGiro .= $giros[0];
-        } else {
-            $count = count($giros);
-            $pos = 0;
-            foreach ($giros as $i => $giro) {
-                if ($pos == $count - 1) {
-                    $textoDelGiro .= ' y de ';
-                } elseif ($pos != 0) {
-                    $textoDelGiro .= '; ';
-                }
-
-                $textoDelGiro .= $giro;
-                $pos++;
-            }
-        }
-
-        return $textoDelGiro;
+        return $this->expedientesAdjunto;
     }
 }

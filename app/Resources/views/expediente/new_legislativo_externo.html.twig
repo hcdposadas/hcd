@@ -1,4 +1,3 @@
-
 {% extends 'base.html.twig' %}
 {% block title %}
     Expediente Legislativo Externo
@@ -48,18 +47,11 @@
                             <i class="fa fa-plus"></i> Agregar Dependencia
                         </button>
                     </div>
-
                 </div>
 
-                {#<div class="col-md-6">#}
-                    {#<div>#}
-                        {#{{ form_row(form.iniciadorParticular) }}#}
-                        {#<button type="button" class="btn btn-default btn-add-persona">#}
-                            {#<i class="fa fa-plus"></i> Agregar Persona#}
-                        {#</button>#}
-                    {#</div>#}
-
-                {#</div>#}
+                <div class="col-md-6">
+                    {{ form_row(form.iniciadores) }}
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -76,11 +68,16 @@
                     {{ form_row(form.giros) }}
                 </div>
             </div>
-            {#<div class="row">#}
-            {#<div class="col-md-12">#}
-            {#{{ form_row(form.textoDefinitivo) }}#}
-            {#</div>#}
-            {#</div>#}
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(form.giroAdministrativos) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(form.expedientesAdjunto) }}
+                </div>
+            </div>
 
 
             <input class="btn btn-primary" type="submit" value="Guardar"/>

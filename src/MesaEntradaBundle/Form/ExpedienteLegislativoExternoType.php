@@ -54,6 +54,15 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 //					'placeholder'  => 'Por DNI'
 //
 //				] )
+			->add( 'iniciadores',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => IniciadorExpedienteExternoType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Iniciadores'
+				] )
 			->add( 'dependencia',
 				Select2EntityType::class,
 				[
@@ -74,6 +83,22 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 				BootstrapCollectionType::class,
 				[
 					'entry_type'   => GiroType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
+			->add( 'giroAdministrativos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroAdministrativoType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
+			->add( 'expedientesAdjunto',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => ExpedienteAdjuntoType::class,
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,

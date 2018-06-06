@@ -250,6 +250,9 @@ class ExpedienteRepository extends EntityRepository {
 	public function getQbExpedientesLegislativosExternos() {
 		$qb = $this->getQbAll();
 
+		$qb->join('e.tipoExpediente', 'te');
+		$qb->andWhere("te.slug = 'externo'");
+
 //		$qb->join('e.iniciadores', 'iniciadores')
 //		   ->where('iniciadores is null');
 		$qb->leftJoin( 'e.dependencia', 'dependencia' )
@@ -258,12 +261,8 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb;
 	}
 
-	public function getQbBuscarExpedientesLegislativosExternos() {
-		$qb = $this->getQbAll();
-
-//		$qb->join('e.iniciadores', 'iniciadores')
-//		   ->where('iniciadores is null');
-
+	public function getQbBuscarExpedientesLegislativosExternos($data, $tipoExpediente) {
+		$qb = $this->getQbBuscar($data, $tipoExpediente);
 
 		return $qb;
 	}

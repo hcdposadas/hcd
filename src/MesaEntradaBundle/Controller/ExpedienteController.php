@@ -1206,6 +1206,22 @@ class ExpedienteController extends Controller {
 		foreach ( $expediente->getGiros() as $giro ) {
 			$girosOriginales->add( $giro );
 		}
+
+		$adjuntosOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getExpedientesAdjunto() as $expAdj ) {
+			$adjuntosOriginales->add( $expAdj );
+		}
+
+		$iniciadoresOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getIniciadores() as $iniciador ) {
+			$iniciadoresOriginales->add( $iniciador );
+		}
+
+
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
@@ -1214,6 +1230,20 @@ class ExpedienteController extends Controller {
 				if ( false === $expediente->getGiros()->contains( $giro ) ) {
 					$giro->setExpediente( null );
 					$em->remove( $giro );
+				}
+			}
+
+			foreach ( $adjuntosOriginales as $expAdj ) {
+				if ( false === $expediente->getExpedientesAdjunto()->contains( $expAdj ) ) {
+					$expAdj->setExpediente( null );
+					$em->remove( $expAdj );
+				}
+			}
+
+			foreach ( $iniciadoresOriginales as $iniciador ) {
+				if ( false === $expediente->getIniciadores()->contains( $iniciador ) ) {
+					$iniciador->setExpediente( null );
+					$em->remove( $iniciador );
 				}
 			}
 

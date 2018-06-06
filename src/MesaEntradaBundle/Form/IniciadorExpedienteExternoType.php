@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use UtilBundle\Form\Type\Select2EntityType;
 
-class IniciadorExpedienteType extends AbstractType
+class IniciadorExpedienteExternoType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -15,10 +15,12 @@ class IniciadorExpedienteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+//            ->add('expediente')
+
             ->add('iniciador',
                 Select2EntityType::class,
                 [
-                    'remote_route' => 'get_cargos_por_nombre',
+                    'remote_route' => 'get_cargos_por_nombre_legacy',
                     'class' => 'MesaEntradaBundle\Entity\Iniciador',
                     'required' => false,
                     'placeholder' => 'Por Nombre',
@@ -26,6 +28,7 @@ class IniciadorExpedienteType extends AbstractType
 	                'label'=> 'Concejal'
 
                 ])
+	        ->add('autor')
         ;
     }
     
@@ -44,7 +47,7 @@ class IniciadorExpedienteType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'mesaentradabundle_iniciadorexpediente';
+        return 'mesaentradabundle_iniciadorexpediente_externo';
     }
 
 

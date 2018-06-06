@@ -123,6 +123,37 @@ class AjaxController extends Controller
         return new JsonResponse($json);
     }
 
+	public function getCargosPorNombreLegacyAction(Request $request)
+	{
+
+		$em = $this->getDoctrine();
+
+		$value = $request->get('q');
+		$limit = $request->get('page_limit');
+
+		$entities = $em->getRepository('MesaEntradaBundle:Iniciador')->getACargosPorNombreLegacy($value, $limit);
+
+		$json = array();
+
+		if (!count($entities)) {
+			$json[] = array(
+				'text' => 'No se encontraron coincidencias',
+				'id' => ''
+			);
+		} else {
+
+			foreach ($entities as $entity) {
+				$json[] = array(
+					'id' => $entity['id'],
+					'text' => $entity['cargo'] . ' ' . $entity['nombre_persona'] . ' ' . $entity['apellido_persona']
+				);
+
+			}
+		}
+
+		return new JsonResponse($json);
+	}
+
     public function formPersonaAction(Request $request)
     {
 

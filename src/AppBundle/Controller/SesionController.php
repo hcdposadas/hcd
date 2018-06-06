@@ -284,14 +284,14 @@ class SesionController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = Log::forEntity($proyectoBAE);
+			$log = Log::forEntity( $proyectoBAE );
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $proyectoBAE->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $proyectoBAE->{$campo['getter']}() );
 				}
 			}
 
-			if ($log->hasCambios()) {
+			if ( $log->hasCambios() ) {
 				$em->persist( $log );
 			}
 			$em->persist( $proyectoBAE );
@@ -305,11 +305,17 @@ class SesionController extends Controller {
 			return $this->redirectToRoute( 'expedientes_legislativos_index' );
 		}
 
+		$logs = $em->getRepository( Log::class )->findBy( [
+			'entityClass' => ProyectoBAE::class,
+			'entityId'=>$proyectoBAE->getId()
+		] );
+
 		return $this->render( 'expediente/editarExtracto.html.twig',
 			array(
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
 				'sesion'     => $sesion,
+				'logs'     => $logs,
 			) );
 	}
 
@@ -355,13 +361,14 @@ class SesionController extends Controller {
 			) );
 	}
 
-    /**
-     * @param Request $request
-     * @param Expediente $expediente
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
+	/**
+	 * @param Request $request
+	 * @param Expediente $expediente
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+	 * @throws \Doctrine\ORM\NoResultException
+	 * @throws \Doctrine\ORM\NonUniqueResultException
+	 */
 	public function editarExtractoODAction( Request $request, Expediente $expediente ) {
 
 		$em = $this->getDoctrine()->getManager();
@@ -372,15 +379,15 @@ class SesionController extends Controller {
 		$sesion = $sesionQb->getQuery()->getSingleResult();
 
 		/** @var OrdenDelDia $od */
-		$od         = $sesion->getOd()->first();
+		$od = $sesion->getOd()->first();
 
-        $dictamenOD = null;
-		foreach ($od->getDictamenes() as $dod) {
-		    if ($dod->getDictamen()->getExpediente()->getId() == $expediente->getId()) {
-		        $dictamenOD = $dod;
-		        break;
-            }
-        }
+		$dictamenOD = null;
+		foreach ( $od->getDictamenes() as $dod ) {
+			if ( $dod->getDictamen()->getExpediente()->getId() == $expediente->getId() ) {
+				$dictamenOD = $dod;
+				break;
+			}
+		}
 
 		if ( ! $dictamenOD ) {
 			$this->get( 'session' )->getFlashBag()->add(
@@ -407,7 +414,7 @@ class SesionController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = Log::forEntity($dictamenOD);
+			$log = Log::forEntity( $dictamenOD );
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $dictamenOD->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $dictamenOD->{$campo['getter']}() );
@@ -415,7 +422,7 @@ class SesionController extends Controller {
 			}
 
 			if ( $log->hasCambios() ) {
-				$em->persist($log);
+				$em->persist( $log );
 			}
 			$em->persist( $dictamenOD );
 			$em->flush();
@@ -428,11 +435,17 @@ class SesionController extends Controller {
 			return $this->redirectToRoute( 'expedientes_legislativos_index' );
 		}
 
+		$logs = $em->getRepository( Log::class )->findBy( [
+			'entityClass' => DictamenOD::class,
+			'entityId'=>$dictamenOD->getId()
+		] );
+
 		return $this->render( 'expediente/editarExtracto.html.twig',
 			array(
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
 				'sesion'     => $sesion,
+				'logs'     => $logs,
 			) );
 	}
 
@@ -715,14 +728,14 @@ class SesionController extends Controller {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$log = Log::forEntity($sesion);
+			$log = Log::forEntity( $sesion );
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $sesion->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $sesion->{$campo['getter']}() );
 				}
 			}
 
-			if ($log->hasCambios()) {
+			if ( $log->hasCambios() ) {
 				$em->persist( $log );
 			}
 
@@ -794,77 +807,76 @@ class SesionController extends Controller {
 
 	}
 
-    public function proyectoBaeGiroAction(Request $request, Expediente $expediente)
-    {
+	public function proyectoBaeGiroAction( Request $request, Expediente $expediente ) {
 
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
-            $this->get('session')->getFlashBag()->add(
-                'warning',
-                'No tiene permisos para modificar los giros.'
-            );
+		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No tiene permisos para modificar los giros.'
+			);
 
-            return $this->redirectToRoute('app_homepage');
-        }
+			return $this->redirectToRoute( 'app_homepage' );
+		}
 
-        $em = $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
 
-        $sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
+		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
 
-        $sesion = $sesionQb->getQuery()->getSingleResult();
+		$sesion = $sesionQb->getQuery()->getSingleResult();
 
-        $bae         = $sesion->getBae()->first();
-        $proyectoBAE = $em->getRepository( ProyectoBAE::class )->findOneBy(
-            [
-                'expediente'           => $expediente,
-                'boletinAsuntoEntrado' => $bae,
-            ]
-        );
+		$bae         = $sesion->getBae()->first();
+		$proyectoBAE = $em->getRepository( ProyectoBAE::class )->findOneBy(
+			[
+				'expediente'           => $expediente,
+				'boletinAsuntoEntrado' => $bae,
+			]
+		);
 
-        if ( ! $proyectoBAE ) {
-            $this->get( 'session' )->getFlashBag()->add(
-                'warning',
-                'El Proyecto no está asignado al BAE'
-            );
+		if ( ! $proyectoBAE ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'El Proyecto no está asignado al BAE'
+			);
 
-            return $this->redirectToRoute( 'expedientes_legislativos_index' );
-        }
+			return $this->redirectToRoute( 'expedientes_legislativos_index' );
+		}
 
-        $girosAComisionOriginal = new ArrayCollection();
+		$girosAComisionOriginal = new ArrayCollection();
 
-        // Create an ArrayCollection of the current Tag objects in the database
-        foreach ($proyectoBAE->getGiros() as $giro) {
-            $girosAComisionOriginal->add($giro);
-        }
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $proyectoBAE->getGiros() as $giro ) {
+			$girosAComisionOriginal->add( $giro );
+		}
 
 
-        $editForm = $this->createForm(ProyectoBAEGiroType::class, $proyectoBAE);
+		$editForm = $this->createForm( ProyectoBAEGiroType::class, $proyectoBAE );
 
-        $editForm->handleRequest($request);
+		$editForm->handleRequest( $request );
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 
-            foreach ($girosAComisionOriginal as $giro) {
-                if (false === $proyectoBAE->getGiros()->contains($giro)) {
-                    $giro->setProyectoBae(null);
-                    $em->remove($giro);
-                }
-            }
+			foreach ( $girosAComisionOriginal as $giro ) {
+				if ( false === $proyectoBAE->getGiros()->contains( $giro ) ) {
+					$giro->setProyectoBae( null );
+					$em->remove( $giro );
+				}
+			}
 
-            $em->flush();
-            $this->get('session')->getFlashBag()->add(
-                'success',
-                'Giro/s modificado/s correctamente'
-            );
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Giro/s modificado/s correctamente'
+			);
 
-            return $this->redirectToRoute('proyecto_bae_giro', array('expediente' => $expediente->getId()));
-        }
+			return $this->redirectToRoute( 'proyecto_bae_giro', array( 'expediente' => $expediente->getId() ) );
+		}
 
-        return $this->render('expediente/proyecto_bae_giro.html.twig',
-            array(
-                'expediente' => $expediente,
-                'sesion' => $sesion,
-                'edit_form' => $editForm->createView(),
-            ));
-    }
+		return $this->render( 'expediente/proyecto_bae_giro.html.twig',
+			array(
+				'expediente' => $expediente,
+				'sesion'     => $sesion,
+				'edit_form'  => $editForm->createView(),
+			) );
+	}
 
 }

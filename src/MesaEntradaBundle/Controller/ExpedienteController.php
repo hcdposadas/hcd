@@ -1422,6 +1422,7 @@ class ExpedienteController extends Controller {
 			array(
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
+				'logs'=> []
 			) );
 	}
 

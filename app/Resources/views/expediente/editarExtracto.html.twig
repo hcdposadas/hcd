@@ -18,60 +18,23 @@
                 <div class="col-md-6">
                     {{ form_row(edit_form.extracto) }}
                 </div>
-                {#<div class="col-md-6">#}
-                    {#<p>&nbsp;</p>#}
-                    {#<ul>#}
-                        {#{% for log in expediente.logs %}#}
-                            {#{% if log.cambios.extracto is defined %}#}
-                                {#<li>#}
-                                    {#Editado por {{ log.creadoPor }}#}
-                                    {#el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}#}
+                <div class="col-md-6">
+                    <p>&nbsp;</p>
+                    <ul>
+                        {% for log in logs %}
+                            {% if log.cambios.extracto is defined %}
+                                <li>
+                                    Editado por {{ log.creadoPor }}
+                                    el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}
+                                    {#TODO agregar enlace o modal o tooltip con vista de cambios#}
                                     {#(<a href="{{ path('expediente_show_edicion_extracto', {'expediente': expediente.id, 'logExpediente': log.id}) }}">#{{ log.id }}</a>)#}
-                                {#</li>#}
-                            {#{% endif %}#}
-                        {#{% endfor %}#}
-                    {#</ul>#}
-                {#</div>#}
+                                    (<a href="#">#{{ log.id }}</a>)
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            {#<div class="row">#}
-            {#<div class="col-md-6">#}
-            {#{{ form_row(edit_form.extractoTemario) }}#}
-            {#</div>#}
-            {#<div class="col-md-6">#}
-            {#<p>&nbsp;</p>#}
-            {#<ul>#}
-            {#{% for log in expediente.logs %}#}
-            {#{% if log.cambios.extractoTemario is defined %}#}
-            {#<li>#}
-            {#Editado por {{ log.creadoPor.persona }}#}
-            {#el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}#}
-            {#(<a href="{{ path('expediente_show_edicion_extracto', {'expediente': expediente.id, 'logExpediente': log.id}) }}">#{{ log.id }}</a>)#}
-            {#</li>#}
-            {#{% endif %}#}
-            {#{% endfor %}#}
-            {#</ul>#}
-            {#</div>#}
-            {#</div>#}
-
-            {#<div class="row">#}
-            {#<div class="col-md-6">#}
-            {#{{ form_row(edit_form.extractoDictamen) }}#}
-            {#</div>#}
-            {#<div class="col-md-6">#}
-            {#<p>&nbsp;</p>#}
-            {#<ul>#}
-            {#{% for log in expediente.logs %}#}
-            {#{% if log.cambios.extractoDictamen is defined %}#}
-            {#<li>#}
-            {#Editado por {{ log.creadoPor.persona }}#}
-            {#el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}#}
-            {#(<a href="{{ path('expediente_show_edicion_extracto', {'expediente': expediente.id, 'logExpediente': log.id}) }}">#{{ log.id }}</a>)#}
-            {#</li>#}
-            {#{% endif %}#}
-            {#{% endfor %}#}
-            {#</ul>#}
-            {#</div>#}
-            {#</div>#}
 
             <input class="btn btn-primary" type="submit" value="Guardar"/>
             <div class="hidden">

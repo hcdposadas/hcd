@@ -51,7 +51,7 @@
             <h2>{{ documento |upper }}</h2>
             {% set reunion = sesion.titulo | split(' ') %}
 
-            <h2><span style="margin-right: 33%;">FECHA: {{ sesion.fecha |  date('j \\d\\e F Y')}}</span><span>REUNIÓN Nº: {{ reunion[3] }}</span></h2>
+            <h2><span style="margin-right: 33%;">FECHA: {{ sesion.fecha |localizeddate('none', 'none', 'es', null,"d 'de' MMMM Y" ) }}</span><span>REUNIÓN Nº: {{ reunion[3] }}</span></h2>
 
         </div>
     </div>

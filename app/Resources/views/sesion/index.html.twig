@@ -77,9 +77,6 @@
                 </panel-concejal>
             </div>
         {% endif %}
-        {% if is_granted('ROLE_SECRETARIO') %}
-            {% include 'sesion/autoridades.html.twig' %}
-        {% endif %}
 
         <div class="col-md-12">
 
@@ -91,9 +88,6 @@
             <h2>
                 {% if is_granted('ROLE_CONCEJAL') %}
                     Concejal {{ concejal }}
-                {% endif %}
-                {% if is_granted('ROLE_SECRETARIO') %}
-                    Secretario
                 {% endif %}
             </h2>
         </div>

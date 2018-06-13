@@ -137,9 +137,10 @@ class SesionController extends Controller {
 		$od  = $sesion->getOd()->first();
 
 		$proyectos = [
-			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
-			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
-			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO'  => $bae->getInformesDeDEM(),
+			'PROYECTOS DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'              => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'    => $bae->getProyectosDeDefensor(),
 		];
 
 		$dictamenes = [
@@ -307,7 +308,7 @@ class SesionController extends Controller {
 
 		$logs = $em->getRepository( Log::class )->findBy( [
 			'entityClass' => ProyectoBAE::class,
-			'entityId'=>$proyectoBAE->getId()
+			'entityId'    => $proyectoBAE->getId()
 		] );
 
 		return $this->render( 'expediente/editarExtracto.html.twig',
@@ -315,7 +316,7 @@ class SesionController extends Controller {
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
 				'sesion'     => $sesion,
-				'logs'     => $logs,
+				'logs'       => $logs,
 			) );
 	}
 
@@ -437,7 +438,7 @@ class SesionController extends Controller {
 
 		$logs = $em->getRepository( Log::class )->findBy( [
 			'entityClass' => DictamenOD::class,
-			'entityId'=>$dictamenOD->getId()
+			'entityId'    => $dictamenOD->getId()
 		] );
 
 		return $this->render( 'expediente/editarExtracto.html.twig',
@@ -445,7 +446,7 @@ class SesionController extends Controller {
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
 				'sesion'     => $sesion,
-				'logs'     => $logs,
+				'logs'       => $logs,
 			) );
 	}
 
@@ -580,9 +581,10 @@ class SesionController extends Controller {
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$proyectos = [
-			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
-			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
-			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
+			'INFORMES DEL DEPARTAMENTO EJECUTIVO'  => $bae->getInformesDeDEM(),
+			'PROYECTOS DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
+			'PROYECTOS DE CONCEJALES'              => $bae->getProyectosDeConcejales(),
+			'PROYECTOS DEL DEFENSOR DEL PUEBLO'    => $bae->getProyectosDeDefensor(),
 		];
 
 		$html = $this->renderView( ':sesiones:boletin_asuntos_entrados.pdf.twig',

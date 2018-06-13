@@ -1133,11 +1133,12 @@ class Expediente extends BaseClass {
 	 * @return bool
 	 */
 	public function esProyectoDeDEM() {
-		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
-			return $ie->getAutor()
-			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
-			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
-		} );
+		return $this->getLetra() == 'M' && (strpos($this->getExpediente(), 'RM') === 0);
+//		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
+//			return $ie->getAutor()
+//			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
+//			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
+//		} );
 	}
 
 	/**

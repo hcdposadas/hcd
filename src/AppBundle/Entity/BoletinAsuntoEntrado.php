@@ -198,7 +198,7 @@ class BoletinAsuntoEntrado extends BaseClass {
 		return $this->ordenarProyectos(
 			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
 				return $proyectoBae->getExpediente()->esProyectoDeConcejal()
-					&& !$proyectoBae->getEsInformeDem();
+				       && ! $proyectoBae->getEsInformeDem();
 			} )
 		);
 	}
@@ -210,7 +210,18 @@ class BoletinAsuntoEntrado extends BaseClass {
 		return $this->ordenarProyectos(
 			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
 				return $proyectoBae->getExpediente() && $proyectoBae->getExpediente()->esProyectoDeDEM()
-				       || $proyectoBae->getEsInformeDem() ;
+				       && ! $proyectoBae->getEsInformeDem();
+			} )
+		);
+	}
+
+	/**
+	 * @return \Doctrine\Common\Collections\Collection|ProyectoBAE[]
+	 */
+	public function getInformesDeDEM() {
+		return $this->ordenarProyectos(
+			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
+				return $proyectoBae->getExpediente() && $proyectoBae->getEsInformeDem();
 			} )
 		);
 	}

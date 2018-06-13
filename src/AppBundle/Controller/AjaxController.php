@@ -900,6 +900,10 @@ class AjaxController extends Controller
                 'titulo' => 'INFORMES DEL DEPARTAMENTO EJECUTIVO',
                 'proyectos' => [],
             ],
+            'pejecutivo' => [
+                'titulo' => 'PROYECTOS DEL DEPARTAMENTO EJECUTIVO',
+                'proyectos' => [],
+            ],
             'concejales' => [
                 'titulo' => 'PROYECTOS DE CONCEJALES',
                 'proyectos' => [],
@@ -911,8 +915,13 @@ class AjaxController extends Controller
         ];
 
         $i = 0;
-        foreach (array_map($mapBae, $bae->getProyectosDeDEM()->toArray()) as $proyecto) {
+        foreach (array_map($mapBae, $bae->getInformesDeDEM()->toArray()) as $proyecto) {
             $proyectos['ejecutivo']['proyectos'][$i++] = $proyecto;
+        }
+
+        $i = 0;
+        foreach (array_map($mapBae, $bae->getProyectosDeDEM()->toArray()) as $proyecto) {
+            $proyectos['pejecutivo']['proyectos'][$i++] = $proyecto;
         }
 
         $i = 0;

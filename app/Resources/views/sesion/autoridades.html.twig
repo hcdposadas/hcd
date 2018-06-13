@@ -166,7 +166,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <b>
-                            {{ sesion.fecha | date('j F Y') }} - {{ sesion.titulo }}
+                            {{ sesion.fecha |localizeddate('none', 'none', 'es', null,"d 'de' MMMM Y" ) }} - {{ sesion.titulo }}
                         </b>
                     </div>
                 </div>
@@ -218,8 +218,10 @@
                     Secretario
                 {% elseif is_granted('ROLE_DEFENSOR') %}
                     Defensor del Pueblo
-                {% elseif is_granted('ROLE_LEGISLATIVO') %}
-                    Legislativo
+                {% elseif is_granted('ROLE_PROSECRETARIO_LEGISLATIVO') %}
+                    Prosecretaria Legislativa
+                {% elseif is_granted('ROLE_PROSECRETARIO') %}
+                    Prosecretario
                 {% else %}
                     {% if app.user.persona %}
                         {{ app.user.persona }}

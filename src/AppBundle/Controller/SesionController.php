@@ -235,6 +235,9 @@ class SesionController extends Controller {
 				'BAE modificado correctamente'
 			);
 
+            return $this->redirectToRoute('sesiones_asignar_proyectos_a_bae',
+                ['sesionId' => $sesionId]);
+
 		}
 
 		return $this->render( ':sesiones:asignar_proyectos_a_bae.html.twig',
@@ -352,6 +355,8 @@ class SesionController extends Controller {
 				'success',
 				'OD modificado correctamente'
 			);
+
+			return $this->redirectToRoute('sesiones_asignar_dictamenes_a_od', ['sesionId'=>$sesionId]);
 
 		}
 

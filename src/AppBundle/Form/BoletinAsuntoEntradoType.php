@@ -25,7 +25,7 @@ class BoletinAsuntoEntradoType extends AbstractType {
 //						[ 'icon' => 'fa-file-text-o', 'class' => 'btn-editar-extracto', 'title' => 'Editar Extracto' ]
 //					]
 				] )
-			->add( 'cerrado' );
+			;
 	}
 
 	/**

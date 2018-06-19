@@ -34,7 +34,8 @@
         <div class="row m-b-1">
             <div class="col-md-12">
                 <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
-                <a class="btn btn-primary" href="{{ path('dictamen_asignar_a_expte') }}"> Nuevo a Partir de Expediente</a>
+                <a class="btn btn-primary" href="{{ path('dictamen_asignar_a_expte') }}"> Nuevo a Partir de
+                    Expediente</a>
             </div>
         </div>
     {% endif %}
@@ -72,10 +73,12 @@
                                        href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-default" data-toggle="tooltip" title="Editar Dictamen"
-                                       href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Dictamen"
+                                           href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

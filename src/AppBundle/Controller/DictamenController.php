@@ -128,6 +128,15 @@ class DictamenController extends Controller
     public function editarDictamenAnteriorAction(Request $request, $id)
     {
 
+	    if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		    $this->get( 'session' )->getFlashBag()->add(
+			    'warning',
+			    'No tiene permisos para modificar un Dictamen.'
+		    );
+
+		    return $this->redirectToRoute( 'app_homepage' );
+	    }
+
         $em = $this->getDoctrine()->getManager();
 
         $dictamen = $em->getRepository(Dictamen::class)->find($id);

@@ -220,17 +220,17 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
-		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
-			if ($this->container->get('security.token_storage')->getToken()->getUser()->getPersona()->esPresidenteComision()){
-				$menu[ $keyDictamenes ]
-					->addChild(
-						'Crear Dictamen',
-						array(
-							'route' => 'dictamen_crear',
-						)
-					);
-			}
-		}
+//		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
+//			if ($this->container->get('security.token_storage')->getToken()->getUser()->getPersona()->esPresidenteComision()){
+//				$menu[ $keyDictamenes ]
+//					->addChild(
+//						'Crear Dictamen',
+//						array(
+//							'route' => 'dictamen_crear',
+//						)
+//					);
+//			}
+//		}
 
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) &&
 		     ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' )

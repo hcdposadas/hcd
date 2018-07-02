@@ -211,6 +211,24 @@ class OrdenDelDia extends BaseClass
     /**
      * @return \Doctrine\Common\Collections\Collection|DictamenOD[]
      */
+    public function getDictamenesConTratamientoPreferencial()
+    {
+        return $this->ordenarProyectos(
+            $this->getDictamenes()->filter(function (DictamenOD $dod) {
+                $dictamen = $dod->getDictamen();
+                if (!$dictamen) {
+                    return false;
+                }
+
+                return $dictamen->getTipoProyecto()
+                    && $dod->getTieneTratamientoPreferencial();
+            })
+        );
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|DictamenOD[]
+     */
     public function getDictamenesDeDeclaracion()
     {
         return $this->ordenarProyectos(

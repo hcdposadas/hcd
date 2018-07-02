@@ -61,6 +61,13 @@ class DictamenOD extends BaseClass
 	 */
 	private $extracto;
 
+	/**
+	 * @var $tieneTratamientoPreferencial
+	 *
+	 * @ORM\Column(name="tiene_tratamiento_preferencial", type="boolean", nullable=true)
+	 */
+	private $tieneTratamientoPreferencial;
+
 
     /**
      * Get id
@@ -190,5 +197,29 @@ class DictamenOD extends BaseClass
     public function getExtracto()
     {
         return $this->extracto;
+    }
+
+    /**
+     * Set tieneTratamientoPreferencial
+     *
+     * @param boolean $tieneTratamientoPreferencial
+     *
+     * @return DictamenOD
+     */
+    public function setTieneTratamientoPreferencial($tieneTratamientoPreferencial)
+    {
+        $this->tieneTratamientoPreferencial = $tieneTratamientoPreferencial;
+
+        return $this;
+    }
+
+    /**
+     * Get tieneTratamientoPreferencial
+     *
+     * @return boolean
+     */
+    public function getTieneTratamientoPreferencial()
+    {
+        return $this->tieneTratamientoPreferencial;
     }
 }

@@ -1207,6 +1207,13 @@ class ExpedienteController extends Controller {
 			$girosOriginales->add( $giro );
 		}
 
+		$girosAdministrativosOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getGiroAdministrativos() as $giroAdministrativo ) {
+			$girosAdministrativosOriginales->add( $giroAdministrativo );
+		}
+
 		$adjuntosOriginales = new ArrayCollection();
 
 		// Create an ArrayCollection of the current Tag objects in the database
@@ -1233,6 +1240,13 @@ class ExpedienteController extends Controller {
 				}
 			}
 
+			foreach ( $girosAdministrativosOriginales as $giroAdministrativo ) {
+				if ( false === $expediente->getGiroAdministrativos()->contains( $giroAdministrativo ) ) {
+					$giroAdministrativo->setExpediente( null );
+					$em->remove( $giroAdministrativo );
+				}
+			}
+
 			foreach ( $adjuntosOriginales as $expAdj ) {
 				if ( false === $expediente->getExpedientesAdjunto()->contains( $expAdj ) ) {
 					$expAdj->setExpediente( null );
@@ -1254,6 +1268,8 @@ class ExpedienteController extends Controller {
 				'success',
 				'Expediente modificado correctamente'
 			);
+
+			return $this->redirectToRoute( 'expediente_legislativo_externo_editar', [ 'id' => $expediente->getId() ] );
 
 		}
 
@@ -1396,7 +1412,7 @@ class ExpedienteController extends Controller {
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$log = Log::forEntity($expediente);
+			$log = Log::forEntity( $expediente );
 			foreach ( $valoresOriginales as $nombre => $campo ) {
 				if ( $campo['valor'] != $expediente->{$campo['getter']}() ) {
 					$log->agregarCambio( $nombre, $campo['valor'], $expediente->{$campo['getter']}() );
@@ -1404,7 +1420,7 @@ class ExpedienteController extends Controller {
 			}
 
 			$em = $this->getDoctrine()->getManager();
-			if ($log->hasCambios()) {
+			if ( $log->hasCambios() ) {
 				$em->persist( $log );
 			}
 			$em->persist( $expediente );
@@ -1422,7 +1438,7 @@ class ExpedienteController extends Controller {
 			array(
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
-				'logs'=> []
+				'logs'       => []
 			) );
 	}
 

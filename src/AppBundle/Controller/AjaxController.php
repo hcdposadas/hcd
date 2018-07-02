@@ -952,6 +952,10 @@ class AjaxController extends Controller
 
 
         $dictamenes = [
+            'preferencial' => [
+                'titulo' => 'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL',
+                'dictamenes' => [],
+            ],
             'declaracion' => [
                 'titulo' => 'DICTÁMENES DE DECLARACIÓN',
                 'dictamenes' => [],
@@ -969,6 +973,11 @@ class AjaxController extends Controller
                 'dictamenes' => [],
             ],
         ];
+
+        $i = 0;
+        foreach (array_map($mapOd, $od->getDictamenesConTratamientoPreferencial()->toArray()) as $dictamen) {
+            $dictamenes['preferencial']['dictamenes'][$i++] = $dictamen;
+        }
 
         $i = 0;
         foreach (array_map($mapOd, $od->getDictamenesDeDeclaracion()->toArray()) as $dictamen) {

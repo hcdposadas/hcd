@@ -144,6 +144,7 @@ class SesionController extends Controller {
 		];
 
 		$dictamenes = [
+			'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL'  => $od->getDictamenesConTratamientoPreferencial(),
 			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
 			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
 			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
@@ -672,6 +673,7 @@ class SesionController extends Controller {
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$dictamenes = [
+			'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL'  => $od->getDictamenesConTratamientoPreferencial(),
 			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
 			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
 			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),

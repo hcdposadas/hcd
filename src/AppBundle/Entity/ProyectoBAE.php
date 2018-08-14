@@ -63,7 +63,7 @@ class ProyectoBAE extends BaseClass {
     /**
      * @var
      *
-     * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Giro", mappedBy="proyectoBae", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\Giro", mappedBy="proyectoBae", cascade={"persist", "remove"})
      *
      */
     private $giros;

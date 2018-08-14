@@ -59,7 +59,7 @@
                         {% for dictamen in dictamenes %}
                             <tr>
                                 <td>
-                                    <a href="{{ path('dependencia_show', { 'id': dictamen.id }) }}">{{ dictamen.id }}</a>
+                                    <a href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">{{ dictamen.id }}</a>
                                 </td>
                                 <td>
                                     {{ dictamen.tipoProyecto }}

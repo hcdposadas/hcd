@@ -2,6 +2,7 @@
 
 namespace MesaEntradaBundle\Controller;
 
+use AppBundle\Entity\ProyectoBAE;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\GiroAdministrativo;
@@ -233,6 +234,7 @@ class ExpedienteController extends Controller {
 	public function seguimientoExpedienteTimelineAction( Request $request, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
+        $girosBae = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
 
 		$referer = $request->headers
 			->get( 'referer' );
@@ -240,6 +242,7 @@ class ExpedienteController extends Controller {
 		return $this->render( 'expediente/timeline.html.twig',
 			array(
 				'expediente' => $expediente,
+				'girosBae' => $girosBae,
 				'referer'    => $referer
 			) );
 
@@ -961,6 +964,7 @@ class ExpedienteController extends Controller {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( 'MesaEntradaBundle:Expediente' )->find( $id );
 		$form       = $this->createForm( NuevoGiroExpedienteComisionType::class, $expediente );
+		$girosBae = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
 
 		$form->handleRequest( $request );
 
@@ -981,6 +985,7 @@ class ExpedienteController extends Controller {
 		return $this->render( ':expediente:nuevo_giro_legislativo.html.twig',
 			[
 				'expediente' => $expediente,
+				'girosBae' => $girosBae,
 				'form'       => $form->createView()
 			] );
 	}

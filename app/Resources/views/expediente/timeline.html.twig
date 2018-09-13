@@ -6,7 +6,7 @@
 {% block contentHeader %}
     <section class="content-header">
         <h1>
-            Expediente
+            Expediente {{ expediente }}
             <small>Seguimientos</small>
         </h1>
     </section>
@@ -61,6 +61,31 @@
                         </div>
                     </li>
                 {% endfor %}
+                {% if girosBae | length > 0 %}
+                    {% for giroBae in girosBae %}
+                        {% for giro in giroBae.giros %}
+                            <li>
+                                <i class="fa fa-map-signs bg-blue"></i>
+
+                                <div class="timeline-item">
+                            <span class="time">
+                                <i class="fa fa-clock-o"></i> {{ giro.fechaGiro | date('d/m/Y') }}
+                            </span>
+                                    <h3 class="timeline-header">{{ giro.comisionDestino }}</h3>
+
+                                    {% if is_granted('ROLE_MESA_ENTRADA') %}
+                                        <div class="timeline-footer">
+                                            <a class="btn btn-default btn-xs" target="_blank"
+                                               href="{{ path('expediente_imprimir_giro', {id: expediente.id, giroId: giro.id, tipoExpediente: 'legislativo'}) }}">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
                 </li>
             </ul>
         </div>

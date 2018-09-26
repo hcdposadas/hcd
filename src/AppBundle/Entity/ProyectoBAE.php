@@ -68,6 +68,13 @@ class ProyectoBAE extends BaseClass {
      */
     private $giros;
 
+	/**
+	 * @var $incorporadoEnSesion
+	 *
+	 * @ORM\Column(name="incorporado_en_sesion", type="boolean", nullable=true)
+	 */
+	private $incorporadoEnSesion;
+
 
 	/**
 	 * Get id
@@ -280,5 +287,29 @@ class ProyectoBAE extends BaseClass {
         });
 
         return new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));
+    }
+
+    /**
+     * Set incorporadoEnSesion
+     *
+     * @param boolean $incorporadoEnSesion
+     *
+     * @return ProyectoBAE
+     */
+    public function setIncorporadoEnSesion($incorporadoEnSesion)
+    {
+        $this->incorporadoEnSesion = $incorporadoEnSesion;
+
+        return $this;
+    }
+
+    /**
+     * Get incorporadoEnSesion
+     *
+     * @return boolean
+     */
+    public function getIncorporadoEnSesion()
+    {
+        return $this->incorporadoEnSesion;
     }
 }

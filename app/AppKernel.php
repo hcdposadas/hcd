@@ -29,8 +29,7 @@ class AppKernel extends Kernel
 			new Tetranz\Select2EntityBundle\TetranzSelect2EntityBundle(),
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
 			new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-			new \Endroid\QrCode\Bundle\QrCodeBundle\EndroidQrCodeBundle(),
-            new BM\BackupManagerBundle\BMBackupManagerBundle(),
+			new \Endroid\QrCode\Bundle\QrCodeBundle\EndroidQrCodeBundle()
         ];
 
 		if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

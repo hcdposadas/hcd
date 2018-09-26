@@ -45,6 +45,10 @@ class BoletinAsuntoEntrado extends BaseClass {
 	 */
 	private $cerrado;
 
+	public function __toString() {
+	return $this->sesion->__toString();
+	}
+
 
 	/**
 	 * Get id

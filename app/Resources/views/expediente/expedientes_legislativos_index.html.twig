@@ -115,6 +115,10 @@
                                            href="{{ path('editar_extracto_od', { 'expediente': expediente.id }) }}">
                                             <i class="fa fa-file-text"></i> OD
                                         </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Expediente Incorporado en Sesión"
+                                           href="{{ path('proyectobae_incorporar_a_sesion', {'expediente': expediente.id }) }}">
+                                            <i class="fa fa-caret-square-o-right"></i> IES
+                                        </a>
                                     {% endif %}
                                     {% if is_granted('ROLE_MESA_ENTRADA') %}
                                         <a class="btn btn-default" data-toggle="tooltip" title="Cargar Extracto"

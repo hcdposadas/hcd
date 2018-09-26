@@ -1,3 +1,7 @@
+app_proyectobae:
+    resource: "@AppBundle/Resources/config/routing/proyectobae.yml"
+    prefix:   /proyectobae
+
 app_dictamenes:
     resource: "@AppBundle/Resources/config/routing/dictamen.yml"
     prefix:   /dictamen

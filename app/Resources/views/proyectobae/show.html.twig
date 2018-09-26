@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Proyectobae</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ proyectoBAE.id }}</td>
+            </tr>
+            <tr>
+                <th>Esinformedem</th>
+                <td>{% if proyectoBAE.esInformeDem %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Extracto</th>
+                <td>{{ proyectoBAE.extracto }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{% if proyectoBAE.activo %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechacreacion</th>
+                <td>{% if proyectoBAE.fechaCreacion %}{{ proyectoBAE.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechaactualizacion</th>
+                <td>{% if proyectoBAE.fechaActualizacion %}{{ proyectoBAE.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<a class="btn btn-default" href="{{ path('proyectobae_index') }}">Volver</a>
+
+    <a class="btn btn-default" href="{{ path('proyectobae_edit', { 'id': proyectoBAE.id }) }}">Editar</a>
+
+    {{ form_start(delete_form) }}
+        <input class="btn btn-danger" type="submit" value="Eliminar">
+    {{ form_end(delete_form) }}
+
+{% endblock %}

@@ -1,0 +1,33 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: database
+    database_port: 5432
+    database_name: hcd
+    database_user: postgres
+    database_password: postgres
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_port: 587
+    mailer_encryption: tls
+    mailer_user: raul@hcdposadas.gov.ar
+    mailer_sender: admin@admin.com
+    mailer_sender_as: admin@admin.com
+    mailer_password: xyz
+    secret: ThisTokenIsNotSoSecretChangeIt
+    ide: phpstorm
+    version: develop-c03e5d48685c84544750c45c4036f1285d30e13a
+    redis_host: 127.0.0.1
+    redis_port: 6379
+    redis_scheme: tcp
+    knp_snappy_binary: '%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64'
+    app_url: 'http://localhost:8888/web'
+    local_folder_backup: /var/backups/hcd
+    dropbox_token: null
+    dropbox_key: null
+    dropbox_secret: null
+    dropbox_app: null
+    dropbox_root: null
+    ftp_host: null
+    ftp_username: null
+    ftp_password: null
+    ftp_root: null

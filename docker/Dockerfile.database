@@ -1,0 +1,4 @@
+FROM postgres:9.6
+MAINTAINER @raulneis <raulneis@gmail.com>
+
+RUN usermod -u 1000 postgres

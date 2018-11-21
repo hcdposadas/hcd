@@ -127,6 +127,7 @@ class Expediente extends BaseClass {
 	 * @var IniciadorExpediente[]
 	 *
 	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\IniciadorExpediente", mappedBy="expediente", cascade={"persist"}, orphanRemoval=true)
+	 * @ORM\OrderBy({"fechaCreacion" = "ASC"})
 	 *
 	 */
 	private $iniciadores;

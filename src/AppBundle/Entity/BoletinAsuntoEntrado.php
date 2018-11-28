@@ -236,7 +236,7 @@ class BoletinAsuntoEntrado extends BaseClass {
 	public function getProyectosDeDefensor() {
 		return $this->ordenarProyectos(
 			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
-				return $proyectoBae->getExpediente()->esProyectoDeDefensor();
+				return $proyectoBae->getExpediente()->esProyectoDeDefensor() && !$proyectoBae->getEsInformeDem();
 			} )
 		);
 	}

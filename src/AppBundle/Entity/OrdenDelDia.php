@@ -239,7 +239,8 @@ class OrdenDelDia extends BaseClass
                 }
 
                 return $dictamen->getTipoProyecto()
-                    && $dictamen->getTipoProyecto()->esTipoDeclaracion();
+                    && $dictamen->getTipoProyecto()->esTipoDeclaracion()
+                       && !$dod->getTieneTratamientoPreferencial();
             })
         );
     }
@@ -257,7 +258,8 @@ class OrdenDelDia extends BaseClass
                 }
 
                 return $dictamen->getTipoProyecto()
-                    && $dictamen->getTipoProyecto()->esTipoComunicacion();
+                    && $dictamen->getTipoProyecto()->esTipoComunicacion()
+                       && !$dod->getTieneTratamientoPreferencial();
             })
         );
     }
@@ -275,7 +277,8 @@ class OrdenDelDia extends BaseClass
                 }
 
                 return $dictamen->getTipoProyecto()
-                    && $dictamen->getTipoProyecto()->esTipoResolucion();
+                    && $dictamen->getTipoProyecto()->esTipoResolucion()
+                       && !$dod->getTieneTratamientoPreferencial();
             })
         );
     }
@@ -293,7 +296,8 @@ class OrdenDelDia extends BaseClass
                 }
 
                 return $dictamen->getTipoProyecto()
-                    && $dictamen->getTipoProyecto()->esTipoOrdenanza();
+                    && $dictamen->getTipoProyecto()->esTipoOrdenanza()
+                       && !$dod->getTieneTratamientoPreferencial();
             })
         );
     }

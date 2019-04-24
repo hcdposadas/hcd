@@ -311,9 +311,28 @@ class OrdenDelDia extends BaseClass
         $iterator = $proyectos->getIterator();
 
         $iterator->uasort(function (DictamenOD $a, DictamenOD $b) {
-            list($numeroa, $letraa, $anioa) = explode('-', $a->getDictamen()->getExpediente()->__toString(), 3);
-            list($numerob, $letrab, $aniob) = explode('-', $b->getDictamen()->getExpediente()->__toString(), 3);
 
+            // Del expediente de ambos proyectos, separa el numero y el año
+            // Pueden ser numero-letra-anio o numero-numero-letra-anio
+
+            $expA = $a->getDictamen()->getExpediente()->__toString();
+            $expB = $b->getDictamen()->getExpediente()->__toString();
+
+            if (substr_count($expA, '-') == 3) {
+                list( $numeroa, $numero2a, $letraa, $anioa ) = explode( '-', $expA, 4 );
+                $numeroa = $numeroa.$numero2a;
+            } else {
+                list( $numeroa, $letraa, $anioa ) = explode( '-', $expA, 3 );
+            }
+
+            if (substr_count($expB, '-') == 3) {
+                list( $numerob, $numero2b, $letrab, $aniob ) = explode( '-', $expB, 4 );
+                $numerob = $numerob.$numero2b;
+            } else {
+                list( $numerob, $letrab, $aniob ) = explode( '-', $expB, 3 );
+            }
+
+            // Compara por anio, y si son iguales, por numero
 
             if ($anioa < $aniob){
                 return -1;

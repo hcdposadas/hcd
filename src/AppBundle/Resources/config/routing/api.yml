@@ -1,0 +1,4 @@
+api_expedientes:
+    path:     /expedientes
+    defaults: { _controller: "AppBundle:Api:getExpedientes" }
+    methods:  GET

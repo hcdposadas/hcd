@@ -1,3 +1,7 @@
+app_api:
+    resource: "@AppBundle/Resources/config/routing/api.yml"
+    prefix:   /api
+
 app_proyectobae:
     resource: "@AppBundle/Resources/config/routing/proyectobae.yml"
     prefix:   /proyectobae

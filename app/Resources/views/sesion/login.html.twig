@@ -49,7 +49,7 @@
                 </div>
             {% endif %}
 
-            <form action="{{ path("sesion_login") }}" method="post">
+            <form action="{{ path("sesion_login") }}" method="post" autocomplete="off">
                 {#<input type="hidden" name="_csrf_token"#}
                 {#value="{{ csrf_token('authenticate') }}"#}
                 {#>#}
@@ -57,7 +57,7 @@
                 <div class="form-group has-feedback">
                     <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}"
                            placeholder="Usuario" required="required"/>
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
                     <input class="form-control" type="password" id="password" name="_password" required="required"

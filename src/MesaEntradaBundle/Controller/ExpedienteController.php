@@ -1466,4 +1466,50 @@ class ExpedienteController extends Controller {
 				'logExpediente' => $logExpediente,
 			) );
 	}
+
+
+	public function incorporarProyectosASesionIndexAction( Request $request ) {
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( 'MesaEntradaBundle:TipoExpediente' )->findOneBy( [
+			'slug' => 'externo'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbBuscar( $filterType->getData(),
+				$tipoExpediente );
+
+
+		} else {
+
+			$expedientes = $em->getRepository( 'MesaEntradaBundle:Expediente' )->getQbExpedientesLegislativoTipo( $tipoExpediente );
+
+			$expedientes = $expedientes->andWhere( 'e.expediente is not null' );
+
+		}
+
+		$paginator = $this->get( 'knp_paginator' );
+
+		$expedientes = $paginator->paginate(
+			$expedientes,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/incorporar_expedientes_a_sesion_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			) );
+	}
 }

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ProyectoBAE;
+use AppBundle\Entity\Sesion;
 use AppBundle\Form\ProyectoBAEIncorporarType;
 use MesaEntradaBundle\Entity\Expediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -139,7 +140,7 @@ class ProyectoBAEController extends Controller {
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
-			$proyectoBAE->setIncorporadoEnSesion(true);
+			$proyectoBAE->setIncorporadoEnSesion( true );
 
 			$em->persist( $proyectoBAE );
 			$em->flush();
@@ -154,6 +155,62 @@ class ProyectoBAEController extends Controller {
 		}
 
 		return $this->render( 'proyectobae/incorporar_a_sesion.html.twig',
+			[
+				'form'                 => $form->createView(),
+				'expediente'           => $expediente,
+				'expedienteEnSesiones' => $expedienteEnSesiones
+			] );
+	}
+
+	public function incorporarEnSesionAction( Request $request, Expediente $expediente ) {
+
+		$em          = $this->getDoctrine()->getManager();
+		$proyectoBAE = new ProyectoBAE();
+		$proyectoBAE->setExpediente( $expediente );
+
+		$expedienteEnSesiones = $em->getRepository( ProyectoBAE::class )->findBy( [ 'expediente' => $expediente ] );
+
+		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
+
+		$sesion   = null;
+
+
+		if ( ! $sesionQb->getQuery()->getResult() ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No hay una Sesión Activa Creada'
+			);
+		} else {
+			$sesion = $sesionQb->getQuery()->getSingleResult();
+		}
+
+		if ($sesion){
+			$proyectoBAE->setBoletinAsuntoEntrado($sesion->getBae()->last());
+		}
+
+		$proyectoBAE->setExtracto($expediente->getExtracto());
+
+
+		$form = $this->createForm( ProyectoBAEIncorporarType::class, $proyectoBAE );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$proyectoBAE->setIncorporadoEnSesion( true );
+
+			$em->persist( $proyectoBAE );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente ingresado correctamente'
+			);
+
+			return $this->redirectToRoute( 'incorporar_expedientes_a_sesion_index' );
+		}
+
+		return $this->render( 'proyectobae/incorporar_en_sesion.html.twig',
 			[
 				'form'                 => $form->createView(),
 				'expediente'           => $expediente,

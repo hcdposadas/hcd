@@ -27,3 +27,8 @@ proyectobae_incorporar_a_sesion:
     path:     /{expediente}/incorporar-a-sesion
     defaults: { _controller: "AppBundle:ProyectoBAE:incorporarASesion" }
     methods:  [GET, POST]
+
+proyectobae_incorporar_en_sesion:
+    path:     /{expediente}/incorporar-en-sesion
+    defaults: { _controller: "AppBundle:ProyectoBAE:incorporarEnSesion" }
+    methods:  [GET, POST]

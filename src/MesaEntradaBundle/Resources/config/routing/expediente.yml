@@ -143,3 +143,10 @@ expediente_show_edicion_extracto:
     path:     /{expediente}/editarExtracto/{logExpediente}
     defaults: { _controller: "MesaEntradaBundle:Expediente:showEdicionExtracto" }
     methods:  [GET]
+
+
+#Expedientes en sesion
+
+incorporar_expedientes_a_sesion_index:
+    path: /incorporar_expedientes_a_sesion_index
+    defaults: { _controller: "MesaEntradaBundle:Expediente:incorporarProyectosASesionIndex" }

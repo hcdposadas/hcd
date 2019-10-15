@@ -15,6 +15,7 @@ easy_admin:
         form_theme: ['horizontal']
         menu:
             - { label: 'Sesión', entity: Sesion }
+            - { label: 'Proyecto BAE', entity: ProyectoBAE }
             - { label: 'Moción', entity: Mocion }
             - { label: 'Periodo Legislativo', entity: PeriodoLegislativo }
             - Documento

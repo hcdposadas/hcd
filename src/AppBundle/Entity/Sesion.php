@@ -84,6 +84,13 @@ class Sesion extends BaseClass {
 	private $tipoSesion;
 
 	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="homenajes", type="text", nullable=true)
+	 */
+	private $homenajes;
+
+	/**
 	 * @return string
 	 */
 	public function __toString() {
@@ -388,4 +395,18 @@ class Sesion extends BaseClass {
     {
         return $this->bae;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getHomenajes(): ? string {
+		return $this->homenajes;
+	}
+
+	/**
+	 * @param string $homenajes
+	 */
+	public function setHomenajes( string $homenajes ) {
+		$this->homenajes = $homenajes;
+	}
 }

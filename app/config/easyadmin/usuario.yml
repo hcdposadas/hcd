@@ -25,9 +25,11 @@ easy_admin:
                           'ROLE_MESA_ENTRADA': 'ROLE_MESA_ENTRADA',
                           'ROLE_PERSONAL': 'ROLE_PERSONAL',
                           'ROLE_LEGISLATIVO': 'ROLE_LEGISLATIVO',
+                          'ROLE_LEGISLATIVO_ADMIN': 'ROLE_LEGISLATIVO_ADMIN',
                           'ROLE_DEFENSOR': 'ROLE_DEFENSOR',
                           'ROLE_PROSECRETARIO': 'ROLE_PROSECRETARIO',
                           'ROLE_PROSECRETARIO_LEGISLATIVO': 'ROLE_PROSECRETARIO_LEGISLATIVO',
+                          'ROLE_CEREMONIAL': 'ROLE_CEREMONIAL',
                         }
                       }
                       }

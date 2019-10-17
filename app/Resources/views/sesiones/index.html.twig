@@ -84,6 +84,12 @@
                                             <i class="fa fa-edit"></i> Cargar Acta
                                         </a>
                                     {% endif %}
+                                    {% if is_granted('ROLE_CEREMONIAL') %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('sesiones_cargar_homenaje', { 'sesionId': sesion.id }) }}">
+                                            <i class="fa fa-edit"></i> Cargar Homenajes
+                                        </a>
+                                    {% endif %}
 
                                 </td>
                             </tr>

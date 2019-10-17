@@ -17,6 +17,22 @@
             </div>
         </div>
 
+        <div id="modal-homenajes" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+
+             aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Homenajes
+                    </div>
+                    <div class="modal-body">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
@@ -38,6 +54,9 @@
                             <th>
                                 Acta
                             </th>
+                            <th>
+                                Homenajes
+                            </th>
                         </tr>
                         <tr v-for="sesion in sesiones">
                             <td>
@@ -45,6 +64,11 @@
                             </td>
                             <td>
                                 <a href="#" @click="verActa(sesion)">
+                                    <i class="fa fa-file"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#" @click="verHomenaje(sesion)">
                                     <i class="fa fa-file"></i>
                                 </a>
                             </td>
@@ -97,6 +121,12 @@
                 window.$('#modal-acta').modal('toggle')
                 window.$('#modal-acta .modal-header').html(sesion.titulo);
                 window.$('#modal-acta .modal-body').html(sesion.acta);
+            },
+            verHomenaje(sesion){
+                console.log(sesion);
+                window.$('#modal-homenajes').modal('toggle')
+                window.$('#modal-homenajes .modal-header').html(sesion.titulo);
+                window.$('#modal-homenajes .modal-body').html(sesion.homenajes);
             }
         },
         mounted() {

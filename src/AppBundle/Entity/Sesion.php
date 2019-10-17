@@ -399,14 +399,14 @@ class Sesion extends BaseClass {
 	/**
 	 * @return string
 	 */
-	public function getHomenajes(): ? string {
+	public function getHomenajes() {
 		return $this->homenajes;
 	}
 
 	/**
 	 * @param string $homenajes
 	 */
-	public function setHomenajes( string $homenajes ) {
+	public function setHomenajes( $homenajes ) {
 		$this->homenajes = $homenajes;
 	}
 }

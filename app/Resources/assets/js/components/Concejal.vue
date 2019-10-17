@@ -39,7 +39,7 @@
                                 <button type="button" class="btn btn-app btn-primary-hcd"
                                         @click="verActas">
                                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    Actas
+                                    Sesiones
                                 </button>
 
                                 <a class="btn btn-danger btn-lg pull-right" :href="pathLogout"> Salir

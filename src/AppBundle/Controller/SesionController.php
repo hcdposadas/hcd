@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\BoletinAsuntoEntrado;
 use AppBundle\Entity\DictamenOD;
 use AppBundle\Entity\OrdenDelDia;
+use AppBundle\Entity\PeriodoLegislativo;
 use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\BoletinAsuntoEntradoType;
@@ -14,6 +15,7 @@ use AppBundle\Form\Filter\SesionFilterType;
 use AppBundle\Form\OrdenDelDiaType;
 use AppBundle\Form\ProyectoBAEGiroType;
 use AppBundle\Form\SesionCargarActaType;
+use AppBundle\Form\SesionCargarHomenajeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\Log;
@@ -144,11 +146,11 @@ class SesionController extends Controller {
 		];
 
 		$dictamenes = [
-			'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL'  => $od->getDictamenesConTratamientoPreferencial(),
-			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
-			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
-			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
-			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+			'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL' => $od->getDictamenesConTratamientoPreferencial(),
+			'DICTÁMENES DE DECLARACIÓN'                => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN'               => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'                 => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'                  => $od->getDictamenesDeOrdenanza(),
 		];
 
 
@@ -236,8 +238,8 @@ class SesionController extends Controller {
 				'BAE modificado correctamente'
 			);
 
-            return $this->redirectToRoute('sesiones_asignar_proyectos_a_bae',
-                ['sesionId' => $sesionId]);
+			return $this->redirectToRoute( 'sesiones_asignar_proyectos_a_bae',
+				[ 'sesionId' => $sesionId ] );
 
 		}
 
@@ -357,7 +359,7 @@ class SesionController extends Controller {
 				'OD modificado correctamente'
 			);
 
-			return $this->redirectToRoute('sesiones_asignar_dictamenes_a_od', ['sesionId'=>$sesionId]);
+			return $this->redirectToRoute( 'sesiones_asignar_dictamenes_a_od', [ 'sesionId' => $sesionId ] );
 
 		}
 
@@ -673,11 +675,11 @@ class SesionController extends Controller {
 		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
 
 		$dictamenes = [
-			'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL'  => $od->getDictamenesConTratamientoPreferencial(),
-			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
-			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
-			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
-			'DICTÁMENES DE ORDENANZA'    => $od->getDictamenesDeOrdenanza(),
+			'EXPEDIENTES CON TRATAMIENTO PREFERENCIAL' => $od->getDictamenesConTratamientoPreferencial(),
+			'DICTÁMENES DE DECLARACIÓN'                => $od->getDictamenesDeDeclaracion(),
+			'DICTÁMENES DE COMUNICACIÓN'               => $od->getDictamenesDeComunicacion(),
+			'DICTÁMENES DE RESOLUCIÓN'                 => $od->getDictamenesDeResolucion(),
+			'DICTÁMENES DE ORDENANZA'                  => $od->getDictamenesDeOrdenanza(),
 		];
 
 		$html = $this->renderView( ':sesiones:orden_del_dia.pdf.twig',
@@ -886,6 +888,75 @@ class SesionController extends Controller {
 				'sesion'     => $sesion,
 				'edit_form'  => $editForm->createView(),
 			) );
+	}
+
+	public function cargarHomenajeAction( Request $request, $sesionId ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$sesion = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+		$form   = $this->createForm( SesionCargarHomenajeType::class, $sesion );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'El homenaje se modificó correctamente.'
+			);
+
+		}
+
+		return $this->render( ':sesiones:cargar_homenaje.html.twig',
+			[
+				'sesion' => $sesion,
+				'form'   => $form->createView()
+			]
+		);
+	}
+
+	public function imprimirHomenajesAction( Request $request, $sesionId ) {
+		$em                 = $this->getDoctrine()->getManager();
+		$sesion             = $em->getRepository( 'AppBundle:Sesion' )->find( $sesionId );
+		$periodoLegislativo = $em->getRepository( PeriodoLegislativo::class )->findOneByAnio( $sesion->getFecha()->format( 'Y' ) );
+		$title              = 'Homenajes';
+
+		$header = $this->renderView( ':default:membrete.pdf.twig',
+			[
+				"periodo" => $periodoLegislativo,
+			] );
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( ':sesiones:homenajes.pdf.twig',
+			[
+				'title'  => $title . ' - ' . $sesion->getTitulo(),
+				"sesion" => $sesion,
+			] );
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				array(
+					'page-size'      => 'Legal',
+					'margin-top'     => "2.5cm",
+					'margin-bottom'  => "2.5cm",
+					'margin-left'    => "3cm",
+					'margin-right'   => "3cm",
+					'header-html'    => $header,
+//					'header-spacing' => 5,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				)
+			)
+			, 200, array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
+			)
+		);
+
 	}
 
 }

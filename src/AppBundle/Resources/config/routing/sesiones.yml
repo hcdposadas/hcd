@@ -57,3 +57,11 @@ proyecto_bae_giro:
     path:     /proyecto-bae-giro/{expediente}
     defaults: { _controller: "AppBundle:Sesion:proyectoBaeGiro" }
     methods:  [GET, POST]
+
+sesiones_cargar_homenaje:
+    path: /{sesionId}/cargar-homenaje
+    defaults: { _controller: "AppBundle:Sesion:cargarHomenaje" }
+
+sesiones_imprimir_homenajes:
+  path: /{sesionId}/imprimir-homenajes
+  defaults: { _controller: "AppBundle:Sesion:imprimirHomenajes" }

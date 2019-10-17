@@ -295,6 +295,29 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CEREMONIAL' ) ) {
+			$keyCeremonial = 'CEREMONIAL';
+			$menu->addChild(
+				$keyCeremonial,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-folder-open' )
+			     ->setAttribute( 'class', 'treeview' );
+
+			$menu[ $keyCeremonial ]
+				->addChild(
+					'Homenajes',
+					array(
+						'route' => 'sesiones_index',
+					)
+				);
+		}
+
 
 		$keyPersonal = 'DOCUMENTOS';
 		$menu->addChild(

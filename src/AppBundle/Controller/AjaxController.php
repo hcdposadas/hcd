@@ -618,7 +618,8 @@ class AjaxController extends Controller
                     'id' => $entity['id'],
                     //'label' => $entity[$property],
                     'text' => $entity['titulo'],
-                    'acta' => $entity['acta']
+                    'acta' => $entity['acta'],
+                    'homenajes' => $entity['homenajes']
                 );
             }
         }

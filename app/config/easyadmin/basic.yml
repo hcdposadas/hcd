@@ -51,3 +51,4 @@ easy_admin:
 #            - 'bundles/app/plugins/datepicker/locales/bootstrap-datepicker.es.js'
 #            - 'bundles/app/plugins/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js'
 #            - 'bundles/app/js/admin.js'
+            - 'build/app.js'

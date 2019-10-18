@@ -74,6 +74,7 @@ class ProyectoBAEController extends Controller {
 	public function editAction( Request $request, ProyectoBAE $proyectoBAE ) {
 
 		$editForm = $this->createForm( ProyectoBAEIncorporarType::class, $proyectoBAE );
+		$deleteForm = $this->createDeleteForm( $proyectoBAE );
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
@@ -92,6 +93,7 @@ class ProyectoBAEController extends Controller {
 			array(
 				'proyectoBAE' => $proyectoBAE,
 				'edit_form'   => $editForm->createView(),
+				'delete_form'   => $deleteForm->createView(),
 			) );
 	}
 
@@ -107,9 +109,14 @@ class ProyectoBAEController extends Controller {
 			$em = $this->getDoctrine()->getManager();
 			$em->remove( $proyectoBAE );
 			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'ProyectoBAE eliminado correctamente'
+			);
 		}
 
-		return $this->redirectToRoute( 'proyectobae_index' );
+		return $this->redirectToRoute( 'proyectobae_incorporar_a_sesion',
+			[ 'expediente' => $proyectoBAE->getExpediente()->getId() ] );
 	}
 
 	/**

@@ -46,7 +46,7 @@ class BoletinAsuntoEntrado extends BaseClass {
 	private $cerrado;
 
 	public function __toString() {
-	return $this->sesion->__toString();
+		return $this->sesion->__toString() . ' - ' . $this->sesion->getFecha()->format( 'd/m/Y' );
 	}
 
 
@@ -236,7 +236,7 @@ class BoletinAsuntoEntrado extends BaseClass {
 	public function getProyectosDeDefensor() {
 		return $this->ordenarProyectos(
 			$this->proyectos->filter( function ( ProyectoBAE $proyectoBae ) {
-				return $proyectoBae->getExpediente()->esProyectoDeDefensor() && !$proyectoBae->getEsInformeDem();
+				return $proyectoBae->getExpediente()->esProyectoDeDefensor() && ! $proyectoBae->getEsInformeDem();
 			} )
 		);
 	}
@@ -251,27 +251,27 @@ class BoletinAsuntoEntrado extends BaseClass {
 
 		$iterator->uasort( function ( ProyectoBAE $a, ProyectoBAE $b ) {
 
-		    // Del expediente de ambos proyectos, separa el numero y el año
-            // Pueden ser numero-letra-anio o numero-numero-letra-anio
+			// Del expediente de ambos proyectos, separa el numero y el año
+			// Pueden ser numero-letra-anio o numero-numero-letra-anio
 
-		    $expA = $a->getExpediente()->__toString();
-		    $expB = $b->getExpediente()->__toString();
+			$expA = $a->getExpediente()->__toString();
+			$expB = $b->getExpediente()->__toString();
 
-            if (substr_count($expA, '-') == 3) {
-                list( $numeroa, $numero2a, $letraa, $anioa ) = explode( '-', $expA, 4 );
-                $numeroa = $numeroa.$numero2a;
-            } else {
-                list( $numeroa, $letraa, $anioa ) = explode( '-', $expA, 3 );
-            }
+			if ( substr_count( $expA, '-' ) == 3 ) {
+				list( $numeroa, $numero2a, $letraa, $anioa ) = explode( '-', $expA, 4 );
+				$numeroa = $numeroa . $numero2a;
+			} else {
+				list( $numeroa, $letraa, $anioa ) = explode( '-', $expA, 3 );
+			}
 
-            if (substr_count($expB, '-') == 3) {
-                list( $numerob, $numero2b, $letrab, $aniob ) = explode( '-', $expB, 4 );
-                $numerob = $numerob.$numero2b;
-            } else {
-                list( $numerob, $letrab, $aniob ) = explode( '-', $expB, 3 );
-            }
+			if ( substr_count( $expB, '-' ) == 3 ) {
+				list( $numerob, $numero2b, $letrab, $aniob ) = explode( '-', $expB, 4 );
+				$numerob = $numerob . $numero2b;
+			} else {
+				list( $numerob, $letrab, $aniob ) = explode( '-', $expB, 3 );
+			}
 
-            // Compara por anio, y si son iguales, por numero
+			// Compara por anio, y si son iguales, por numero
 
 			if ( $anioa < $aniob ) {
 				return - 1;

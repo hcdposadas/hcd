@@ -16,7 +16,7 @@
             <input class="btn btn-primary" type="submit" value="Guardar"/>
             {{ form_end(edit_form) }}
 
-            {% if is_granted('ROLE_LEGISLATIVO_ADMIN') %}
+            {% if is_granted('ROLE_LEGISLATIVO_ADMIN') and proyectoBAE.incorporadoEnSesion %}
                 <div class="row text-right">
                     <div class="col-md-12">
                         {{ form_start(delete_form) }}

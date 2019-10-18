@@ -12,9 +12,23 @@
         <div class="box-body">
 
             <h3>Sesiones</h3>
-            {% for bae in expedienteEnSesiones %}
-                - {{ bae.boletinAsuntoEntrado.sesion }} <a class="btn btn-default" href="{{ path('proyectobae_edit' ,{'id': bae.id}) }}"><i class="fa fa-edit"></i></a><br>
-            {% endfor %}
+            <ul>
+                {% for bae in expedienteEnSesiones %}
+                    <li>{{ bae.boletinAsuntoEntrado.sesion }} -
+                        ({{ bae.boletinAsuntoEntrado.sesion.fecha | date('d/m/Y') }})
+
+                        {% if bae.incorporadoEnSesion %}
+
+                                <i class="fa fa-info-circle" data-toggle="tooltip" title="Creado el {{ bae.fechaCreacion | date('d/m/Y') }}"></i>
+
+                        {% endif %}
+                        <a class="btn btn-default"
+                           href="{{ path('proyectobae_edit' ,{'id': bae.id}) }}"><i
+                                    class="fa fa-edit"></i>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
             <br>
             {{ form_start(form) }}
             {{ form_widget(form) }}
@@ -23,6 +37,6 @@
         </div>
     </div>
 
-    <a class="btn btn-default" href="{{ path('proyectobae_index') }}">Volver</a>
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
 
 {% endblock %}

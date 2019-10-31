@@ -941,12 +941,12 @@ class SesionController extends Controller {
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
 					'page-size'      => 'Legal',
-					'margin-top'     => "2.5cm",
-					'margin-bottom'  => "2.5cm",
+                    'margin-top'     => "5cm",
+                    'margin-bottom'  => "2cm",
 					'margin-left'    => "3cm",
 					'margin-right'   => "3cm",
 					'header-html'    => $header,
-//					'header-spacing' => 5,
+					'header-spacing' => 4,
 					'footer-spacing' => 5,
 					'footer-html'    => $footer,
 				)

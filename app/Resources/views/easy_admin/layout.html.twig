@@ -41,6 +41,10 @@
     {% endblock %}
 
         <script src="{{ asset('bundles/easyadmin/javascript/easyadmin-all.min.js') }}"></script>
+        <script>
+            window.baseUrl = '{{ path('app_homepage') }}';
+            window.assetPath = '{{ asset('uploads/') }}';
+        </script>
     {% endblock head_javascript %}
 
     {% if easyadmin_config('design.rtl') %}

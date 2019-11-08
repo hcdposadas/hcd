@@ -76,6 +76,10 @@ get_concejales:
     path: /sesion/concejales
     defaults: { _controller: "AppBundle:Ajax:getConcejales" }
 
+get_concejales_admin:
+    path: /concejales
+    defaults: { _controller: "AppBundle:Ajax:getConcejales" }
+
 get_sesion:
     path: /sesion/consultar-sesion/{sesion}
     defaults: { _controller: "AppBundle:Ajax:getSesion" }

@@ -115,7 +115,7 @@
                             <span class="glyphicon glyphicon-log-out"></span>
                         </a>
                         {% if is_granted('ROLE_SECRETARIO') %}
-                            <quorum-button></quorum-button>
+                            <quorum-button firewall="sesion"></quorum-button>
                         {% endif %}
 
                     </div>

@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\ProyectoBAEIncorporarType;
+use Doctrine\Common\Collections\ArrayCollection;
 use MesaEntradaBundle\Entity\Expediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,11 +75,30 @@ class ProyectoBAEController extends Controller {
 	public function editAction( Request $request, ProyectoBAE $proyectoBAE ) {
 
 		$editForm = $this->createForm( ProyectoBAEIncorporarType::class, $proyectoBAE );
+
+		$em     = $this->getDoctrine()->getManager();
+
+		$girosOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $proyectoBAE->getGiros() as $giros ) {
+			$girosOriginales->add( $giros );
+		}
+
 		$deleteForm = $this->createDeleteForm( $proyectoBAE );
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$this->getDoctrine()->getManager()->flush();
+
+
+			foreach ( $girosOriginales as $giros ) {
+				if ( false === $proyectoBAE->getGiros()->contains( $giros ) ) {
+					$giros->setProyectoBae( null );
+					$em->remove( $giros );
+				}
+			}
+
+			$em->flush();
 
 			$this->get( 'session' )->getFlashBag()->add(
 				'success',

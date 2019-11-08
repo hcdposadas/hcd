@@ -30,7 +30,11 @@
 
 <script>
     import QuorumCount from './QuorumCount'
+
     export default {
+        props: [
+            'firewall'
+        ],
         components: {
             'quorum-count': QuorumCount
         },
@@ -45,7 +49,13 @@
             }
         },
         mounted() {
-            axios.get(baseUrl + 'sesion/concejales').then(({data}) => {
+            let url = baseUrl + 'sesion/concejales'
+
+            if (this.firewall == 'admin') {
+                url = baseUrl + 'concejales'
+            }
+
+            axios.get(url).then(({data}) => {
                 this.concejales = data.concejales
             })
         }

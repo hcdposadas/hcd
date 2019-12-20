@@ -254,7 +254,7 @@ class Builder implements ContainerAwareInterface {
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ||
 		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ||
 		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ||
-             $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' )) {
+		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
 			$keyPersonal = 'SESIONES';
 			$menu->addChild(
 				$keyPersonal,
@@ -269,7 +269,7 @@ class Builder implements ContainerAwareInterface {
 			     ->setAttribute( 'class', 'treeview' );
 
 			if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) &&
-			     ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' )) {
+			     ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ) {
 				$menu[ $keyPersonal ]
 					->addChild(
 						'Conformar Plan de Labor',
@@ -285,14 +285,15 @@ class Builder implements ContainerAwareInterface {
 						'route' => 'sesiones_index',
 					)
 				);
-
-			$menu[ $keyPersonal ]
-				->addChild(
-					'Incorporar Expedientes en Sesión',
-					array(
-						'route' => 'incorporar_expedientes_a_sesion_index',
-					)
-				);
+			if ( ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ) {
+				$menu[ $keyPersonal ]
+					->addChild(
+						'Incorporar Expedientes en Sesión',
+						array(
+							'route' => 'incorporar_expedientes_a_sesion_index',
+						)
+					);
+			}
 		}
 
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_CEREMONIAL' ) ) {

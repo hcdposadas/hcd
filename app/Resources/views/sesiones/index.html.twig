@@ -78,7 +78,7 @@
                                         <i class="fa fa-print"></i> Acta
                                     </a>
 
-                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
                                         <a class="btn btn-default"
                                            href="{{ path('sesiones_cargar_acta', { 'sesionId': sesion.id }) }}">
                                             <i class="fa fa-edit"></i> Cargar Acta

@@ -102,7 +102,7 @@
                                        href="{{ path('expediente_show', { 'id': expediente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
                                         <a class="btn btn-default" data-toggle="tooltip" title="Cargar Giros"
                                            href="{{ path('proyecto_bae_giro', { 'expediente': expediente.id }) }}">
                                             <i class="fa fa-edit"></i>

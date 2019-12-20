@@ -828,6 +828,7 @@ class AjaxController extends Controller
             ->join('cp.cargo', 'c')
             ->where('cp.activo = true')
             ->andWhere('p.activo = true')
+            ->andWhere('u.enabled = true')
             ->andWhere('c.id = :id')
             ->setParameter('id', Cargo::CARGO_CONCEJAL)
             ->getQuery()

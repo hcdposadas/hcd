@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    {% if is_granted('ROLE_LEGISLATIVO') %}
+    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
         <div class="row m-b-1">
             <div class="col-md-12">
                 <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
@@ -73,7 +73,7 @@
                                        href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
                                         <a class="btn btn-default" data-toggle="tooltip" title="Editar Dictamen"
                                            href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
                                             <i class="fa fa-edit"></i>

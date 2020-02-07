@@ -37,6 +37,10 @@ class TipoDecreto extends BaseClass
     private $descripcion;
 
 
+	public function __toString() {
+		return $this->nombre;
+	}
+    
     /**
      * Get id
      *

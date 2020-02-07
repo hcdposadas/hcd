@@ -17,8 +17,8 @@ class MayoriaSimple extends Mayoria
 {
     protected $ordenCargos = [
         0 => 23, // presidente
-        1 => 20, // vicepresidente 1
-        2 => 21, // vicepresidente 2
+        1 => 21, // vicepresidente 1
+        2 => 3, // vicepresidente 2
     ];
 
     /**

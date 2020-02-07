@@ -25,7 +25,7 @@ class LogExpediente extends BaseClass
     /**
      * @var Expediente $expediente
      *
-     * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente", inversedBy="logs")
+     * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Expediente")
      * @ORM\JoinColumn(name="expediente_id", referencedColumnName="id", nullable=true)
      */
     private $expediente;
@@ -33,7 +33,7 @@ class LogExpediente extends BaseClass
 	/**
 	 * @var Sesion $sesion
 	 *
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion", inversedBy="logs")
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion")
 	 * @ORM\JoinColumn(name="sesion_id", referencedColumnName="id", nullable=true)
 	 */
 	private $sesion;

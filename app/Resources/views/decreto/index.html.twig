@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Decretos
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box collapsed-box">
+                <div class="box-header">
+                    <h3 class="box-title">Filtros</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                {{ form_start(filter_type) }}
+                <div class="box-body">
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.numero) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.expediente) }}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="hidden">
+                    {{ form_end(filter_type) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Decretos</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Numero</th>
+                            <th>Expediente</th>
+                            <th>Visible</th>
+                            <th>Activo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for decreto in decretos %}
+                            <tr>
+                                <td><a href="{{ path('decreto_show', { 'id': decreto.id }) }}">{{ decreto.id }}</a></td>
+                                <td>{{ decreto.numero }}</td>
+                                <td>{{ decreto.expediente }}</td>
+                                <td>
+                                    {% if decreto.visible %}<span class="label label-success">Si</span>{% else %}<span
+                                            class="label label-danger">No</span>{% endif %}
+                                </td>
+                                <td>
+
+                                    {% if decreto.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                            class="label label-danger">No</span>{% endif %}
+                                </td>
+                                <td>{% if decreto.fechaCreacion %}{{ decreto.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if decreto.fechaActualizacion %}{{ decreto.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('decreto_show', { 'id': decreto.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default" href="{{ path('decreto_edit', { 'id': decreto.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    {% if is_granted('ROLE_SECRETARIO') %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('decreto_asignar_numero', { 'id': decreto.id }) }}"
+                                           data-toggle="tooltip" title="Asignar número">
+                                            <i class="fa fa-hashtag" aria-hidden="true"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row m-b-1">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('decreto_new') }}">Nuevo decreto</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(decretos) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -107,7 +107,34 @@ class Builder implements ContainerAwareInterface {
 					)
 				);
 
+
 		}
+		// Decretos
+
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_MESA_ENTRADA' ) ||
+		     $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ) {
+			$keyDecretos = 'Decretos';
+			$menu->addChild(
+				$keyDecretos,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-file-text' )
+			     ->setAttribute( 'class', 'treeview' );
+
+			$menu[ $keyDecretos ]
+				->addChild(
+					'Listado',
+					array(
+						'route' => 'decreto_index',
+					)
+				);
+		}
+
 		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_PERSONAL' ) ) {
 
 			$keyPersonal = 'PERSONAL';

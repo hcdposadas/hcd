@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Decreto</h1>
+
+    <table>
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ decreto.id }}</td>
+        </tr>
+        <tr>
+            <th>Numero</th>
+            <td>{{ decreto.numero }}</td>
+        </tr>
+        <tr>
+            <th>Cuerpo</th>
+            <td>{{ decreto.cuerpo }}</td>
+        </tr>
+        <tr>
+            <th>Visible</th>
+            <td>{% if decreto.visible %}Si{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Activo</th>
+            <td>{% if decreto.activo %}Si{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Fechacreacion</th>
+            <td>{% if decreto.fechaCreacion %}{{ decreto.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Fechaactualizacion</th>
+            <td>{% if decreto.fechaActualizacion %}{{ decreto.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <a class="btn btn-default" href="{{ path('decreto_index') }}">Volver</a>
+
+    <a class="btn btn-default" href="{{ path('decreto_edit', { 'id': decreto.id }) }}">Editar</a>
+
+
+
+{% endblock %}

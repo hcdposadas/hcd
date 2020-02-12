@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Orden de Pago
+{% endblock title %}
+{% block body %}
+    <h1>Editar Orden de Pago</h1>
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Orden de Pago</h3>
+        </div>
+        <div class="box-body">
+
+            {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            {{ form_end(edit_form) }}
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('orden_de_pago_index') }}">Volver</a>
+
+
+
+{% endblock %}

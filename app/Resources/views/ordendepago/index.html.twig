@@ -53,7 +53,7 @@
                             <th>Numero</th>
                             <th>Fecha de rendición</th>
                             <th>Folios</th>
-                            <th>Ubicación</th>
+                            <th>Estante/Caja</th>
                             <th>Activo</th>
                             <th>Fecha creación</th>
                             <th>Fecha actualización</th>
@@ -67,9 +67,11 @@
                                     <a href="{{ path('orden_de_pago_show', { 'id': ordenDePago.id }) }}">{{ ordenDePago.id }}</a>
                                 </td>
                                 <td>{{ ordenDePago.numero }}</td>
-                                <td>{% if ordenDePago.fechaRendicion %}{{ ordenDePago.fechaRendicion|date('d/m/Y') }}{% endif %}</td>
+                                <td>{% for fechaRendicion in ordenDePago.fechaRendicion %}
+                                        {{ fechaRendicion.fecha|date('d/m/Y') }}
+                                    {% endfor %}</td>
                                 <td>{{ ordenDePago.folios }}</td>
-                                <td>{{ ordenDePago.ubicacion }}</td>
+                                <td>{{ ordenDePago.numeroEstante }}/{{ ordenDePago.numeroCaja }} </td>
                                 <td>{% if ordenDePago.activo %}Si{% else %}No{% endif %}</td>
                                 <td>{% if ordenDePago.fechaCreacion %}{{ ordenDePago.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>{% if ordenDePago.fechaActualizacion %}{{ ordenDePago.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>

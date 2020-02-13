@@ -20,8 +20,15 @@
                         <dd>{{ ordenDePago.numero }}</dd>
                     </dl>
                     <dl class="dl-horizontal">
+                        <dt>Estante/Caja</dt>
+                        <dd>{{ ordenDePago.numeroEstante }}/{{ ordenDePago.numeroCaja }} </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
                         <dt>Fecha de Rendición</dt>
-                        <dd>{% if ordenDePago.fechaRendicion %}{{ ordenDePago.fechaRendicion|date('d/m/Y') }}{% endif %}</dd>
+                        <dd>{% for fechaRendicion in ordenDePago.fechaRendicion %}
+                                {{ fechaRendicion.fecha|date('d/m/Y') }}
+                            {% endfor %}
+                        </dd>
                     </dl>
                     <dl class="dl-horizontal">
                         <dt>Tipo</dt>

@@ -60,6 +60,9 @@ class Decreto extends BaseClass
 	 */
 	private $tipoDecreto;
 
+	public function __toString() {
+		return $this->numero;
+	}
 
     /**
      * Get id

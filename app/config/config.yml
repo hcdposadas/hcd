@@ -21,6 +21,7 @@ parameters:
     app.path.sanciones: '%app_url%/uploads/sanciones'
     app.path.documentos: '%app_url%/uploads/documentos'
     app.path.varios: '%app_url%/uploads/varios'
+    app.path.ordenes_de_pago: '%app_url%/uploads/ordenes_de_pago'
 
 framework:
     ide: "%ide%"
@@ -125,6 +126,9 @@ vich_uploader:
             uri_prefix: "%app.path.dictamenes_anexos%"
             upload_destination: "%kernel.root_dir%/../web/uploads/dictamenes/anexos"
             namer: "vich_uploader.namer_uniqid"
+        orden_de_pago:
+            uri_prefix: "%app.path.ordenes_de_pago%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/ordenes_de_pago"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

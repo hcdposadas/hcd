@@ -347,6 +347,29 @@ class Builder implements ContainerAwareInterface {
 		}
 
 
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMINISTRACION' ) ) {
+			$keyAdministracion = 'ADMINISTRACION';
+			$menu->addChild(
+				$keyAdministracion,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-folder-open' )
+			     ->setAttribute( 'class', 'treeview' );
+
+			$menu[ $keyAdministracion ]
+				->addChild(
+					'Ordenes de pago',
+					array(
+						'route' => 'orden_de_pago_index',
+					)
+				);
+		}
+
 		$keyPersonal = 'DOCUMENTOS';
 		$menu->addChild(
 			$keyPersonal,

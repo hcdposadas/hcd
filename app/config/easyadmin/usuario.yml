@@ -30,6 +30,7 @@ easy_admin:
                           'ROLE_PROSECRETARIO': 'ROLE_PROSECRETARIO',
                           'ROLE_PROSECRETARIO_LEGISLATIVO': 'ROLE_PROSECRETARIO_LEGISLATIVO',
                           'ROLE_CEREMONIAL': 'ROLE_CEREMONIAL',
+                          'ROLE_ADMINISTRACION': 'ROLE_ADMINISTRACION',
                         }
                       }
                       }

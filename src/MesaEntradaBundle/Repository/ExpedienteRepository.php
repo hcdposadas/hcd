@@ -45,7 +45,8 @@ class ExpedienteRepository extends EntityRepository {
 	public function getQbExpedientesMesaEntrada() {
 		$qb = $this->getQbAll();
 		$qb->where( 'e.borrador is null' )
-		   ->orWhere( 'e.borrador = false' );
+		   ->orWhere( 'e.borrador = false' )
+		   ->andWhere( 'e.expediente is not null' );
 
 		return $qb;
 	}
@@ -142,7 +143,17 @@ class ExpedienteRepository extends EntityRepository {
 			$qb->setParameter( 'fecha', $data['fecha'] );
 		}
 		if ( ( $data['anio'] ) ) {
-			$qb->andWhere( 'e.anio = :anio' );
+
+			$qb->innerJoin( 'e.periodoLegislativo', 'pl' );
+
+			$qb->andWhere(
+				$qb->expr()->andX(
+					$qb->expr()->orX(
+						$qb->expr()->eq( 'e.anio', ':anio' ),
+						$qb->expr()->eq( 'pl.anio', ':anio' )
+					)
+				)
+			);
 			$qb->setParameter( 'anio', $data['anio'] );
 		}
 
@@ -244,14 +255,15 @@ class ExpedienteRepository extends EntityRepository {
 
 	public function buscarExpedientesSesion( $data ) {
 		$qb = $this->getQbExpedientes( $data );
+
 		return $qb->getQuery()->getResult();
 	}
 
 	public function getQbExpedientesLegislativosExternos() {
 		$qb = $this->getQbAll();
 
-		$qb->join('e.tipoExpediente', 'te');
-		$qb->andWhere("te.slug = 'externo'");
+		$qb->join( 'e.tipoExpediente', 'te' );
+		$qb->andWhere( "te.slug = 'externo'" );
 
 //		$qb->join('e.iniciadores', 'iniciadores')
 //		   ->where('iniciadores is null');
@@ -261,8 +273,8 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb;
 	}
 
-	public function getQbBuscarExpedientesLegislativosExternos($data, $tipoExpediente) {
-		$qb = $this->getQbBuscar($data, $tipoExpediente);
+	public function getQbBuscarExpedientesLegislativosExternos( $data, $tipoExpediente ) {
+		$qb = $this->getQbBuscar( $data, $tipoExpediente );
 
 		return $qb;
 	}
@@ -276,27 +288,27 @@ class ExpedienteRepository extends EntityRepository {
 		return $qb->getQuery()->getArrayResult();
 	}
 
-    /**
-     * @param $data
-     * @return Dictamen[]
-     */
-	public function getDictamenesOD( $data )
-    {
+	/**
+	 * @param $data
+	 *
+	 * @return Dictamen[]
+	 */
+	public function getDictamenesOD( $data ) {
 		$qb = $this->getQbExpedientes( $data );
 
 		$qb->join( 'e.periodoLegislativo', 'pl' );
 		$qb->addSelect( 'pl' );
 
-        /** @var Expediente[] $expedientes */
-        $expedientes = $qb->getQuery()->getResult();
+		/** @var Expediente[] $expedientes */
+		$expedientes = $qb->getQuery()->getResult();
 
-        $dictamenes = [];
-        foreach ($expedientes as $expediente) {
-            /** @var Dictamen $dictamen */
-            foreach ($expediente->getDictamenes() as $dictamen) {
-                $dictamenes[] = $dictamen;
-            }
-        }
+		$dictamenes = [];
+		foreach ( $expedientes as $expediente ) {
+			/** @var Dictamen $dictamen */
+			foreach ( $expediente->getDictamenes() as $dictamen ) {
+				$dictamenes[] = $dictamen;
+			}
+		}
 
 		return $dictamenes;
 	}

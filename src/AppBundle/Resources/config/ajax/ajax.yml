@@ -57,3 +57,11 @@ render_extracto_temario_form:
 render_extracto_dictamen_form:
     path: /render-extracto-dictamen-form
     defaults: { _controller: "AppBundle:Ajax:renderExtractoDictamenForm" }
+
+get_decretos:
+    path: /get-decretos
+    defaults: { _controller: "AppBundle:Ajax:getDecretos" }
+
+form_decreto:
+    path: /form-decreto
+    defaults: { _controller: "AppBundle:Ajax:formDecreto" }

@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ordenes de pago
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box collapsed-box">
+                <div class="box-header">
+                    <h3 class="box-title">Filtros</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                {{ form_start(filter_type) }}
+                <div class="box-body">
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.numero) }}
+                        {{ form_row(filter_type.fechaRendicion) }}
+                        {{ form_row(filter_type.folios) }}
+                        {{ form_row(filter_type.tipoOrdenPago) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.numeroEstante) }}
+                        {{ form_row(filter_type.numeroCaja) }}
+                        {{ form_row(filter_type.paginaInicio) }}
+                        {{ form_row(filter_type.paginaFin) }}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="hidden">
+                    {{ form_end(filter_type) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Ordenes de pago</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Número</th>
+                            <th>Folios</th>
+                            <th>Estante/Caja</th>
+                            <th>Activo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for ordenDePago in ordenDePagos %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('orden_de_pago_show', { 'id': ordenDePago.id }) }}">{{ ordenDePago.id }}</a>
+                                </td>
+                                <td>{{ ordenDePago.numero }}</td>
+                                <td>{{ ordenDePago.folios }}</td>
+                                <td>{{ ordenDePago.numeroEstante }}/{{ ordenDePago.numeroCaja }} </td>
+                                <td>
+                                    {% if ordenDePago.activo %}<span class="label label-success">Si</span>{% else %}
+                                        <span
+                                                class="label label-danger">No</span>{% endif %}
+                                </td>
+                                <td>{% if ordenDePago.fechaCreacion %}{{ ordenDePago.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if ordenDePago.fechaActualizacion %}{{ ordenDePago.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('orden_de_pago_show', { 'id': ordenDePago.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('orden_de_pago_edit', { 'id': ordenDePago.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row m-b-1">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('orden_de_pago_new') }}">Nueva Orden de Pago</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(ordenDePagos) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

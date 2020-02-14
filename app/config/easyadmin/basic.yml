@@ -26,6 +26,7 @@ easy_admin:
             - { label: 'Tipo Proyecto', entity: TipoProyecto }
             - { label: 'Tipo Decreto', entity: TipoDecreto }
             - { label: 'Tipo Mayoría', entity: TipoMayoria }
+            - { label: 'Tipo Tipo Orden de Pago', entity: TipoOrdenPago }
             - Iniciador
             - { label: 'Area Administrativa', entity: AreaAdministrativa }
             - Bloque

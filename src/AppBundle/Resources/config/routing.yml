@@ -58,3 +58,8 @@ app_decreto:
 #    path:     /votar
 #    defaults: { _controller: AppBundle:Mocion:votoConcejal }
 #    methods:  POST
+
+app_orden_de_pago:
+    resource: "@AppBundle/Resources/config/routing/ordendepago.yml"
+    prefix:   /orden-de-pago
+

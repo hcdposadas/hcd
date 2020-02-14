@@ -24,7 +24,8 @@
                         {{ form_row(filter_type.tipoOrdenPago) }}
                     </div>
                     <div class="col-md-6">
-                        {{ form_row(filter_type.ubicacion) }}
+                        {{ form_row(filter_type.numeroEstante) }}
+                        {{ form_row(filter_type.numeroCaja) }}
                         {{ form_row(filter_type.paginaInicio) }}
                         {{ form_row(filter_type.paginaFin) }}
                     </div>
@@ -50,8 +51,7 @@
                         <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Numero</th>
-                            <th>Fecha de rendición</th>
+                            <th>Número</th>
                             <th>Folios</th>
                             <th>Estante/Caja</th>
                             <th>Activo</th>
@@ -67,12 +67,13 @@
                                     <a href="{{ path('orden_de_pago_show', { 'id': ordenDePago.id }) }}">{{ ordenDePago.id }}</a>
                                 </td>
                                 <td>{{ ordenDePago.numero }}</td>
-                                <td>{% for fechaRendicion in ordenDePago.fechaRendicion %}
-                                        {{ fechaRendicion.fecha|date('d/m/Y') }}
-                                    {% endfor %}</td>
                                 <td>{{ ordenDePago.folios }}</td>
                                 <td>{{ ordenDePago.numeroEstante }}/{{ ordenDePago.numeroCaja }} </td>
-                                <td>{% if ordenDePago.activo %}Si{% else %}No{% endif %}</td>
+                                <td>
+                                    {% if ordenDePago.activo %}<span class="label label-success">Si</span>{% else %}
+                                        <span
+                                                class="label label-danger">No</span>{% endif %}
+                                </td>
                                 <td>{% if ordenDePago.fechaCreacion %}{{ ordenDePago.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>{% if ordenDePago.fechaActualizacion %}{{ ordenDePago.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>

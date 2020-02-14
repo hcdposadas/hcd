@@ -70,7 +70,7 @@ class OrdenDePago extends BaseClass {
 	 * @var $tipoOrdenPago
 	 *
 	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TipoOrdenPago")
-	 * @ORM\JoinColumn(name="tipo_orden_pago_id", referencedColumnName="id", nullable=true)
+	 * @ORM\JoinColumn(name="tipo_orden_pago_id", referencedColumnName="id", nullable=false)
 	 */
 	private $tipoOrdenPago;
 
@@ -91,7 +91,7 @@ class OrdenDePago extends BaseClass {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="observacion", type="string", length=255, nullable=true)
+	 * @ORM\Column(name="observacion", type="text", nullable=true)
 	 */
 	private $observacion;
 
@@ -346,7 +346,10 @@ class OrdenDePago extends BaseClass {
 	 * @return OrdenDePago
 	 */
 	public function addFechaRendicion( \AppBundle\Entity\OrdenDePagoRendicion $fechaRendicion ) {
-		$this->fechaRendicion[] = $fechaRendicion;
+
+		$fechaRendicion->setOrdenDePago( $this );
+
+		$this->fechaRendicion->add( $fechaRendicion );
 
 		return $this;
 	}
@@ -413,51 +416,47 @@ class OrdenDePago extends BaseClass {
 		return $this->numeroCaja;
 	}
 
-    /**
-     * Set observacion
-     *
-     * @param string $observacion
-     *
-     * @return OrdenDePago
-     */
-    public function setObservacion($observacion)
-    {
-        $this->observacion = $observacion;
+	/**
+	 * Set observacion
+	 *
+	 * @param string $observacion
+	 *
+	 * @return OrdenDePago
+	 */
+	public function setObservacion( $observacion ) {
+		$this->observacion = $observacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get observacion
-     *
-     * @return string
-     */
-    public function getObservacion()
-    {
-        return $this->observacion;
-    }
+	/**
+	 * Get observacion
+	 *
+	 * @return string
+	 */
+	public function getObservacion() {
+		return $this->observacion;
+	}
 
-    /**
-     * Set ordenDePago
-     *
-     * @param string $ordenDePago
-     *
-     * @return OrdenDePago
-     */
-    public function setOrdenDePago($ordenDePago)
-    {
-        $this->ordenDePago = $ordenDePago;
+	/**
+	 * Set ordenDePago
+	 *
+	 * @param string $ordenDePago
+	 *
+	 * @return OrdenDePago
+	 */
+	public function setOrdenDePago( $ordenDePago ) {
+		$this->ordenDePago = $ordenDePago;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get ordenDePago
-     *
-     * @return string
-     */
-    public function getOrdenDePago()
-    {
-        return $this->ordenDePago;
-    }
+	/**
+	 * Get ordenDePago
+	 *
+	 * @return string
+	 */
+	public function getOrdenDePago() {
+		return $this->ordenDePago;
+	}
 }

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form\Filter;
 
+use AppBundle\Entity\TipoOrdenPago;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -16,11 +18,17 @@ class OrdenDePagoFilterType extends AbstractType {
 		$builder->add( 'numero' )
 		        ->add( 'fechaRendicion' )
 		        ->add( 'folios' )
-		        ->add( 'ubicacion' )
+		        ->add( 'numeroEstante' )
+		        ->add( 'numeroCaja' )
 		        ->add( 'paginaInicio' )
 		        ->add( 'paginaFin' )
 		        ->add( 'activo' )
-		        ->add( 'tipoOrdenPago' )
+		        ->add( 'tipoOrdenPago',
+			        EntityType::class,
+			        [
+				        'class'    => TipoOrdenPago::class,
+				        'required' => false
+			        ] )
 		        ->add( 'decreto' )
 		        ->add( 'buscar',
 			        SubmitType::class,

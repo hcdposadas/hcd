@@ -26,7 +26,7 @@
                     <dl class="dl-horizontal">
                         <dt>Fecha de Rendición</dt>
                         <dd>{% for fechaRendicion in ordenDePago.fechaRendicion %}
-                                {{ fechaRendicion.fecha|date('d/m/Y') }}
+                                {{ fechaRendicion.fecha|date('d/m/Y') }}<br>
                             {% endfor %}
                         </dd>
                     </dl>
@@ -41,6 +41,15 @@
                     <dl class="dl-horizontal">
                         <dt>Folios</dt>
                         <dd>{{ ordenDePago.folios }}</dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Archivo</dt>
+                        <dd>
+                            <a href="{{ vich_uploader_asset(ordenDePago, 'ordenDePagoFile') }}" target="_blank">
+                                Ver
+                            </a>
+                        </dd>
                     </dl>
 
                     <dl class="dl-horizontal">

@@ -4,6 +4,7 @@
     Nueva Orden de pago
 {% endblock title %}
 {% block body %}
+    {% include 'default/modal_add_decreto.html.twig' %}
     <h1>Nueva Orden de pago </h1>
 
     <div class="row">
@@ -15,7 +16,19 @@
                 <div class="box-body">
 
                     {{ form_start(form) }}
-                    {{ form_widget(form) }}
+                    {{ form_row(form.tipoOrdenPago) }}
+                    {{ form_row(form.numero) }}
+                    {{ form_row(form.fechaRendicion) }}
+                    {{ form_row(form.folios) }}
+                    {{ form_row(form.paginaInicio) }}
+                    {{ form_row(form.paginaFin) }}
+                    {{ form_row(form.numeroEstante) }}
+                    {{ form_row(form.numeroCaja) }}
+                    {{ form_row(form.decreto) }}
+                    <button type="button" class="btn btn-default btn-add-decreto">
+                        <i class="fa fa-plus"></i> Agregar Dereto
+                    </button>
+                    {{ form_rest(form) }}
                     <input class="btn btn-primary" type="submit" value="Crear"/>
                     {{ form_end(form) }}
                 </div>
@@ -27,3 +40,44 @@
     <a class="btn btn-default" href="{{ path('orden_de_pago_index') }}">Volver</a>
 
 {% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        $('.btn-add-decreto').click(function () {
+
+            $.ajax({
+                type: 'get',
+                url: '{{ path("form_decreto") }}',
+                success: function (data) {
+                    $('#modal-add-decreto .modal-body').html(data.form);
+                    $('#modal-add-decreto').modal('toggle');
+                    inicializarPlugins();
+                }
+            });
+        });
+
+        $('#modal-add-decreto-btn-ok').click(function () {
+
+            var data = $('form[name="appbundle_decreto_ajax"]').serialize();
+
+            $.ajax({
+                type: 'post',
+                url: '{{ path("form_decreto") }}',
+                data: data,
+                success: function (data) {
+                    $('#modal-add-decreto').modal('toggle');
+                    modalAlert(data.mensaje);
+                },
+                error: function (data) {
+                    $('#modal-add-decreto .modal-body').html(data.form);
+                    inicializarPlugins();
+                },
+                500: function (data) {
+                    $('#modal-add-decreto .modal-body').html(data.form);
+                    inicializarPlugins();
+                },
+            });
+        });
+    </script>
+{% endblock javascripts %}

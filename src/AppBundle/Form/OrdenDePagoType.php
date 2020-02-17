@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Decreto;
+use AppBundle\Entity\PeriodoLegislativo;
 use AppBundle\Entity\TipoOrdenPago;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -37,6 +38,12 @@ class OrdenDePagoType extends AbstractType {
 					'required' => true,
 					'label'    => 'Número'
 				] )
+			->add( 'periodoLegislativo',
+				EntityType::class,
+				[
+					'class' => PeriodoLegislativo::class,
+					'label' => 'Año'
+				] )
 			->add( 'fechaRendicion',
 				BootstrapCollectionType::class,
 				[
@@ -68,11 +75,12 @@ class OrdenDePagoType extends AbstractType {
 					'required'    => false,
 					'constraints' => [
 						new File( [
-//						        'maxSize'          => '8M',
-//						        'mimeTypes'        => [
-//							        'image/*'
-//						        ],
-//						        'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg',
+							'maxSize'          => '30M',
+							'mimeTypes'        => [
+								'image/*',
+								'application/pdf'
+							],
+							'mimeTypesMessage' => 'Solo se aceptan .jpg, .png, .jpeg, .pdf',
 						] )
 					]
 				] )

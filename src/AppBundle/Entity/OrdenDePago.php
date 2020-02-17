@@ -6,12 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use UtilBundle\Entity\Base\BaseClass;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * OrdenDePago
  *
  * @ORM\Table(name="orden_de_pago")
  * @Vich\Uploadable
+ * @UniqueEntity(
+ *     fields={"numero", "periodoLegislativo"},
+ *     errorPath="numero",
+ *     message="Ya existe la orden de pago en el año"
+ * )
  * @ORM\Entity(repositoryClass="AppBundle\Repository\OrdenDePagoRepository")
  */
 class OrdenDePago extends BaseClass {
@@ -94,6 +100,14 @@ class OrdenDePago extends BaseClass {
 	 * @ORM\Column(name="observacion", type="text", nullable=true)
 	 */
 	private $observacion;
+
+	/**
+	 * @var $periodoLegislativo
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PeriodoLegislativo")
+	 * @ORM\JoinColumn(name="periodo_legislativo_id", referencedColumnName="id", nullable=true)
+	 */
+	private $periodoLegislativo;
 
 	/**
 	 * @ORM\Column(type="string", length=255, nullable=true)
@@ -459,4 +473,28 @@ class OrdenDePago extends BaseClass {
 	public function getOrdenDePago() {
 		return $this->ordenDePago;
 	}
+
+    /**
+     * Set periodoLegislativo
+     *
+     * @param \AppBundle\Entity\PeriodoLegislativo $periodoLegislativo
+     *
+     * @return OrdenDePago
+     */
+    public function setPeriodoLegislativo(\AppBundle\Entity\PeriodoLegislativo $periodoLegislativo = null)
+    {
+        $this->periodoLegislativo = $periodoLegislativo;
+
+        return $this;
+    }
+
+    /**
+     * Get periodoLegislativo
+     *
+     * @return \AppBundle\Entity\PeriodoLegislativo
+     */
+    public function getPeriodoLegislativo()
+    {
+        return $this->periodoLegislativo;
+    }
 }

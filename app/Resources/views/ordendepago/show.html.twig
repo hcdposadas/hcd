@@ -17,7 +17,7 @@
                     </dl>
                     <dl class="dl-horizontal">
                         <dt>Número</dt>
-                        <dd>{{ ordenDePago.numero }}</dd>
+                        <dd>{{ ordenDePago.numero }}/{{ ordenDePago.periodoLegislativo }}</dd>
                     </dl>
                     <dl class="dl-horizontal">
                         <dt>Estante/Caja</dt>
@@ -46,9 +46,11 @@
                     <dl class="dl-horizontal">
                         <dt>Archivo</dt>
                         <dd>
-                            <a href="{{ vich_uploader_asset(ordenDePago, 'ordenDePagoFile') }}" target="_blank">
-                                Ver
-                            </a>
+                            {% if ordenDePago.ordenDePago %}
+                                <a href="{{ vich_uploader_asset(ordenDePago, 'ordenDePagoFile') }}" target="_blank">
+                                    Ver
+                                </a>
+                            {% endif %}
                         </dd>
                     </dl>
 

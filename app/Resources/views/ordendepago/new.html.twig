@@ -17,7 +17,8 @@
 
                     {{ form_start(form) }}
                     {{ form_row(form.tipoOrdenPago) }}
-                    {{ form_row(form.numero) }}
+                    <div class="col-md-6">{{ form_row(form.numero) }}</div>
+                    <div class="col-md-6">{{ form_row(form.periodoLegislativo) }}</div>
                     {{ form_row(form.fechaRendicion) }}
                     {{ form_row(form.folios) }}
                     {{ form_row(form.paginaInicio) }}

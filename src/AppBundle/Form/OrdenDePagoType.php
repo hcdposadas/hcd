@@ -75,7 +75,7 @@ class OrdenDePagoType extends AbstractType {
 					'required'    => false,
 					'constraints' => [
 						new File( [
-							'maxSize'          => '30M',
+							'maxSize'          => '75M',
 							'mimeTypes'        => [
 								'image/*',
 								'application/pdf'

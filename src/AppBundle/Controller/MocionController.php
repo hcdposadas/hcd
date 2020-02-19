@@ -5,6 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Mocion;
 use AppBundle\Entity\Parametro;
 use AppBundle\Entity\Voto;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,10 +27,24 @@ class MocionController extends Controller {
 		}
 		$em = $this->getDoctrine()->getManager();
 
-		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		try {
+			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		} catch ( NoResultException $e ) {
+			$this->addFlash( 'warning', 'No existe sesión activa' );
+
+			return $this->redirectToRoute( 'sesion_logout' );
+		} catch ( NonUniqueResultException $e ) {
+		}
 
 		$bae = $sesion->getBae()->first();
 		$od  = $sesion->getOd()->first();
+
+		if ( ! $bae || ! $od ) {
+
+			$this->addFlash( 'warning', 'La sesión no posee Plan de Labor' );
+
+			return $this->redirectToRoute( 'sesion' );
+		}
 
 		$proyectos = [
 			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
@@ -63,7 +79,15 @@ class MocionController extends Controller {
 	 */
 	public function newAction( Request $request ) {
 		$mocion = new Mocion();
-		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		try {
+			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		} catch ( NoResultException $e ) {
+			$this->addFlash( 'warning', 'No existe sesión activa' );
+
+			return $this->redirectToRoute( 'mocion_index' );
+		} catch ( NonUniqueResultException $e ) {
+		}
+
 
 		if ( $request->get( 'tipo' ) === 'mocion-tipo-espontanea' ) {
 			$mocion->setTipo( $this->get( 'doctrine.orm.default_entity_manager' )
@@ -105,6 +129,13 @@ class MocionController extends Controller {
 		$bae = $sesion->getBae()->first();
 		$od  = $sesion->getOd()->first();
 
+		if ( ! $bae || ! $od ) {
+
+			$this->addFlash( 'warning', 'La sesión no posee Plan de Labor' );
+
+			return $this->redirectToRoute( 'mocion_index' );
+		}
+
 		$proyectos = [
 			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
 			'PROYECTOS DE CONCEJALES'             => $bae->getProyectosDeConcejales(),
@@ -134,10 +165,10 @@ class MocionController extends Controller {
 	 *
 	 */
 	public function showAction( Request $request, Mocion $mocion ) {
-		$deleteForm    = $this->createDeleteForm( $mocion );
-		$sesion        = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
-		$bae = $sesion->getBae()->first();
-		$od  = $sesion->getOd()->first();
+		$deleteForm = $this->createDeleteForm( $mocion );
+		$sesion     = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		$bae        = $sesion->getBae()->first();
+		$od         = $sesion->getOd()->first();
 
 		$proyectos = [
 			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),
@@ -145,7 +176,7 @@ class MocionController extends Controller {
 			'PROYECTOS DEL DEFENSOR DEL PUEBLO'   => $bae->getProyectosDeDefensor(),
 		];
 
-		$dictamenes = [
+		$dictamenes    = [
 			'DICTÁMENES DE DECLARACIÓN'  => $od->getDictamenesDeDeclaracion(),
 			'DICTÁMENES DE COMUNICACIÓN' => $od->getDictamenesDeComunicacion(),
 			'DICTÁMENES DE RESOLUCIÓN'   => $od->getDictamenesDeResolucion(),
@@ -224,8 +255,8 @@ class MocionController extends Controller {
 		$editForm      = $this->createForm( 'AppBundle\Form\MocionType', $mocion );
 		$editForm->handleRequest( $request );
 		$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
-		$bae = $sesion->getBae()->first();
-		$od  = $sesion->getOd()->first();
+		$bae    = $sesion->getBae()->first();
+		$od     = $sesion->getOd()->first();
 
 		$proyectos = [
 			'INFORMES DEL DEPARTAMENTO EJECUTIVO' => $bae->getProyectosDeDEM(),

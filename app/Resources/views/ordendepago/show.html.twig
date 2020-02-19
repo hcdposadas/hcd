@@ -26,7 +26,12 @@
                     <dl class="dl-horizontal">
                         <dt>Fecha de Rendición</dt>
                         <dd>{% for fechaRendicion in ordenDePago.fechaRendicion %}
-                                {{ fechaRendicion.fecha|date('d/m/Y') }}<br>
+                                {{ fechaRendicion.fecha|date('d/m/Y') }}
+                                {% if fechaRendicion.ordenDePagoSrc %}
+                                    - <a href="{{ vich_uploader_asset(fechaRendicion, 'ordenDePagoFile') }}" target="_blank">
+                                        Ver
+                                    </a>
+                                {% endif %} <br>
                             {% endfor %}
                         </dd>
                     </dl>

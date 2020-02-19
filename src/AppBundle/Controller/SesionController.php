@@ -17,6 +17,8 @@ use AppBundle\Form\ProyectoBAEGiroType;
 use AppBundle\Form\SesionCargarActaType;
 use AppBundle\Form\SesionCargarHomenajeType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use MesaEntradaBundle\Entity\Expediente;
 use MesaEntradaBundle\Entity\Log;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -37,9 +39,17 @@ class SesionController extends Controller {
 		$personaUsuario = $this->getUser()->getPersona();
 		$cartaOrganica  = $this->getDoctrine()->getRepository( 'AppBundle:Documento' )->findOneBySlug( 'carta-organica' );
 
+		try {
+			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
+		} catch ( NoResultException $e ) {
+			$this->addFlash( 'warning', 'No existe sesión activa' );
+
+			return $this->redirectToRoute( 'sesion_logout' );
+		} catch ( NonUniqueResultException $e ) {
+		}
+
 		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) ) {
 
-			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
 			return $this->render( 'sesion/index.html.twig',
 				array(
@@ -54,7 +64,6 @@ class SesionController extends Controller {
 		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ||
 		     $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_PROSECRETARIO' )
 		) {
-			$sesion = $this->getDoctrine()->getRepository( 'AppBundle:Sesion' )->findQbUltimaSesion()->getQuery()->getSingleResult();
 
 			return $this->render( 'sesion/autoridades.html.twig',
 				array(
@@ -941,8 +950,8 @@ class SesionController extends Controller {
 			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
 				array(
 					'page-size'      => 'Legal',
-                    'margin-top'     => "5cm",
-                    'margin-bottom'  => "2cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
 					'margin-left'    => "3cm",
 					'margin-right'   => "3cm",
 					'header-html'    => $header,

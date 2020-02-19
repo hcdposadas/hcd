@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class OrdenDePagoRendicionType extends AbstractType {
 	/**
@@ -18,6 +20,22 @@ class OrdenDePagoRendicionType extends AbstractType {
 				[
 					'widget' => 'single_text',
 					'html5'  => true
+				] )
+			->add( 'ordenDePagoFile',
+				VichFileType::class,
+				[
+					'label'       => 'Archivo',
+					'required'    => false,
+					'constraints' => [
+						new File( [
+							'maxSize'          => '75M',
+							'mimeTypes'        => [
+								'image/*',
+								'application/pdf'
+							],
+							'mimeTypesMessage' => 'Solo se aceptan .jpg, .png, .jpeg, .pdf',
+						] )
+					]
 				] );
 	}
 

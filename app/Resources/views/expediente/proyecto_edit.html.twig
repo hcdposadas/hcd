@@ -96,15 +96,15 @@
                             <label class="control-label">
                                 <b>Acompañantes</b>
                             </label>
-                            <div>
-                                {% for acompaniante in acompaniantes %}
+                            {% for acompaniante in acompaniantes %}
+                                <div>
                                     <span>{{ acompaniante.iniciador.cargoPersona }}</span>
                                     <button type="button" class="btn-borrar-acompaniante btn btn-default"
                                             data-iniciador="{{ acompaniante.iniciador.id }}"><i
                                                 class="fa fa-remove"></i>
-                                    </button><br>
-                                {% endfor %}
-                            </div>
+                                    </button>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -128,11 +128,6 @@
             </div>
 
             {% if is_granted('ROLE_LEGISLATIVO') %}
-                {#<div class="row">#}
-                    {#<div class="col-md-12">#}
-                        {#{{ form_row(edit_form.extracto) }}#}
-                    {#</div>#}
-                {#</div>#}
                 <div class="row">
                     <div class="col-md-12">
                         {{ form_row(edit_form.giros) }}
@@ -201,8 +196,8 @@
 
             $('.btn-borrar-acompaniante').click(function () {
                 var iniciadorId = $(this).data('iniciador');
-                $('.select2entity option[value=' + iniciadorId + ']').parents('tr').remove();
-                $(this).parent().parent().remove();
+                $(`.select-iniciador option[value="${iniciadorId}"]:selected`).parent().parent().parent().remove();
+                $(this).parent().remove();
             })
 
             $('form[name="{{ edit_form.vars.name }}"]').submit(function (event) {

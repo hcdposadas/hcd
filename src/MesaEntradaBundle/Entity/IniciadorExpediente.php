@@ -45,6 +45,9 @@ class IniciadorExpediente extends BaseClass {
 	 */
 	private $autor = false;
 
+	public function __toString() {
+		return $this->iniciador->__toString();
+	}
 
 	/**
 	 * Get id

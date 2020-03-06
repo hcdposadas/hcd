@@ -434,14 +434,6 @@ class ExpedienteController extends Controller {
 
 		$em = $this->getDoctrine()->getManager();
 
-//		$iniciarComo = [];
-//
-//		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
-//			if ( $cargoPersona->getIniciador() ) {
-//				$iniciarComo[] = $cargoPersona->getIniciador()->first();
-//			}
-//		}
-
 		$expediente = new Expediente();
 		$form       = $this->createForm( 'MesaEntradaBundle\Form\ProyectoType',
 			$expediente );
@@ -530,7 +522,6 @@ class ExpedienteController extends Controller {
 		return $this->render( 'expediente/proyecto_new.html.twig',
 			array(
 				'expediente' => $expediente,
-//				'iniciarComo' => $iniciarComo,
 				'form'       => $form->createView(),
 			) );
 	}
@@ -549,14 +540,6 @@ class ExpedienteController extends Controller {
 		}
 
 		$em = $this->getDoctrine()->getManager();
-
-//		$iniciarComo = [];
-//
-//		foreach ( $this->getUser()->getPersona()->getCargoPersona() as $cargoPersona ) {
-//			if ( $cargoPersona->getIniciador() ) {
-//				$iniciarComo[] = $cargoPersona->getIniciador()->first();
-//			}
-//		}
 
 		$iniciadoresOriginales = new ArrayCollection();
 
@@ -592,7 +575,7 @@ class ExpedienteController extends Controller {
 			$toRoute = 'proyecto_edit';
 
 			foreach ( $iniciadoresOriginales as $iniciadore ) {
-				if ( false === $expediente->getIniciadores()->contains( $iniciadore ) ) {
+				if ( false === $expediente->getIniciadores()->contains( $iniciadore )) {
 					$iniciadore->setExpediente( null );
 					$em->remove( $iniciadore );
 				}

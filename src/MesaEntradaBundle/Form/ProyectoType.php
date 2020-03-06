@@ -38,14 +38,6 @@ class ProyectoType extends AbstractType {
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
-//			->add( 'iniciarComo',
-//				EntityType::class,
-//				[
-//					'class'    => 'MesaEntradaBundle\Entity\Iniciador',
-//					'required' => true,
-//					'mapped'   => false,
-//					'choices'  => $options['iniciarComo'],
-//				] )
 			->add( 'extracto',
 				TextareaType::class,
 				[
@@ -55,12 +47,12 @@ class ProyectoType extends AbstractType {
 			->add( 'iniciadores',
 				BootstrapCollectionType::class,
 				[
-					'entry_type'   => IniciadorExpedienteType::class,
-					'allow_add'    => true,
-					'allow_delete' => true,
-					'by_reference' => false,
+					'entry_type'      => IniciadorExpedienteType::class,
+					'allow_add'       => true,
+					'allow_delete'    => true,
+					'by_reference'    => false,
 					'display_history' => false,
-					'label'        => 'Acompañantes'
+					'label'           => 'Acompañantes'
 				] )
 			->add( 'fecha',
 				DateType::class,

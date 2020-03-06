@@ -181,7 +181,7 @@ knp_menu:
 
 tetranz_select2_entity:
     minimum_input_length: 2
-    page_limit: 8
+    page_limit: 16
 #    allow_clear: true
 #    delay: 500
 #    language: es

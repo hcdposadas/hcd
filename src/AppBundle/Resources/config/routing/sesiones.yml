@@ -65,3 +65,11 @@ sesiones_cargar_homenaje:
 sesiones_imprimir_homenajes:
   path: /{sesionId}/imprimir-homenajes
   defaults: { _controller: "AppBundle:Sesion:imprimirHomenajes" }
+
+sesiones_ver_mociones:
+    path: /{id}/ver-mociones
+    defaults: { _controller: "AppBundle:Sesion:verMociones" }
+
+sesiones_imprimir_mociones:
+    path: /{id}/imprimir-mociones
+    defaults: { _controller: "AppBundle:Sesion:imprimirMociones" }

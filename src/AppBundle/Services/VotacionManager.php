@@ -169,7 +169,8 @@ class VotacionManager
             $voto = new Voto();
             $voto->setConcejal($nv);
             $voto->setValor(Voto::VOTO_ABSTENCION);
-            // $voto->setMocion($mocion);
+//            $voto->setMocion($mocion);
+//            $voto->setVotacion($votacion);
             $mocion->getVotos()->add($voto);
 
             $this->entityManager->persist($voto);

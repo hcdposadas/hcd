@@ -22,12 +22,4 @@ parameters:
     knp_snappy_binary: '%kernel.root_dir%/../vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64'
     app_url: 'http://localhost:8888/web'
     local_folder_backup: /var/backups/hcd
-    dropbox_token: null
-    dropbox_key: null
-    dropbox_secret: null
-    dropbox_app: null
-    dropbox_root: null
-    ftp_host: null
-    ftp_username: null
-    ftp_password: null
-    ftp_root: null
+    id_usuario_presidente: 1

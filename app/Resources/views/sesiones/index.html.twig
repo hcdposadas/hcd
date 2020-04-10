@@ -91,6 +91,14 @@
                                         </a>
                                     {% endif %}
 
+                                    {% if is_granted('ROLE_SECRETARIO') or app.user.id == id_usuario_presidente %}
+                                    <a class="btn btn-default"
+                                       href="{{ path('sesiones_ver_mociones', { 'id': sesion.id }) }}"
+                                       data-toggle="tooltip" title="Ver Mociones">
+                                        <i class="fa fa-hand-paper-o"></i>
+                                    </a>
+                                    {% endif %}
+
                                 </td>
                             </tr>
                         {% endfor %}

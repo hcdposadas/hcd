@@ -968,4 +968,51 @@ class SesionController extends Controller {
 
 	}
 
+	public function verMocionesAction( Request $request, Sesion $id ) {
+		return $this->render( 'sesiones/ver_mociones.html.twig',
+			[ 'sesion' => $id ] );
+	}
+
+	public function imprimirMocionesAction( Request $request, Sesion $id ) {
+		$title              = 'Votación Nominal';
+		$sesion             = $id;
+		$em                 = $this->getDoctrine()->getManager();
+		$periodoLegislativo = $em->getRepository( PeriodoLegislativo::class )->findOneByAnio( $sesion->getFecha()->format( 'Y' ) );
+
+
+		$header = $this->renderView( ':default:membrete.pdf.twig',
+			[
+				"periodo" => $periodoLegislativo,
+			] );
+		$footer = $this->renderView( ':default:pie_pagina.pdf.twig' );
+
+		$html = $this->renderView( ':sesiones:ver_mociones.pdf.twig',
+			[
+				'title'  => $title . ' - ' . $sesion->getTitulo(),
+				"sesion" => $sesion,
+			] );
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				[
+					'page-size'      => 'Legal',
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'margin-left'    => "3cm",
+					'margin-right'   => "3cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				]
+			)
+			, 200, [
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
+			]
+		);
+	}
+
 }

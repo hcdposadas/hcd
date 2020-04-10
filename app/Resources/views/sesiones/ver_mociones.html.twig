@@ -59,12 +59,12 @@
                                                     <ul>
                                                         {% for voto in mocion.votos %}
                                                             <li>
-                                                                {{ voto.concejal.persona | upper }}
-                                                                - {% if voto.valor %}
+                                                                {{ voto.concejal.persona.apellido | upper }}, {{ voto.concejal.persona.nombre | upper }}
+                                                                - {% if voto.valor == 1 %}
                                                                     <span class="label label-success">Afirmativo</span>
                                                                 {% elseif voto.valor == 0 %}
                                                                     <span class="label label-default">Abstención</span>
-                                                                {% else %}
+                                                                {% elseif voto.valor == -1 %}
                                                                     <span class="label label-danger">Negativo</span>
                                                                 {% endif %}
                                                             </li>

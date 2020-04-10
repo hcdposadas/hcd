@@ -53,6 +53,7 @@ twig:
     globals:
         version: "%version%"
         kernelRootDir: "%kernel.root_dir%"
+        id_usuario_presidente: "%id_usuario_presidente%"
     form_themes:
         - 'bootstrap_3_layout.html.twig'
 #        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'

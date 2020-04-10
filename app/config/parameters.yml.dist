@@ -33,15 +33,5 @@ parameters:
 
     # BACKUP
     local_folder_backup: '/var/backups/hcd/'
-    # dropbox token
-    dropbox_token:
-    dropbox_key:
-    dropbox_secret:
-    dropbox_app:
-    dropbox_root:
 
-    #ftp
-    ftp_host:
-    ftp_username:
-    ftp_password:
-    ftp_root:
+    id_usuario_presidente: 1

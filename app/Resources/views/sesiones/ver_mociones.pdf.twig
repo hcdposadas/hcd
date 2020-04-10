@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+</head>
+<style>
+    dl dt {
+        float: left;
+        width: 33%;
+        overflow: hidden;
+        clear: left;
+        text-align: right;
+        /*text-overflow: ellipsis;*/
+        white-space: nowrap;
+    }
+
+    dl dd {
+        margin-left: 35%;
+    }
+
+    dd {
+        text-align: justify;
+    }
+
+    h3 {
+        font-size: 11pt
+    }
+
+    h1, h2, h3 {
+        text-align: center;
+    }
+
+    .cuerpo p {
+        font-size: 11pt;
+    }
+
+    .panel {
+        margin-bottom: 30px;
+        margin-top: 10px;
+        page-break-inside: avoid;
+    }
+
+    .row .col-md-6 {
+        margin-bottom: 5px;
+    }
+
+    .table-border {
+        width: 100%;
+        /*page-break-after: always;*/
+    }
+
+    .table-border th {
+        border: 2px solid black;
+    }
+
+    .table-border, .table-border td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+</style>
+<body>
+
+<h1>
+    {{ sesion }}
+</h1>
+
+<div>
+    Fecha: <strong>{{ sesion.fecha | date('d/m/Y') }}</strong>
+</div>
+
+{% for mocion in sesion.mociones|sort %}
+    <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+    <div class="panel box box-primary">
+        <div class="box-header with-border">
+            <h2 class="box-title">
+                Moción Nº {{ mocion.numero }} - Resultado: {% if mocion.aprobado %}
+                    <span class="label label-success">Aprobado</span>  {% else %}
+                    <span class="label label-danger">No Aprobado</span>
+                {% endif %}
+            </h2>
+        </div>
+        <div id="{{ mocion.id }}" class="panel-collapse collapse">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <table class="table">
+                            <tbody>
+                            {% if mocion.expediente %}
+                                <tr>
+                                    <td>Expediente:</td>
+                                    <td><strong>{{ mocion.expediente }}</strong></td>
+                                </tr>
+                            {% endif %}
+
+                            {% if mocion.tipoMayoria %}
+                                <tr>
+                                    <td>Mayoría requerida:</td>
+                                    <td><strong>{{ mocion.tipoMayoria.nombre }}</strong></td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td>Cuenta Votos:</td>
+                                <td><strong>{{ mocion.cuentaTotal }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Cuenta Afirmativos:</td>
+                                <td><strong>{{ mocion.cuentaAfirmativos }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Cuenta Negativos:</td>
+                                <td><strong>{{ mocion.cuentaNegativos }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Cuenta Abstenciones:</td>
+                                <td><strong>{{ mocion.cuentaAbstenciones }}</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <table class="table-border">
+                            <thead>
+                            <tr>
+                                <th>Nombre y Apellido</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for voto in mocion.votos %}
+                                <tr>
+                                    <td>{{ voto.concejal.persona | upper }}</td>
+                                    <td>
+                                        {% if voto.valor %}
+                                            <span class="label label-success">Afirmativo</span>
+                                        {% elseif voto.valor == 0 %}
+                                            <span class="label label-default">Abstención</span>
+                                        {% else %}
+                                            <span class="label label-danger">Negativo</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+{% endfor %}
+
+</body>
+</html>

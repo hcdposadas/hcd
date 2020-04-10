@@ -129,20 +129,20 @@
                         <table class="table-border">
                             <thead>
                             <tr>
-                                <th>Nombre y Apellido</th>
+                                <th>Apellido y Nombre</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for voto in mocion.votos %}
                                 <tr>
-                                    <td>{{ voto.concejal.persona | upper }}</td>
+                                    <td>{{ voto.concejal.persona.apellido | upper }}, {{ voto.concejal.persona.nombre | upper }}</td>
                                     <td>
-                                        {% if voto.valor %}
+                                        {% if voto.valor == 1 %}
                                             <span class="label label-success">Afirmativo</span>
                                         {% elseif voto.valor == 0 %}
                                             <span class="label label-default">Abstención</span>
-                                        {% else %}
+                                        {% elseif voto.valor == -1 %}
                                             <span class="label label-danger">Negativo</span>
                                         {% endif %}
                                     </td>

@@ -33,6 +33,14 @@ mocion_lanzar:
     defaults: { _controller: "AppBundle:Mocion:lanzarVotacion" }
     methods: POST
 
+mocion_mostrar:
+    path:     /{id}/mostrarResultado
+    defaults: { _controller: "AppBundle:Mocion:mostrarResultado" }
+
+mocion_mostrarPresentes:
+    path:     /mostrarPresentes
+    defaults: { _controller: "AppBundle:Mocion:mostrarPresentes" }
+
 mocion_extender:
     path:     /{id}/extender
     defaults: { _controller: "AppBundle:Mocion:extenderVotacion" }

@@ -198,6 +198,63 @@ class MocionController extends Controller {
 			) );
 	}
 
+	public function mostrarResultadoAction(Mocion $mocion) {
+		$textoMocion = '';
+		if ($expediente = $mocion->getExpediente()) {
+			$textoMocion = 'Expediente ' . $expediente . ': ' . $expediente->getExtracto();
+		}
+
+		$tipoMayoria = $mocion->getTipoMayoria();
+		if ($tipoMayoria) {
+			$tipoMayoria = 'Se aprueba con ' . $tipoMayoria;
+		}
+
+		$votos = $mocion->getVotos();
+		$votaronPositivo = [];
+		$votaronNegativo = [];
+		$aNoVotaron = [];
+
+		foreach ($votos as $voto) {
+			switch ($voto->getValor()) {
+				case Voto::VOTO_AFIRMATIVO:
+					$votaronPositivo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+					break;
+				case Voto::VOTO_NEGATIVO:
+					$votaronNegativo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+					break;
+				case Voto::VOTO_ABSTENCION:
+					$aNoVotaron[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+					break;
+			}
+		}
+
+		$this->get('notifications.manager')->notify(
+			'votacion.resultados',
+			array(
+				'mocion' => 'Moción Nº' . $mocion->__toString().' (Finalizada)',
+				'textoMocion' => $textoMocion,
+				'tipoMayoria' => $tipoMayoria,
+				'sesion' => $mocion->getSesion()->__toString(),
+				'afirmativos' => $mocion->getCuentaAfirmativos(),
+				'negativos' => $mocion->getCuentaNegativos(),
+				'abstenciones' => $mocion->getCuentaAbstenciones(),
+				'total' => $mocion->getCuentaTotal(),
+				'aprobado' => $mocion->isAprobado(),
+				'votaronNegativo' => $votaronNegativo,
+				'votaronPositivo' => $votaronPositivo,
+				'seAbstuvieron' => $aNoVotaron,
+			)
+		);
+
+		return JsonResponse::create(array());
+	}
+
+	public function mostrarPresentesAction() {
+		$this->get('notifications.manager')->notify('votacion.finalizada', array());
+
+		return JsonResponse::create(array());
+	}
+
 	/**
 	 * Finds and displays a mocion entity.
 	 *

@@ -166,14 +166,14 @@ class VotacionManager
 
         $aNoVotaron = [];
         foreach ($noVotaron as $nv) {
+			// La abstención se agrega para el conteo, pero no se guarda,
+			// porque si la moción se extiende, el voto no debe estar en
+			// la base para permitir votar al concejar. Una vez que se _finaliza_
+            // la moción, el voto abstención sí se guarda.
             $voto = new Voto();
             $voto->setConcejal($nv);
             $voto->setValor(Voto::VOTO_ABSTENCION);
-//            $voto->setMocion($mocion);
-//            $voto->setVotacion($votacion);
             $mocion->getVotos()->add($voto);
-
-            $this->entityManager->persist($voto);
             $aNoVotaron [] = strtoupper($nv->getPersona()->getApellido());
         }
         $this->entityManager->flush();
@@ -182,6 +182,7 @@ class VotacionManager
         $total = 0;
         $afirmativos = 0;
         $negativos = 0;
+        $abstenciones = 0;
 
         $votos = $mocion->getVotos();
         $votaronPositivo = [];
@@ -199,11 +200,13 @@ class VotacionManager
                     $negativos++;
                     $votaronNegativo[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
                     break;
+                case Voto::VOTO_ABSTENCION:
+                    $total++;
+                    $abstenciones++;
+                    $aNoVotaron[] = strtoupper($voto->getConcejal()->getPersona()->getApellido());
+                    break;
             }
         }
-
-        $abstenciones = count($noVotaron);
-        $total += count($noVotaron);
 
         $mocion->setCuentaAfirmativos($afirmativos);
         $mocion->setCuentaNegativos($negativos);
@@ -255,6 +258,48 @@ class VotacionManager
         if (!$mocion->enVotacion()) {
             throw new \RuntimeException('No se puede finalizar la votación de la moción');
         }
+
+		$usuarioRepository = $this->entityManager->getRepository(Usuario::class);
+
+		$presentes = array_map(
+			function ($id) use ($usuarioRepository) {
+				return $usuarioRepository->find($id);
+			},
+			array_keys($this->notificationsManager->hgetall('presentes'))
+		);
+
+		$dedup = array();
+		foreach ($presentes as $presente) {
+			$dedup[$presente->getId()] = $presente;
+		}
+		$presentes = $dedup;
+		unset($dedup);
+
+		$votos = $mocion->getVotos();
+
+		$noVotaron = array_filter(
+			$presentes,
+			function ($presente) use ($votos) {
+				foreach ($votos as $voto) {
+					if ($voto->getCreadoPor()->getId() == $presente->getId()) {
+						return false;
+					}
+				}
+
+				return true;
+			}
+		);
+
+		foreach ($noVotaron as $nv) {
+			// Acá sí guardamos las abstenciones
+			$voto = new Voto();
+			$voto->setConcejal($nv);
+			$voto->setValor(Voto::VOTO_ABSTENCION);
+			$voto->setMocion($mocion);
+			$voto->setVotacion($mocion->getVotaciones()->last());
+			$mocion->getVotos()->add($voto);
+			$this->entityManager->persist($voto);
+		}
 
         $mocion->setEstado($this->getEstado(Mocion::ESTADO_FINALIZADO));
 

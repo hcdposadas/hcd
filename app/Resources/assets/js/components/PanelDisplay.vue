@@ -305,6 +305,7 @@
                     case 'votacion.cerrada':
                         break;
                     case 'votacion.resultados':
+                        this.mocion = msg.data.mocion
                         this.resultados.afirmativos = msg.data.afirmativos
                         this.resultados.negativos = msg.data.negativos
                         this.resultados.abstenciones = msg.data.abstenciones

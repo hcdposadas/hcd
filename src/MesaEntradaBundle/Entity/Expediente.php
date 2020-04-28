@@ -1133,7 +1133,8 @@ class Expediente extends BaseClass {
 	public function esProyectoDeConcejal() {
 		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
 			return $ie->getAutor()
-			       && $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_CONCEJAL;
+			       && ( $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_CONCEJAL ||
+			            $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == Cargo::CARGO_PRESIDENTE );
 		} );
 	}
 

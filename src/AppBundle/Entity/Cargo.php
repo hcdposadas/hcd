@@ -13,6 +13,7 @@ use UtilBundle\Entity\Base\BaseClass;
  */
 class Cargo extends BaseClass
 {
+    const CARGO_PRESIDENTE = 23;
     const CARGO_CONCEJAL = 24;
     const CARGO_DEFENSOR = 25;
     /**

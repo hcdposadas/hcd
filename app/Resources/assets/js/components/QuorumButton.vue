@@ -1,16 +1,14 @@
 <style scoped>
-    .top-dropdown, .dropdown {
+    .dropdown {
         display: inline-block;
     }
 </style>
 <template>
-    <div class="top-dropdown">
+    <div>
         <div class="dropdown">
-            <div class="btn-group" role="group">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                    Presentes <span class="badge"><quorum-count></quorum-count></span>
-                </button>
-            </div>
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                Presentes <span class="badge"><quorum-count></quorum-count></span>
+            </button>
             <ul class="dropdown-menu">
                 <li v-if="concejales.length === 0">
                     <span class="text-muted"><i class="fa fa-fw fa-spin fa-circle-o-notch"></i>Cargando...</span>
@@ -29,7 +27,7 @@
                 </template>
             </ul>
         </div>
-        <span class="btn btn-default" @click="mostrarPresentes" title="Mostrar pantalla de presentes">
+        <span class="btn btn-default" @click="mostrarPresentes" v-if="firewall !== 'admin'" title="Mostrar pantalla de presentes">
             <i class="fa fa-arrow-right" style="font-size: 0.5em; vertical-align: middle;"></i>
             <i class="fa fa-desktop" style="font-size: 0.8em;"></i>
         </span>

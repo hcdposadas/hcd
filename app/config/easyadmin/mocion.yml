@@ -5,6 +5,7 @@ easy_admin:
             disabled_actions: ['new']
             list:
                 fields: ['id', 'sesion', 'numero', 'texto', 'aprobado', 'cuentaTotal', 'cuentaAfirmativos', 'cuentaNegativos', 'cuentaAbstenciones' ]
+#                actions: [ { name: 'eliminarMocion', color: 'danger', icon: 'trash', label: '' } ]
             form:
                 fields:
                     - { property: 'texto' }

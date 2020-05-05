@@ -20,11 +20,11 @@ class ProyectoBAEIncorporarType extends AbstractType {
 			->add( 'boletinAsuntoEntrado',
 				null,
 				[
-					'label'    => 'Sesión',
-					'required' => true,
-					'placeholder'=> 'Seleccionar'
+					'label'       => 'Sesión',
+					'required'    => true,
+					'placeholder' => 'Seleccionar'
 				] )
-			->add( 'extracto' ,
+			->add( 'extracto',
 				CKEditorType::class,
 				[
 					'required' => true,
@@ -44,6 +44,11 @@ class ProyectoBAEIncorporarType extends AbstractType {
 				null,
 				[
 					'label' => 'Informe DEM'
+				] )
+			->add( 'tratamientoSobretabla',
+				null,
+				[
+					'label' => 'Tratamiento Sobretabla'
 				] );
 	}
 

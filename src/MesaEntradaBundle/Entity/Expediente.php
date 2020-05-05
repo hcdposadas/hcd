@@ -282,7 +282,7 @@ class Expediente extends BaseClass {
 	 *
 	 * @ORM\Column(name="proyecto_dem", type="boolean", nullable=true)
 	 */
-	private $proyecotDem;
+	private $proyectoDem;
 
 	/**
 	 * @Vich\UploadableField(mapping="expedientes_externos", fileNameProperty="expedienteExterno")
@@ -1143,7 +1143,7 @@ class Expediente extends BaseClass {
 	 */
 	public function esProyectoDeDEM() {
 //		return $this->getLetra() == 'M' && (strpos($this->getExpediente(), 'RM') === 0);
-		return (strpos($this->getExpediente(), 'RM') === 0) || $this->getProyecotDem();
+		return (strpos($this->getExpediente(), 'RM') === 0) || $this->getProyectoDem();
 //		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
 //			return $ie->getAutor()
 //			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
@@ -1312,26 +1312,26 @@ class Expediente extends BaseClass {
     }
 
     /**
-     * Set proyecotDem
+     * Set proyectoDem
      *
-     * @param boolean $proyecotDem
+     * @param boolean $proyectoDem
      *
      * @return Expediente
      */
-    public function setProyecotDem($proyecotDem)
+    public function setProyectoDem($proyectoDem)
     {
-        $this->proyecotDem = $proyecotDem;
+        $this->proyectoDem = $proyectoDem;
 
         return $this;
     }
 
     /**
-     * Get proyecotDem
+     * Get proyectoDem
      *
      * @return boolean
      */
-    public function getProyecotDem()
+    public function getProyectoDem()
     {
-        return $this->proyecotDem;
+        return $this->proyectoDem;
     }
 }

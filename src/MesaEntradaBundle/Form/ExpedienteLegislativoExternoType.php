@@ -4,6 +4,8 @@ namespace MesaEntradaBundle\Form;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -93,6 +95,12 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,
+				] )
+			->add( 'proyectoDem',
+				CheckboxType::class,
+				[
+					'label' => 'Es Proyecto DEM',
+					'required' => false
 				] )
 			->add( 'guardar',
 				SubmitType::class,

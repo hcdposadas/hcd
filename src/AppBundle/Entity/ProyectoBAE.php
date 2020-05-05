@@ -75,6 +75,13 @@ class ProyectoBAE extends BaseClass {
 	 */
 	private $incorporadoEnSesion;
 
+	/**
+	 * @var $tratamientoSobretabla
+	 *
+	 * @ORM\Column(name="tratamiento_sobretabla", type="boolean", nullable=true)
+	 */
+	private $tratamientoSobretabla;
+
 
 	/**
 	 * Get id
@@ -312,4 +319,18 @@ class ProyectoBAE extends BaseClass {
     {
         return $this->incorporadoEnSesion;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getTratamientoSobretabla() {
+		return $this->tratamientoSobretabla;
+	}
+
+	/**
+	 * @param mixed $tratamientoSobretabla
+	 */
+	public function setTratamientoSobretabla( $tratamientoSobretabla ) {
+		$this->tratamientoSobretabla = $tratamientoSobretabla;
+	}
 }

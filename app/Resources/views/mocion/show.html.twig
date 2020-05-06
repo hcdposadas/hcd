@@ -158,12 +158,14 @@
 
 {% block javascripts %}
     <script>
-        {% if not mocion.tiempoDeVotacionRestante is null %}
-        setTimeout(function () {
-            $.post('{{ path('mocion_resultados', {'id': mocion.id}) }}', function () {
-                document.location = document.location
-            })
-        }, {{ mocion.tiempoDeVotacionRestante * 1000 }})
+        {% if mocion.tiempoDeVotacionRestante is not null %}
+            setTimeout(function () {
+                $.post('{{ path('mocion_resultados', {'id': mocion.id}) }}', function () {
+                    document.location = document.location
+                })
+            }, {{ mocion.tiempoDeVotacionRestante * 1000 }})
+        {% elseif mocion.enVotacion %}
+            $.post('{{ path('mocion_resultados', {'id': mocion.id}) }}')
         {% endif %}
     </script>
 {% endblock %}

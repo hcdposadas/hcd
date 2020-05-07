@@ -59,6 +59,7 @@ twig:
 #        - 'TetranzSelect2EntityBundle:Form:fields.html.twig'
         - 'UtilBundle:Form:fields.html.twig'
         - ':Form:vich_widget.html.twig'
+        - 'FOSCKEditorBundle:Form:ckeditor_widget.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -160,7 +161,9 @@ stof_doctrine_extensions:
             blameable: true
             sluggable: true
 
-ivory_ck_editor:
+fos_ck_editor:
+    base_path: "bundles/fosckeditor"
+    js_path:   "bundles/fosckeditor/ckeditor.js"
     default_config: my_config
     configs:
         my_config:

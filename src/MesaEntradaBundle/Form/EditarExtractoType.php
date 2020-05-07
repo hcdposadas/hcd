@@ -3,7 +3,7 @@
 namespace MesaEntradaBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use MesaEntradaBundle\Entity\Expediente;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

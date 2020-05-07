@@ -2,7 +2,7 @@
 
 namespace AppBundle\Form;
 
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use MesaEntradaBundle\Form\FirmanteDictamenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;

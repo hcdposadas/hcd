@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Textodefinitivo</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ textoDefinitivo.id }}</td>
+            </tr>
+            <tr>
+                <th>Texto</th>
+                <td>{{ textoDefinitivo.texto }}</td>
+            </tr>
+            <tr>
+                <th>Numero</th>
+                <td>{{ textoDefinitivo.numero }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{% if textoDefinitivo.activo %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechacreacion</th>
+                <td>{% if textoDefinitivo.fechaCreacion %}{{ textoDefinitivo.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechaactualizacion</th>
+                <td>{% if textoDefinitivo.fechaActualizacion %}{{ textoDefinitivo.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<a class="btn btn-default" href="{{ path('texto-definitivo_index') }}">Volver</a>
+
+    <a class="btn btn-default" href="{{ path('texto-definitivo_edit', { 'id': textoDefinitivo.id }) }}">Editar</a>
+
+    {{ form_start(delete_form) }}
+        <input class="btn btn-danger" type="submit" value="Eliminar">
+    {{ form_end(delete_form) }}
+
+{% endblock %}

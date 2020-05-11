@@ -19,16 +19,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     message="Este Dictámen ya existe en el OD"
  * )
  */
-class DictamenOD extends BaseClass
-{
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+class DictamenOD extends BaseClass {
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="id", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
+	private $id;
 
 	/**
 	 * @var Expediente $expediente
@@ -38,13 +37,13 @@ class DictamenOD extends BaseClass
 	 */
 	private $expediente;
 
-    /**
-     * @var Dictamen $dictamen
-     *
-     * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Dictamen")
-     * @ORM\JoinColumn(name="dictamen_id", referencedColumnName="id", nullable=true)
-     */
-    private $dictamen;
+	/**
+	 * @var Dictamen $dictamen
+	 *
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Dictamen")
+	 * @ORM\JoinColumn(name="dictamen_id", referencedColumnName="id", nullable=true)
+	 */
+	private $dictamen;
 
 	/**
 	 * @var OrdenDelDia $ordenDelDia
@@ -68,158 +67,210 @@ class DictamenOD extends BaseClass
 	 */
 	private $tieneTratamientoPreferencial;
 
+	/**
+	 * @var $incorporadoEnSesion
+	 *
+	 * @ORM\Column(name="incorporado_en_sesion", type="boolean", nullable=true)
+	 */
+	private $incorporadoEnSesion;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * @var $aprobadoSobreTabla
+	 *
+	 * @ORM\Column(name="aprobado_sobre_tabla", type="boolean", nullable=true)
+	 */
+	private $aprobadoSobreTabla;
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return DictamenOD
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * @var $vueltaAComision
+	 *
+	 * @ORM\Column(name="vuelta_acomision", type="boolean", nullable=true)
+	 */
+	private $vueltaAComision;
 
-        return $this;
-    }
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return DictamenOD
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return DictamenOD
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-    /**
-     * @return Dictamen
-     */
-    public function getDictamen()
-    {
-        return $this->dictamen;
-    }
+		return $this;
+	}
 
-    /**
-     * @param Dictamen $dictamen
-     */
-    public function setDictamen(Dictamen $dictamen)
-    {
-        $this->dictamen = $dictamen;
-    }
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return DictamenOD
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-    /**
-     * Set ordenDelDia
-     *
-     * @param \AppBundle\Entity\OrdenDelDia $ordenDelDia
-     *
-     * @return DictamenOD
-     */
-    public function setOrdenDelDia(\AppBundle\Entity\OrdenDelDia $ordenDelDia = null)
-    {
-        $this->ordenDelDia = $ordenDelDia;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * @return Dictamen
+	 */
+	public function getDictamen() {
+		return $this->dictamen;
+	}
 
-    /**
-     * Get ordenDelDia
-     *
-     * @return \AppBundle\Entity\OrdenDelDia
-     */
-    public function getOrdenDelDia()
-    {
-        return $this->ordenDelDia;
-    }
+	/**
+	 * @param Dictamen $dictamen
+	 */
+	public function setDictamen( Dictamen $dictamen ) {
+		$this->dictamen = $dictamen;
+	}
 
-    /**
-     * Set creadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $creadoPor
-     *
-     * @return DictamenOD
-     */
-    public function setCreadoPor(\UsuariosBundle\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+	/**
+	 * Set ordenDelDia
+	 *
+	 * @param \AppBundle\Entity\OrdenDelDia $ordenDelDia
+	 *
+	 * @return DictamenOD
+	 */
+	public function setOrdenDelDia( \AppBundle\Entity\OrdenDelDia $ordenDelDia = null ) {
+		$this->ordenDelDia = $ordenDelDia;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
-     *
-     * @return DictamenOD
-     */
-    public function setActualizadoPor(\UsuariosBundle\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+	/**
+	 * Get ordenDelDia
+	 *
+	 * @return \AppBundle\Entity\OrdenDelDia
+	 */
+	public function getOrdenDelDia() {
+		return $this->ordenDelDia;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $creadoPor
+	 *
+	 * @return DictamenOD
+	 */
+	public function setCreadoPor( \UsuariosBundle\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-    /**
-     * Set extracto
-     *
-     * @param string $extracto
-     *
-     * @return DictamenOD
-     */
-    public function setExtracto($extracto)
-    {
-        $this->extracto = $extracto;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \UsuariosBundle\Entity\Usuario $actualizadoPor
+	 *
+	 * @return DictamenOD
+	 */
+	public function setActualizadoPor( \UsuariosBundle\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-    /**
-     * Get extracto
-     *
-     * @return string
-     */
-    public function getExtracto()
-    {
-        return $this->extracto;
-    }
+		return $this;
+	}
 
-    /**
-     * Set tieneTratamientoPreferencial
-     *
-     * @param boolean $tieneTratamientoPreferencial
-     *
-     * @return DictamenOD
-     */
-    public function setTieneTratamientoPreferencial($tieneTratamientoPreferencial)
-    {
-        $this->tieneTratamientoPreferencial = $tieneTratamientoPreferencial;
+	/**
+	 * Set extracto
+	 *
+	 * @param string $extracto
+	 *
+	 * @return DictamenOD
+	 */
+	public function setExtracto( $extracto ) {
+		$this->extracto = $extracto;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get tieneTratamientoPreferencial
-     *
-     * @return boolean
-     */
-    public function getTieneTratamientoPreferencial()
-    {
-        return $this->tieneTratamientoPreferencial;
-    }
+	/**
+	 * Get extracto
+	 *
+	 * @return string
+	 */
+	public function getExtracto() {
+		return $this->extracto;
+	}
+
+	/**
+	 * Set tieneTratamientoPreferencial
+	 *
+	 * @param boolean $tieneTratamientoPreferencial
+	 *
+	 * @return DictamenOD
+	 */
+	public function setTieneTratamientoPreferencial( $tieneTratamientoPreferencial ) {
+		$this->tieneTratamientoPreferencial = $tieneTratamientoPreferencial;
+
+		return $this;
+	}
+
+	/**
+	 * Get tieneTratamientoPreferencial
+	 *
+	 * @return boolean
+	 */
+	public function getTieneTratamientoPreferencial() {
+		return $this->tieneTratamientoPreferencial;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getIncorporadoEnSesion() {
+		return $this->incorporadoEnSesion;
+	}
+
+	/**
+	 * @param mixed $incorporadoEnSesion
+	 */
+	public function setIncorporadoEnSesion( $incorporadoEnSesion ) {
+		$this->incorporadoEnSesion = $incorporadoEnSesion;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAprobadoSobreTabla() {
+		return $this->aprobadoSobreTabla;
+	}
+
+	/**
+	 * @param mixed $aprobadoSobreTabla
+	 */
+	public function setAprobadoSobreTabla( $aprobadoSobreTabla ) {
+		$this->aprobadoSobreTabla = $aprobadoSobreTabla;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getVueltaAComision() {
+		return $this->vueltaAComision;
+	}
+
+	/**
+	 * @param mixed $vueltaAComision
+	 */
+	public function setVueltaAComision( $vueltaAComision ) {
+		$this->vueltaAComision = $vueltaAComision;
+	}
+
+
 }

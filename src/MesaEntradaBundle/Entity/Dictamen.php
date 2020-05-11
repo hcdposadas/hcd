@@ -93,6 +93,14 @@ class Dictamen extends BaseClass
      */
     private $anexos;
 
+	/**
+	 * @var TextoDefinitivo[]
+	 *
+	 * @ORM\OneToMany(targetEntity="MesaEntradaBundle\Entity\TextoDefinitivo", mappedBy="dictamen")
+	 *
+	 */
+	private $textosDefinitivos;
+
     /**
      * @return string
      */

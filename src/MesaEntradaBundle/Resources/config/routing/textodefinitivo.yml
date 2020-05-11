@@ -1,0 +1,29 @@
+texto_definitivo_index:
+    path:     /
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:index" }
+    methods:  GET
+
+texto_definitivo_show:
+    path:     /{id}/show
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:show" }
+    methods:  GET
+
+texto_definitivo_new:
+    path:     /new
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:new" }
+    methods:  [GET, POST]
+
+texto_definitivo_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:edit" }
+    methods:  [GET, POST]
+
+texto_definitivo_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:delete" }
+    methods:  DELETE
+
+texto_definitivo_asignar:
+    path:     /asignar/{dictamen}
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:asignar" }
+    methods:  [GET, POST]

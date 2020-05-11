@@ -30,15 +30,7 @@
             </div>
         </div>
     </div>
-    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
-        <div class="row m-b-1">
-            <div class="col-md-12">
-                <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
-                <a class="btn btn-primary" href="{{ path('dictamen_asignar_a_expte') }}"> Nuevo a Partir de
-                    Expediente</a>
-            </div>
-        </div>
-    {% endif %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="box">
@@ -78,12 +70,8 @@
                                            href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-default" data-toggle="tooltip" title="Asingar Texto Definitivo"
-                                           href="{{ path('texto_definitivo_asignar', { 'dictamen': dictamen.id }) }}">
-                                            <i class="fa fa-file"></i>
-                                        </a>
-                                        <a class="btn btn-default" data-toggle="tooltip" title="Dictamen Incorporado en Sesión"
-                                           href="{{ path('dictamenod_incorporar_a_sesion', {'dictamen': dictamen.id }) }}">
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Incorporar en sesión"
+                                           href="{{ path('dictamenod_incorporar_en_sesion', {'dictamen': dictamen.id }) }}">
                                             <i class="fa fa-caret-square-o-right"></i> IES
                                         </a>
                                     {% endif %}
@@ -97,14 +85,6 @@
 
         </div>
     </div>
-
-    {% if is_granted('ROLE_LEGISLATIVO') %}
-        <div class="row m-b-1">
-            <div class="col-md-12">
-                <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
-            </div>
-        </div>
-    {% endif %}
 
     <div class="row">
         {# display navigation #}

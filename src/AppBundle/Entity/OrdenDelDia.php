@@ -48,6 +48,9 @@ class OrdenDelDia extends BaseClass
      */
     private $cerrado;
 
+	public function __toString() {
+		return $this->sesion->__toString() . ' - ' . $this->sesion->getFecha()->format( 'd/m/Y' );
+	}
 
     /**
      * Get id

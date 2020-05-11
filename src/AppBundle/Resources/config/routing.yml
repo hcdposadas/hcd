@@ -63,3 +63,6 @@ app_orden_de_pago:
     resource: "@AppBundle/Resources/config/routing/ordendepago.yml"
     prefix:   /orden-de-pago
 
+app_dictamenod:
+    resource: "@AppBundle/Resources/config/routing/dictamenod.yml"
+    prefix:   /dictamenod

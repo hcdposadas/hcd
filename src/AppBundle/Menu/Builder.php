@@ -320,6 +320,13 @@ class Builder implements ContainerAwareInterface {
 							'route' => 'incorporar_expedientes_a_sesion_index',
 						)
 					);
+				$menu[ $keyPersonal ]
+					->addChild(
+						'Incorporar Dictamen en Sesión',
+						array(
+							'route' => 'incorporar_dictamenes_en_sesion_index',
+						)
+					);
 			}
 		}
 

@@ -2,6 +2,7 @@
 
 namespace MesaEntradaBundle\Form;
 
+use AppBundle\Form\TextoDefinitivoExpedienteAdjuntoType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,6 +26,16 @@ class TextoDefinitivoType extends AbstractType {
 				] )
 			->add( 'numero' )
 			->add( 'rama' )
+
+			->add( 'expedientesAdjuntos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => TextoDefinitivoExpedienteAdjuntoType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Expedientes Adjuntos'
+				] )
 			->add( 'anexos',
 				BootstrapCollectionType::class,
 				[
@@ -34,6 +45,7 @@ class TextoDefinitivoType extends AbstractType {
 					'by_reference' => false,
 					'label'        => 'Anexos'
 				] )
+			->add( 'aprobadoEnSesion' )
 			->add( 'activo' );
 	}
 

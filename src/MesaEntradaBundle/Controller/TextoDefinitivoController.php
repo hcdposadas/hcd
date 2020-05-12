@@ -4,6 +4,7 @@ namespace MesaEntradaBundle\Controller;
 
 use MesaEntradaBundle\Entity\Dictamen;
 use MesaEntradaBundle\Entity\TextoDefinitivo;
+use MesaEntradaBundle\Entity\TipoProyecto;
 use MesaEntradaBundle\Form\TextoDefinitivoType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -127,16 +128,35 @@ class TextoDefinitivoController extends Controller {
 	 */
 	public function asignarAction( Request $request, Dictamen $dictamen ) {
 		$textoDefinitivo = new Textodefinitivo();
+		$em              = $this->getDoctrine()->getManager();
+
+		$tieneTextoDefinitivo = $em->getRepository( TextoDefinitivo::class )->findOneBy( [ 'dictamen' => $dictamen ] );
+
+		if ( $tieneTextoDefinitivo ) {
+			return $this->redirectToRoute( 'texto_definitivo_show', [ 'id' => $tieneTextoDefinitivo->getId() ] );
+		}
+
 		$textoDefinitivo->setDictamen( $dictamen );
 		$form = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+
+		if ( $dictamen->getTipoProyecto()->getId() !== TipoProyecto::TIPO_ORDENANZA ) {
+			$form->remove( 'rama' );
+		}
+
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$em = $this->getDoctrine()->getManager();
+
+
 			$em->persist( $textoDefinitivo );
 			$em->flush();
 
-			return $this->redirectToRoute( 'texto_definitivo_show', [ 'id' => $textoDefinitivo->getId() ] );
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Proyecto modificado correctamente'
+			);
+
+			return $this->redirectToRoute( 'texto_definitivo_asignar', [ 'dictamen' => $textoDefinitivo->getId() ] );
 		}
 
 		return $this->render( 'textodefinitivo/asignar.html.twig',

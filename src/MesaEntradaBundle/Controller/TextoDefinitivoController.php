@@ -2,12 +2,14 @@
 
 namespace MesaEntradaBundle\Controller;
 
+use AppBundle\Entity\Parametro;
 use MesaEntradaBundle\Entity\Dictamen;
 use MesaEntradaBundle\Entity\TextoDefinitivo;
 use MesaEntradaBundle\Entity\TipoProyecto;
 use MesaEntradaBundle\Form\TextoDefinitivoType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Textodefinitivo controller.
@@ -58,12 +60,11 @@ class TextoDefinitivoController extends Controller {
 	 *
 	 */
 	public function showAction( TextoDefinitivo $textoDefinitivo ) {
-		$deleteForm = $this->createDeleteForm( $textoDefinitivo );
+
 
 		return $this->render( 'textodefinitivo/show.html.twig',
 			array(
 				'textoDefinitivo' => $textoDefinitivo,
-				'delete_form'     => $deleteForm->createView(),
 			) );
 	}
 
@@ -72,12 +73,17 @@ class TextoDefinitivoController extends Controller {
 	 *
 	 */
 	public function editAction( Request $request, TextoDefinitivo $textoDefinitivo ) {
-		$deleteForm = $this->createDeleteForm( $textoDefinitivo );
-		$editForm   = $this->createForm( 'MesaEntradaBundle\Form\TextoDefinitivoType', $textoDefinitivo );
+
+		$editForm   = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 			$this->getDoctrine()->getManager()->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Texto definitivo actualizado correctamente'
+			);
 
 			return $this->redirectToRoute( 'texto_definitivo_edit', array( 'id' => $textoDefinitivo->getId() ) );
 		}
@@ -85,8 +91,7 @@ class TextoDefinitivoController extends Controller {
 		return $this->render( 'textodefinitivo/edit.html.twig',
 			array(
 				'textoDefinitivo' => $textoDefinitivo,
-				'edit_form'       => $editForm->createView(),
-				'delete_form'     => $deleteForm->createView(),
+				'edit_form'       => $editForm->createView()
 			) );
 	}
 
@@ -147,16 +152,25 @@ class TextoDefinitivoController extends Controller {
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
+			if ( ! $textoDefinitivo->getTexto() ) {
+				$this->get( 'session' )->getFlashBag()->add(
+					'warning',
+					'El texto no puede estar vacío'
+				);
+
+				return $this->redirectToRoute( 'texto_definitivo_asignar', [ 'dictamen' => $dictamen->getId() ] );
+			}
+
 
 			$em->persist( $textoDefinitivo );
 			$em->flush();
 
 			$this->get( 'session' )->getFlashBag()->add(
 				'success',
-				'Proyecto modificado correctamente'
+				'Texto definitivo asignado correctamente'
 			);
 
-			return $this->redirectToRoute( 'texto_definitivo_asignar', [ 'dictamen' => $textoDefinitivo->getId() ] );
+			return $this->redirectToRoute( 'texto_definitivo_show', [ 'id' => $textoDefinitivo->getId() ] );
 		}
 
 		return $this->render( 'textodefinitivo/asignar.html.twig',
@@ -164,5 +178,62 @@ class TextoDefinitivoController extends Controller {
 				'textoDefinitivo' => $textoDefinitivo,
 				'form'            => $form->createView(),
 			] );
+	}
+
+	public function imprimirAction( TextoDefinitivo $textoDefinitivo ) {
+
+		$expediente = $textoDefinitivo->getDictamen()->getExpediente();
+
+		$title   = $textoDefinitivo->getDictamen();
+		$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda' );
+		$rama = null;
+
+		if ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ) {
+			$rama = $textoDefinitivo->getRama()->getNumeroRomano();
+			$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda-ordenanza' );
+		}
+
+		$header = $this->renderView( 'textodefinitivo/encabezado_texto_definitivo.pdf.twig',
+			[
+				"textoDefinitivo" => $textoDefinitivo,
+			] );
+
+
+		$html = $this->renderView( 'textodefinitivo/texto-definitivo.pdf.twig',
+			[
+				'textoDefinitivo' => $textoDefinitivo,
+				'rama'         => $rama,
+				'leyenda'         => $leyenda,
+				'title'           => $title,
+			]
+		);
+
+		$footer = $this->renderView( 'default/pie_pagina.pdf.twig' );
+
+//        return new Response($html);
+
+		return new Response(
+			$this->get( 'knp_snappy.pdf' )->getOutputFromHtml( $html,
+				[
+					'page-size'      => 'Legal',
+//					'page-width'     => '220mm',
+//					'page-height'     => '340mm',
+//					'margin-left'    => "3cm",
+//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 5,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+//                    'margin-bottom' => "1cm"
+				]
+			)
+			, 200, [
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			]
+		);
+
 	}
 }

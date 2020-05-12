@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Textodefinitivos
+{% endblock title %}
+{% block body %}
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Textodefinitivos</h3>
+    </div>
+    <div class="box-body">
+        <table class="table table-bordered table-striped data-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Texto</th>
+                <th>Numero</th>
+                <th>Activo</th>
+                <th>Fechacreacion</th>
+                <th>Fechaactualizacion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for textoDefinitivo in textoDefinitivos %}
+            <tr>
+                <td><a href="{{ path('texto-definitivo_show', { 'id': textoDefinitivo.id }) }}">{{ textoDefinitivo.id }}</a></td>
+                <td>{{ textoDefinitivo.texto }}</td>
+                <td>{{ textoDefinitivo.numero }}</td>
+                <td>{% if textoDefinitivo.activo %}Si{% else %}No{% endif %}</td>
+                <td>{% if textoDefinitivo.fechaCreacion %}{{ textoDefinitivo.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                <td>{% if textoDefinitivo.fechaActualizacion %}{{ textoDefinitivo.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                <td>
+                        <a class="btn btn-default" href="{{ path('texto-definitivo_show', { 'id': textoDefinitivo.id }) }}">
+                            <i class="fa fa-show"></i>
+                                                    </a>
+                        <a class="btn btn-default" href="{{ path('texto-definitivo_edit', { 'id': textoDefinitivo.id }) }}">
+                            <i class="fa fa-edit"></i>
+                                                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+
+    <a class="btn btn-primary" href="{{ path('texto-definitivo_new') }}">Nuevo textoDefinitivo</a>
+{% endblock %}

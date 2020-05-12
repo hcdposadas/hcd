@@ -5,7 +5,7 @@ easy_admin:
             form:
                 fields:
                     - { property: 'nombre' }
-                    - { property: 'textoPorDefecto', type: 'ckeditor'}
+                    - { property: 'textoPorDefecto', type: 'fos_ckeditor'}
             edit:
                 title:  'Editar Tipo Proyecto'
             new:

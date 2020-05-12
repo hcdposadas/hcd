@@ -30,3 +30,8 @@ dictamen_imprimir:
 dictamen_asignar_a_expte:
     path:     /asignar-a-expte
     defaults: { _controller: "AppBundle:Dictamen:asignarAExpte" }
+
+
+incorporar_dictamenes_en_sesion_index:
+    path: /incorporar_dictamenes_en_sesion_index
+    defaults: { _controller: "AppBundle:Dictamen:incorporarDictamenesEnSesion" }

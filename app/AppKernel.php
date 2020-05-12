@@ -21,7 +21,7 @@ class AppKernel extends Kernel
 			new FOS\UserBundle\FOSUserBundle(),
 			new UsuariosBundle\UsuariosBundle(),
 			new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
-			new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+			new FOS\CKEditorBundle\FOSCKEditorBundle(),
 			new MesaEntradaBundle\MesaEntradaBundle(),
 			new UtilBundle\UtilBundle(),
 			new ThemeBundle\ThemeBundle(),

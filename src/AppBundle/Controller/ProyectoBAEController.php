@@ -76,7 +76,7 @@ class ProyectoBAEController extends Controller {
 
 		$editForm = $this->createForm( ProyectoBAEIncorporarType::class, $proyectoBAE );
 
-		$em     = $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
 
 		$girosOriginales = new ArrayCollection();
 
@@ -113,7 +113,7 @@ class ProyectoBAEController extends Controller {
 			array(
 				'proyectoBAE' => $proyectoBAE,
 				'edit_form'   => $editForm->createView(),
-				'delete_form'   => $deleteForm->createView(),
+				'delete_form' => $deleteForm->createView(),
 			) );
 	}
 
@@ -199,7 +199,7 @@ class ProyectoBAEController extends Controller {
 
 		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
 
-		$sesion   = null;
+		$sesion = null;
 
 
 		if ( ! $sesionQb->getQuery()->getResult() ) {
@@ -211,11 +211,19 @@ class ProyectoBAEController extends Controller {
 			$sesion = $sesionQb->getQuery()->getSingleResult();
 		}
 
-		if ($sesion){
-			$proyectoBAE->setBoletinAsuntoEntrado($sesion->getBae()->last());
+		if ( $sesion ) {
+			if ( $sesion->getBae()->last() ) {
+				$proyectoBAE->setBoletinAsuntoEntrado( $sesion->getBae()->last() );
+			} else {
+				$this->get( 'session' )->getFlashBag()->add(
+					'warning',
+					'El Plan de labor aun no está conformado'
+				);
+				return $this->redirectToRoute('incorporar_expedientes_a_sesion_index');
+			}
 		}
 
-		$proyectoBAE->setExtracto($expediente->getExtracto());
+		$proyectoBAE->setExtracto( $expediente->getExtracto() );
 
 
 		$form = $this->createForm( ProyectoBAEIncorporarType::class, $proyectoBAE );

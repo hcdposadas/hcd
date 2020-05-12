@@ -16,7 +16,7 @@ use AppBundle\Form\DecretoType;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
 use Endroid\QrCode\QrCode;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use MesaEntradaBundle\Entity\AnexoExpediente;
 use MesaEntradaBundle\Entity\Dictamen;
 use MesaEntradaBundle\Entity\Expediente;

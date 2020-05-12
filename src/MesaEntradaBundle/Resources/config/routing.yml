@@ -5,3 +5,7 @@ mesa_entrada_expediente:
 mesa_entrada_homepage:
     path:     /
     defaults: { _controller: MesaEntradaBundle:Default:index }
+
+mesa_entrada_texto_definitivo:
+    resource: "@MesaEntradaBundle/Resources/config/routing/textodefinitivo.yml"
+    prefix:   /texto-definitivo

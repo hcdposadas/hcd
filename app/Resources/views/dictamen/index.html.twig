@@ -78,6 +78,14 @@
                                            href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Asingar Texto Definitivo"
+                                           href="{{ path('texto_definitivo_asignar', { 'dictamen': dictamen.id }) }}">
+                                            <i class="fa fa-file"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Dictamen Incorporado en Sesión"
+                                           href="{{ path('dictamenod_incorporar_a_sesion', {'dictamen': dictamen.id }) }}">
+                                            <i class="fa fa-caret-square-o-right"></i> IES
+                                        </a>
                                     {% endif %}
                                 </td>
                             </tr>

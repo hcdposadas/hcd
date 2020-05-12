@@ -5,11 +5,11 @@ easy_admin:
             form:
                 fields:
                     - { property: 'titulo' }
-                    - { property: 'fecha' }
+                    - { property: 'fecha', type_options: { widget: 'single_text', html5: true } }
                     - { property: 'tipoSesion', type: 'entity', type_options: { 'query_builder': ['AppBundle\Repository\ParametroRepository', 'findTipoSesionActivo'] } }
-                    - { property: 'ordenDelDia', type: 'ckeditor'}
-                    - { property: 'asuntosEntrados', type: 'ckeditor'}
-                    - { property: 'acta', type: 'ckeditor'}
+                    - { property: 'ordenDelDia', type: 'fos_ckeditor'}
+                    - { property: 'asuntosEntrados', type: 'fos_ckeditor'}
+                    - { property: 'acta', type: 'fos_ckeditor'}
             edit:
                 title:  'Editar Sesión'
             new:

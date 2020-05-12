@@ -6,9 +6,9 @@ easy_admin:
                 fields:
                     - { property: 'tipoExpediente' }
                     - { property: 'periodoLegislativo' }
-                    - { property: 'texto', type: 'ckeditor'}
+                    - { property: 'texto', type: 'fos_ckeditor'}
 #                    - { property: 'letra' }
-                    - { property: 'fecha' }
+                    - { property: 'fecha', type_options: { widget: 'single_text', html5: true }}
                     - { property: 'iniciadores' , type: 'collection' , type_options: { by_reference: false, entry_type: MesaEntradaBundle\Form\AdminIniciadorExpedienteType } }
                     - { property: 'anexos' , type: 'collection' , type_options: { by_reference: false, entry_type: MesaEntradaBundle\Form\AnexoExpedienteType } }
 #                    - { property: 'expedienteExternoFile', type: 'vich_file' }

@@ -22,6 +22,7 @@ parameters:
     app.path.documentos: '%app_url%/uploads/documentos'
     app.path.varios: '%app_url%/uploads/varios'
     app.path.ordenes_de_pago: '%app_url%/uploads/ordenes_de_pago'
+    app.path.textos_definitivos_anexos: '%app_url%/uploads/textos_definitivos/anexos'
 
 framework:
     ide: "%ide%"
@@ -131,6 +132,9 @@ vich_uploader:
         orden_de_pago:
             uri_prefix: "%app.path.ordenes_de_pago%"
             upload_destination: "%kernel.root_dir%/../web/uploads/ordenes_de_pago"
+        textos_definitivos_anexos:
+            uri_prefix: "%app.path.textos_definitivos_anexos%"
+            upload_destination: "%kernel.root_dir%/../web/uploads/textos_definitivos/anexos"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

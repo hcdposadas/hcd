@@ -33,6 +33,8 @@ env.json
 !web/uploads/dictamenes/anexos/.gitkeep
 /web/uploads/ordenes_de_pago/*
 !web/uploads/ordenes_de_pago/.gitkeep
+/web/uploads/textos_definitivos/anexos/*
+!web/uploads/textos_definitivos/anexos/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim

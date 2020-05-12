@@ -50,7 +50,7 @@ class AnexoTextoDefinitivo extends BaseClass {
 
 
 	/**
-	 * @Vich\UploadableField(mapping="expedientes_anexos", fileNameProperty="anexo")
+	 * @Vich\UploadableField(mapping="textos_definitivos_anexos", fileNameProperty="anexo")
 	 * @var File
 	 * @Assert\Image(mimeTypes={ "image/*" })
 	 */

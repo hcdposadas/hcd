@@ -85,7 +85,9 @@ class TextoDefinitivo extends BaseClass {
 		return $this->id;
 	}
 
-
+	public function __toString() {
+		return $this->numero;
+	}
 
     /**
      * Constructor

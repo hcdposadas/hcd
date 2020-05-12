@@ -27,3 +27,8 @@ texto_definitivo_asignar:
     path:     /asignar/{dictamen}
     defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:asignar" }
     methods:  [GET, POST]
+
+texto_definitivo_imprimir:
+    path:     /{id}/imprimir
+    defaults: { _controller: "MesaEntradaBundle:TextoDefinitivo:imprimir" }
+    methods:  [GET]

@@ -58,6 +58,23 @@ class TextoDefinitivo extends BaseClass {
 	 */
 	private $rama;
 
+	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\TextoDefinitivoExpedienteAdjunto", mappedBy="textoDefinitivo", cascade={"persist", "remove"}, orphanRemoval=true)
+	 *
+	 */
+	private $expedientesAdjuntos;
+
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sesion")
+	 * @ORM\JoinColumn(name="sesion_id", referencedColumnName="id", nullable=true)
+	 */
+	private $aprobadoEnSesion;
+
 
 	/**
 	 * Get id
@@ -76,6 +93,7 @@ class TextoDefinitivo extends BaseClass {
     public function __construct()
     {
         $this->anexos = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->expedientesAdjuntos = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -163,9 +181,11 @@ class TextoDefinitivo extends BaseClass {
      */
     public function addAnexo(\MesaEntradaBundle\Entity\AnexoTextoDefinitivo $anexo)
     {
-        $this->anexos[] = $anexo;
+	    $anexo->setTextoDefinitivo( $this );
 
-        return $this;
+	    $this->anexos->add( $anexo );
+
+	    return $this;
     }
 
     /**
@@ -262,5 +282,65 @@ class TextoDefinitivo extends BaseClass {
         $this->actualizadoPor = $actualizadoPor;
 
         return $this;
+    }
+
+    /**
+     * Add expedientesAdjunto
+     *
+     * @param \AppBundle\Entity\TextoDefinitivoExpedienteAdjunto $expedientesAdjunto
+     *
+     * @return TextoDefinitivo
+     */
+    public function addExpedientesAdjunto(\AppBundle\Entity\TextoDefinitivoExpedienteAdjunto $expedientesAdjunto)
+    {
+	    $expedientesAdjunto->setTextoDefinitivo( $this );
+
+	    $this->expedientesAdjuntos->add( $expedientesAdjunto );
+
+	    return $this;
+    }
+
+    /**
+     * Remove expedientesAdjunto
+     *
+     * @param \AppBundle\Entity\TextoDefinitivoExpedienteAdjunto $expedientesAdjunto
+     */
+    public function removeExpedientesAdjunto(\AppBundle\Entity\TextoDefinitivoExpedienteAdjunto $expedientesAdjunto)
+    {
+        $this->expedientesAdjuntos->removeElement($expedientesAdjunto);
+    }
+
+    /**
+     * Get expedientesAdjuntos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getExpedientesAdjuntos()
+    {
+        return $this->expedientesAdjuntos;
+    }
+
+    /**
+     * Set aprobadoEnSesion
+     *
+     * @param \AppBundle\Entity\Sesion $aprobadoEnSesion
+     *
+     * @return TextoDefinitivo
+     */
+    public function setAprobadoEnSesion(\AppBundle\Entity\Sesion $aprobadoEnSesion = null)
+    {
+        $this->aprobadoEnSesion = $aprobadoEnSesion;
+
+        return $this;
+    }
+
+    /**
+     * Get aprobadoEnSesion
+     *
+     * @return \AppBundle\Entity\Sesion
+     */
+    public function getAprobadoEnSesion()
+    {
+        return $this->aprobadoEnSesion;
     }
 }

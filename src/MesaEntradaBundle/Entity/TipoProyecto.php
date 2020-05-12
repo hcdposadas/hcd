@@ -50,6 +50,12 @@ class TipoProyecto extends BaseClass
 	 */
 	private $slug;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="acto", type="text", nullable=true)
+	 */
+	private $acto;
 
 
 	public function __toString() {
@@ -226,4 +232,20 @@ class TipoProyecto extends BaseClass
     {
         return $this->getId() == self::TIPO_COMUNICACION;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getActo(): string {
+		return $this->acto;
+	}
+
+	/**
+	 * @param string $acto
+	 */
+	public function setActo( string $acto ) {
+		$this->acto = $acto;
+	}
+
+
 }

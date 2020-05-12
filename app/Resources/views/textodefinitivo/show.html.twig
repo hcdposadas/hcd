@@ -4,7 +4,7 @@
     <h1>{{ textoDefinitivo.dictamen }}</h1>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="box">
                 <div class="box-header">
 
@@ -14,20 +14,25 @@
                         <tbody>
 
                         <tr>
+                            <th colspan="2">
+                                {{ textoDefinitivo.dictamen.expediente.tipoProyecto | upper }} {% if textoDefinitivo.rama %}
+                                    <span
+                                            class="numero">{{ textoDefinitivo.rama.numeroRomano }}</span> {% endif %} Nº
+                                <span
+                                        class="numero">{{ textoDefinitivo.numero }}</span>
+                            </th>
+                        </tr>
+
+                        <tr>
                             <th>Texto</th>
                             <td>{{ textoDefinitivo.texto | raw }}</td>
                         </tr>
-                        <tr>
-                            <th>Numero</th>
-                            <td>{{ textoDefinitivo.numero }}</td>
-                        </tr>
-                        <tr>
-                            <th>Rama</th>
-                            <td>{{ textoDefinitivo.rama }}</td>
-                        </tr>
+
+
                         <tr>
                             <th>Aprobado en Sesión</th>
-                            <td>{{ textoDefinitivo.aprobadoEnSesion }}</td>
+                            <td>{{ textoDefinitivo.aprobadoEnSesion }}
+                                - {{ textoDefinitivo.aprobadoEnSesion.fecha | date('d/m/Y') }}</td>
                         </tr>
                         <tr>
                             <th>Expedientes Adjuntos</th>
@@ -64,6 +69,14 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="box-footer">
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}"><i
+                                class="fa fa-print"></i></a>
+                    <a class="btn btn-default pull-right"
+                       href="{{ path('texto_definitivo_edit', {'id': textoDefinitivo.id }) }}"><i
+                                class="fa fa-edit"></i></a>
                 </div>
             </div>
         </div>

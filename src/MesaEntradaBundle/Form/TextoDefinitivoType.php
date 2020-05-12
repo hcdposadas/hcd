@@ -2,8 +2,12 @@
 
 namespace MesaEntradaBundle\Form;
 
+use AppBundle\Entity\Rama;
+use AppBundle\Entity\Sesion;
 use AppBundle\Form\TextoDefinitivoExpedienteAdjuntoType;
+use Doctrine\ORM\EntityRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,8 +29,18 @@ class TextoDefinitivoType extends AbstractType {
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
 			->add( 'numero' )
-			->add( 'rama' )
+			->add( 'rama',
+				EntityType::class,
+				[
+					'label'         => 'Rama',
+					'class'         => Rama::class,
+					'query_builder' => function ( EntityRepository $er ) {
+						$qb = $er->createQueryBuilder( 'r' );
+						$qb->orderBy( 'r.orden', 'ASC' );
 
+						return $qb;
+					}
+				] )
 			->add( 'expedientesAdjuntos',
 				BootstrapCollectionType::class,
 				[
@@ -45,7 +59,14 @@ class TextoDefinitivoType extends AbstractType {
 					'by_reference' => false,
 					'label'        => 'Anexos'
 				] )
-			->add( 'aprobadoEnSesion' )
+			->add( 'aprobadoEnSesion',
+				EntityType::class,
+				[
+					'label'        => 'Aprobado en Sesión',
+					'class'        => Sesion::class,
+					'choice_label' => 'tituloLargo',
+					'attr'         => [ 'class' => 'select2' ]
+				] )
 			->add( 'activo' );
 	}
 

@@ -1,0 +1,93 @@
+<style scoped>
+#pedir-palabra-wrapper {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 280px;
+}
+#pedir-palabra-boton,
+.dropdown-menu {
+  font-size: 2em;
+}
+.dropdown-menu {
+  right: 0 !important;
+  left: auto;
+}
+</style>
+<template>
+  <div>
+    <div id="pedir-palabra-wrapper">
+      <div class="btn-group dropup btn-block">
+        <button
+          id="pedir-palabra-boton"
+          class="btn btn-block"
+          :class="cantidadPedidos > 0 ? blink : 'btn-flat'"
+          type="button"
+          data-toggle="dropdown"
+          :disabled="cantidadPedidos < 1"
+        >
+          <i class="fa fa-fw" :class="loading ? 'fa-spin fa-circle-o-notch' : 'fa-hand-paper-o'"></i>
+          {{ cantidadPedidos }} pedido{{ cantidadPedidos !== 1 ? 's' : '' }}
+        </button>
+        <ul class="dropdown-menu">
+          <li
+            v-for="(pedido, idx) in pedidos"
+            :key="pedido.id"
+            @click.stop.prevent="cancelar(pedido)"
+          >
+            <a href="#">
+              <span>{{ idx + 1 }}.</span>
+              {{ pedido.nombre }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: [],
+  data() {
+    return {
+      loading: true,
+      blink: "btn-danger"
+    };
+  },
+  computed: {
+    cantidadPedidos() {
+      return this.$root.$data.palabras.length;
+    },
+    pedidos() {
+      return this.$root.$data.palabras;
+    }
+  },
+  methods: {
+    cancelar(pedido) {
+      if (this.loading) {
+        return;
+      }
+
+      if (!confirm(`Cancelar el pedido de ${pedido.nombre}?`)) {
+        return;
+      }
+
+      this.loading = true;
+      axios
+        .post(`${window.baseUrl}sesion/cancelar-pedir-palabra/${pedido.id}`)
+        .then(response => {
+          this.loading = false;
+        });
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
+    setInterval(() => {
+      this.blink = this.blink === "btn-danger" ? "btn-adn" : "btn-danger";
+    }, 1000);
+  }
+};
+</script>

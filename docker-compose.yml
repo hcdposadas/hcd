@@ -6,7 +6,7 @@ services:
     restart: always
     build:
       context: ./docker
-      dockerfile: Dockerfile.app
+      dockerfile: Dockerfile
     image: ${DOCKER_IMAGE_NAME}
     ports:
       - ${DOCKER_APP_PORT}:80

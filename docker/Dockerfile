@@ -16,8 +16,6 @@ RUN apt-get update \
                libxml2-dev \
                libxrender1 \
                nano \
-#               nodejs \
-#               postgresql \
                procps \
                redis-server \
                supervisor \
@@ -52,12 +50,15 @@ COPY config/php/php.ini /usr/local/etc/php/php.ini
 
 COPY config/supervisor/ /etc/supervisor/
 
+COPY config/redis/redis.conf /etc/redis/redis.conf
 RUN mkdir -p /var/log/redis
 RUN chown redis:redis /var/log/redis -R
 
-RUN mkdir -p /usr/local/etc/apache2
-ADD config/apache2/ /usr/local/etc/apache2/
 RUN echo "IncludeOptional /usr/local/etc/apache2/*.conf" >> /etc/apache2/apache2.conf
+RUN mkdir -p /usr/local/etc/apache2
+ADD config/apache2/apache2.conf /usr/local/etc/apache2/apache2.conf
+ADD config/apache2/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+
 
 WORKDIR /var/www/html
 RUN a2enmod rewrite headers

@@ -1,9 +1,12 @@
 <style scoped>
-#pedir-palabra-wrapper {
+#lista-pedir-palabra-wrapper {
   position: fixed;
   right: 30px;
   bottom: 30px;
   width: 280px;
+}
+.leaveSpace {
+	right: 320px !important;
 }
 #pedir-palabra-boton,
 .dropdown-menu {
@@ -16,7 +19,7 @@
 </style>
 <template>
   <div>
-    <div id="pedir-palabra-wrapper">
+    <div id="lista-pedir-palabra-wrapper" :class="leaveSpace ? 'leaveSpace': ''">
       <div class="btn-group dropup btn-block">
         <button
           id="pedir-palabra-boton"
@@ -48,7 +51,9 @@
 
 <script>
 export default {
-  props: [],
+  props: [
+		'leaveSpace'
+	],
   data() {
     return {
       loading: true,

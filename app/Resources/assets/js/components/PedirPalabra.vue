@@ -12,7 +12,7 @@
 <template>
   <div>
     <div id="pedir-palabra-wrapper">
-      <div v-if="palabraPedida">Aguarde su turno ({{ palabraPedidaOrden }}&deg; en la lista)</div>
+      <div v-if="palabraPedida">Aguarde su turno <!-- ({{ palabraPedidaOrden }}&deg; en la lista) --></div>
 
       <button
         v-if="palabraPedida"

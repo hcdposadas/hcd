@@ -12,7 +12,6 @@ use AppBundle\Entity\Persona;
 use AppBundle\Entity\ProyectoBAE;
 use AppBundle\Entity\Sesion;
 use AppBundle\Form\DecretoAjaxType;
-use AppBundle\Form\DecretoType;
 use AppBundle\Form\DependenciaAjaxType;
 use AppBundle\Form\PersonaType;
 use Endroid\QrCode\QrCode;
@@ -1123,5 +1122,41 @@ class AjaxController extends Controller {
 			) );
 
 		return new JsonResponse( [ 'form' => $formHtml ], $responseStatus );
+	}
+
+	public function pedirPalabraAction()
+	{
+		$id = $this->getUser()->getId();
+		$nombre = $this->getUser()->getPersona()->getNombreCompleto();
+
+		$this->get('notifications.manager')->notify(
+			'palabra.pedir',
+			array(
+				'concejal' => [
+					'id' => $id,
+					'nombre' => $nombre
+				]
+			)
+		);
+
+		return new JsonResponse([ 'pedida' => true ]);
+	}
+
+	public function cancelarPedirPalabraAction($id = null)
+	{
+		$id = $id ? $id : $this->getUser()->getId();
+
+		// return new JsonResponse(['pedida' => $id]);
+
+		$this->get('notifications.manager')->notify(
+			'palabra.cancelar',
+			array(
+				'concejal' => [
+					'id' => intval($id)
+				]
+			)
+		);
+
+		return new JsonResponse([ 'pedida' => false ]);
 	}
 }

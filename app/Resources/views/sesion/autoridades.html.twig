@@ -230,6 +230,9 @@
             </h2>
         </div>
     </div>
+	{% if is_granted('ROLE_SECRETARIO') %}
+		<lista-pedir-palabra></lista-pedir-palabra>
+	{% endif %}
 </div>
 
 </body>

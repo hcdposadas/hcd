@@ -42,7 +42,7 @@ fos_user_resetting:
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
-    
+
 #sesion
 sesion:
     path: /sesion
@@ -63,6 +63,14 @@ app_votar:
     path:     /sesion/votar
     defaults: { _controller: AppBundle:Mocion:votoConcejal }
     methods:  POST
+
+app_pedir_palabra:
+    path: /sesion/pedir-palabra
+    defaults: { _controller: "AppBundle:Ajax:pedirPalabra" }
+
+app_cancelar_pedir_palabra:
+    path: /sesion/cancelar-pedir-palabra/{id}
+    defaults: { _controller: "AppBundle:Ajax:cancelarPedirPalabra", id: null }
 
 get_ultima_sesion:
     path: /sesion/ultima-sesion

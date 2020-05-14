@@ -1,5 +1,5 @@
 <style scoped>
-#lista-pedir-palabra-wrapper {
+#lista-pedir-palabra-wrapper.grande {
   position: fixed;
   right: 30px;
   bottom: 30px;
@@ -8,8 +8,8 @@
 .leaveSpace {
 	right: 320px !important;
 }
-#pedir-palabra-boton,
-.dropdown-menu {
+.grande #pedir-palabra-boton,
+.grande .dropdown-menu {
   font-size: 2em;
 }
 .dropdown-menu {
@@ -19,12 +19,12 @@
 </style>
 <template>
   <div>
-    <div id="lista-pedir-palabra-wrapper" :class="leaveSpace ? 'leaveSpace': ''">
-      <div class="btn-group dropup btn-block">
+    <div id="lista-pedir-palabra-wrapper" :class="{ leaveSpace: leaveSpace, grande: firewall !== 'admin' }">
+      <div class="btn-group btn-block" :class="{ dropup: firewall !== 'admin' }">
         <button
           id="pedir-palabra-boton"
           class="btn btn-block"
-          :class="cantidadPedidos > 0 ? blink : 'btn-flat'"
+          :class="cantidadPedidos > 0 ? blink : (firewall === 'admin' ? 'btn-primary' : 'btn-flat')"
           type="button"
           data-toggle="dropdown"
           :disabled="cantidadPedidos < 1"
@@ -52,7 +52,8 @@
 <script>
 export default {
   props: [
-		'leaveSpace'
+		'leaveSpace',
+		'firewall'
 	],
   data() {
     return {
@@ -70,7 +71,7 @@ export default {
   },
   methods: {
     cancelar(pedido) {
-      if (this.loading) {
+      if (this.loading || this.firewall ===  'admin') {
         return;
       }
 
@@ -91,7 +92,7 @@ export default {
       this.loading = false;
     }, 4000);
     setInterval(() => {
-      this.blink = this.blink === "btn-danger" ? "btn-adn" : "btn-danger";
+      this.blink = this.blink === "btn-danger" ? "btn-primary" : "btn-danger";
     }, 1000);
   }
 };

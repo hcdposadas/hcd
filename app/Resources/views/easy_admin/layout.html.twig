@@ -78,6 +78,9 @@
                             {% block header_custom_menu %}
                                 {% set _logout_path = easyadmin_logout_path() %}
                                 <ul class="nav navbar-nav">
+									<li>
+										<lista-pedir-palabra firewall="admin"></lista-pedir-palabra>
+									</li>
                                     <li>
                                         <quorum-button firewall="admin"></quorum-button>
                                     </li>
@@ -282,6 +285,7 @@
             })
         })
     </script>
+	<script src="{{ asset('build/app.js') }}"></script>
     </body>
 {% endblock body %}
 </html>

@@ -75,8 +75,10 @@
                                 path-carta-organica="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}"
                                 concejal="{{ concejal }}">
                 </panel-concejal>
-				{% if is_granted('ROLE_CONCEJAL') and app.user.id == id_usuario_presidente %}
+				{% if app.user.id == id_usuario_presidente %}
 					<lista-pedir-palabra leave-space="true"></lista-pedir-palabra>
+				{% else %}
+					<pedir-palabra></pedir-palabra>
 				{% endif %}
             </div>
         {% endif %}

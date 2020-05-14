@@ -83,8 +83,6 @@
                             <consultar-sesiones v-show="showActas"></consultar-sesiones>
 
                             <panel-votacion></panel-votacion>
-
-							<pedir-palabra></pedir-palabra>
                         </div>
                     </div>
                 </div>

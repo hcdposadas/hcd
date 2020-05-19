@@ -55,7 +55,7 @@
                 <h2>
                     de fecha {{ textoDefinitivo.dictamen.fecha | date('d-m-y') }}
                 </h2>
-                {% if textoDefinitivo.expedientesAdjuntos %}
+                {% if textoDefinitivo.expedientesAdjuntos.count > 0 %}
                     <h2>
                         Expte. Adjto. N° {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos%}
                             {{ expedienteAdjunto.expediente }}

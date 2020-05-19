@@ -377,6 +377,29 @@ class Builder implements ContainerAwareInterface {
 				);
 		}
 
+		if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+
+			$textosDefinitivos = 'TEXTOS DEFINITIVOS';
+			$menu->addChild(
+				$textosDefinitivos,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'treeview-menu',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setExtra( 'icon', 'fa fa-file-text-o' )
+			     ->setAttribute( 'class', 'treeview' );
+			$menu[ $textosDefinitivos ]
+				->addChild(
+					'Textos definitivos',
+					array(
+						'route' => 'texto_definitivo_index',
+					)
+				);
+		}
+
 		$keyPersonal = 'DOCUMENTOS';
 		$menu->addChild(
 			$keyPersonal,

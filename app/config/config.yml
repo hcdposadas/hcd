@@ -135,6 +135,7 @@ vich_uploader:
         textos_definitivos_anexos:
             uri_prefix: "%app.path.textos_definitivos_anexos%"
             upload_destination: "%kernel.root_dir%/../web/uploads/textos_definitivos/anexos"
+            namer: "vich_uploader.namer_uniqid"
 
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'

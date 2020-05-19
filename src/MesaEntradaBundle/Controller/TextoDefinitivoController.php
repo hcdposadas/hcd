@@ -6,6 +6,7 @@ use AppBundle\Entity\Parametro;
 use MesaEntradaBundle\Entity\Dictamen;
 use MesaEntradaBundle\Entity\TextoDefinitivo;
 use MesaEntradaBundle\Entity\TipoProyecto;
+use MesaEntradaBundle\Form\Filter\TextoDefinitivoFilterType;
 use MesaEntradaBundle\Form\TextoDefinitivoType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,14 +21,38 @@ class TextoDefinitivoController extends Controller {
 	 * Lists all textoDefinitivo entities.
 	 *
 	 */
-	public function indexAction() {
+	public function indexAction( Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
-		$textoDefinitivos = $em->getRepository( 'MesaEntradaBundle:TextoDefinitivo' )->findAll();
+		$filterType = $this->createForm( TextoDefinitivoFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$textoDefinitivos = $em->getRepository( TextoDefinitivo::class )->getQbAll( $filterType->getData() );
+		} else {
+
+			$textoDefinitivos = $em->getRepository( TextoDefinitivo::class )->getQbAll();
+		}
+
+
+		$paginator        = $this->get( 'knp_paginator' );
+		$textoDefinitivos = $paginator->paginate(
+			$textoDefinitivos,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
 
 		return $this->render( 'textodefinitivo/index.html.twig',
 			array(
 				'textoDefinitivos' => $textoDefinitivos,
+				'filter_type'      => $filterType->createView()
 			) );
 	}
 
@@ -37,13 +62,20 @@ class TextoDefinitivoController extends Controller {
 	 */
 	public function newAction( Request $request ) {
 		$textoDefinitivo = new Textodefinitivo();
-		$form            = $this->createForm( 'MesaEntradaBundle\Form\TextoDefinitivoType', $textoDefinitivo );
+		$form            = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
+			$expediente = $form->get( "dictamen" )->get( 'expediente' )->getData();
+			$textoDefinitivo->getDictamen()->setExpediente( $expediente );
 			$em = $this->getDoctrine()->getManager();
 			$em->persist( $textoDefinitivo );
 			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Texto definitivo creado correctamente'
+			);
 
 			return $this->redirectToRoute( 'texto_definitivo_show', array( 'id' => $textoDefinitivo->getId() ) );
 		}
@@ -74,12 +106,12 @@ class TextoDefinitivoController extends Controller {
 	 */
 	public function editAction( Request $request, TextoDefinitivo $textoDefinitivo ) {
 
-		$editForm   = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+		$editForm->remove('dictamen');
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 			$this->getDoctrine()->getManager()->flush();
-
 			$this->get( 'session' )->getFlashBag()->add(
 				'success',
 				'Texto definitivo actualizado correctamente'
@@ -143,6 +175,7 @@ class TextoDefinitivoController extends Controller {
 
 		$textoDefinitivo->setDictamen( $dictamen );
 		$form = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+		$form->remove( 'dictamen' );
 
 		if ( $dictamen->getTipoProyecto()->getId() !== TipoProyecto::TIPO_ORDENANZA ) {
 			$form->remove( 'rama' );
@@ -186,10 +219,10 @@ class TextoDefinitivoController extends Controller {
 
 		$title   = $textoDefinitivo->getDictamen();
 		$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda' );
-		$rama = null;
+		$rama    = null;
 
 		if ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ) {
-			$rama = $textoDefinitivo->getRama()->getNumeroRomano();
+			$rama    = $textoDefinitivo->getRama()->getNumeroRomano();
 			$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda-ordenanza' );
 		}
 
@@ -202,7 +235,7 @@ class TextoDefinitivoController extends Controller {
 		$html = $this->renderView( 'textodefinitivo/texto-definitivo.pdf.twig',
 			[
 				'textoDefinitivo' => $textoDefinitivo,
-				'rama'         => $rama,
+				'rama'            => $rama,
 				'leyenda'         => $leyenda,
 				'title'           => $title,
 			]

@@ -28,17 +28,21 @@
 
             <h4>Firmantes</h4>
             {% for firmante in dictamen.firmantes | sort %}
-                {{ firmante.iniciador | title}}<br>
+                {{ firmante.iniciador | title }}<br>
             {% endfor %}
 
         </div>
         <div class="box-footer">
             {% if not is_granted('ROLE_SECRETARIO') %}
-            <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
-                <i class="fa fa-edit"></i> Editar</a>
+                <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
+                    <i class="fa fa-edit"></i> Editar</a>
             {% endif %}
             <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
                 <i class="fa fa-print"></i> Imprimir</a>
+            {% for textoDefinitivo in dictamen.textosDefinitivos %}
+                <a class="btn btn-default" href="{{ path('texto_definitivo_show', {'id':textoDefinitivo.id}) }}">
+                    <i class="fa fa-eye"></i> Ver Texto Definitivo Nº {{ textoDefinitivo }}</a>
+            {% endfor %}
         </div>
     </div>
 

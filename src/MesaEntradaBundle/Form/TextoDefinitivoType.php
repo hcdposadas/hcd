@@ -4,6 +4,7 @@ namespace MesaEntradaBundle\Form;
 
 use AppBundle\Entity\Rama;
 use AppBundle\Entity\Sesion;
+use AppBundle\Form\AsignarDictamenAExpteType;
 use AppBundle\Form\TextoDefinitivoExpedienteAdjuntoType;
 use Doctrine\ORM\EntityRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
@@ -19,6 +20,7 @@ class TextoDefinitivoType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
+			->add( 'dictamen', AsignarDictamenAExpteType::class )
 			->add( 'texto',
 				CKEditorType::class,
 				[
@@ -33,6 +35,8 @@ class TextoDefinitivoType extends AbstractType {
 				EntityType::class,
 				[
 					'label'         => 'Rama',
+					'placeholder'   => 'Seleccionar',
+					'required'      => false,
 					'class'         => Rama::class,
 					'query_builder' => function ( EntityRepository $er ) {
 						$qb = $er->createQueryBuilder( 'r' );

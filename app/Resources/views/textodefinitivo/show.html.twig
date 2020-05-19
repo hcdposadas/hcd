@@ -31,15 +31,15 @@
 
                         <tr>
                             <th>Aprobado en Sesión</th>
-                            <td>{{ textoDefinitivo.aprobadoEnSesion }}
-                                - {{ textoDefinitivo.aprobadoEnSesion.fecha | date('d/m/Y') }}</td>
+                            <td><a target="_blank" href="{{ path('sesiones_ver', {'id': textoDefinitivo.aprobadoEnSesion.id }) }}">{{ textoDefinitivo.aprobadoEnSesion }}
+                                    - {{ textoDefinitivo.aprobadoEnSesion.fecha | date('d/m/Y') }}</a></td>
                         </tr>
                         <tr>
                             <th>Expedientes Adjuntos</th>
                             <td>
                                 <ul>
                                     {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos %}
-                                        <li>{{ expedienteAdjunto.expediente }}</li>
+                                        <li><a target="_blank" href="{{ path('expediente_show', {'id': expedienteAdjunto.expediente.id }) }}">{{ expedienteAdjunto.expediente }}</a></li>
                                     {% endfor %}
                                 </ul>
                             </td>
@@ -50,7 +50,7 @@
                                 <ul>
                                     {% for anexo in textoDefinitivo.anexos %}
                                         <li>
-                                            <a href="{{ vich_uploader_asset(anexo, 'anexoFile') }}"
+                                            <a href="{{ absolute_url( asset('uploads/textos_definitivos/anexos/') ~ anexo.anexo ) }}"
                                                target="_blank">
                                                 Ver
                                             </a>

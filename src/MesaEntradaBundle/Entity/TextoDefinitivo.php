@@ -45,7 +45,7 @@ class TextoDefinitivo extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Dictamen", inversedBy="textosDefinitivos")
+	 * @ORM\ManyToOne(targetEntity="MesaEntradaBundle\Entity\Dictamen", inversedBy="textosDefinitivos", cascade={"persist"})
 	 * @ORM\JoinColumn(name="dictamen_id", referencedColumnName="id")
 	 */
 	private $dictamen;

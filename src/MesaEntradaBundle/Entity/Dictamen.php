@@ -455,4 +455,20 @@ class Dictamen extends BaseClass
     {
         return $this->anexos;
     }
+
+	/**
+	 * @return TextoDefinitivo[]
+	 */
+	public function getTextosDefinitivos() {
+		return $this->textosDefinitivos;
+	}
+
+	/**
+	 * @param TextoDefinitivo[] $textosDefinitivos
+	 */
+	public function setTextosDefinitivos( $textosDefinitivos ) {
+		$this->textosDefinitivos = $textosDefinitivos;
+	}
+
+
 }

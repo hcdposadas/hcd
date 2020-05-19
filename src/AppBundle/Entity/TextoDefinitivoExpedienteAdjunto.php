@@ -38,6 +38,10 @@ class TextoDefinitivoExpedienteAdjunto extends BaseClass
 	 */
 	private $expediente;
 
+	public function __toString() {
+		return $this->expediente->__toString();
+	}
+
 
     /**
      * Get id

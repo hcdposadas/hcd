@@ -75,6 +75,9 @@
                                 path-carta-organica="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}"
                                 concejal="{{ concejal }}">
                 </panel-concejal>
+
+
+				<mini-display logo-src="{{ asset('bundles/theme/img/logo-269x269.png') }}"></mini-display>
 				{% if app.user.id == id_usuario_presidente %}
 					<lista-pedir-palabra leave-space="true"></lista-pedir-palabra>
 				{% else %}

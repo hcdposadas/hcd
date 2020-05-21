@@ -25,6 +25,7 @@ import VistaOd from './components/VistaOd'
 import ModalExpediente from './components/ModalExpediente'
 import PedirPalabra from './components/PedirPalabra'
 import ListaPedirPalabra from './components/ListaPedirPalabra'
+import MiniDisplay from './components/MiniDisplay'
 
 Vue.component('panel-votacion', PanelVotacion)
 Vue.component('panel-concejal', Concejal)
@@ -37,6 +38,7 @@ Vue.component('vista-od', VistaOd)
 Vue.component('modal-expediente', ModalExpediente)
 Vue.component('pedir-palabra', PedirPalabra)
 Vue.component('lista-pedir-palabra', ListaPedirPalabra)
+Vue.component('mini-display', MiniDisplay)
 
 const moment = require('moment')
 require('moment/locale/es')

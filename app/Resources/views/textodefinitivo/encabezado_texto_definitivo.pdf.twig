@@ -36,6 +36,9 @@
     h3 {
         font-size: 11pt
     }
+    .exptes-adjuntos{
+        line-height : 25px;
+    }
 </style>
 <body>
 <div style="margin: 0;">
@@ -56,9 +59,9 @@
                     de fecha {{ textoDefinitivo.dictamen.fecha | date('d-m-y') }}
                 </h2>
                 {% if textoDefinitivo.expedientesAdjuntos.count > 0 %}
-                    <h2>
+                    <h2 class="exptes-adjuntos">
                         Expte. Adjto. N° {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos%}
-                            {{ expedienteAdjunto.expediente }}
+                            {{ expedienteAdjunto.expediente }}<br>
                         {% endfor %}
                     </h2>
                 {% endif %}

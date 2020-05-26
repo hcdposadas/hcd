@@ -34,8 +34,20 @@
     }
 
     body {
-        font-size: 12pt;
+        font-size: 16pt;
     }
+
+    .texto-leyenda {
+        word-spacing: 3px;
+        font-size: 16pt;
+        line-height: 40px;
+    }
+
+    .texto-definitivo-cuerpo {
+        line-height: 40px;
+        font-size: 16pt;
+    }
+
     .sesion {
         text-indent: 3cm;
         word-spacing: 2px;
@@ -50,7 +62,7 @@
                     class="numero">{{ textoDefinitivo.numero }}</span>
             </span>
     </h2>
-    <p class="text-center">
+    <p class="text-center texto-leyenda">
         {{ leyenda |upper }}
     </p>
     <h2 class="titulo1">
@@ -58,7 +70,10 @@
         {{ textoDefinitivo.dictamen.tipoProyecto.acto | upper }}
         </span>
     </h2>
-    {{ textoDefinitivo.texto | raw }}
+    <div class="texto-definitivo-cuerpo">
+
+        {{ textoDefinitivo.texto | raw }}
+    </div>
 
     <p class="sesion">
         Dada en la Sala de Sesiones de este Honorable Cuerpo en su

@@ -14,16 +14,6 @@
                         <tbody>
 
                         <tr>
-                            <th colspan="2">
-                                {{ textoDefinitivo.dictamen.expediente.tipoProyecto | upper }} {% if textoDefinitivo.rama %}
-                                    <span
-                                            class="numero">{{ textoDefinitivo.rama.numeroRomano }}</span> {% endif %} Nº
-                                <span
-                                        class="numero">{{ textoDefinitivo.numero }}</span>
-                            </th>
-                        </tr>
-
-                        <tr>
                             <th>Texto</th>
                             <td>{{ textoDefinitivo.texto | raw }}</td>
                         </tr>

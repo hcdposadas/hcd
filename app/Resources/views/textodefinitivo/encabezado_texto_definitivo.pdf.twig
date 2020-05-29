@@ -34,10 +34,16 @@
     }
 
     h3 {
-        font-size: 11pt
+        font-size: 10pt
     }
-    .exptes-adjuntos{
-        line-height : 25px;
+
+    .exptes-adjuntos {
+        line-height: 20px;
+
+    }
+
+    .exptes-adjuntos span {
+        white-space: nowrap;
     }
 </style>
 <body>
@@ -51,7 +57,7 @@
         </div>
 
         {% if textoDefinitivo.dictamen %}
-            <div class="col" style="float: right; text-align: center;margin-right: 20%">
+            <div class="col" style="float: right; text-align: center;margin-right: 20%; max-width: 5cm">
                 <h2>
                     EXPTE. Nº {{ textoDefinitivo.dictamen.expediente }}
                 </h2>
@@ -59,11 +65,11 @@
                     de fecha {{ textoDefinitivo.dictamen.fecha | date('d-m-y') }}
                 </h2>
                 {% if textoDefinitivo.expedientesAdjuntos.count > 0 %}
-                    <h2 class="exptes-adjuntos">
-                        Expte. Adjto. N° {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos%}
-                            {{ expedienteAdjunto.expediente }}<br>
+                    <h3 class="exptes-adjuntos">
+                        Expte. Adjto. N° {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos %}
+                            <span>{{ expedienteAdjunto.expediente }}</span>
                         {% endfor %}
-                    </h2>
+                    </h3>
                 {% endif %}
             </div>
         {% endif %}

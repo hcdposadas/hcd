@@ -56,7 +56,7 @@
 {% block body %}
     <body id="{% block body_id %}{% endblock %}"
           class="easyadmin sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
-    <div class="wrapper" id="app">
+    <div class="wrapper" >
         {% block wrapper %}
             <header class="main-header">
                 {% block header %}
@@ -77,7 +77,7 @@
                         <div class="navbar-custom-menu">
                             {% block header_custom_menu %}
                                 {% set _logout_path = easyadmin_logout_path() %}
-                                <ul class="nav navbar-nav">
+                                <ul class="nav navbar-nav" id="app">
 									<li>
 										<lista-pedir-palabra firewall="admin"></lista-pedir-palabra>
 									</li>

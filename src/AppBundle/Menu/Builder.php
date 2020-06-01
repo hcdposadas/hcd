@@ -312,7 +312,7 @@ class Builder implements ContainerAwareInterface {
 						'route' => 'sesiones_index',
 					)
 				);
-			if ( ! $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_SECRETARIO' ) ) {
+			if ( $this->container->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 				$menu[ $keyPersonal ]
 					->addChild(
 						'Incorporar Expedientes en Sesión',

@@ -1,0 +1,13 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+
+
+mesa_entrada:
+    resource: "routes/app/mesa_entrada.yaml"
+    prefix:   /mesa-entrada
+
+app:
+    resource: "routes/app/app.yaml"
+    prefix:   /

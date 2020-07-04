@@ -1,0 +1,152 @@
+expediente_index:
+    path:     /
+    defaults: { _controller: App\Controller\ExpedienteController::index }
+    methods:  GET
+
+expediente_show:
+    path:     /{id}/show
+    defaults: { _controller: App\Controller\ExpedienteController::show }
+    methods:  GET
+
+expediente_new:
+    path:     /new
+    defaults: { _controller: App\Controller\ExpedienteController::new }
+    methods:  [GET, POST]
+
+expediente_edit:
+    path:     /{id}/edit
+    defaults: { _controller: App\Controller\ExpedienteController::edit }
+    methods:  [GET, POST]
+
+expediente_delete:
+    path:     /{id}/delete
+    defaults: { _controller: App\Controller\ExpedienteController::delete }
+    methods:  DELETE
+
+expediente_seguimiento:
+    path:     /seguimiento
+    defaults: { _controller: App\Controller\ExpedienteController::seguimientoExpediente }
+
+expediente_timeline:
+    path:     /{id}/timeline
+    defaults: { _controller: App\Controller\ExpedienteController::seguimientoExpedienteTimeline }
+
+expediente_imprimir_caratula:
+    path:     /{id}/expediente_imprimir_caratula
+    defaults: { _controller: App\Controller\ExpedienteController::imprimirCaratula }
+
+expediente_imprimir_giro:
+    path:     /{id}/{giroId}/expediente_imprimir_giro/{tipoExpediente}
+    defaults: { _controller: App\Controller\ExpedienteController::imprimirGiro }
+
+expedientes_administrativos_index:
+    path: /expedientes_administrativos_index
+    defaults: { _controller: App\Controller\ExpedienteController::expedientesAdministrativosIndex }
+
+#legislativos
+expedientes_legislativos_index:
+    path: /expedientes_legislativos_index
+    defaults: { _controller: App\Controller\ExpedienteController::expedientesLegislativosIndex }
+
+proyectos_index:
+    path:     /proyectos
+    defaults: { _controller: App\Controller\ExpedienteController::proyectosIndex }
+    methods:  GET
+
+proyecto_show:
+    path:     /{id}/proyecto-ver
+    defaults: { _controller: App\Controller\ExpedienteController::showProyecto }
+    methods:  GET
+
+proyecto_new:
+    path:     /proyecto-new
+    defaults: { _controller: App\Controller\ExpedienteController::newProyecto }
+    methods:  [GET, POST]
+
+proyecto_edit:
+    path:     /{id}/proyecto-edit
+    defaults: { _controller: App\Controller\ExpedienteController::editProyecto }
+    methods:  [GET, POST]
+
+expediente_imprimir_proyecto:
+    path: /expediente_imprimir_proyecto/{id}
+    defaults: { _controller: App\Controller\ExpedienteController::imprimirProyecto }
+
+expediente_impresion_proyecto:
+    path: /expediente_impresion_proyecto
+    defaults: { _controller: App\Controller\ExpedienteController::impresionProyecto }
+
+expediente_asignar_numero:
+    path: /expediente_asignar_numero
+    defaults: { _controller: App\Controller\ExpedienteController::asignarNumeroExpediente }
+
+expediente_imprimir_etiqueta:
+    path: /{id}/expediente_imprimir_etiqueta
+    defaults: { _controller: App\Controller\ExpedienteController::expedienteImprimirEtiqueta }
+
+expediente_cargar_extracto:
+    path: /{id}/expediente_cargar_extracto
+    defaults: { _controller: App\Controller\ExpedienteController::cargarExtracto }
+
+expediente_nuevo_giro_legislativo:
+    path: /{id}/expediente-nuevo-giro-legislativo
+    defaults: { _controller: App\Controller\ExpedienteController::nuevoGiro }
+
+
+# administrativos
+expediente_administrativo_nuevo:
+    path: /expediente_administrativo_nuevo
+    defaults: { _controller: App\Controller\ExpedienteController::nuevoExpedienteAdministrativo }
+
+expediente_administrativo_editar:
+    path: /{id}/expediente_administrativo_editar
+    defaults: { _controller: App\Controller\ExpedienteController::editarExpedienteAdministrativo }
+
+expediente_nuevo_giro_administrativo:
+    path: /{id}/expediente-nuevo-giro-administrativo
+    defaults: { _controller: App\Controller\ExpedienteController::nuevoGiroAdministrativo }
+
+
+
+#legislativos externos
+expediente_legislativo_externo_index:
+    path: /expediente_legislativo_externo_index
+    defaults: { _controller: App\Controller\ExpedienteController::expedientesLegislativoExternosIndex }
+
+expediente_legislativo_externo_nuevo:
+    path: /expediente_legislativo_externo_nuevo
+    defaults: { _controller: App\Controller\ExpedienteController::nuevoExpedienteLegislativoExterno }
+
+expediente_legislativo_externo_editar:
+    path: /{id}/expediente_legislativo_externo_editar
+    defaults: { _controller: App\Controller\ExpedienteController::editarExpedienteLegislativoExterno }
+
+#administrativos externos
+expediente_administrativo_externo_index:
+    path: /expediente_administrativo_externo_index
+    defaults: { _controller: App\Controller\ExpedienteController::expedientesAdministrativoExternosIndex }
+
+expediente_administrativo_externo_nuevo:
+    path: /expediente_administrativo_externo_nuevo
+    defaults: { _controller: App\Controller\ExpedienteController::nuevoExpedienteAdministrativoExterno }
+
+expediente_administrativo_externo_editar:
+    path: /{id}/expediente_administrativo_externo_editar
+    defaults: { _controller: App\Controller\ExpedienteController::editarExpedienteAdministrativoExterno }
+
+expediente_editar_extracto:
+    path:     /{id}/editarExtracto
+    defaults: { _controller: App\Controller\ExpedienteController::editarExtracto }
+    methods:  [GET, POST]
+
+expediente_show_edicion_extracto:
+    path:     /{expediente}/editarExtracto/{logExpediente}
+    defaults: { _controller: App\Controller\ExpedienteController::showEdicionExtracto }
+    methods:  [GET]
+
+
+#Expedientes en sesion
+
+incorporar_expedientes_a_sesion_index:
+    path: /incorporar_expedientes_a_sesion_index
+    defaults: { _controller: App\Controller\ExpedienteController::incorporarProyectosASesionIndex }

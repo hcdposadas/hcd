@@ -1,0 +1,10 @@
+easy_admin:
+    entities:
+        Cargo:
+            class: App\Entity\Cargo
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+                    - { property: 'peso' }
+                    - { property: 'muestraSoloCargo' }

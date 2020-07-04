@@ -1,0 +1,16 @@
+easy_admin:
+    entities:
+        TipoDecreto:
+            class: App\Entity\TipoDecreto
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+                    - { property: 'activo' }
+
+            edit:
+                title:  'Editar Tipo Decreto'
+            new:
+                title:  'Alta Tipo Decreto'
+            list:
+                title:  'Tipo Decreto'

@@ -1,4 +1,0 @@
-services:
-#    mesa_entrada.example:
-#        class: MesaEntradaBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]

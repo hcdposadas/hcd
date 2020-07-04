@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Asignar Nº Expte
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Proyecto</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="codigoReferencia" autofocus autocomplete="off">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-qrcode"></i></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {#<div class="card-footer">#}
+                {#<a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>#}
+                {#</div>#}
+            </div>
+        </div>
+    </div>
+
+    {% if expediente %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {{ expediente.texto | raw }}
+                    </div>
+                </div>
+                {% if form is defined and form is not null %}
+                    <div class="card">
+                        <div class="card-body">
+
+                            {{ form_start(form) }}
+                            <input class="form-control" type="hidden" name="codigoReferencia" autofocus
+                                   autocomplete="off" value="{{ codigoReferencia }}">
+
+                            <div class="col-md-4">
+                                {{ form_row(form.expediente) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.letra) }}
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ form_row(form.asignar) }}
+                            </div>
+                            <div class="d-none">
+                                {{ form_end(form) }}
+                            </div>
+
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    {% endif %}
+
+
+
+
+
+{% endblock %}

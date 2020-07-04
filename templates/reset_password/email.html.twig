@@ -1,0 +1,12 @@
+<h1>Hola {{ user }}!</h1>
+
+<p>
+    Para restablecer tu contraseña por favor hacé click en el siguiente
+    <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">enlace</a>
+    Este enlace caduca en {{ tokenLifetime|date('g') }} hora(s)..
+</p>
+
+<p>
+    Atentamente,
+    el Equipo de Sistemas HCD {{ ciudad_name }}.
+</p>

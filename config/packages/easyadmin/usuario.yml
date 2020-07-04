@@ -1,0 +1,35 @@
+easy_admin:
+    entities:
+        Usuario:
+            class: App\Entity\Usuario
+            list:
+                fields:
+                    - { property: 'username' }
+                    - { property: 'email', type: 'email' }
+                    - { property: 'enabled' }
+            form:
+                fields:
+                    - username
+                    - email
+                    - enabled
+                    - persona
+#                    - lastLogin
+                    # if administrators are allowed to edit users' passwords and roles, add this:
+                    - { property: 'plainPassword', type: 'text', type_options: { required: false, mapped: false, label: 'Password' } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, expanded: false, choices:
+                        { 'ROLE_USER': 'ROLE_USER',
+                          'ROLE_ADMIN': 'ROLE_ADMIN',
+                          'ROLE_CONCEJAL': 'ROLE_CONCEJAL',
+                          'ROLE_SECRETARIO': 'ROLE_SECRETARIO',
+                          'ROLE_MESA_ENTRADA': 'ROLE_MESA_ENTRADA',
+                          'ROLE_PERSONAL': 'ROLE_PERSONAL',
+                          'ROLE_LEGISLATIVO': 'ROLE_LEGISLATIVO',
+                          'ROLE_LEGISLATIVO_ADMIN': 'ROLE_LEGISLATIVO_ADMIN',
+                          'ROLE_DEFENSOR': 'ROLE_DEFENSOR',
+                          'ROLE_PROSECRETARIO': 'ROLE_PROSECRETARIO',
+                          'ROLE_PROSECRETARIO_LEGISLATIVO': 'ROLE_PROSECRETARIO_LEGISLATIVO',
+                          'ROLE_CEREMONIAL': 'ROLE_CEREMONIAL',
+                          'ROLE_ADMINISTRACION': 'ROLE_ADMINISTRACION',
+                        }
+                      }
+                      }

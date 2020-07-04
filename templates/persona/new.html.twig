@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Persona
+{% endblock title %}
+{% block body %}
+
+    {# modal add persona #}
+    {% include 'default/modal_add_persona.html.twig' %}
+    {# modal add persona #}
+
+    <h1>Alta de Personal</h1>
+
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-user"></i> Datos de la Persona</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ form_row(form.nombre) }}
+                    {{ form_row(form.apellido) }}
+                    {{ form_row(form.dni) }}
+                    {{ form_row(form.fechaNacimiento) }}
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-users"></i> Personas a Cargo</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ form_widget(form.personaACargo) }}
+                    <button type="button" class="btn btn-default btn-add-persona">
+                        <i class="fa fa-plus"></i> Agregar Persona
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-folder-open-o"></i> Datos del legajo</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ form_widget(form.legajo) }}
+                    {{ form_widget(form.cargoPersona) }}
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-phone"></i> Datos de Contacto</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ form_widget(form.contactoPersona) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Guardar"/>
+    <a class="btn btn-default" href="{{ path('persona_index') }}">Volver</a>
+    {{ form_end(form) }}
+
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+            $('.select2entity').each(function (index) {
+                $(this).select2({
+                    ajax: {
+                        url: $(this).data('rpath'),
+                        dataType: $(this).data('data-type'),
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                page_limit: $(this).data('page-limit')
+                            };
+                        },
+                        processResults: function (data) {
+                            var myResults = [];
+                            $.each(data, function (index, item) {
+                                myResults.push({
+                                    'id': item.id,
+                                    'text': item.text
+                                });
+                            });
+                            return {
+                                results: myResults
+                            };
+                        }
+                    },
+                });
+            });
+
+            $('.btn-add-persona').click(function () {
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("form_persona") }}',
+                    success: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        $('#modal-add-persona').modal('toggle');
+                        inicializarPlugins();
+                    }
+                });
+            });
+
+            $('#modal-add-persona-btn-ok').click(function () {
+
+                var data = $('form[name="appbundle_persona"]').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("form_persona") }}',
+                    data: data,
+                    success: function (data) {
+                        $('#modal-add-persona').modal('toggle');
+                        modalAlert(data.mensaje);
+                    },
+                    error: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                    500: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                });
+            });
+        });
+    </script>
+{% endblock javascripts %}

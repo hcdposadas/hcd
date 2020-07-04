@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Asignar Dictámenes al Orden del Día
+{% endblock title %}
+{% block body %}
+
+    <div class="modal fade" id="modal-editar-extracto" tabindex="-1" role="dialog"
+         aria-labelledby="modal-editar-extracto">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modal-editar-extracto">{{ "Editar Extracto" |trans }}!</h4>
+                </div>
+                <div class="error"></div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">{{ 'Cerrar'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Asignar Dictámenes al Orden del Día - {{ sesion.titulo }}</h3>
+                    <div class="card-tools pull-right">
+
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{{ path('sesiones_conformar_plan_de_labor_index') }}">Volver</a>
+
+            <a class="btn btn-default margin"
+               href="{{ path('sesiones_imprimir_orden_del_dia' , {'sesionId': sesion.id}) }}"
+               target="_blank"><i
+                        class="fa fa-print"></i> Imprimir Borrador OD</a>
+        </div>
+    </div>
+{% endblock body %}

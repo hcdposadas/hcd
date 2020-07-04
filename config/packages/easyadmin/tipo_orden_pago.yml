@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        TipoOrdenPago:
+            class: App\Entity\TipoOrdenPago
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion'}
+            edit:
+                title:  'Editar Tipo Orden de Pago'
+            new:
+                title:  'Alta Tipo Orden de Pago'
+            list:
+                title:  'Tipo Orden de Pago'

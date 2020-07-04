@@ -1,0 +1,10 @@
+easy_admin:
+    entities:
+        Comision:
+            class: App\Entity\Comision
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+                    - { property: 'abreviacion' }
+                    - { property: 'peso' }

@@ -1,0 +1,203 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ sesion.titulo }}
+{% endblock title %}
+
+{% block body %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-default" href="{{ path('sesiones_index') }}">Volver</a>
+        </div>
+    </div>
+
+{#    <h1>{{ sesion.titulo }}</h1>#}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary card-outline card-outline-tabs">
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="tab-sesion" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="pill">Boletín de
+                                Asuntos Entrados</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="pill">Orden del Día</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="pill">Acta</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="pill">Homenajes</a></li>
+
+
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="tab-sesionContent">
+                        <div class="tab-pane active" role="tabpanel" id="tab_1">
+                            <a class="btn btn-default" target="_blank"
+                               href="{{ path('sesiones_imprimir_boletin_asuntos_entrados', { 'sesionId': sesion.id }) }}">
+                                <i class="fa fa-print"></i> BAE
+                            </a>
+
+                            {% if sesion.asuntosEntrados %}
+                                {% if sesion.ordenDelDia %}
+                                    {{ sesion.ordenDelDia | raw }}
+                                {% else %}
+                                    {% for titulo, lista in dictamenes %}
+                                        {% if lista.count %}
+                                            <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                            <div class="cuerpo">
+                                                <p>
+                                                    {% for dictamen in lista %}
+                                                <dl class="row">
+                                                    <dt class="col-sm-3"><strong>EXPTE.
+                                                            Nº {{ dictamen.expediente }}</strong></dt>
+                                                    {% if dictamen.extracto %}
+                                                        <dd class="col-sm-8">{{ dictamen.extracto | raw }}</dd>
+                                                    {% else %}
+                                                        <dd class="col-sm-8">{{ dictamen.expediente.extractoDictamen | raw }}</dd>
+                                                    {% endif %}
+                                                </dl>
+                                                {% endfor %}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% else %}
+                                {% for titulo, lista in proyectos %}
+                                    {% if lista.count %}
+                                        <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                        <div class="cuerpo">
+
+                                            {% for proyecto in lista %}
+                                                <div class="proyecto">
+                                                    <p>
+                                                    <dl class="row">
+                                                        <dt class="col-sm-3"><strong>EXPTE.
+                                                                Nº {{ proyecto.expediente }}</strong></dt>
+                                                        {% if proyecto.extracto %}
+                                                            <dd class="col-sm-8">{{ proyecto.extracto | raw }}</dd>
+                                                        {% else %}
+                                                            <dd class="col-sm-8">{{ proyecto.expediente.extractoTemario | raw }}</dd>
+                                                        {% endif %}
+                                                    </dl>
+                                                    </p>
+                                                    <p style="text-align: center">
+                                                        {% if proyecto.expediente.textoDelGiro(sesion) | length > 19 %}
+                                                            {{ proyecto.expediente.textoDelGiro(sesion) | raw }}
+                                                        {% else %}
+                                                            {#TODO este else borrar cuando se migren los giros #13#}
+                                                            {% if proyecto.expediente.giros.count > 1 %}
+                                                                A las Comisiones de
+                                                            {% else %}
+                                                                A la Comisión de
+                                                            {% endif %}
+
+                                                            {% if proyecto.expediente.girosOrdenados.count <= 2 %}
+                                                                {% if proyecto.expediente.girosOrdenados.count == 1 %}
+                                                                    {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                        <strong>{{ giro.comisionDestino.abreviacion }}</strong> {% if not loop.last %} y de {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% for giro in proyecto.expediente.girosOrdenados %}
+                                                                    {% set ender = '; ' %}
+                                                                    {% if loop.index == (loop.length - 1) %}
+                                                                        {% set ender = ' y de ' %}
+                                                                    {% endif %}
+                                                                    <strong>{{ giro.comisionDestino.abreviacion }}</strong>{{ ender }}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" role="tabpanel" id="tab_2">
+
+                            <a class="btn btn-default" target="_blank"
+                               href="{{ path('sesiones_imprimir_orden_del_dia', { 'sesionId': sesion.id }) }}">
+                                <i class="fa fa-print"></i> OD
+                            </a>
+                            {% if sesion.ordenDelDia %}
+                                {{ sesion.ordenDelDia | raw }}
+                            {% else %}
+                                {% for titulo, lista in dictamenes %}
+                                    {% if lista.count %}
+                                        <h3 style="text-align: center; margin-top: 5%"><u>{{ titulo }}</u></h3>
+                                        <div class="cuerpo">
+                                            <p>
+                                                {% for dictamenOD in lista %}
+                                                {% set expte = dictamenOD.dictamen.expediente |split(' ') %}
+                                            <dl class="row">
+                                                {% if expte | length > 1 %}
+                                                    <dt class="col-sm-3"><strong>EXPTE. {{ expte[0] }}
+                                                            Nº {{ expte[1] }}</strong></dt>
+                                                {% else %}
+                                                    <dt class="col-sm-3"><strong>EXPTE. Nº {{ dictamenOD.dictamen.expediente }}</strong>
+                                                    </dt>
+                                                {% endif %}
+                                                <dd class="col-sm-8">{{ dictamenOD.extracto | raw }}</dd>
+                                            </dl>
+                                            {% endfor %}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" role="tabpanel" id="tab_3">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('sesiones_imprimir_acta', { 'sesionId': sesion.id }) }}">
+                                        <i class="fa fa-print"></i> Acta
+                                    </a>
+
+                                </div>
+                            </div>
+                            {{ sesion.acta | raw }}
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="tab_4">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('sesiones_imprimir_homenajes', { 'sesionId': sesion.id }) }}">
+                                        <i class="fa fa-print"></i> Homenajes
+                                    </a>
+
+                                </div>
+                            </div>
+                            {{ sesion.homenajes | raw }}
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row pb-3">
+        <div class="col-12">
+            <a class="btn btn-default" href="{{ path('sesiones_index') }}">Volver</a>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}

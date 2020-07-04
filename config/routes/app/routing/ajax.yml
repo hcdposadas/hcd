@@ -1,0 +1,67 @@
+form_dependencia:
+    path: /form_dependencia
+    defaults: { _controller: App\Controller\AjaxController::formDependencia }
+
+form_persona:
+    path: /form_persona
+    defaults: { _controller: App\Controller\AjaxController::formPersona }
+
+get_dependencias_por_nombre:
+    path: /get_dependencias_por_nombre
+    defaults: { _controller: App\Controller\AjaxController::getDependenciaPorNombre }
+
+get_cargos_por_nombre:
+    path: /get_cargos_por_nombre
+    defaults: { _controller: App\Controller\AjaxController::getCargosPorNombre }
+
+get_cargos_por_nombre_legacy:
+    path: /get_cargos_por_nombre_legacy
+    defaults: { _controller: App\Controller\AjaxController::getCargosPorNombreLegacy }
+
+get_persona_por_dni:
+    path: /get_persona_por_dni
+    defaults: { _controller: App\Controller\AjaxController::getPersonaPorDni }
+
+get_tipos_proyectos:
+    path: /get-tipos-proyectos
+    defaults: { _controller: App\Controller\AjaxController::getTiposProyectos }
+
+get_mis_cargos_por_nombre:
+    path: /get_mis_cargos_por_nombre
+    defaults: { _controller: App\Controller\AjaxController::getCargosPorNombre }
+
+enviar_mail:
+    path: /enviar-mail
+    defaults: { _controller: App\Controller\AjaxController::enviarMailCodigoProyecto }
+
+get_proyectos_bae:
+    path: /get-proyectos-bae
+    defaults: { _controller: App\Controller\AjaxController::getProyectosBAE }
+
+get_dictamenes_od:
+    path: /get-dictamenes-od
+    defaults: { _controller: App\Controller\AjaxController::getDictamenesOD }
+
+get_expedientes:
+    path: /get-expedientes
+    defaults: { _controller: App\Controller\AjaxController::getExpedientes }
+
+get_usuarios:
+    path: /usuarios
+    defaults: { _controller: App\Controller\AjaxController::getUsuarios }
+
+render_extracto_temario_form:
+    path: /render-extracto-temario-form
+    defaults: { _controller: App\Controller\AjaxController::renderExtractoTemarioForm }
+
+render_extracto_dictamen_form:
+    path: /render-extracto-dictamen-form
+    defaults: { _controller: App\Controller\AjaxController::renderExtractoDictamenForm }
+
+get_decretos:
+    path: /get-decretos
+    defaults: { _controller: App\Controller\AjaxController::getDecretos }
+
+form_decreto:
+    path: /form-decreto
+    defaults: { _controller: App\Controller\AjaxController::formDecreto }

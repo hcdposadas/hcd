@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Dependencias
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                {{ form_start(filter_type) }}
+                <div class="card-body">
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.nombre) }}
+
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                {{ form_end(filter_type) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('dependencia_new') }}">Nueva Dependencia</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dependencias</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Activo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for dependencium in dependencias %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('dependencia_show', { 'id': dependencium.id }) }}">{{ dependencium.id }}</a>
+                                </td>
+                                <td>{{ dependencium.nombre }}</td>
+                                <td>{% if dependencium.activo %}Si{% else %}No{% endif %}</td>
+                                <td>{% if dependencium.fechaCreacion %}{{ dependencium.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if dependencium.fechaActualizacion %}{{ dependencium.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('dependencia_show', { 'id': dependencium.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('dependencia_edit', { 'id': dependencium.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('dependencia_new') }}">Nueva Dependencia</a>
+        </div>
+    </div>
+
+
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(dependencias) }}
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

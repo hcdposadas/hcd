@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <style>
+
+        h1 {
+            font-size: 16pt;
+        }
+
+        h2 {
+            font-size: 14pt;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .logo-hcd {
+            width: 15%;
+            height: auto;
+        }
+
+        .tabla {
+            margin-top: 5%;
+            width: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td {
+            padding-top: .5em;
+            padding-bottom: .5em;
+        }
+
+        table td {
+            font-size: 10pt;
+        }
+
+        table td {
+            vertical-align: top;
+        }
+
+        table tr {
+            padding: 15px;
+        }
+
+        td.td-text-left {
+            text-align: left;
+        }
+
+        td.td-text-right {
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+<h1 class="text-center">HONORABLE CONCEJO DELIBERANTE</h1>
+
+<div class="text-center">
+    <figure>
+        <img src="{{ absolute_url(asset('uploads/sis_images/apple-touch-icon.png')) }}" alt="HCD Logo" class="logo-hcd">
+    </figure>
+</div>
+<h2 class="text-center">Municipalidad de la Ciudad de {{ ciudad_name }}</h2>
+<h2 class="text-center"><strong>PROVINCIA DE MISIONES</strong></h2>
+
+<div class="tabla">
+    <table>
+        <tr>
+            <td>EXPEDIENTE:</td>
+            <td class="td-text-left"><strong>{{ expediente.expediente }}</strong></td>
+            <td class="td-text-right">LETRA:</td>
+            <td class="td-text-left"><strong>{{ expediente.letra }}</strong></td>
+            <td class="td-text-right">FECHA:</td>
+            <td class="td-text-left"><strong>
+                    {% if expediente.fechaPresentacion %}
+                        {{ expediente.fechaPresentacion | date('d/m/Y') }}
+                    {% else %}
+                        {{ expediente.fecha | date('d/m/Y') }}
+                    {% endif %}
+                </strong></td>
+        </tr>
+        <tr>
+            <td>INICIADOR:</td>
+            <td colspan="5"><strong>
+                    {% if expediente.iniciadores.count == 1 %}
+                        {% if expediente.iniciadores.first.iniciador.cargoPersona.cargo.muestraSoloCargo %}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.cargo | upper }} DEL H.C.D.
+                        {% else %}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.cargo | upper }}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.nombre | upper }}
+                            {{ expediente.iniciadores.first.iniciador.cargoPersona.persona.apellido | upper }}
+                        {% endif %}
+                    {% elseif expediente.iniciadores.count > 1 and expediente.iniciadores.count < 3 %}
+
+                        {% set autor = null %}
+                        {% set acompaniantes = [] %}
+
+                        {% for acompaniante in expediente.iniciadores %}
+                            {% if acompaniante.autor %}
+                                {% set autor = acompaniante %}
+                            {% else %}
+                                {#{% set acompaniantes[]= acompaniante %}#}
+                                {% set acompaniantes = acompaniantes|merge([acompaniante]) %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {{ autor.iniciador.cargoPersona | upper}}.-
+                        {% for acompaniante in acompaniantes %}
+                            {{ acompaniante.iniciador.cargoPersona | upper}}.-
+                        {% endfor %}
+
+                        {#{% for iniciador in expediente.iniciadores %}#}
+                            {#{{ iniciador.iniciador.cargoPersona.cargo | upper }}#}
+                            {#{{ iniciador.iniciador.cargoPersona.persona.nombre | upper }}#}
+                            {#{{ iniciador.iniciador.cargoPersona.persona.apellido | upper }} .-#}
+                        {#{% endfor %}#}
+                    {% elseif expediente.iniciadores.count >= 3 %}
+                        CONCEJALES DEL HCD
+                    {% elseif expediente.iniciadorParticular %}
+                        {{ (expediente.iniciadorParticular.apellido ~' '~expediente.iniciadorParticular.nombre) | upper }}
+                    {% elseif expediente.dependencia %}
+                        {{ expediente.dependencia | upper }}
+                    {% endif %}
+                </strong></td>
+        </tr>
+        <tr>
+            <td>EXTRACTO:</td>
+            <td colspan="5"><strong>{{ expediente.extracto }}</strong></td>
+        </tr>
+    </table>
+</div>
+<hr>
+
+</body>
+</html>

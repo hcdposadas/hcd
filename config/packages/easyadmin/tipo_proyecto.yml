@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        TipoProyecto:
+            class: App\Entity\TipoProyecto
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'textoPorDefecto', type: 'fos_ckeditor'}
+            edit:
+                title:  'Editar Tipo Proyecto'
+            new:
+                title:  'Alta Tipo Proyecto'
+            list:
+                title:  'Tipo Proyecto'

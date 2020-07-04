@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {{ sesion.titulo }} - Log de Edición de Acta
+{% endblock %}
+
+
+{% block body %}
+    <a class="btn btn-default" href="{{ path('sesiones_cargar_acta', {'sesionId': sesion.id}) }}">Volver</a>
+    <h1>Log de Edición de Acta</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">{{ sesion.titulo }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ log.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha</th>
+                            <td>{{ log.fechaCreacion | date('d/m/Y H:i:s') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Editado por</th>
+                            <td>{{ log.creadoPor }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <br>
+                    <table class="table">
+                        <tbody>
+                        {% for campo, cambio in log.cambios %}
+                            {#{{ campo }}#}
+
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#tab_1" data-toggle="tab">Valor anterior</a></li>
+                                    <li><a href="#tab_2" data-toggle="tab">Valor nuevo</a></li>
+
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1">
+                                        {{ cambio.original | raw }}
+                                    </div>
+                                    <!-- /.tab-pane -->
+                                    <div class="tab-pane" id="tab_2">
+                                        {{ cambio.nuevo | raw }}
+                                    </div>
+
+                                </div>
+                                <!-- /.tab-content -->
+                            </div>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-default" href="{{ path('sesiones_cargar_acta', {'sesionId': sesion.id}) }}">Volver</a>
+{% endblock %}

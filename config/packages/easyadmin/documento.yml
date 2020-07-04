@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        Documento:
+            class: App\Entity\Documento
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'documentoFile', label: 'Archivo', type: 'vich_file', base_path: '%app.path.documentos%' }

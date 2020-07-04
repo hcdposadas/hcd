@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Editar dictamen
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+    <h1>Dictamen {{ dictamen.expediente }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dictamen</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_start(form) }}
+
+            <h4>Expediente</h4>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.expediente.nota) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.expediente.tipoProyecto) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.expediente.expediente) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.expediente.letra) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.expediente.periodoLegislativo) }}
+                </div>
+            </div>
+
+            <h4>Dictamen</h4>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.fecha) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.tipoProyecto) }}
+                </div>
+            </div>
+
+
+            {{ form_widget(form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
+                <i class="fa fa-print"></i> Imprimir</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+{% endblock body %}

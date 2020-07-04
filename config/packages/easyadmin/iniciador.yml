@@ -1,0 +1,7 @@
+easy_admin:
+    entities:
+        Iniciador:
+            class: App\Entity\Iniciador
+            form:
+                fields:
+                    - { property: 'cargoPersona' }

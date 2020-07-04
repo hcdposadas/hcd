@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Etiqueta</title>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .row::after, .row::before {
+        display: table;
+        content: " ";
+    }
+
+    .row:after {
+        clear: both;
+    }
+
+    .row {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .col-md-6 {
+        width: 50%;
+        float: left;
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+
+    }
+
+</style>
+<body>
+<div class="row">
+    <div class="col-md-6"
+         style="font-size: 11px;text-align: center; font-weight: bold;font-family: Tahoma; margin-top: 2rem;">
+        <b>{{ expediente.expediente }}-{{ expediente.letra | upper }}-{{ expediente.periodoLegislativo.anio }}</b>
+        {#99999-C-2018#}
+    </div>
+    <div class="col-md-6" style="margin-top: 0.5rem;">
+        <img style="max-width: 100%; height: auto;"
+             src="{{ qr_code_data_uri(expediente.codigoReferencia, { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}"/>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Proyecto en sesión
+{% endblock title %}
+{% block body %}
+    <h1>Editar Proyecto en sesión</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Expediente {{ proyectoBAE.expediente }}</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            {{ form_end(edit_form) }}
+
+            {% if is_granted('ROLE_LEGISLATIVO_ADMIN') and proyectoBAE.incorporadoEnSesion %}
+                <div class="row text-right">
+                    <div class="col-md-12">
+                        {{ form_start(delete_form) }}
+                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                        {{ form_end(delete_form) }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('proyectobae_index') }}">Volver</a>
+
+
+{% endblock %}

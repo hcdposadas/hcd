@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Orden de pago</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Orden de Pago
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <dl class="dl-horizontal">
+                        <dt>ID</dt>
+                        <dd>{{ ordenDePago.id }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Número</dt>
+                        <dd>{{ ordenDePago.numero }}/{{ ordenDePago.periodoLegislativo }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Estante/Caja</dt>
+                        <dd>{{ ordenDePago.numeroEstante }}/{{ ordenDePago.numeroCaja }} </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha de Rendición</dt>
+                        <dd>{% for fechaRendicion in ordenDePago.fechaRendicion %}
+                                {{ fechaRendicion.fecha|date('d/m/Y') }}
+                                {% if fechaRendicion.ordenDePagoSrc %}
+                                    - <a href="{{ vich_uploader_asset(fechaRendicion, 'ordenDePagoFile') }}" target="_blank">
+                                        Ver
+                                    </a>
+                                {% endif %} <br>
+                            {% endfor %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Tipo</dt>
+                        <dd>{{ ordenDePago.tipoOrdenPago }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Decreto</dt>
+                        <dd>{{ ordenDePago.decreto }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Folios</dt>
+                        <dd>{{ ordenDePago.folios }}</dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Archivo</dt>
+                        <dd>
+                            {% if ordenDePago.ordenDePago %}
+                                <a href="{{ vich_uploader_asset(ordenDePago, 'ordenDePagoFile') }}" target="_blank">
+                                    Ver
+                                </a>
+                            {% endif %}
+                        </dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Activo</dt>
+                        <dd>{% if ordenDePago.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                    class="label label-danger">No</span>{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha creación</dt>
+                        <dd>{% if ordenDePago.fechaCreacion %}{{ ordenDePago.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha actualización</dt>
+                        <dd>{% if ordenDePago.fechaActualizacion %}{{ ordenDePago.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Creado Por</dt>
+                        <dd>
+                            {{ ordenDePago.creadoPor }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Actualizado Por</dt>
+                        <dd>
+                            {{ ordenDePago.actualizadoPor }}
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary"
+                       href="{{ path('orden_de_pago_edit', { 'id': ordenDePago.id }) }}">Editar</a>
+
+                </div>
+
+            </div>
+            <a class="btn btn-default" href="{{ path('orden_de_pago_index') }}">Volver</a>
+
+
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

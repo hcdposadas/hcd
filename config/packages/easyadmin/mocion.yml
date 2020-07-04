@@ -1,0 +1,17 @@
+easy_admin:
+    entities:
+        Mocion:
+            class: App\Entity\Mocion
+            disabled_actions: ['new']
+            list:
+                fields: ['id', 'sesion', 'numero', 'texto', 'aprobado', 'cuentaTotal', 'cuentaAfirmativos', 'cuentaNegativos', 'cuentaAbstenciones' ]
+#                actions: [ { name: 'eliminarMocion', color: 'danger', icon: 'trash', label: '' } ]
+            form:
+                fields:
+                    - { property: 'texto' }
+                    - { property: 'numero' }
+                    - { property: 'cuentaTotal' }
+                    - { property: 'cuentaAfirmativos' }
+                    - { property: 'cuentaNegativos' }
+                    - { property: 'cuentaAbstenciones' }
+#                    - { property: 'votos', type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\VotoType } }

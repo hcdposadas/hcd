@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Textos definitivos
+{% endblock title %}
+{% block body %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools float-right">
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                {{ form_start(filter_type) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.aprobadoEnSesion) }}
+
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.rama) }}
+                            {{ form_row(filter_type.numero) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="d-none">
+                    {{ form_end(filter_type) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Textos definitivos</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Expediente</th>
+                            <th>Numero</th>
+                            <th>Aprobado en Sesión</th>
+                            <th>Activo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for textoDefinitivo in textoDefinitivos %}
+                            <tr>
+                                <td>{{ textoDefinitivo.dictamen }}</td>
+                                <td>{{ textoDefinitivo.numero }}</td>
+                                <td>{{ textoDefinitivo.aprobadoEnSesion }}</td>
+                                <td>{% if textoDefinitivo.activo %}Si{% else %}No{% endif %}</td>
+                                <td>{% if textoDefinitivo.fechaCreacion %}{{ textoDefinitivo.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if textoDefinitivo.fechaActualizacion %}{{ textoDefinitivo.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('texto_definitivo_show', { 'id': textoDefinitivo.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(textoDefinitivos) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

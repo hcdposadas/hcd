@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Incorporar a Sesión
+{% endblock title %}
+{% block body %}
+    <h1>Incorporar a Sesión</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dictamen {{ dictamen }}</h3>
+        </div>
+        <div class="card-body">
+
+            <h3>Sesiones</h3>
+            <ul>
+                {% for od in dictamenEnSesiones %}
+                    <li>{{ od.ordenDelDia.sesion }} -
+                        ({{ od.ordenDelDia.sesion.fecha | date('d/m/Y') }})
+
+                        {% if od.incorporadoEnSesion %}
+
+                                <i class="fa fa-info-circle" data-toggle="tooltip" title="Creado el {{ od.fechaCreacion | date('d/m/Y') }}"></i>
+
+                        {% endif %}
+                        <a class="btn btn-default"
+                           href="{{ path('dictamenod_edit' ,{'id': od.id}) }}"><i
+                                    class="fa fa-edit"></i>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <br>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+
+{% endblock %}

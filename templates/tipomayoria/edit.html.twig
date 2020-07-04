@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Tipo mayoría
+{% endblock title %}
+{% block body %}
+    <h1>Editar Tipo mayoría</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Tipo mayoría</h3>
+        </div>
+        <div class="card-body">
+
+        {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar" />
+        {{ form_end(edit_form) }}
+        </div>
+    </div>
+
+<a class="btn btn-default" href="{{ path('tipomayoria_index') }}">Volver</a>
+
+    {{ form_start(delete_form) }}
+        <input class="btn btn-danger" type="submit" value="Eliminar">
+    {{ form_end(delete_form) }}
+
+{% endblock %}

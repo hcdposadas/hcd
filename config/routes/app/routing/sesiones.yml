@@ -1,0 +1,75 @@
+sesiones_index:
+    path: /index
+    defaults: { _controller: App\Controller\SesionController::indexSesiones }
+
+sesiones_ver:
+    path: /{id}/ver
+    defaults: { _controller: App\Controller\SesionController::verSesion }
+
+sesiones_conformar_plan_de_labor_index:
+    path: /conformar-plan-de-labor-index
+    defaults: { _controller: App\Controller\SesionController::conformarPlanDeLaborIndex }
+
+sesiones_asignar_proyectos_a_bae:
+    path: /{sesionId}/asignar-proyectos-a-bae
+    defaults: { _controller: App\Controller\SesionController::asignarProyectosABAE }
+
+sesiones_asignar_dictamenes_a_od:
+    path: /{sesionId}/asignar-dictamenes-a-od
+    defaults: { _controller: App\Controller\SesionController::asignarDictamenesAOD }
+
+sesiones_conformar_plan_de_labor_cerrar:
+    path: /{sesionId}/conformar-plan-de-labor-confirmar
+    defaults: { _controller: App\Controller\SesionController::conformarPlanDeLaborConfirmar }
+
+sesiones_imprimir_boletin_asuntos_entrados:
+    path: /{sesionId}/imprimir-boletin-asuntos-entrados
+    defaults: { _controller: App\Controller\SesionController::imprimirBAE }
+
+sesiones_imprimir_orden_del_dia:
+    path: /{sesionId}/imprimir-orden-del-dia
+    defaults: { _controller: App\Controller\SesionController::imprimirOD }
+
+sesiones_cargar_acta:
+    path: /{sesionId}/cargar-acta
+    defaults: { _controller: App\Controller\SesionController::cargarActa }
+
+sesiones_show_log_cambios_acta:
+    path:     /{sesion}/log-cambios-acta/{log}
+    defaults: { _controller: App\Controller\SesionController::verCambiosActa }
+    methods:  [GET]
+
+sesiones_imprimir_acta:
+    path: /{sesionId}/imprimir-acta
+    defaults: { _controller: App\Controller\SesionController::imprimirActa }
+
+editar_extracto_bae:
+    path:     /editar-extracto-bae/{expediente}
+    defaults: { _controller: App\Controller\SesionController::editarExtractoBAE }
+    methods:  [GET, POST]
+
+editar_extracto_od:
+    path:     /editar-extracto-od/{expediente}
+    defaults: { _controller: App\Controller\SesionController::editarExtractoOD }
+    methods:  [GET, POST]
+
+proyecto_bae_giro:
+    path:     /proyecto-bae-giro/{expediente}
+    defaults: { _controller: App\Controller\SesionController::proyectoBaeGiro }
+    methods:  [GET, POST]
+
+sesiones_cargar_homenaje:
+    path: /{sesionId}/cargar-homenaje
+    defaults: { _controller: App\Controller\SesionController::cargarHomenaje }
+
+sesiones_imprimir_homenajes:
+  path: /{sesionId}/imprimir-homenajes
+  defaults: { _controller: App\Controller\SesionController::imprimirHomenajes }
+
+sesiones_ver_mociones:
+    path: /{id}/ver-mociones
+    defaults: { _controller: App\Controller\SesionController::verMociones }
+
+sesiones_imprimir_mociones:
+    path: /{id}/imprimir-mociones
+    defaults: { _controller: App\Controller\SesionController::imprimirMociones }

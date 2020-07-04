@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Personas
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Personas</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Dni</th>
+                            <th>Activo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for persona in personas %}
+                            <tr>
+                                <td><a href="{{ path('persona_show', { 'id': persona.id }) }}">{{ persona.id }}</a></td>
+                                <td>{{ persona.nombre }}</td>
+                                <td>{{ persona.apellido }}</td>
+                                <td>{{ persona.dni }}</td>
+                                <td>{% if persona.activo %}Si{% else %}No{% endif %}</td>
+                                <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('persona_show', { 'id': persona.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+            {{ knp_pagination_render(personas) }}
+        </div>
+    </div>
+
+    <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
+{% endblock %}

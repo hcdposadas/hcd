@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        Bloque:
+            class: App\Entity\Bloque
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }

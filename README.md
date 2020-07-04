@@ -6,12 +6,18 @@ A Symfony project created on April 3, 2017, 4:21 pm.
 Prerequisitos
 ==
 
-- apache2
+- apache2/nginx
 - postgres
-- php7
+- php7.4+
 - composer
-- npm
+- node 10
 - redis
+- pm2
+
+Parámetros:
+=
+
+Se debe configurar el archivo `.env.local` con los parámetros correspondientes a cada organismo
 
 Para la sesión:
 =

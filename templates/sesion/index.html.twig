@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Sesión HCD</title>
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('css/admin-lte') }}
+    {% endblock %}
+    {{ encore_entry_link_tags('main') }}
+    {{ encore_entry_script_tags('admin-lte') }}
+    <style>
+        .navbar-primary{
+            background-color: {{ app_color }} !important;
+        }
+    </style>
+    <script>
+        window.user = {id: {{ app.user.id }} };
+    </script>
+</head>
+<body class="hold-transition layout-top-nav">
+<div class="wrapper" id="app">
+    {#modal#}
+    <div id="modal-dictamen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+         aria-labelledby="modal-dictamen">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Expte
+                </div>
+                <div class="modal-body">
+                    <div class="cuerpo">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {#modal#}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">
+                            {% if is_granted('ROLE_CONCEJAL') %}
+                                Concejal {{ concejal }}
+                            {% endif %}
+                        </h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            {{ sesion.fecha |format_datetime(locale='es', pattern="d 'de' MMMM Y") }}
+                            - {{ sesion.titulo }}
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="container">
+                {% if is_granted('ROLE_CONCEJAL') %}
+                    <div id="app">
+                        <panel-concejal path-logout="{{ path('sesion_logout') }}"
+                                        path-carta-organica="{{ asset('uploads/documentos/') ~ cartaOrganica.documento }}"
+                                        concejal="{{ concejal }}">
+                        </panel-concejal>
+
+                        <mini-display logo-src="{{ asset('uploads/sis_images/logo-269x269.png') }}"></mini-display>
+
+                        {% if app.user.id == id_usuario_presidente %}
+                            <lista-pedir-palabra leave-space="true"></lista-pedir-palabra>
+                        {% else %}
+                            <pedir-palabra></pedir-palabra>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+{% block javascripts %}
+    {{ encore_entry_script_tags('main') }}
+{% endblock %}
+<script>
+    $(document).ready(function () {
+        $(document).ajaxStop($.unblockUI);
+    });
+</script>
+
+
+</body>
+</html>

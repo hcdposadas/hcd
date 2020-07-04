@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Listado de dictámenes
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                {{ form_start(filter_type) }}
+                <div class="card-body">
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.expediente) }}
+
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                {{ form_end(filter_type) }}
+            </div>
+        </div>
+    </div>
+    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
+                <a class="btn btn-primary" href="{{ path('dictamen_asignar_a_expte') }}"> Nuevo a Partir de
+                    Expediente</a>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dictámenes</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Dictamen de</th>
+                            <th>Expediente</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for dictamen in dictamenes %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">{{ dictamen.id }}</a>
+                                </td>
+                                <td>
+                                    {{ dictamen.tipoProyecto }}
+                                </td>
+                                <td>
+                                    {{ dictamen.expediente }}
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"
+                                       href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Dictamen"
+                                           href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Asingar Texto Definitivo"
+                                           href="{{ path('texto_definitivo_asignar', { 'dictamen': dictamen.id }) }}">
+                                            <i class="fa fa-file"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Dictamen Incorporado en Sesión"
+                                           href="{{ path('dictamenod_incorporar_a_sesion', {'dictamen': dictamen.id }) }}">
+                                            <i class="fa fa-caret-square-o-right"></i> IES
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% if is_granted('ROLE_LEGISLATIVO') %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(dictamenes) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

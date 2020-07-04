@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Giro Legislativo
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    <h1>Expediente {{ expediente }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Giro a Comisión</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-6">
+                    {% if expediente.giros.count > 0 %}
+                        <h3>Giros a Comisiones</h3>
+                        {% for giro in expediente.giros %}
+                            {{ giro.fechaGiro | date ('d/m/Y') }} - {{ giro.comisionDestino }}<br>
+                        {% endfor %}
+                    {% endif %}
+                    {% if girosBae | length > 0 %}
+                        {% for giro in girosBae %}
+                            {% for itemGiro in giro.giros %}
+                                {{ itemGiro.fechaGiro | date ('d/m/Y') }} - {{ itemGiro.comisionDestino }}<br>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label>Aprobado en Sesión:</label> {{ expediente.sesionNumero }}
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    {% if expediente.giroAdministrativos.count > 0 %}
+                        <h3>Giros Administrativos</h3>
+                        {% for giroAdministrativo in expediente.giroAdministrativos %}
+                            {{ giroAdministrativo.fechaGiro | date ('d/m/Y') }} - {{ giroAdministrativo.areaDestino }} - {{ giroAdministrativo.texto }}
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="m-b-5"></div>
+
+            {{ form_start(form) }}
+
+            {{ form_widget(form) }}
+
+            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
+            <div class="d-none">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+{% endblock body %}

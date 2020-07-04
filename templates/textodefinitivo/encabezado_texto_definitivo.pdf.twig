@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<style>
+    .row::after, .row::before {
+        display: table;
+        content: " ";
+    }
+
+    .row:after {
+        clear: both;
+    }
+
+    .row {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .col {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    h1 {
+        font-size: 14pt
+    }
+
+    h2 {
+        font-size: 12pt
+    }
+
+    h3 {
+        font-size: 10pt
+    }
+
+    .exptes-adjuntos {
+        line-height: 20px;
+
+    }
+
+    .exptes-adjuntos span {
+        white-space: nowrap;
+    }
+</style>
+<body>
+<div style="margin: 0;">
+    <div class="row">
+        <div class="col" style="float: left; text-align: center; margin-left: 20%">
+            <img style="max-width: 100%; height: auto; height: 5cm"
+                 src="{{ absolute_url(asset('uploads/sis_images/encabezado-texto-definitivo.png')) }}"
+                 alt="encabezado texto definitivo">
+
+        </div>
+
+        {% if textoDefinitivo.dictamen %}
+            <div class="col" style="float: right; text-align: center;margin-right: 20%; max-width: 5cm">
+                <h2>
+                    EXPTE. Nº {{ textoDefinitivo.dictamen.expediente }}
+                </h2>
+                <h2>
+                    de fecha {{ textoDefinitivo.dictamen.fecha | date('d-m-y') }}
+                </h2>
+                {% if textoDefinitivo.expedientesAdjuntos.count > 0 %}
+                    <h3 class="exptes-adjuntos">
+                        Expte. Adjto. N° {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos %}
+                            <span>{{ expedienteAdjunto.expediente }}</span>
+                        {% endfor %}
+                    </h3>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+</body>
+</html>

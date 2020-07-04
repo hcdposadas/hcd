@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Tipo de Mayorías
+{% endblock title %}
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Tipo de Mayorías</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped data-table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tipoMayoria in tipoMayorias %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('tipomayoria_show', { 'id': tipoMayoria.id }) }}">{{ tipoMayoria.id }}</a>
+                        </td>
+                        <td>{{ tipoMayoria.nombre }}</td>
+                        <td>
+                            <a class="btn btn-default" href="{{ path('tipomayoria_show', { 'id': tipoMayoria.id }) }}">
+                                <i class="fa fa-show"></i>
+                            </a>
+                            <a class="btn btn-default" href="{{ path('tipomayoria_edit', { 'id': tipoMayoria.id }) }}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" href="{{ path('tipomayoria_new') }}">Nuevo Tipo de Mayoría</a>
+{% endblock %}

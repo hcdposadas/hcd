@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Tipo Mayoría</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tipoMayorium.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ tipoMayorium.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{% if tipoMayorium.activo %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechacreacion</th>
+                <td>{% if tipoMayorium.fechaCreacion %}{{ tipoMayorium.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Fechaactualizacion</th>
+                <td>{% if tipoMayorium.fechaActualizacion %}{{ tipoMayorium.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<a class="btn btn-default" href="{{ path('tipomayoria_index') }}">Volver</a>
+
+    <a class="btn btn-default" href="{{ path('tipomayoria_edit', { 'id': tipoMayorium.id }) }}">Editar</a>
+
+    {{ form_start(delete_form) }}
+        <input class="btn btn-danger" type="submit" value="Eliminar">
+    {{ form_end(delete_form) }}
+
+{% endblock %}

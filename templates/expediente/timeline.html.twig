@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Seguimiento Expediente
+{% endblock title %}
+
+{% block contentHeader %}
+    <section class="content-header">
+        <h1>
+            Expediente {{ expediente }}
+            <small>Seguimientos</small>
+        </h1>
+    </section>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="timeline">
+                <div class="time-label">
+                    <span class="bg-red">
+                            {{ expediente.fecha | date('d/m/Y') }}
+                        </span>
+                </div>
+                    {% for giroAdministrativo in expediente.giroAdministrativos %}
+                <div>
+                    <i class="fa fa-map-signs bg-blue"></i>
+
+                    <div class="timeline-item">
+                                <span class="time"><i
+                                            class="fa fa-clock-o"></i> {{ giroAdministrativo.fechaGiro | date('d/m/Y') }}</span>
+                        <h3 class="timeline-header">
+                            <a>{{ giroAdministrativo.areaDestino }}</a> {{ giroAdministrativo.texto }}</h3>
+                        {% if is_granted('ROLE_MESA_ENTRADA') %}
+                            <div class="timeline-footer">
+                                <a class="btn btn-default btn-xs" target="_blank"
+                                   href="{{ path('expediente_imprimir_giro', {id: expediente.id, giroId: giroAdministrativo.id, tipoExpediente: 'administrativo'}) }}">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% for giro in expediente.giros %}
+                    <div>
+                        <i class="fa fa-map-signs bg-blue"></i>
+
+                        <div class="timeline-item">
+                            <span class="time">
+                                <i class="fa fa-clock-o"></i> {{ giro.fechaGiro | date('d/m/Y') }}
+                            </span>
+                            <h3 class="timeline-header"><a>{{ giro.comisionDestino }}</a> {{ giro.texto }}</h3>
+
+                            {% if is_granted('ROLE_MESA_ENTRADA') %}
+                                <div class="timeline-footer">
+                                    <a class="btn btn-default btn-xs" target="_blank"
+                                       href="{{ path('expediente_imprimir_giro', {id: expediente.id, giroId: giro.id, tipoExpediente: 'legislativo'}) }}">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if girosBae | length > 0 %}
+                    {% for giroBae in girosBae %}
+                        {% for giro in giroBae.giros %}
+                            <div>
+                                <i class="fa fa-map-signs bg-blue"></i>
+
+                                <div class="timeline-item">
+                            <span class="time">
+                                <i class="fa fa-clock-o"></i> {{ giro.fechaGiro | date('d/m/Y') }}
+                            </span>
+                                    <h3 class="timeline-header"><a>{{ giro.comisionDestino }}</a> {{ giro.texto }}
+                                        {% if giroBae.boletinAsuntoEntrado %}
+                                            ({{ giroBae.boletinAsuntoEntrado.sesion }} - {{ giroBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }})
+                                        {% endif %}
+                                    </h3>
+
+                                    {% if is_granted('ROLE_MESA_ENTRADA') %}
+                                        <div class="timeline-footer">
+                                            <a class="btn btn-default btn-xs" target="_blank"
+                                               href="{{ path('expediente_imprimir_giro', {id: expediente.id, giroId: giro.id, tipoExpediente: 'legislativo'}) }}">
+                                                <i class="fas fa-print"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+        <!-- /.col -->
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% if referer is defined %}
+                <a href="{{ referer }}" class="btn btn-default">Volver</a>
+            {% else %}
+                <a href="{{ path('expediente_index') }}" class="btn btn-default">Volver</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

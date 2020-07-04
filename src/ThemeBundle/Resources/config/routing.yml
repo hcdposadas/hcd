@@ -1,3 +1,0 @@
-theme_homepage:
-    path:     /
-    defaults: { _controller: ThemeBundle:Default:index }

@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        TipoExpediente:
+            class: App\Entity\TipoExpediente
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+            edit:
+                title:  'Editar Tipo Expediente'
+            new:
+                title:  'Alta Tipo Expediente'
+            list:
+                title:  'Tipo Expediente'

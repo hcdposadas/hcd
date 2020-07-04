@@ -1,40 +1,46 @@
-/app/config/parameters.yml
-/build/
-/node_modules/
-/phpunit.xml
-/var/*
-!/var/cache
-/var/cache/*
-!var/cache/.gitkeep
-!/var/logs
-/var/logs/*
-!var/logs/.gitkeep
-!/var/sessions
-/var/sessions/*
-!var/sessions/.gitkeep
-!var/SymfonyRequirements.php
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
 /vendor/
-/web/bundles/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/webpack-encore-bundle ###
 /node_modules/
-env.json
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###
 
 # -- uploads
-/web/uploads/expedientes/internos/*
-!web/uploads/expedientes/internos/.gitkeep
-/web/uploads/expedientes/externos/*
-!web/uploads/expedientes/externos/.gitkeep
-/web/uploads/documentos/*
-!web/uploads/documentos/.gitkeep
-/web/uploads/varios/*
-!web/uploads/varios/.gitkeep
-/web/uploads/expedientes/anexos/*
-!web/uploads/expedientes/anexos/.gitkeep
-/web/uploads/dictamenes/anexos/*
-!web/uploads/dictamenes/anexos/.gitkeep
-/web/uploads/ordenes_de_pago/*
-!web/uploads/ordenes_de_pago/.gitkeep
-/web/uploads/textos_definitivos/anexos/*
-!web/uploads/textos_definitivos/anexos/.gitkeep
+/public/uploads/expedientes/internos/*
+!public/uploads/expedientes/internos/.gitkeep
+/public/uploads/expedientes/externos/*
+!public/uploads/expedientes/externos/.gitkeep
+/public/uploads/documentos/*
+!public/uploads/documentos/.gitkeep
+/public/uploads/varios/*
+!public/uploads/varios/.gitkeep
+/public/uploads/expedientes/anexos/*
+!public/uploads/expedientes/anexos/.gitkeep
+/public/uploads/dictamenes/anexos/*
+!public/uploads/dictamenes/anexos/.gitkeep
+/public/uploads/ordenes_de_pago/*
+!public/uploads/ordenes_de_pago/.gitkeep
+/public/uploads/textos_definitivos/anexos/*
+!public/uploads/textos_definitivos/anexos/.gitkeep
+/public/uploads/sis_images/*
+!public/uploads/sis_images/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim

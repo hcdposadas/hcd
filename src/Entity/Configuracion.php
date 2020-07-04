@@ -207,7 +207,7 @@ class Configuracion extends BaseClass {
 	 * @return File|null
 	 */
 	public function getLogo32File() {
-		return $this->logo16File;
+		return $this->logo32File;
 	}
 
 	/**

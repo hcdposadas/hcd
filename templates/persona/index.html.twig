@@ -4,7 +4,7 @@
     Personas
 {% endblock title %}
 {% block body %}
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-md-3">
             <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
         </div>
@@ -46,6 +46,12 @@
                                     <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
+                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}">
+                                        <i class="fas fa-poll-h"></i>
+                                    </a>
+                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}">
+                                        <i class="fas fa-umbrella-beach"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -62,5 +68,9 @@
         </div>
     </div>
 
-    <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
+        </div>
+    </div>
 {% endblock %}

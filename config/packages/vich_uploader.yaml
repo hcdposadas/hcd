@@ -33,3 +33,6 @@ vich_uploader:
         sis_images:
             uri_prefix: "%app.path.sis_images%"
             upload_destination: "%kernel.project_dir%/public/uploads/sis_images"
+        rrhh_novedad:
+            uri_prefix: "%app.path.rrhh_novedad%"
+            upload_destination: "%kernel.project_dir%/public/uploads/rrhh/novedades"

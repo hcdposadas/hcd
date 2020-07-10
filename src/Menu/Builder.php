@@ -162,9 +162,9 @@ class Builder {
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_PERSONAL' ) ) {
+		if ( $this->authorizationChecker->isGranted( 'ROLE_RRHH' ) ) {
 
-			$keyPersonal = 'PERSONAL';
+			$keyPersonal = 'Recursos Humanos';
 			$menu->addChild(
 				$keyPersonal,
 				array(

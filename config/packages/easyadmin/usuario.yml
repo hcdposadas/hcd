@@ -22,7 +22,6 @@ easy_admin:
                           'ROLE_CONCEJAL': 'ROLE_CONCEJAL',
                           'ROLE_SECRETARIO': 'ROLE_SECRETARIO',
                           'ROLE_MESA_ENTRADA': 'ROLE_MESA_ENTRADA',
-                          'ROLE_PERSONAL': 'ROLE_PERSONAL',
                           'ROLE_LEGISLATIVO': 'ROLE_LEGISLATIVO',
                           'ROLE_LEGISLATIVO_ADMIN': 'ROLE_LEGISLATIVO_ADMIN',
                           'ROLE_DEFENSOR': 'ROLE_DEFENSOR',
@@ -30,6 +29,8 @@ easy_admin:
                           'ROLE_PROSECRETARIO_LEGISLATIVO': 'ROLE_PROSECRETARIO_LEGISLATIVO',
                           'ROLE_CEREMONIAL': 'ROLE_CEREMONIAL',
                           'ROLE_ADMINISTRACION': 'ROLE_ADMINISTRACION',
+                          'ROLE_RRHH': 'ROLE_RRHH',
+                          'ROLE_RRHH_ADMIN': 'ROLE_RRHH_ADMIN',
                         }
                       }
                       }

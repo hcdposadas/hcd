@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Base\BaseClass;
 
@@ -35,14 +37,6 @@ class Legajo extends BaseClass {
 	 */
 	private $numeroTarjeta;
 
-
-	/**
-	 * @var string
-	 *
-	 * @ORM\Column(name="situacion_revista", type="string", length=255)
-	 */
-	private $situacionRevista;
-
 	/**
 	 * @var string
 	 *
@@ -66,18 +60,25 @@ class Legajo extends BaseClass {
 	private $fechaIngreso;
 
 	/**
-	 * @var string
-	 *
-	 * @ORM\Column(name="tratamiento", type="string", length=255, nullable=true)
+	 * @ORM\OneToMany(targetEntity=PersonalNovedad::class, mappedBy="legajo", orphanRemoval=true)
 	 */
-	private $tratamiento;
+	private $personalNovedads;
 
 	/**
-	 * @var string
-	 *
-	 * @ORM\Column(name="profesion", type="string", length=255, nullable=true)
+	 * @ORM\OneToMany(targetEntity=PersonalAsistencia::class, mappedBy="legajo", orphanRemoval=true)
 	 */
-	private $profesion;
+	private $personalAsistencias;
+
+	/**
+	 * @ORM\OneToMany(targetEntity=PersonalDeclaracionJurada::class, mappedBy="legajo", orphanRemoval=true)
+	 */
+	private $personalDeclaracionJuradas;
+
+	public function __construct() {
+		$this->personalNovedads           = new ArrayCollection();
+		$this->personalAsistencias        = new ArrayCollection();
+		$this->personalDeclaracionJuradas = new ArrayCollection();
+	}
 
 	/**
 	 * Get id
@@ -132,27 +133,6 @@ class Legajo extends BaseClass {
 		return $this->numeroTarjeta;
 	}
 
-	/**
-	 * Set situacionRevista
-	 *
-	 * @param string $situacionRevista
-	 *
-	 * @return Legajo
-	 */
-	public function setSituacionRevista( $situacionRevista ) {
-		$this->situacionRevista = $situacionRevista;
-
-		return $this;
-	}
-
-	/**
-	 * Get situacionRevista
-	 *
-	 * @return string
-	 */
-	public function getSituacionRevista() {
-		return $this->situacionRevista;
-	}
 
 	/**
 	 * Set observaciones
@@ -250,75 +230,109 @@ class Legajo extends BaseClass {
 		return $this->persona;
 	}
 
-    /**
-     * Set fechaIngreso
-     *
-     * @param \DateTime $fechaIngreso
-     *
-     * @return Legajo
-     */
-    public function setFechaIngreso($fechaIngreso)
-    {
-        $this->fechaIngreso = $fechaIngreso;
+	/**
+	 * Set fechaIngreso
+	 *
+	 * @param \DateTime $fechaIngreso
+	 *
+	 * @return Legajo
+	 */
+	public function setFechaIngreso( $fechaIngreso ) {
+		$this->fechaIngreso = $fechaIngreso;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get fechaIngreso
-     *
-     * @return \DateTime
-     */
-    public function getFechaIngreso()
-    {
-        return $this->fechaIngreso;
-    }
+	/**
+	 * Get fechaIngreso
+	 *
+	 * @return \DateTime
+	 */
+	public function getFechaIngreso() {
+		return $this->fechaIngreso;
+	}
 
-    /**
-     * Set tratamiento
-     *
-     * @param string $tratamiento
-     *
-     * @return Legajo
-     */
-    public function setTratamiento($tratamiento)
-    {
-        $this->tratamiento = $tratamiento;
+	/**
+	 * @return Collection|PersonalNovedad[]
+	 */
+	public function getPersonalNovedads(): Collection {
+		return $this->personalNovedads;
+	}
 
-        return $this;
-    }
+	public function addPersonalNovedad( PersonalNovedad $personalNovedad ): self {
+		if ( ! $this->personalNovedads->contains( $personalNovedad ) ) {
+			$this->personalNovedads[] = $personalNovedad;
+			$personalNovedad->setLegajo( $this );
+		}
 
-    /**
-     * Get tratamiento
-     *
-     * @return string
-     */
-    public function getTratamiento()
-    {
-        return $this->tratamiento;
-    }
+		return $this;
+	}
 
-    /**
-     * Set profesion
-     *
-     * @param string $profesion
-     *
-     * @return Legajo
-     */
-    public function setProfesion($profesion)
-    {
-        $this->profesion = $profesion;
+	public function removePersonalNovedad( PersonalNovedad $personalNovedad ): self {
+		if ( $this->personalNovedads->contains( $personalNovedad ) ) {
+			$this->personalNovedads->removeElement( $personalNovedad );
+			// set the owning side to null (unless already changed)
+			if ( $personalNovedad->getLegajo() === $this ) {
+				$personalNovedad->setLegajo( null );
+			}
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get profesion
-     *
-     * @return string
-     */
-    public function getProfesion()
-    {
-        return $this->profesion;
-    }
+	/**
+	 * @return Collection|PersonalAsistencia[]
+	 */
+	public function getPersonalAsistencias(): Collection {
+		return $this->personalAsistencias;
+	}
+
+	public function addPersonalAsistencia( PersonalAsistencia $personalAsistencia ): self {
+		if ( ! $this->personalAsistencias->contains( $personalAsistencia ) ) {
+			$this->personalAsistencias[] = $personalAsistencia;
+			$personalAsistencia->setLegajo( $this );
+		}
+
+		return $this;
+	}
+
+	public function removePersonalAsistencia( PersonalAsistencia $personalAsistencia ): self {
+		if ( $this->personalAsistencias->contains( $personalAsistencia ) ) {
+			$this->personalAsistencias->removeElement( $personalAsistencia );
+			// set the owning side to null (unless already changed)
+			if ( $personalAsistencia->getLegajo() === $this ) {
+				$personalAsistencia->setLegajo( null );
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection|PersonalDeclaracionJurada[]
+	 */
+	public function getPersonalDeclaracionJuradas(): Collection {
+		return $this->personalDeclaracionJuradas;
+	}
+
+	public function addPersonalDeclaracionJurada( PersonalDeclaracionJurada $personalDeclaracionJurada ): self {
+		if ( ! $this->personalDeclaracionJuradas->contains( $personalDeclaracionJurada ) ) {
+			$this->personalDeclaracionJuradas[] = $personalDeclaracionJurada;
+			$personalDeclaracionJurada->setLegajo( $this );
+		}
+
+		return $this;
+	}
+
+	public function removePersonalDeclaracionJurada( PersonalDeclaracionJurada $personalDeclaracionJurada ): self {
+		if ( $this->personalDeclaracionJuradas->contains( $personalDeclaracionJurada ) ) {
+			$this->personalDeclaracionJuradas->removeElement( $personalDeclaracionJurada );
+			// set the owning side to null (unless already changed)
+			if ( $personalDeclaracionJurada->getLegajo() === $this ) {
+				$personalDeclaracionJurada->setLegajo( null );
+			}
+		}
+
+		return $this;
+	}
 }

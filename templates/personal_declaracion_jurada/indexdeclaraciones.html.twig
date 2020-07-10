@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ persona }} - DDJJ{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Declaraciones Juradas</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+
+                            <th>Año</th>
+                            <th>Situación Revista</th>
+                            <th>Fecha Presentación</th>
+                            <th>Estado Civil</th>
+                            <th>Categoría</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for personal_declaracion_jurada in personal_declaraciones_juradas %}
+                            <tr>
+
+                                <td>{{ personal_declaracion_jurada.anio }}</td>
+                                <td>{{ personal_declaracion_jurada.situacionRevista }}</td>
+                                <td>{{ personal_declaracion_jurada.fechaPresentacion ? personal_declaracion_jurada.fechaPresentacion|date('d/m/Y') : '' }}</td>
+                                <td>{{ personal_declaracion_jurada.estadoCivil }}</td>
+                                <td>{{ personal_declaracion_jurada.categoria }}</td>
+                                <td>{{ personal_declaracion_jurada.fechaCreacion ? personal_declaracion_jurada.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                                <td>{{ personal_declaracion_jurada.fechaActualizacion ? personal_declaracion_jurada.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('personal_declaracion_jurada_show', {'id': personal_declaracion_jurada.id}) }}"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-default" href="{{ path('personal_declaracion_jurada_editar', {'id': personal_declaracion_jurada.id}) }}"><i class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No se encontraron declaraciones</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" href="{{ path('personal_declaracion_jurada_nueva', {'persona': persona.id }) }}">Nueva
+        DDJJ</a>
+{% endblock %}

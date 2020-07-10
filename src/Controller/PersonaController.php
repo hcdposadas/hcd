@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Persona;
+use App\Form\PersonalType;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,7 +19,7 @@ class PersonaController extends AbstractController {
 	 * Lists all persona entities.
 	 *
 	 */
-	public function index(PaginatorInterface $paginator, Request $request ) {
+	public function index( PaginatorInterface $paginator, Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
 
@@ -28,10 +29,10 @@ class PersonaController extends AbstractController {
 //			$filterType->submit( $request->query->get( $filterType->getName() ) );
 //		}
 
-		$personas = $em->getRepository( 'AppBundle:Persona' )->getQbAll();
+		$personas = $em->getRepository( Persona::class )->getQbAll();
 
-		
-		$personas  = $paginator->paginate(
+
+		$personas = $paginator->paginate(
 			$personas,
 			$request->query->get( 'page', 1 )/* page number */,
 			10/* limit per page */
@@ -49,7 +50,7 @@ class PersonaController extends AbstractController {
 	 */
 	public function new( Request $request ) {
 		$persona = new Persona();
-		$form    = $this->createForm( 'App\Form\PersonalType', $persona );
+		$form    = $this->createForm( PersonalType::class, $persona );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
@@ -72,12 +73,12 @@ class PersonaController extends AbstractController {
 	 *
 	 */
 	public function show( Persona $persona ) {
-		$deleteForm = $this->createDeleteForm( $persona );
+//		$deleteForm = $this->createDeleteForm( $persona );
 
 		return $this->render( 'persona/show.html.twig',
 			array(
-				'persona'     => $persona,
-				'delete_form' => $deleteForm->createView(),
+				'persona' => $persona,
+//				'delete_form' => $deleteForm->createView(),
 			) );
 	}
 
@@ -86,14 +87,15 @@ class PersonaController extends AbstractController {
 	 *
 	 */
 	public function edit( Request $request, Persona $persona ) {
-		$deleteForm = $this->createDeleteForm( $persona );
-		$editForm   = $this->createForm( 'App\Form\PersonalType', $persona );
+
+		$editForm = $this->createForm( PersonalType::class, $persona );
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+
 			$this->getDoctrine()->getManager()->flush();
 
-			$this->get('session')->getFlashBag()->add(
+			$this->get( 'session' )->getFlashBag()->add(
 				'success',
 				'Personal modificado correctamente'
 			);
@@ -103,9 +105,8 @@ class PersonaController extends AbstractController {
 
 		return $this->render( 'persona/edit.html.twig',
 			array(
-				'persona'     => $persona,
-				'edit_form'   => $editForm->createView(),
-				'delete_form' => $deleteForm->createView(),
+				'persona'   => $persona,
+				'edit_form' => $editForm->createView(),
 			) );
 	}
 

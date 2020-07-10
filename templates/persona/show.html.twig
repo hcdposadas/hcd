@@ -18,35 +18,47 @@
             <td>{{ persona.apellido }}</td>
         </tr>
         <tr>
-            <th>Dni</th>
+            <th>DNI</th>
             <td>{{ persona.dni }}</td>
         </tr>
         <tr>
-            <th>Fechanacimiento</th>
+            <th>Fecha nacimiento</th>
             <td>{% if persona.fechaNacimiento %}{{ persona.fechaNacimiento|date('Y-m-d') }}{% endif %}</td>
         </tr>
         <tr>
             <th>Telefono</th>
-            <td>{{ persona.telefono }}</td>
+            <td>
+                {% for contacto in persona.contactoPersona %}
+                    {{ contacto.telefono }}
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <th>Celular</th>
-            <td>{{ persona.celular }}</td>
+            <td>
+                {% for contacto in persona.contactoPersona %}
+                    {{ contacto.celular }}
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <th>Mail</th>
-            <td>{{ persona.mail }}</td>
+            <td>
+                {% for contacto in persona.contactoPersona %}
+                    {{ contacto.mail }}
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <th>Activo</th>
             <td>{% if persona.activo %}Yes{% else %}No{% endif %}</td>
         </tr>
         <tr>
-            <th>Fechacreacion</th>
+            <th>Fecha creación</th>
             <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
         <tr>
-            <th>Fechaactualizacion</th>
+            <th>Fecha actualización</th>
             <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
         </tbody>

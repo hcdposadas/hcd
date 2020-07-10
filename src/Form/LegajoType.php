@@ -15,36 +15,27 @@ class LegajoType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'tratamiento',
-				TextType::class,
-				[
-					'attr' => [ 'placeholder' => 'Sr./Dr./Ing.' ]
-				] )
-			->add( 'profesion' )
 			->add( 'fechaIngreso',
 				DateType::class,
-				array(
+				[
 					'widget' => 'single_text',
-					'format' => 'dd/MM/yyyy',
-					'attr'   => array(
-						'class' => 'datepicker',
-					),
-				) )
+					'html5'  => true
+				] )
 			->add( 'numero',
 				TextType::class,
 				[
 					'label' => 'Nro Legajo'
 				] )
 			->add( 'numeroTarjeta' )
-			->add( 'situacionRevista',
-				ChoiceType::class,
-				[
-					'choices' => array(
-						'Planta Permanente' => 'Planta Permanente',
-						'Contratado'        => 'Contratado'
-					),
-				] )
-			->add( 'observaciones' );
+			->add( 'observaciones' )
+//			->add( 'personalDeclaracionJuradas',
+//				BootstrapCollectionType::class,
+//				[
+//					'entry_type'    => PersonalDeclaracionJuradaType::class,
+//					'allow_add'     => true,
+//					'max_items_add' => 1
+//				] )
+		;
 	}
 
 	/**
@@ -60,7 +51,7 @@ class LegajoType extends AbstractType {
 	 * {@inheritdoc}
 	 */
 	public function getBlockPrefix() {
-		return 'App_legajo';
+		return 'app_legajo';
 	}
 
 

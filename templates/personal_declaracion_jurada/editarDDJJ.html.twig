@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Declaración Jurada{% endblock %}
+
+{% block body %}
+
+    {# modal add persona #}
+    {% include 'default/modal_add_persona.html.twig' %}
+    {# modal add persona #}
+
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-user"></i> Datos de la DDJJ</h3>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form_row(form.fechaPresentacion) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">{{ form_row(form.anio) }}</div>
+                        <div class="col-6">{{ form_row(form.tratamiento) }}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">{{ form_row(form.situacionRevista) }}</div>
+                        <div class="col-6">{{ form_row(form.categoria) }}</div>
+
+                    </div>
+                    <h3>Lugar de Trabajo</h3>
+                    <div class="row">
+
+                        <div class="col-4">
+                            {{ form_row(form.lugarTrabajo.fechaDesde) }}
+                        </div>
+                        <div class="col-4">
+                            {{ form_row(form.lugarTrabajo.fechaHasta) }}
+                        </div>
+                        <div class="col-4">
+                            {{ form_row(form.lugarTrabajo.actual) }}
+                        </div>
+                        <div class="col-12">
+                            {{ form_row(form.lugarTrabajo.areaAdministrativa) }}
+                        </div>
+                    </div>
+
+                    <h3>Datos Académicos</h3>
+                    <div class="row">
+                        <div class="col-6">{{ form_row(form.nivelEstudios) }}</div>
+                        <div class="col-6">{{ form_row(form.aniosCursados) }}</div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-6">{{ form_row(form.titulo) }}</div>
+                        <div class="col-6">{{ form_row(form.profesion) }}</div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-ring"></i> Cónyuge</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_widget(form.personalDDJJConyuges) }}
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fa fa-users"></i> Personas a Cargo</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ form_widget(form.personalDDJJPersonaACargos) }}
+                    <button type="button" class="btn btn-default btn-add-persona">
+                        <i class="fa fa-plus"></i> Agregar Persona
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <button class="float-right btn btn-primary" type="submit">Guardar</button>
+        </div>
+
+
+    </div>
+    {{ form_end(form) }}
+
+    <div class="row pb-3">
+        <div class="col-12">
+
+            <a class="float-left btn btn-default"
+               href="{{ path('personal_declaraciones_jurada', {'persona': persona.id}) }}">Volver</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+
+            $('.btn-add-persona').click(function () {
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("form_persona") }}',
+                    success: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        $('#modal-add-persona').modal('toggle');
+                        inicializarPlugins();
+                    }
+                });
+            });
+
+            $('#modal-add-persona-btn-ok').click(function () {
+
+                var data = $('form[name="app_persona"]').serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("form_persona") }}',
+                    data: data,
+                    success: function (data) {
+                        $('#modal-add-persona').modal('toggle');
+                        modalAlert(data.mensaje);
+                    },
+                    error: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                    500: function (data) {
+                        $('#modal-add-persona .modal-body').html(data.form);
+                        inicializarPlugins();
+                    },
+                });
+            });
+        });
+    </script>
+{% endblock javascripts %}

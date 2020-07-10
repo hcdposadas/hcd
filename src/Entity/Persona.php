@@ -13,6 +13,16 @@ use App\Entity\Base\BaseClass;
  * @ORM\Entity(repositoryClass="App\Repository\PersonaRepository")
  */
 class Persona extends BaseClass {
+
+	const PERSONA_GENERO_FEMENINO = 'Femenino';
+	const PERSONA_GENERO_MASCULINO = 'Masculino';
+	const PERSONA_GENERO_NE = 'Prefiero no especificarlo';
+
+	const PERSONA_TIPO_DOCUMENTO_DNI = 'DNI';
+	const PERSONA_TIPO_DOCUMENTO_CI = 'CI';
+	const PERSONA_TIPO_DOCUMENTO_LE = 'LE';
+	const PERSONA_TIPO_DOCUMENTO_LC = 'LC';
+
 	/**
 	 * @var int
 	 *
@@ -70,15 +80,25 @@ class Persona extends BaseClass {
 
 	/**
 	 *
-	 * @ORM\OneToMany(targetEntity="App\Entity\PersonaACargo", mappedBy="persona", cascade={"persist", "remove"})
-	 */
-	private $personaACargo;
-
-	/**
-	 *
 	 * @ORM\OneToOne(targetEntity="App\Entity\Legajo", mappedBy="persona", cascade={"persist", "remove"})
 	 */
 	private $legajo;
+
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $lugarNacimiento;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $genero;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $tipoDocumento;
 
 	public function __toString() {
 		return $this->nombre . ' ' . $this->apellido;
@@ -98,6 +118,7 @@ class Persona extends BaseClass {
 				return $cargoPersona;
 			}
 		}
+
 		return false;
 	}
 
@@ -108,7 +129,6 @@ class Persona extends BaseClass {
 		$this->domicilioPersona = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->cargoPersona     = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contactoPersona  = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->personaACargo    = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -238,7 +258,6 @@ class Persona extends BaseClass {
 	 * @param mixed $domicilioPersona
 	 */
 	public function setDomicilioPersona( $domicilioPersona ) {
-//        $this->domicilioPersona = $domicilioPersona;
 
 		foreach ( $domicilioPersona as $item ) {
 
@@ -257,9 +276,6 @@ class Persona extends BaseClass {
 	 * @return Persona
 	 */
 	public function addDomicilioPersona( \App\Entity\DomicilioPersona $domicilioPersona ) {
-//        $this->domicilioPersona[] = $domicilioPersona;
-//
-//        return $this;
 
 		$domicilioPersona->setPersona( $this );
 
@@ -334,6 +350,21 @@ class Persona extends BaseClass {
 		return $this->cargoPersona;
 	}
 
+
+	/**
+	 * @param mixed $domicilioPersona
+	 */
+	public function setContactoPersona( $contactoPersona ) {
+
+		foreach ( $contactoPersona as $item ) {
+
+			$this->contactoPersona->add( $item );
+			$item->setPersona( $this );
+		}
+
+		return $this;
+	}
+
 	/**
 	 * Add contactoPersona
 	 *
@@ -342,7 +373,10 @@ class Persona extends BaseClass {
 	 * @return Persona
 	 */
 	public function addContactoPersona( \App\Entity\ContactoPersona $contactoPersona ) {
-		$this->contactoPersona[] = $contactoPersona;
+		
+		$contactoPersona->setPersona( $this );
+
+		$this->contactoPersona->add( $contactoPersona );
 
 		return $this;
 	}
@@ -363,37 +397,6 @@ class Persona extends BaseClass {
 	 */
 	public function getContactoPersona() {
 		return $this->contactoPersona;
-	}
-
-	/**
-	 * Add personaACargo
-	 *
-	 * @param \App\Entity\PersonaACargo $personaACargo
-	 *
-	 * @return Persona
-	 */
-	public function addPersonaACargo( \App\Entity\PersonaACargo $personaACargo ) {
-		$this->personaACargo[] = $personaACargo;
-
-		return $this;
-	}
-
-	/**
-	 * Remove personaACargo
-	 *
-	 * @param \App\Entity\PersonaACargo $personaACargo
-	 */
-	public function removePersonaACargo( \App\Entity\PersonaACargo $personaACargo ) {
-		$this->personaACargo->removeElement( $personaACargo );
-	}
-
-	/**
-	 * Get personaACargo
-	 *
-	 * @return \Doctrine\Common\Collections\Collection
-	 */
-	public function getPersonaACargo() {
-		return $this->personaACargo;
 	}
 
 	/**
@@ -445,4 +448,41 @@ class Persona extends BaseClass {
 
 		return $this;
 	}
+
+	public function getLugarNacimiento(): ?string {
+		return $this->lugarNacimiento;
+	}
+
+	public function setLugarNacimiento( ?string $lugarNacimiento ): self {
+		$this->lugarNacimiento = $lugarNacimiento;
+
+		return $this;
+	}
+
+
+	public function getTipoDocumento(): ?string {
+		return $this->tipoDocumento;
+	}
+
+	public function setTipoDocumento( ?string $tipoDocumento ): self {
+		$this->tipoDocumento = $tipoDocumento;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getGenero() {
+		return $this->genero;
+	}
+
+	/**
+	 * @param mixed $genero
+	 */
+	public function setGenero( $genero ): void {
+		$this->genero = $genero;
+	}
+
+
 }

@@ -25,7 +25,7 @@ class PersonaACargo extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Persona", inversedBy="personaACargo", cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Persona", cascade={"persist"})
 	 * @ORM\JoinColumn(name="persona_id", referencedColumnName="id")
 	 */
 	private $persona;
@@ -45,6 +45,16 @@ class PersonaACargo extends BaseClass {
 	 * @ORM\JoinColumn(name="persona_a_cargo_id", referencedColumnName="id")
 	 */
 	private $personaACargo;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $estudiosCursados;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $conviveConDeclarante;
 
 
     /**
@@ -181,6 +191,30 @@ class PersonaACargo extends BaseClass {
     public function setActualizadoPor(\App\Entity\Usuario $actualizadoPor = null)
     {
         $this->actualizadoPor = $actualizadoPor;
+
+        return $this;
+    }
+
+    public function getEstudiosCursados(): ?string
+    {
+        return $this->estudiosCursados;
+    }
+
+    public function setEstudiosCursados(?string $estudiosCursados): self
+    {
+        $this->estudiosCursados = $estudiosCursados;
+
+        return $this;
+    }
+
+    public function getConviveConDeclarante(): ?bool
+    {
+        return $this->conviveConDeclarante;
+    }
+
+    public function setConviveConDeclarante(bool $conviveConDeclarante): self
+    {
+        $this->conviveConDeclarante = $conviveConDeclarante;
 
         return $this;
     }

@@ -32,7 +32,7 @@ class ContactoPersona extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Contacto")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Contacto", cascade={"persist"})
 	 * @ORM\JoinColumn(name="contacto_id", referencedColumnName="id")
 	 */
 	private $contacto;

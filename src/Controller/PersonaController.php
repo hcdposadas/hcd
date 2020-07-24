@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Persona;
-use App\Form\PersonaFilterType;
+use App\Form\Filter\PersonaFilterType;
 use App\Form\PersonalType;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

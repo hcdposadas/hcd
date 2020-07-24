@@ -72,11 +72,13 @@
                 modalConfirm('Atención!', 'Está seguro que desea conformar el plan de labor? <br> Esta opción es irreversible', '#');
             });
 
+            {% if sesion %}
             $('#modal-confirm-btn-ok').click(function () {
                 $(this).addClass('disabled');
                 $(this).html('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando');
                 location.href = '{{ path('sesiones_conformar_plan_de_labor_cerrar', {'sesionId': sesion.id}) }}';
             });
+            {% endif %}
         });
     </script>
 {% endblock javascripts %}

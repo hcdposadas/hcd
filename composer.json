@@ -8,6 +8,7 @@
         "easycorp/easyadmin-bundle": "^2.3",
         "endroid/qr-code-bundle": "^3.4",
         "friendsofsymfony/ckeditor-bundle": "^2.2",
+        "h4cc/wkhtmltopdf-amd64": "0.12.4",
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^5.2",
         "knplabs/knp-snappy-bundle": "^1.7",

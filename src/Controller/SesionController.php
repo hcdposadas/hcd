@@ -172,7 +172,7 @@ class SesionController extends AbstractController {
 		$sesion   = null;
 
 
-		if ( ! $sesionQb->getQuery()->getResult() ) {
+		if ( count( $sesionQb->getQuery()->getResult() ) == 0 ) {
 			$this->get( 'session' )->getFlashBag()->add(
 				'warning',
 				'No hay una Sesión Activa Creada'

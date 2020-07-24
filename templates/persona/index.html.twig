@@ -9,6 +9,42 @@
             <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(filter_type) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.nombre) }}
+                            {{ form_row(filter_type.apellido) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.dni) }}
+                            {{ form_row(filter_type.fechaNacimiento) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                    <div class="d-none">
+                        {{ form_end(filter_type) }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -46,12 +82,12 @@
                                     <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}">
+                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Declaración Jurada">
                                         <i class="fas fa-poll-h"></i>
                                     </a>
-                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}">
-                                        <i class="fas fa-umbrella-beach"></i>
-                                    </a>
+{#                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}">#}
+{#                                        <i class="fas fa-umbrella-beach"></i>#}
+{#                                    </a>#}
                                 </td>
                             </tr>
                         {% endfor %}

@@ -283,7 +283,7 @@ class PersonalDeclaracionJurada extends BaseClass {
 	/**
 	 * @return Collection
 	 */
-	public function getPersonalDDJJPersonaACargos(): Collection {
+	public function getPersonalDDJJPersonaACargos(): ?Collection {
 		return $this->personalDDJJPersonaACargos;
 	}
 
@@ -333,7 +333,7 @@ class PersonalDeclaracionJurada extends BaseClass {
 	/**
 	 * @return Collection
 	 */
-	public function getPersonalDDJJConyuges(): Collection {
+	public function getPersonalDDJJConyuges(): ?Collection {
 		return $this->personalDDJJConyuges;
 	}
 

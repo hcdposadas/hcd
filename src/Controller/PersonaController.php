@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Persona;
+use App\Form\PersonaFilterType;
 use App\Form\PersonalType;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,15 +23,21 @@ class PersonaController extends AbstractController {
 	public function index( PaginatorInterface $paginator, Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
+		$filterType = $this->createForm( PersonaFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
 
-//		$filterType->handleRequest( $request );
-//
-//		if ( $request->query->has( $filterType->getName() ) ) {
-//			$filterType->submit( $request->query->get( $filterType->getName() ) );
-//		}
+		$filterType->handleRequest( $request );
 
-		$personas = $em->getRepository( Persona::class )->getQbAll();
 
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+			$personas = $em->getRepository( Persona::class )->getQbAll($filterType->getData());
+		} else {
+
+			$personas = $em->getRepository( Persona::class )->getQbAll();
+		}
 
 		$personas = $paginator->paginate(
 			$personas,
@@ -40,7 +47,8 @@ class PersonaController extends AbstractController {
 
 		return $this->render( 'persona/index.html.twig',
 			array(
-				'personas' => $personas,
+				'personas'    => $personas,
+				'filter_type' => $filterType->createView()
 			) );
 	}
 

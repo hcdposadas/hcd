@@ -40,7 +40,10 @@ class PersonalDeclaracionJuradaController extends AbstractController {
 //		$declaracionesJuradas = $persona->getLegajo()->getPersonalDeclaracionJuradas();
 
 
-		$declaracionesJuradas = $personalDeclaracionJuradaRepository->findByLegajo( $persona->getLegajo() );
+		$declaracionesJuradas = $personalDeclaracionJuradaRepository->findBy(
+			[ 'legajo' => $persona->getLegajo() ],
+			[ 'anio' => 'DESC' ]
+		);
 
 		return $this->render( 'personal_declaracion_jurada/indexdeclaraciones.html.twig',
 			[

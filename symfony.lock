@@ -139,6 +139,9 @@
     "gedmo/doctrine-extensions": {
         "version": "v2.4.39"
     },
+    "h4cc/wkhtmltopdf-amd64": {
+        "version": "0.12.4"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },

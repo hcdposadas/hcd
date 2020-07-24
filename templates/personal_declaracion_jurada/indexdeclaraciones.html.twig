@@ -4,6 +4,14 @@
 
 {% block body %}
 
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="{{ path('persona_index') }}" class="btn btn-default">Volver</a>
+            <a class="btn btn-primary" href="{{ path('personal_declaracion_jurada_nueva', {'persona': persona.id }) }}">Nueva
+                DDJJ</a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -37,8 +45,12 @@
                                 <td>{{ personal_declaracion_jurada.fechaCreacion ? personal_declaracion_jurada.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
                                 <td>{{ personal_declaracion_jurada.fechaActualizacion ? personal_declaracion_jurada.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
                                 <td>
-                                    <a class="btn btn-default" href="{{ path('personal_declaracion_jurada_show', {'id': personal_declaracion_jurada.id}) }}"><i class="fa fa-eye"></i></a>
-                                    <a class="btn btn-default" href="{{ path('personal_declaracion_jurada_editar', {'id': personal_declaracion_jurada.id}) }}"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('personal_declaracion_jurada_show', {'id': personal_declaracion_jurada.id}) }}"><i
+                                                class="fa fa-eye"></i></a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('personal_declaracion_jurada_editar', {'id': personal_declaracion_jurada.id}) }}"><i
+                                                class="fa fa-edit"></i></a>
                                 </td>
                             </tr>
                         {% else %}
@@ -53,6 +65,12 @@
         </div>
     </div>
 
-    <a class="btn btn-primary" href="{{ path('personal_declaracion_jurada_nueva', {'persona': persona.id }) }}">Nueva
-        DDJJ</a>
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ path('persona_index') }}" class="btn btn-default">Volver</a>
+            <a class="btn btn-primary" href="{{ path('personal_declaracion_jurada_nueva', {'persona': persona.id }) }}">Nueva
+                DDJJ</a>
+        </div>
+    </div>
+
 {% endblock %}

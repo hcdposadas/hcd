@@ -26,8 +26,28 @@ class PersonaRepository extends EntityRepository {
 		}
 	}
 
-	public function getQbAll(  ) {
+	public function getQbAll( $filter = null ) {
 		$qb = $this->createQueryBuilder( 'p' );
+
+		if ( $filter ) {
+			if ( isset( $filter['nombre'] ) ) {
+				$q = $filter['nombre'];
+				$qb->andWhere( 'UPPER(p.nombre) LIKE UPPER(:nombre)' )
+					->setParameter( 'nombre', "%$q%" );
+			}
+
+			if ( isset( $filter['apellido'] ) ) {
+				$q = $filter['apellido'];
+				$qb->andWhere( 'UPPER(p.apellido) LIKE UPPER(:apellido)' )
+				   ->setParameter( 'apellido', "%$q%" );
+			}
+			if ( isset( $filter['dni'] ) ) {
+				$q = $filter['dni'];
+				$qb->andWhere( 'UPPER(p.dni) LIKE UPPER(:dni)' )
+				   ->setParameter( 'dni', "%$q%" );
+			}
+		}
+
 		return $qb;
 	}
 

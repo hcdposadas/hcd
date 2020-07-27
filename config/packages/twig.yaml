@@ -7,3 +7,4 @@ twig:
         ciudad_name: '%env(CIUDAD_NAME)%'
         app_color: '#%env(APP_COLOR)%'
         kernelProjectDir: "%kernel.project_dir%"
+        app_url: '%env(APP_URL)%'

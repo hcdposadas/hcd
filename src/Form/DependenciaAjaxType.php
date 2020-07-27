@@ -32,7 +32,7 @@ class DependenciaAjaxType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'App_dependencia_ajax';
+        return 'app_dependencia_ajax';
     }
 
 

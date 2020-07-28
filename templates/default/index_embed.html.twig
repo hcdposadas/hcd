@@ -5,6 +5,6 @@
 {% block body %}
     <div class="embed-responsive embed-responsive-16by9">
         <embed class="embed-responsive-item"
-               src="{{ vich_uploader_asset(documento, 'documentoFile') }}">
+               src="{{ app_url }}{{ vich_uploader_asset(documento, 'documentoFile') }}">
     </div>
 {% endblock %}

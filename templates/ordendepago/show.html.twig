@@ -28,7 +28,7 @@
                         <dd>{% for fechaRendicion in ordenDePago.fechaRendicion %}
                                 {{ fechaRendicion.fecha|date('d/m/Y') }}
                                 {% if fechaRendicion.ordenDePagoSrc %}
-                                    - <a href="{{ vich_uploader_asset(fechaRendicion, 'ordenDePagoFile') }}" target="_blank">
+                                    - <a href="{{ app_url }}{{ vich_uploader_asset(fechaRendicion, 'ordenDePagoFile') }}" target="_blank">
                                         Ver
                                     </a>
                                 {% endif %} <br>
@@ -52,7 +52,7 @@
                         <dt>Archivo</dt>
                         <dd>
                             {% if ordenDePago.ordenDePago %}
-                                <a href="{{ vich_uploader_asset(ordenDePago, 'ordenDePagoFile') }}" target="_blank">
+                                <a href="{{ app_url }}{{ vich_uploader_asset(ordenDePago, 'ordenDePagoFile') }}" target="_blank">
                                     Ver
                                 </a>
                             {% endif %}

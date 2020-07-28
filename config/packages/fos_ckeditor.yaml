@@ -13,6 +13,7 @@ fos_ck_editor:
         my_config:
             toolbar: full
             extraPlugins: "justify"
+            removeButtons: 'Subscript,Superscript'
     plugins:
         justify:
             path:     "build/ckeditor/plugins/justify/" # with trailing slash

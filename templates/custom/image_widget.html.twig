@@ -13,7 +13,7 @@
         {%- endif -%}
 
         {%- if download_uri -%}
-            <a href="{{ absolute_url(download_uri) }}" download>
+            <a href="{{ app_url ~ download_uri }}" target="_blank">
                 {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
             </a>
         {%- endif -%}
@@ -33,12 +33,12 @@
         {%- endif -%}
 
         {%- if image_uri -%}
-            <a href="{{ asset_helper is same as(true) ? absolute_url(asset(image_uri)) : image_uri }}" download>
-                <img src="{{ asset_helper is same as(true) ? absolute_url(asset(image_uri)) : image_uri }}" alt=""/>
+            <a href="{{ asset_helper is same as(true) ? asset(image_uri) : app_url ~ image_uri }}" target="_blank">
+                <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}" alt=""/>
             </a>
         {%- endif -%}
         {%- if download_uri -%}
-            <a href="{{ asset_helper is same as(true) ? absolute_url(asset(download_uri)) : download_uri }}" download>
+            <a href="{{ asset_helper is same as(true) ? asset(download_uri) : app_url ~ download_uri }}" download>
                 {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
             </a>
         {%- endif -%}

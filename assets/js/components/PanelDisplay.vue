@@ -5,25 +5,29 @@
     }
 
     .panel-presentes-asistencia h2 {
-        font-size: 7em;
+        font-size: 10rem;
     }
 
     .texto-resultado-concejal {
-        font-size: 7em;
+        font-size: 10rem;
     }
 
     .panel-votacion-sesion-presentes-ausentes h2 {
-        font-size: 7em;
+        font-size: 10rem;
     }
 
     .panel-votacion-sesion-presentes-ausentes h3 {
-        font-size: 5em;
+        font-size: 8rem;
+    }
+
+    .quorum {
+        font-size: 6rem;
     }
 
     .panel-votacion-sesion-tiempo {
         clear: both;
 
-        font-size: 3em;
+        font-size: 3rem;
         padding: 20px;
     }
 </style>
@@ -48,7 +52,7 @@
                             <div class="col-12">
                                 <div class="alert text-center"
                                      :class="[quorum.hayQuorum ? 'alert-success' : 'alert-danger']">
-                                    <h1>
+                                    <h1 class="quorum">
                                         <span v-if="quorum.hayQuorum">Hay Quórum</span>
                                         <span v-else>No Hay Quórum</span>
                                     </h1>

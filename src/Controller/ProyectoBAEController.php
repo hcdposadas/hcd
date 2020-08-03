@@ -150,7 +150,7 @@ class ProyectoBAEController extends AbstractController {
 	 */
 	private function createDeleteForm( ProyectoBAE $proyectoBAE ) {
 		return $this->createFormBuilder()
-		            ->set( $this->generateUrl( 'proyectobae_delete', array( 'id' => $proyectoBAE->getId() ) ) )
+		            ->setAction( $this->generateUrl( 'proyectobae_delete', ['id' => $proyectoBAE->getId()] ) )
 		            ->setMethod( 'DELETE' )
 		            ->getForm();
 	}

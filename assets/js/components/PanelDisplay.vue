@@ -9,7 +9,7 @@
     }
 
     .texto-resultado-concejal {
-        font-size: 7em;
+        font-size: 5em;
     }
 
     .panel-votacion-sesion-presentes-ausentes h2 {

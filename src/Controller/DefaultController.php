@@ -47,4 +47,11 @@ class DefaultController extends AbstractController {
 
 	}
 
+	/**
+	 * @Route("/pantallota", name="app_display_g")
+	 */
+	public function displayG() {
+		return $this->render( 'default/displayG.html.twig' );
+	}
+
 }

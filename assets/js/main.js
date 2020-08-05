@@ -30,12 +30,14 @@ import PedirPalabra from './components/PedirPalabra'
 import ListaPedirPalabra from './components/ListaPedirPalabra'
 import MostrarPresentesButton from "./components/MostrarPresentesButton";
 import MiniDisplay from "./components/MiniDisplay";
+import PanelDisplayG from "./components/PanelDisplayG";
 
 Vue.component('panel-votacion', PanelVotacion)
 Vue.component('panel-concejal', Concejal)
 Vue.component('consultar-expediente', ConsultarExpediente)
 Vue.component('consultar-sesiones', ConsultarSesiones)
 Vue.component('panel-display', PanelDisplay)
+Vue.component('panel-display-g', PanelDisplayG)
 Vue.component('quorum-button', QuorumButton)
 Vue.component('mostrar-presentes-button', MostrarPresentesButton)
 Vue.component('vista-bae', VistaBae)

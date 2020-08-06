@@ -168,7 +168,9 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function addAnexo( \App\Entity\AnexoTextoDefinitivo $anexo ) {
-		$this->anexos[] = $anexo;
+		$anexo->setTextoDefinitivo( $this );
+
+		$this->anexos->add( $anexo );
 
 		return $this;
 	}

@@ -33,6 +33,15 @@ class TextoDefinitivoRepository extends \Doctrine\ORM\EntityRepository
 					->andWhere( 'td.aprobadoEnSesion = :aprobadoEnSesion' )
 					->setParameter( 'aprobadoEnSesion', $q );
 			}
+
+			if ( isset( $filter['expediente'] ) ) {
+				$q = $filter['expediente'];
+				$qb
+					->innerJoin( 'td.dictamen', 'dictamen' )
+					->innerJoin('dictamen.expediente', 'expediente')
+					->andWhere( 'UPPER(expediente.expediente) LIKE UPPER(:expediente)' )
+					->setParameter( 'expediente', "%$q%" );
+			}
 		}
 
 		return $qb;

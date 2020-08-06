@@ -40,6 +40,10 @@ class ExpedienteRepository extends EntityRepository {
 
 		$qb->orderBy( 'e.id', 'DESC' );
 
+
+//		TODO sacar si no encuentran expedientes
+		$qb->andWhere('e.activo = true');
+
 		return $qb;
 	}
 

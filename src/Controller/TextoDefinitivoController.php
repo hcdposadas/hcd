@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Parametro;
+use Doctrine\Common\Collections\ArrayCollection;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Snappy\Pdf;
 use App\Entity\Dictamen;
@@ -104,12 +105,30 @@ class TextoDefinitivoController extends AbstractController {
 	 */
 	public function edit( Request $request, TextoDefinitivo $textoDefinitivo ) {
 
+		$em = $this->getDoctrine()->getManager();
+
 		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 		$editForm->remove('dictamen');
 		$editForm->handleRequest( $request );
 
+		$anexosOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $textoDefinitivo->getAnexos() as $anexo ) {
+			$anexosOriginales->add( $anexo );
+		}
+
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$this->getDoctrine()->getManager()->flush();
+
+			foreach ( $anexosOriginales as $anexo ) {
+				if ( false === $textoDefinitivo->getAnexos()->contains( $anexo ) ) {
+					$anexo->setTextoDefinitivo( null );
+					$em->remove( $anexo );
+				}
+			}
+
+			$em->flush();
+
 			$this->get( 'session' )->getFlashBag()->add(
 				'success',
 				'Texto definitivo actualizado correctamente'

@@ -14,3 +14,4 @@ easy_admin:
 #                    - { property: 'expedienteExternoFile', type: 'vich_file' }
                     - { property: 'borrador' }
                     - { property: 'proyectoDem' }
+                    - { property: 'activo' }

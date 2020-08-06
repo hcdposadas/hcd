@@ -34,7 +34,7 @@
 
         {%- if image_uri -%}
             <a href="{{ asset_helper is same as(true) ? asset(image_uri) : app_url ~ image_uri }}" target="_blank">
-                <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}" alt=""/>
+                <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}" alt="" class="img-fluid" style="max-width: 15rem"/>
             </a>
         {%- endif -%}
         {%- if download_uri -%}

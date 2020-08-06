@@ -22,6 +22,11 @@ class TextoDefinitivoFilterType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
 			->add( 'numero' )
+			->add( 'expediente',
+				null,
+				[
+					'label' => 'N° expediente'
+				] )
 			->add( 'rama',
 				EntityType::class,
 				[

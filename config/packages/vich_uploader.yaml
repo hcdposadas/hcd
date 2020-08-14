@@ -33,6 +33,10 @@ vich_uploader:
         sis_images:
             uri_prefix: "%app.path.sis_images%"
             upload_destination: "%kernel.project_dir%/public/uploads/sis_images"
+        textos_definitivos_anexos:
+            uri_prefix: "%app.path.textos_definitivos_anexos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/textos_definitivos/anexos"
+            namer: "vich_uploader.namer_uniqid"
         rrhh_novedad:
             uri_prefix: "%app.path.rrhh_novedad%"
             upload_destination: "%kernel.project_dir%/public/uploads/rrhh/novedades"

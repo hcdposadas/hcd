@@ -47,7 +47,7 @@ class TextoDefinitivo extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Dictamen", inversedBy="textosDefinitivos")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Dictamen", inversedBy="textosDefinitivos", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(name="dictamen_id", referencedColumnName="id")
 	 */
 	private $dictamen;

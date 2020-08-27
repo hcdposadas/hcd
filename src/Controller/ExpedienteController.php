@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\AreaAdministrativa;
 use App\Entity\Giro;
+use App\Entity\PeriodoLegislativo;
 use App\Entity\ProyectoBAE;
 use App\Entity\TipoExpediente;
 use App\Form\AsignarHojasType;
@@ -464,7 +466,7 @@ class ExpedienteController extends AbstractController {
 //				Departamento de Mesa de Entradas y Salidas
 
 				$giroAdministrativo = new GiroAdministrativo();
-				$areaDestino        = $em->getRepository( 'App:AreaAdministrativa' )->findOneBy( [
+				$areaDestino        = $em->getRepository( AreaAdministrativa::class )->findOneBy( [
 					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
 				] );
 				$giroAdministrativo->setAreaDestino( $areaDestino );
@@ -484,7 +486,7 @@ class ExpedienteController extends AbstractController {
 
 			$expediente->setTipoExpediente( $tipoExpediente );
 
-			$periodoLegislativo = $em->getRepository( 'App:PeriodoLegislativo' )->findOneBy( [
+			$periodoLegislativo = $em->getRepository( PeriodoLegislativo::class )->findOneBy( [
 				'anio' => $expediente->getFecha()->format( 'Y' )
 			] );
 
@@ -616,7 +618,7 @@ class ExpedienteController extends AbstractController {
 //				Departamento de Mesa de Entradas y Salidas
 
 				$giroAdministrativo = new GiroAdministrativo();
-				$areaDestino        = $em->getRepository( 'App:AreaAdministrativa' )->findOneBy( [
+				$areaDestino        = $em->getRepository( AreaAdministrativa::class )->findOneBy( [
 					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
 				] );
 				$giroAdministrativo->setAreaDestino( $areaDestino );

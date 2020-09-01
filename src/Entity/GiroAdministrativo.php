@@ -60,191 +60,179 @@ class GiroAdministrativo extends BaseClass {
 	private $texto;
 
 
+	public function __toString(): ?string {
+		return $this->areaDestino;
+	}
 
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-    /**
-     * Set fechaGiro
-     *
-     * @param \DateTime $fechaGiro
-     *
-     * @return GiroAdministrativo
-     */
-    public function setFechaGiro($fechaGiro)
-    {
-        $this->fechaGiro = $fechaGiro;
+	/**
+	 * Set fechaGiro
+	 *
+	 * @param \DateTime $fechaGiro
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setFechaGiro( $fechaGiro ) {
+		$this->fechaGiro = $fechaGiro;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get fechaGiro
-     *
-     * @return \DateTime
-     */
-    public function getFechaGiro()
-    {
-        return $this->fechaGiro;
-    }
+	/**
+	 * Get fechaGiro
+	 *
+	 * @return \DateTime
+	 */
+	public function getFechaGiro() {
+		return $this->fechaGiro;
+	}
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return GiroAdministrativo
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return GiroAdministrativo
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set areaOrigen
-     *
-     * @param \App\Entity\AreaAdministrativa $areaOrigen
-     *
-     * @return GiroAdministrativo
-     */
-    public function setAreaOrigen(\App\Entity\AreaAdministrativa $areaOrigen = null)
-    {
-        $this->areaOrigen = $areaOrigen;
+	/**
+	 * Set areaOrigen
+	 *
+	 * @param \App\Entity\AreaAdministrativa $areaOrigen
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setAreaOrigen( \App\Entity\AreaAdministrativa $areaOrigen = null ) {
+		$this->areaOrigen = $areaOrigen;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get areaOrigen
-     *
-     * @return \App\Entity\AreaAdministrativa
-     */
-    public function getAreaOrigen()
-    {
-        return $this->areaOrigen;
-    }
+	/**
+	 * Get areaOrigen
+	 *
+	 * @return \App\Entity\AreaAdministrativa
+	 */
+	public function getAreaOrigen() {
+		return $this->areaOrigen;
+	}
 
-    /**
-     * Set areaDestino
-     *
-     * @param \App\Entity\AreaAdministrativa $areaDestino
-     *
-     * @return GiroAdministrativo
-     */
-    public function setAreaDestino(\App\Entity\AreaAdministrativa $areaDestino = null)
-    {
-        $this->areaDestino = $areaDestino;
+	/**
+	 * Set areaDestino
+	 *
+	 * @param \App\Entity\AreaAdministrativa $areaDestino
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setAreaDestino( \App\Entity\AreaAdministrativa $areaDestino = null ) {
+		$this->areaDestino = $areaDestino;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get areaDestino
-     *
-     * @return \App\Entity\AreaAdministrativa
-     */
-    public function getAreaDestino()
-    {
-        return $this->areaDestino;
-    }
+	/**
+	 * Get areaDestino
+	 *
+	 * @return \App\Entity\AreaAdministrativa
+	 */
+	public function getAreaDestino() {
+		return $this->areaDestino;
+	}
 
-    /**
-     * Set expediente
-     *
-     * @param \App\Entity\Expediente $expediente
-     *
-     * @return GiroAdministrativo
-     */
-    public function setExpediente(\App\Entity\Expediente $expediente = null)
-    {
-        $this->expediente = $expediente;
+	/**
+	 * Set expediente
+	 *
+	 * @param \App\Entity\Expediente $expediente
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setExpediente( \App\Entity\Expediente $expediente = null ) {
+		$this->expediente = $expediente;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get expediente
-     *
-     * @return \App\Entity\Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
+	/**
+	 * Get expediente
+	 *
+	 * @return \App\Entity\Expediente
+	 */
+	public function getExpediente() {
+		return $this->expediente;
+	}
 
-    /**
-     * Set creadoPor
-     *
-     * @param \App\Entity\Usuario $creadoPor
-     *
-     * @return GiroAdministrativo
-     */
-    public function setCreadoPor(\App\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \App\Entity\Usuario $creadoPor
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \App\Entity\Usuario $actualizadoPor
-     *
-     * @return GiroAdministrativo
-     */
-    public function setActualizadoPor(\App\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \App\Entity\Usuario $actualizadoPor
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Set texto
-     *
-     * @param string $texto
-     *
-     * @return GiroAdministrativo
-     */
-    public function setTexto($texto)
-    {
-        $this->texto = $texto;
+	/**
+	 * Set texto
+	 *
+	 * @param string $texto
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setTexto( $texto ) {
+		$this->texto = $texto;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get texto
-     *
-     * @return string
-     */
-    public function getTexto()
-    {
-        return $this->texto;
-    }
+	/**
+	 * Get texto
+	 *
+	 * @return string
+	 */
+	public function getTexto() {
+		return $this->texto;
+	}
 }

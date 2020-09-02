@@ -47,4 +47,15 @@ class PersonalNovedadRepository extends ServiceEntityRepository
         ;
     }
     */
+
+	public function getQbAll( $filter = null ) {
+		$qb = $this->createQueryBuilder( 'pn' );
+
+		if ( $filter['legajo'] ) {
+			$qb->where( 'pn.legajo = :legajoId' )
+			   ->setParameter( 'legajoId', $filter['legajo'] );
+		}
+
+		return $qb;
+	}
 }

@@ -10,6 +10,7 @@ use App\Entity\PersonalDeclaracionJurada;
 use App\Form\PersonalDeclaracionJurada1Type;
 use App\Repository\PersonalDeclaracionJuradaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +34,8 @@ class PersonalDeclaracionJuradaController extends AbstractController {
 	 * @Route("/{persona}", name="personal_declaraciones_jurada", methods={"GET"})
 	 */
 	public function declaraciones(
+		PaginatorInterface $paginator,
+		Request $request,
 		PersonalDeclaracionJuradaRepository $personalDeclaracionJuradaRepository,
 		Persona $persona
 	): Response {
@@ -40,9 +43,15 @@ class PersonalDeclaracionJuradaController extends AbstractController {
 //		$declaracionesJuradas = $persona->getLegajo()->getPersonalDeclaracionJuradas();
 
 
-		$declaracionesJuradas = $personalDeclaracionJuradaRepository->findBy(
+		$declaracionesJuradas = $personalDeclaracionJuradaRepository->getQbAll(
 			[ 'legajo' => $persona->getLegajo() ],
 			[ 'anio' => 'DESC' ]
+		);
+
+		$declaracionesJuradas = $paginator->paginate(
+			$declaracionesJuradas,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
 		);
 
 		return $this->render( 'personal_declaracion_jurada/indexdeclaraciones.html.twig',

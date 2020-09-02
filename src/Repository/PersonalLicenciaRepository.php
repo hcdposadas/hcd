@@ -47,4 +47,15 @@ class PersonalLicenciaRepository extends ServiceEntityRepository
         ;
     }
     */
+
+	public function getQbAll( $filter = null ) {
+		$qb = $this->createQueryBuilder( 'pl' );
+
+		if ( $filter['legajo'] ) {
+			$qb->where( 'pl.legajo = :legajoId' )
+			   ->setParameter( 'legajoId', $filter['legajo'] );
+		}
+
+		return $qb;
+	}
 }

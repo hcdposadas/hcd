@@ -36,7 +36,7 @@
                                     <a class="btn btn-default" href="{{ path('personal_licencia_show', {'id': personal_licencium.id}) }}"><i
                                                 class="fa fa-eye"></i></a>
                                     <a class="btn btn-default" href="{{ path('personal_licencia_editar', {'id': personal_licencium.id}) }}"><i
-                                                class="fa fa-edit"></i></a></a>
+                                                class="fa fa-edit"></i></a>
                                 </td>
                             </tr>
                         {% else %}
@@ -48,6 +48,13 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+            {{ knp_pagination_render(personal_licencias) }}
         </div>
     </div>
 

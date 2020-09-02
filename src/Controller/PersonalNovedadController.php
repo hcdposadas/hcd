@@ -7,6 +7,7 @@ use App\Entity\Persona;
 use App\Entity\PersonalNovedad;
 use App\Form\PersonalNovedadType;
 use App\Repository\PersonalNovedadRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,12 @@ class PersonalNovedadController extends AbstractController {
 	/**
 	 * @Route("/{persona}", name="personal_novedades", methods={"GET"})
 	 */
-	public function novedades( PersonalNovedadRepository $personalNovedadRepository, Persona $persona ): Response {
+	public function novedades(
+		PaginatorInterface $paginator,
+		Request $request,
+		PersonalNovedadRepository $personalNovedadRepository,
+		Persona $persona
+	): Response {
 
 		$legajo = $persona->getLegajo();
 
@@ -42,7 +48,13 @@ class PersonalNovedadController extends AbstractController {
 			return $this->redirectToRoute( 'persona_index' );
 		}
 
-		$novedades = $personalNovedadRepository->findBy( [ 'legajo' => $legajo ] );
+		$novedades = $personalNovedadRepository->getQbAll( [ 'legajo' => $legajo ] );
+
+		$novedades = $paginator->paginate(
+			$novedades,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
 
 		return $this->render( 'personal_novedad/novedades_index.html.twig',
 			[

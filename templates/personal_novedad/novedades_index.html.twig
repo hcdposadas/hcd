@@ -39,13 +39,20 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="8">No se encontraron declaraciones</td>
+                                <td colspan="5">No se encontraron declaraciones</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+            {{ knp_pagination_render(novedades) }}
         </div>
     </div>
 

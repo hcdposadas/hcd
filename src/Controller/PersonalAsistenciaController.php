@@ -6,6 +6,7 @@ use App\Entity\Legajo;
 use App\Entity\PersonalAsistencia;
 use App\Form\PersonalAsistenciaType;
 use App\Repository\PersonalAsistenciaRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,8 @@ class PersonalAsistenciaController extends AbstractController {
 	 * @Route("/{legajo}/asistencias", name="personal_asistencias", methods={"GET"})
 	 */
 	public function asistencias(
+		PaginatorInterface $paginator,
+		Request $request,
 		PersonalAsistenciaRepository $personalAsistenciaRepository,
 		Legajo $legajo
 	): Response {
@@ -41,7 +44,13 @@ class PersonalAsistenciaController extends AbstractController {
 			return $this->redirectToRoute( 'persona_index' );
 		}
 
-		$asitencias = $personalAsistenciaRepository->findBy( [ 'legajo' => $legajo->getId() ] );
+		$asitencias = $personalAsistenciaRepository->getQbAll( [ 'legajo' => $legajo->getId() ] );
+
+		$asitencias = $paginator->paginate(
+			$asitencias,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
 
 		return $this->render( 'personal_asistencia/asistencias_index.html.twig',
 			[
@@ -160,7 +169,8 @@ class PersonalAsistenciaController extends AbstractController {
 				'La asisencia se actualizó correctamente'
 			);
 
-			return $this->redirectToRoute( 'personal_asistencias', [ 'legajo' => $personalAsistencium->getLegajo()->getId() ] );
+			return $this->redirectToRoute( 'personal_asistencias',
+				[ 'legajo' => $personalAsistencium->getLegajo()->getId() ] );
 		}
 
 		return $this->render( 'personal_asistencia/editar.html.twig',

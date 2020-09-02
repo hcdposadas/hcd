@@ -6,6 +6,7 @@ use App\Entity\Legajo;
 use App\Entity\PersonalLicencia;
 use App\Form\PersonalLicenciaType;
 use App\Repository\PersonalLicenciaRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +29,12 @@ class PersonalLicenciaController extends AbstractController {
 	/**
 	 * @Route("/{legajo}/licencias", name="personal_licencias", methods={"GET"})
 	 */
-	public function licencias( PersonalLicenciaRepository $personalLicenciaRepository, Legajo $legajo ): Response {
+	public function licencias(
+		PaginatorInterface $paginator,
+		Request $request,
+		PersonalLicenciaRepository $personalLicenciaRepository,
+		Legajo $legajo
+	): Response {
 
 		if ( ! $legajo ) {
 			$this->get( 'session' )->getFlashBag()->add(
@@ -39,7 +45,13 @@ class PersonalLicenciaController extends AbstractController {
 			return $this->redirectToRoute( 'persona_index' );
 		}
 
-		$licencias = $personalLicenciaRepository->findBy( [ 'legajo' => $legajo ] );
+		$licencias = $personalLicenciaRepository->getQbAll( [ 'legajo' => $legajo ] );
+
+		$licencias = $paginator->paginate(
+			$licencias,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
 
 		return $this->render( 'personal_licencia/licencias_index.html.twig',
 			[
@@ -158,7 +170,8 @@ class PersonalLicenciaController extends AbstractController {
 				'La licencia se actualizó correctamente'
 			);
 
-			return $this->redirectToRoute( 'personal_licencias', [ 'legajo' => $personalLicencium->getLegajo()->getId() ] );
+			return $this->redirectToRoute( 'personal_licencias',
+				[ 'legajo' => $personalLicencium->getLegajo()->getId() ] );
 		}
 
 		return $this->render( 'personal_licencia/editar.html.twig',

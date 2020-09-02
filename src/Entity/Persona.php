@@ -4,13 +4,18 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Base\BaseClass;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Persona
  *
  * @ORM\Table(name="persona")
  * @ORM\Entity(repositoryClass="App\Repository\PersonaRepository")
+ * @UniqueEntity(
+ *     fields={"tipoDocumento", "dni"},
+ *     errorPath="dni",
+ *     message="Ya existe una persona con este tipo y Nro de DNI"
+ * )
  */
 class Persona extends BaseClass {
 

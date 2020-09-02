@@ -58,8 +58,8 @@
                             <th>Id</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>Dni</th>
-                            <th>Activo</th>
+                            <th>DNI</th>
+                            <th>Tiene Legajo</th>
                             <th>Fecha creación</th>
                             <th>Fecha actualización</th>
                             <th>Acciones</th>
@@ -72,7 +72,8 @@
                                 <td>{{ persona.nombre }}</td>
                                 <td>{{ persona.apellido }}</td>
                                 <td>{{ persona.dni }}</td>
-                                <td>{% if persona.activo %}Si{% else %}No{% endif %}</td>
+{#                                <td>{% if persona.activo %}Si{% else %}No{% endif %}</td>#}
+                                <td>{% if persona.legajo %}Si{% else %}No{% endif %}</td>
                                 <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>
@@ -85,7 +86,11 @@
                                     <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Declaración Jurada">
                                         <i class="fas fa-poll-h"></i>
                                     </a>
-{#                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}">#}
+
+                                    <a class="btn btn-default" href="{{ path('personal_novedades', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Novedades">
+                                        <i class="fas fa-newspaper"></i>
+                                    </a>
+{#                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Licencias">#}
 {#                                        <i class="fas fa-umbrella-beach"></i>#}
 {#                                    </a>#}
                                 </td>

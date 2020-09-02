@@ -123,7 +123,7 @@ class PersonalNovedad extends BaseClass
 	/**
 	 * @return string
 	 */
-	public function getArchivo(): string {
+	public function getArchivo(): ?string {
 		return $this->archivo;
 	}
 

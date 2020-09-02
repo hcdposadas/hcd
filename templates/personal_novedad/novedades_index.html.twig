@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ persona }} - Novedades{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Novedades</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Observación</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for novedad in novedades %}
+                            <tr>
+                                <td>{{ novedad.fecha ? novedad.fecha|date('Y-m-d') : '' }}</td>
+                                <td>{{ novedad.observacion | length > 50 ? novedad.observacion|slice(0, 50) ~ '...' : novedad.observacion }}</td>
+                                {# <td>{{ novedad.activo ? 'Yes' : 'No' }}</td> #}
+                                <td>{{ novedad.fechaCreacion ? novedad.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>{{ novedad.fechaActualizacion ? novedad.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('personal_novedad_show', {'id': novedad.id}) }}"><i
+                                                class="fa fa-eye"></i></a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('personal_novedad_editar', {'id': novedad.id}) }}"><i
+                                                class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No se encontraron declaraciones</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ path('persona_index') }}" class="btn btn-default">Volver</a>
+            <a href="{{ path('personal_novedad_nueva', {'legajo': persona.legajo.id}) }}" class="btn btn-primary">Nueva
+                Novedad</a>
+        </div>
+    </div>
+
+
+{% endblock %}

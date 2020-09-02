@@ -18,12 +18,12 @@ easy_admin:
             - '@EasyAdmin/form/bootstrap_4.html.twig'
             - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
         menu:
-            - { label: 'Sesión', entity: Sesion }
+            - { label: 'Sesión', entity: Sesion, icon: 'file-alt' }
             - { label: 'Proyecto BAE', entity: ProyectoBAE }
-            - { label: 'Moción', entity: Mocion }
+            - { label: 'Moción', entity: Mocion, icon: 'hand-paper' }
             - { label: 'Periodo Legislativo', entity: PeriodoLegislativo, icon: 'calendar' }
-            - Documento
-            - Parametro
+            - { label: 'Documentos', entity: Documento, icon: 'file' }
+            - { label: 'Parametro', entity: Parametro, icon: 'cog' }
             - Expediente
             - Dictamen
             - { label: 'Tipo Expediente', entity: TipoExpediente }
@@ -37,7 +37,7 @@ easy_admin:
             - Comision
             - Cargo
             - Dependencia
-            - Persona
+            - { label: 'Personas', entity: Persona, icon: 'user' }
             - { label: 'Tipo Relación Persona', entity: TipoRelacionPersona }
             - { label: 'Configuración', entity: Configuracion, icon: 'cog' }
             - { label: 'Usuarios', entity: Usuario, icon: 'users' }

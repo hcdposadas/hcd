@@ -6,12 +6,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Base\BaseClass;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * Legajo
  *
  * @ORM\Table(name="personal_legajo")
  * @ORM\Entity(repositoryClass="App\Repository\LegajoRepository")
+ * @UniqueEntity(
+ *     fields={"numero"},
+ *     errorPath="numero",
+ *     message="Este legajo ya existe"
+ * )
  */
 class Legajo extends BaseClass {
 	/**

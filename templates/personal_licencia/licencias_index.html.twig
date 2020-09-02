@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ persona }} - Licencias{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Licencias</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Fecha Desde</th>
+                            <th>Fecha Hasta</th>
+                            <th>Se reincorpora el</th>
+                            <th>Art.</th>
+                            <th>Activo</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for personal_licencium in personal_licencias %}
+                            <tr>
+
+                                <td>{{ personal_licencium.fechaDesde ? personal_licencium.fechaDesde|date('Y-m-d') : '' }}</td>
+                                <td>{{ personal_licencium.fechaHasta ? personal_licencium.fechaHasta|date('Y-m-d') : '' }}</td>
+                                <td>{{ personal_licencium.fechaReincorporacion ? personal_licencium.fechaReincorporacion|date('Y-m-d') : '' }}</td>
+                                <td>{{ personal_licencium.articulo }}</td>
+
+                                <td>{{ personal_licencium.activo ? 'Si' : 'No' }}</td>
+
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('personal_licencia_show', {'id': personal_licencium.id}) }}"><i
+                                                class="fa fa-eye"></i></a>
+                                    <a class="btn btn-default" href="{{ path('personal_licencia_editar', {'id': personal_licencium.id}) }}"><i
+                                                class="fa fa-edit"></i></a></a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6">No se encontraron declaraciones</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ path('persona_index') }}" class="btn btn-default">Volver</a>
+            <a href="{{ path('personal_licencia_nueva', {'legajo': persona.legajo.id}) }}" class="btn btn-primary">Nueva
+                Licencia</a>
+        </div>
+    </div>
+
+
+{% endblock %}

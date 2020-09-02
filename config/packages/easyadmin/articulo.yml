@@ -1,0 +1,16 @@
+easy_admin:
+    entities:
+        PersonalArticulo:
+            class: App\Entity\PersonalArticulo
+            form:
+                fields:
+                    - { property: 'numero' }
+                    - { property: 'descripcion' }
+                    - { property: 'activo' }
+
+            edit:
+                title:  'Editar Artículo'
+            new:
+                title:  'Alta Artículo'
+            list:
+                title:  'Artículo'

@@ -41,6 +41,10 @@ yarn-error.log
 !public/uploads/textos_definitivos/anexos/.gitkeep
 /public/uploads/sis_images/*
 !public/uploads/sis_images/.gitkeep
+/public/uploads/rrhh/licencias/*
+!public/uploads/rrhh/licencias/.gitkeep
+/public/uploads/rrhh/novedades/*
+!public/uploads/rrhh/novedades/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim

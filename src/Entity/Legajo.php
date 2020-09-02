@@ -81,11 +81,17 @@ class Legajo extends BaseClass {
 	 */
 	private $personalDeclaracionJuradas;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PersonalLicencia::class, mappedBy="legajo")
+     */
+    private $personalLicencias;
+
 	public function __construct() {
-		$this->personalNovedads           = new ArrayCollection();
-		$this->personalAsistencias        = new ArrayCollection();
-		$this->personalDeclaracionJuradas = new ArrayCollection();
-	}
+               		$this->personalNovedads           = new ArrayCollection();
+               		$this->personalAsistencias        = new ArrayCollection();
+               		$this->personalDeclaracionJuradas = new ArrayCollection();
+                 $this->personalLicencias = new ArrayCollection();
+               	}
 
 	/**
 	 * Get id
@@ -93,8 +99,8 @@ class Legajo extends BaseClass {
 	 * @return int
 	 */
 	public function getId() {
-		return $this->id;
-	}
+               		return $this->id;
+               	}
 
 	/**
 	 * Set numero
@@ -104,10 +110,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setNumero( $numero ) {
-		$this->numero = $numero;
-
-		return $this;
-	}
+               		$this->numero = $numero;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Get numero
@@ -115,8 +121,8 @@ class Legajo extends BaseClass {
 	 * @return string
 	 */
 	public function getNumero() {
-		return $this->numero;
-	}
+               		return $this->numero;
+               	}
 
 	/**
 	 * Set numeroTarjeta
@@ -126,10 +132,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setNumeroTarjeta( $numeroTarjeta ) {
-		$this->numeroTarjeta = $numeroTarjeta;
-
-		return $this;
-	}
+               		$this->numeroTarjeta = $numeroTarjeta;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Get numeroTarjeta
@@ -137,8 +143,8 @@ class Legajo extends BaseClass {
 	 * @return string
 	 */
 	public function getNumeroTarjeta() {
-		return $this->numeroTarjeta;
-	}
+               		return $this->numeroTarjeta;
+               	}
 
 
 	/**
@@ -149,10 +155,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setObservaciones( $observaciones ) {
-		$this->observaciones = $observaciones;
-
-		return $this;
-	}
+               		$this->observaciones = $observaciones;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Get observaciones
@@ -160,8 +166,8 @@ class Legajo extends BaseClass {
 	 * @return string
 	 */
 	public function getObservaciones() {
-		return $this->observaciones;
-	}
+               		return $this->observaciones;
+               	}
 
 	/**
 	 * Set fechaCreacion
@@ -171,10 +177,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setFechaCreacion( $fechaCreacion ) {
-		$this->fechaCreacion = $fechaCreacion;
-
-		return $this;
-	}
+               		$this->fechaCreacion = $fechaCreacion;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Set fechaActualizacion
@@ -184,10 +190,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setFechaActualizacion( $fechaActualizacion ) {
-		$this->fechaActualizacion = $fechaActualizacion;
-
-		return $this;
-	}
+               		$this->fechaActualizacion = $fechaActualizacion;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Set creadoPor
@@ -197,10 +203,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
-		$this->creadoPor = $creadoPor;
-
-		return $this;
-	}
+               		$this->creadoPor = $creadoPor;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Set actualizadoPor
@@ -210,10 +216,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
-		$this->actualizadoPor = $actualizadoPor;
-
-		return $this;
-	}
+               		$this->actualizadoPor = $actualizadoPor;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Set persona
@@ -223,10 +229,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setPersona( \App\Entity\Persona $persona = null ) {
-		$this->persona = $persona;
-
-		return $this;
-	}
+               		$this->persona = $persona;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Get persona
@@ -234,8 +240,8 @@ class Legajo extends BaseClass {
 	 * @return \App\Entity\Persona
 	 */
 	public function getPersona() {
-		return $this->persona;
-	}
+               		return $this->persona;
+               	}
 
 	/**
 	 * Set fechaIngreso
@@ -245,10 +251,10 @@ class Legajo extends BaseClass {
 	 * @return Legajo
 	 */
 	public function setFechaIngreso( $fechaIngreso ) {
-		$this->fechaIngreso = $fechaIngreso;
-
-		return $this;
-	}
+               		$this->fechaIngreso = $fechaIngreso;
+               
+               		return $this;
+               	}
 
 	/**
 	 * Get fechaIngreso
@@ -256,90 +262,121 @@ class Legajo extends BaseClass {
 	 * @return \DateTime
 	 */
 	public function getFechaIngreso() {
-		return $this->fechaIngreso;
-	}
+               		return $this->fechaIngreso;
+               	}
 
 	/**
 	 * @return Collection|PersonalNovedad[]
 	 */
 	public function getPersonalNovedads(): Collection {
-		return $this->personalNovedads;
-	}
+               		return $this->personalNovedads;
+               	}
 
 	public function addPersonalNovedad( PersonalNovedad $personalNovedad ): self {
-		if ( ! $this->personalNovedads->contains( $personalNovedad ) ) {
-			$this->personalNovedads[] = $personalNovedad;
-			$personalNovedad->setLegajo( $this );
-		}
-
-		return $this;
-	}
+               		if ( ! $this->personalNovedads->contains( $personalNovedad ) ) {
+               			$this->personalNovedads[] = $personalNovedad;
+               			$personalNovedad->setLegajo( $this );
+               		}
+               
+               		return $this;
+               	}
 
 	public function removePersonalNovedad( PersonalNovedad $personalNovedad ): self {
-		if ( $this->personalNovedads->contains( $personalNovedad ) ) {
-			$this->personalNovedads->removeElement( $personalNovedad );
-			// set the owning side to null (unless already changed)
-			if ( $personalNovedad->getLegajo() === $this ) {
-				$personalNovedad->setLegajo( null );
-			}
-		}
-
-		return $this;
-	}
+               		if ( $this->personalNovedads->contains( $personalNovedad ) ) {
+               			$this->personalNovedads->removeElement( $personalNovedad );
+               			// set the owning side to null (unless already changed)
+               			if ( $personalNovedad->getLegajo() === $this ) {
+               				$personalNovedad->setLegajo( null );
+               			}
+               		}
+               
+               		return $this;
+               	}
 
 	/**
 	 * @return Collection|PersonalAsistencia[]
 	 */
 	public function getPersonalAsistencias(): Collection {
-		return $this->personalAsistencias;
-	}
+               		return $this->personalAsistencias;
+               	}
 
 	public function addPersonalAsistencia( PersonalAsistencia $personalAsistencia ): self {
-		if ( ! $this->personalAsistencias->contains( $personalAsistencia ) ) {
-			$this->personalAsistencias[] = $personalAsistencia;
-			$personalAsistencia->setLegajo( $this );
-		}
-
-		return $this;
-	}
+               		if ( ! $this->personalAsistencias->contains( $personalAsistencia ) ) {
+               			$this->personalAsistencias[] = $personalAsistencia;
+               			$personalAsistencia->setLegajo( $this );
+               		}
+               
+               		return $this;
+               	}
 
 	public function removePersonalAsistencia( PersonalAsistencia $personalAsistencia ): self {
-		if ( $this->personalAsistencias->contains( $personalAsistencia ) ) {
-			$this->personalAsistencias->removeElement( $personalAsistencia );
-			// set the owning side to null (unless already changed)
-			if ( $personalAsistencia->getLegajo() === $this ) {
-				$personalAsistencia->setLegajo( null );
-			}
-		}
-
-		return $this;
-	}
+               		if ( $this->personalAsistencias->contains( $personalAsistencia ) ) {
+               			$this->personalAsistencias->removeElement( $personalAsistencia );
+               			// set the owning side to null (unless already changed)
+               			if ( $personalAsistencia->getLegajo() === $this ) {
+               				$personalAsistencia->setLegajo( null );
+               			}
+               		}
+               
+               		return $this;
+               	}
 
 	/**
 	 * @return Collection|PersonalDeclaracionJurada[]
 	 */
 	public function getPersonalDeclaracionJuradas(): Collection {
-		return $this->personalDeclaracionJuradas;
-	}
+               		return $this->personalDeclaracionJuradas;
+               	}
 
 	public function addPersonalDeclaracionJurada( PersonalDeclaracionJurada $personalDeclaracionJurada ): self {
-		if ( ! $this->personalDeclaracionJuradas->contains( $personalDeclaracionJurada ) ) {
-			$this->personalDeclaracionJuradas[] = $personalDeclaracionJurada;
-			$personalDeclaracionJurada->setLegajo( $this );
-		}
-
-		return $this;
-	}
+               		if ( ! $this->personalDeclaracionJuradas->contains( $personalDeclaracionJurada ) ) {
+               			$this->personalDeclaracionJuradas[] = $personalDeclaracionJurada;
+               			$personalDeclaracionJurada->setLegajo( $this );
+               		}
+               
+               		return $this;
+               	}
 
 	public function removePersonalDeclaracionJurada( PersonalDeclaracionJurada $personalDeclaracionJurada ): self {
-		if ( $this->personalDeclaracionJuradas->contains( $personalDeclaracionJurada ) ) {
-			$this->personalDeclaracionJuradas->removeElement( $personalDeclaracionJurada );
-			// set the owning side to null (unless already changed)
-			if ( $personalDeclaracionJurada->getLegajo() === $this ) {
-				$personalDeclaracionJurada->setLegajo( null );
-			}
-		}
+               		if ( $this->personalDeclaracionJuradas->contains( $personalDeclaracionJurada ) ) {
+               			$this->personalDeclaracionJuradas->removeElement( $personalDeclaracionJurada );
+               			// set the owning side to null (unless already changed)
+               			if ( $personalDeclaracionJurada->getLegajo() === $this ) {
+               				$personalDeclaracionJurada->setLegajo( null );
+               			}
+               		}
+               
+               		return $this;
+               	}
 
-		return $this;
-	}
+    /**
+     * @return Collection|PersonalLicencia[]
+     */
+    public function getPersonalLicencias(): Collection
+    {
+        return $this->personalLicencias;
+    }
+
+    public function addPersonalLicencia(PersonalLicencia $personalLicencia): self
+    {
+        if (!$this->personalLicencias->contains($personalLicencia)) {
+            $this->personalLicencias[] = $personalLicencia;
+            $personalLicencia->setLegajo($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonalLicencia(PersonalLicencia $personalLicencia): self
+    {
+        if ($this->personalLicencias->contains($personalLicencia)) {
+            $this->personalLicencias->removeElement($personalLicencia);
+            // set the owning side to null (unless already changed)
+            if ($personalLicencia->getLegajo() === $this) {
+                $personalLicencia->setLegajo(null);
+            }
+        }
+
+        return $this;
+    }
 }

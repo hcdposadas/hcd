@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PersonalLicencia{% endblock %}
+
+{% block body %}
+    <h1>Edit PersonalLicencia</h1>
+
+    {{ include('personal_licencia/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('personal_licencia_index') }}">back to list</a>
+
+    {{ include('personal_licencia/_delete_form.html.twig') }}
+{% endblock %}

@@ -17,6 +17,7 @@ parameters:
     app.path.textos_definitivos_anexos: '/uploads/textos_definitivos/anexos'
     app.path.sis_images: '/uploads/sis_images'
     app.path.rrhh_novedad: '/uploads/rrhh/novedades'
+    app.path.rrhh_licencia: '/uploads/rrhh/licencias'
 
 services:
     # default configuration for services in *this* file

@@ -24,6 +24,7 @@ easy_admin:
             - { label: 'Periodo Legislativo', entity: PeriodoLegislativo, icon: 'calendar' }
             - { label: 'Documentos', entity: Documento, icon: 'file' }
             - { label: 'Parametro', entity: Parametro, icon: 'cog' }
+            - { label: 'Artículo', entity: PersonalArticulo, icon: 'umbrella' }
             - Expediente
             - Dictamen
             - { label: 'Tipo Expediente', entity: TipoExpediente }

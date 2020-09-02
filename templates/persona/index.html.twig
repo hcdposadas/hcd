@@ -16,7 +16,8 @@
                 <div class="card-header">
                     <h3 class="card-title">Filtros</h3>
                     <div class="card-tools pull-right">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -72,7 +73,7 @@
                                 <td>{{ persona.nombre }}</td>
                                 <td>{{ persona.apellido }}</td>
                                 <td>{{ persona.dni }}</td>
-{#                                <td>{% if persona.activo %}Si{% else %}No{% endif %}</td>#}
+                                {# <td>{% if persona.activo %}Si{% else %}No{% endif %}</td> #}
                                 <td>{% if persona.legajo %}Si{% else %}No{% endif %}</td>
                                 <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
@@ -83,16 +84,26 @@
                                     <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Declaración Jurada">
-                                        <i class="fas fa-poll-h"></i>
-                                    </a>
+                                    {% if persona.legajo %}
 
-                                    <a class="btn btn-default" href="{{ path('personal_novedades', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Novedades">
-                                        <i class="fas fa-newspaper"></i>
-                                    </a>
-{#                                    <a class="btn btn-default" href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}" data-toggle="tooltip" title="Licencias">#}
-{#                                        <i class="fas fa-umbrella-beach"></i>#}
-{#                                    </a>#}
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}"
+                                           data-toggle="tooltip" title="Declaración Jurada">
+                                            <i class="fas fa-poll-h"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_novedades', { 'persona': persona.id }) }}"
+                                           data-toggle="tooltip" title="Novedades">
+                                            <i class="fas fa-newspaper"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_licencias', { 'legajo': persona.legajo.id }) }}"
+                                           data-toggle="tooltip" title="Licencias">
+                                            <i class="fas fa-umbrella-beach"></i>
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

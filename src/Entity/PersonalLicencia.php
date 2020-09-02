@@ -12,29 +12,28 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass=PersonalLicenciaRepository::class)
  * @Vich\Uploadable
  */
-class PersonalLicencia extends BaseClass
-{
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+class PersonalLicencia extends BaseClass {
+	/**
+	 * @ORM\Id()
+	 * @ORM\GeneratedValue()
+	 * @ORM\Column(type="integer")
+	 */
+	private $id;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $fechaDesde;
+	/**
+	 * @ORM\Column(type="date")
+	 */
+	private $fechaDesde;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $fechaHasta;
+	/**
+	 * @ORM\Column(type="date")
+	 */
+	private $fechaHasta;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=PersonalArticulo::class)
-     */
-    private $articulo;
+	/**
+	 * @ORM\ManyToOne(targetEntity=PersonalArticulo::class)
+	 */
+	private $articulo;
 
 	/**
 	 * @ORM\Column(type="string", length=255, nullable=true)
@@ -47,6 +46,16 @@ class PersonalLicencia extends BaseClass
 	 * @var File
 	 */
 	private $archivoFile;
+
+	/**
+	 * @ORM\Column(type="date")
+	 */
+	private $fechaReincorporacion;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity=Legajo::class, inversedBy="personalLicencias")
+	 */
+	private $legajo;
 
 	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -65,7 +74,8 @@ class PersonalLicencia extends BaseClass
 		if ( $file ) {
 			// It is required that at least one field changes if you are using doctrine
 			// otherwise the event listeners won't be called and the file is lost
-//			$this->updatedAt = new \DateTimeImmutable();
+			//			$this->updatedAt = new \DateTimeImmutable();
+			$this->fechaActualizacion = new \DateTime( 'now' );
 		}
 
 		return $this;
@@ -78,59 +88,72 @@ class PersonalLicencia extends BaseClass
 		return $this->archivoFile;
 	}
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	public function getId(): ?int {
+		return $this->id;
+	}
 
-    public function getFechaDesde(): ?\DateTimeInterface
-    {
-        return $this->fechaDesde;
-    }
+	public function getFechaDesde(): ?\DateTimeInterface {
+		return $this->fechaDesde;
+	}
 
-    public function setFechaDesde(\DateTimeInterface $fechaDesde): self
-    {
-        $this->fechaDesde = $fechaDesde;
+	public function setFechaDesde( \DateTimeInterface $fechaDesde ): self {
+		$this->fechaDesde = $fechaDesde;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getFechaHasta(): ?\DateTimeInterface
-    {
-        return $this->fechaHasta;
-    }
+	public function getFechaHasta(): ?\DateTimeInterface {
+		return $this->fechaHasta;
+	}
 
-    public function setFechaHasta(\DateTimeInterface $fechaHasta): self
-    {
-        $this->fechaHasta = $fechaHasta;
+	public function setFechaHasta( \DateTimeInterface $fechaHasta ): self {
+		$this->fechaHasta = $fechaHasta;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getArticulo(): ?PersonalArticulo
-    {
-        return $this->articulo;
-    }
+	public function getArticulo(): ?PersonalArticulo {
+		return $this->articulo;
+	}
 
-    public function setArticulo(?PersonalArticulo $articulo): self
-    {
-        $this->articulo = $articulo;
+	public function setArticulo( ?PersonalArticulo $articulo ): self {
+		$this->articulo = $articulo;
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * @return string
 	 */
-	public function getArchivo(): string {
+	public function getArchivo(): ?string {
 		return $this->archivo;
 	}
 
 	/**
 	 * @param string $archivo
 	 */
-	public function setArchivo( string $archivo ): void {
+	public function setArchivo( ?string $archivo ): void {
 		$this->archivo = $archivo;
+	}
+
+	public function getFechaReincorporacion(): ?\DateTimeInterface {
+		return $this->fechaReincorporacion;
+	}
+
+	public function setFechaReincorporacion( \DateTimeInterface $fechaReincorporacion ): self {
+		$this->fechaReincorporacion = $fechaReincorporacion;
+
+		return $this;
+	}
+
+	public function getLegajo(): ?Legajo {
+		return $this->legajo;
+	}
+
+	public function setLegajo( ?Legajo $legajo ): self {
+		$this->legajo = $legajo;
+
+		return $this;
 	}
 
 

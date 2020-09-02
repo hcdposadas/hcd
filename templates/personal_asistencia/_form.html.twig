@@ -1,0 +1,14 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-12">
+        {{ form_row(form.fecha) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">{{ form_row(form.horaEntrada) }}</div>
+    <div class="col-6">{{ form_row(form.horaSalida) }}</div>
+</div>
+
+
+<button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+{{ form_end(form) }}

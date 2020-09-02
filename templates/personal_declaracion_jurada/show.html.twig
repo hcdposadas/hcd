@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <th>FechaPresentacion</th>
-                <td>{{ personal_declaracion_jurada.fechaPresentacion ? personal_declaracion_jurada.fechaPresentacion|date('Y-m-d') : '' }}</td>
+                <td>{{ personal_declaracion_jurada.fechaPresentacion ? personal_declaracion_jurada.fechaPresentacion|date('d/m/Y') : '' }}</td>
             </tr>
             <tr>
                 <th>EstadoCivil</th>
@@ -57,11 +57,11 @@
             </tr>
             <tr>
                 <th>FechaCreacion</th>
-                <td>{{ personal_declaracion_jurada.fechaCreacion ? personal_declaracion_jurada.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ personal_declaracion_jurada.fechaCreacion ? personal_declaracion_jurada.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>FechaActualizacion</th>
-                <td>{{ personal_declaracion_jurada.fechaActualizacion ? personal_declaracion_jurada.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ personal_declaracion_jurada.fechaActualizacion ? personal_declaracion_jurada.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
             </tr>
         </tbody>
     </table>

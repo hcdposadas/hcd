@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <th>Fecha nacimiento</th>
-            <td>{% if persona.fechaNacimiento %}{{ persona.fechaNacimiento|date('Y-m-d') }}{% endif %}</td>
+            <td>{% if persona.fechaNacimiento %}{{ persona.fechaNacimiento|date('d/m/Y') }}{% endif %}</td>
         </tr>
         <tr>
             <th>Telefono</th>
@@ -55,11 +55,11 @@
         </tr>
         <tr>
             <th>Fecha creación</th>
-            <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
         </tr>
         <tr>
             <th>Fecha actualización</th>
-            <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
         </tr>
         </tbody>
     </table>

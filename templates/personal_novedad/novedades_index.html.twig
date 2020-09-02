@@ -23,11 +23,11 @@
                         <tbody>
                         {% for novedad in novedades %}
                             <tr>
-                                <td>{{ novedad.fecha ? novedad.fecha|date('Y-m-d') : '' }}</td>
+                                <td>{{ novedad.fecha ? novedad.fecha|date('d/m/Y') : '' }}</td>
                                 <td>{{ novedad.observacion | length > 50 ? novedad.observacion|slice(0, 50) ~ '...' : novedad.observacion }}</td>
                                 {# <td>{{ novedad.activo ? 'Yes' : 'No' }}</td> #}
-                                <td>{{ novedad.fechaCreacion ? novedad.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-                                <td>{{ novedad.fechaActualizacion ? novedad.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>{{ novedad.fechaCreacion ? novedad.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                                <td>{{ novedad.fechaActualizacion ? novedad.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
                                 <td>
                                     <a class="btn btn-default"
                                        href="{{ path('personal_novedad_show', {'id': novedad.id}) }}"><i

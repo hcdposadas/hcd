@@ -23,11 +23,11 @@
             <tr>
                 <td>{{ personal_novedad.id }}</td>
                 <td>{{ personal_novedad.observacion }}</td>
-                <td>{{ personal_novedad.fecha ? personal_novedad.fecha|date('Y-m-d') : '' }}</td>
+                <td>{{ personal_novedad.fecha ? personal_novedad.fecha|date('d/m/Y') : '' }}</td>
                 <td>{{ personal_novedad.archivo }}</td>
                 <td>{{ personal_novedad.activo ? 'Yes' : 'No' }}</td>
-                <td>{{ personal_novedad.fechaCreacion ? personal_novedad.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ personal_novedad.fechaActualizacion ? personal_novedad.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ personal_novedad.fechaCreacion ? personal_novedad.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>{{ personal_novedad.fechaActualizacion ? personal_novedad.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('personal_novedad_show', {'id': personal_novedad.id}) }}">show</a>
                     <a href="{{ path('personal_novedad_edit', {'id': personal_novedad.id}) }}">edit</a>

@@ -60,6 +60,15 @@ class PersonalDeclaracionJurada1Type extends AbstractType {
 						PersonalDeclaracionJurada::NIVEL_ESTUDIOS_UNIVERSITARIO_INCOMPLETO => PersonalDeclaracionJurada::NIVEL_ESTUDIOS_UNIVERSITARIO_INCOMPLETO,
 					],
 				] )
+			->add( 'tipoAsistencia',
+				ChoiceType::class,
+				[
+					'label'   => 'Tipo Asistencia',
+					'choices' => [
+						PersonalDeclaracionJurada::TIPO_ASISTENCIA_CONTINUO    => PersonalDeclaracionJurada::TIPO_ASISTENCIA_CONTINUO,
+						PersonalDeclaracionJurada::TIPO_ASISTENCIA_DISCONTINUO => PersonalDeclaracionJurada::TIPO_ASISTENCIA_DISCONTINUO,
+					],
+				] )
 			->add( 'titulo',
 				TextType::class,
 				[
@@ -101,7 +110,7 @@ class PersonalDeclaracionJurada1Type extends AbstractType {
 
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver->setDefaults( [
-			'data_class'         => PersonalDeclaracionJurada::class
+			'data_class' => PersonalDeclaracionJurada::class
 		] );
 	}
 }

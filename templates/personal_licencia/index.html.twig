@@ -22,12 +22,12 @@
         {% for personal_licencium in personal_licencias %}
             <tr>
                 <td>{{ personal_licencium.id }}</td>
-                <td>{{ personal_licencium.fechaDesde ? personal_licencium.fechaDesde|date('Y-m-d') : '' }}</td>
-                <td>{{ personal_licencium.fechaHasta ? personal_licencium.fechaHasta|date('Y-m-d') : '' }}</td>
+                <td>{{ personal_licencium.fechaDesde ? personal_licencium.fechaDesde|date('d/m/Y') : '' }}</td>
+                <td>{{ personal_licencium.fechaHasta ? personal_licencium.fechaHasta|date('d/m/Y') : '' }}</td>
                 <td>{{ personal_licencium.archivo }}</td>
                 <td>{{ personal_licencium.activo ? 'Yes' : 'No' }}</td>
-                <td>{{ personal_licencium.fechaCreacion ? personal_licencium.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ personal_licencium.fechaActualizacion ? personal_licencium.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ personal_licencium.fechaCreacion ? personal_licencium.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>{{ personal_licencium.fechaActualizacion ? personal_licencium.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('personal_licencia_show', {'id': personal_licencium.id}) }}">show</a>
                     <a href="{{ path('personal_licencia_edit', {'id': personal_licencium.id}) }}">edit</a>

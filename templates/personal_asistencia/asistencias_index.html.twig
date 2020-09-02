@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asistencia - {{ persona }} - Horario:  {{ persona.legajo.personalDeclaracionJuradas.last.tipoAsistencia }}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Asistencia</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+
+                            <th>Fecha</th>
+                            <th>Hora Entrada</th>
+                            <th>Hora Salida</th>
+
+
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for personal_asistencium in personal_asistencias %}
+                            <tr>
+
+                                <td>{{ personal_asistencium.fecha ? personal_asistencium.fecha|date('d/m/Y') : '' }}</td>
+                                <td>{{ personal_asistencium.horaEntrada ? personal_asistencium.horaEntrada|date('H:i:s') : '' }}</td>
+                                <td>{{ personal_asistencium.horaSalida ? personal_asistencium.horaSalida|date('H:i:s') : '' }}</td>
+
+
+
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('personal_asistencia_show', {'id': personal_asistencium.id}) }}"><i
+                                                class="fa fa-eye"></i></a>
+                                    <a class="btn btn-default" href="{{ path('personal_asistencia_editar', {'id': personal_asistencium.id}) }}"><i
+                                                class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No se encontraron asistencias</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" href="{{ path('personal_asistencia_nuevo', {'legajo': persona.legajo.id}) }}">Nuevo
+        registro</a>
+{% endblock %}

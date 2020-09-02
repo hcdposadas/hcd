@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asistencia - {{ personal_asistencium.legajo.persona }}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Datos de la Asistencia</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table ">
+                        <tbody>
+
+                        <tr>
+                            <th>Fecha</th>
+                            <td>{{ personal_asistencium.fecha ? personal_asistencium.fecha|date('d/m/Y') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Hora Entrada</th>
+                            <td>{{ personal_asistencium.horaEntrada ? personal_asistencium.horaEntrada|date('H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Hora Salida</th>
+                            <td>{{ personal_asistencium.horaSalida ? personal_asistencium.horaSalida|date('H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Creación</th>
+                            <td>{{ personal_asistencium.fechaCreacion ? personal_asistencium.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Actualización</th>
+                            <td>{{ personal_asistencium.fechaActualizacion ? personal_asistencium.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Creado Por</th>
+                            <td>{{ personal_asistencium.creadoPor }}</td>
+                        </tr>
+                        <tr>
+                            <th >Actualizado Por</th>
+                            <td>{{ personal_asistencium.actualizadoPor }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="card-footer">
+
+
+                    <a class="btn btn-primary" href="{{ path('personal_asistencia_editar', {'id': personal_asistencium.id}) }}">Editar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('personal_asistencias', {'legajo': personal_asistencium.legajo.id}) }}">Volver</a>
+
+
+
+    {# {{ include('personal_asistencia/_delete_form.html.twig') }} #}
+{% endblock %}

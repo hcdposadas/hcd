@@ -103,6 +103,12 @@
                                            data-toggle="tooltip" title="Licencias">
                                             <i class="fas fa-umbrella-beach"></i>
                                         </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_asistencias', { 'legajo': persona.legajo.id }) }}"
+                                           data-toggle="tooltip" title="Asistencias">
+                                            <i class="fas fa-user-clock"></i>
+                                        </a>
                                     {% endif %}
                                 </td>
                             </tr>

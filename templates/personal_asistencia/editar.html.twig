@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Asistencia -  {{ personal_asistencium.legajo.persona }}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-user-clock"></i> Datos de la Asistencia</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ include('personal_asistencia/_form.html.twig', {'button_label': 'Actualizar'}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('personal_asistencias', {'legajo': personal_asistencium.legajo.id}) }}">Volver</a>
+
+    {# {{ include('personal_asistencia/_delete_form.html.twig') }} #}
+{% endblock %}

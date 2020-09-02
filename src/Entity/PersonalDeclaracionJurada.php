@@ -27,6 +27,8 @@ class PersonalDeclaracionJurada extends BaseClass {
 	const NIVEL_ESTUDIOS_TERCIARIO_INCOMPLETO = 'Terciario Incompleto';
 	const NIVEL_ESTUDIOS_UNIVERSITARIO_COMPLETO = 'Universitario Completo';
 	const NIVEL_ESTUDIOS_UNIVERSITARIO_INCOMPLETO = 'Universitario Incompleto';
+	const TIPO_ASISTENCIA_CONTINUO = 'Continuo';
+	const TIPO_ASISTENCIA_DISCONTINUO = 'Discontinuo';
 
 	/**
 	 * @ORM\Id()
@@ -112,6 +114,11 @@ class PersonalDeclaracionJurada extends BaseClass {
 	 * @ORM\OneToMany(targetEntity=PersonalDDJJConyuge::class, mappedBy="ddjj", cascade={"persist"})
 	 */
 	private $personalDDJJConyuges;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $tipoAsistencia = PersonalDeclaracionJurada::TIPO_ASISTENCIA_CONTINUO;
 
 //	public function __construct() {
 //		$this->personalDDJJPersonaACargos = new ArrayCollection();
@@ -364,5 +371,20 @@ class PersonalDeclaracionJurada extends BaseClass {
 	) {
 		$this->personalDDJJConyuges->removeElement( $personalDDJJConyuges );
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getTipoAsistencia() {
+		return $this->tipoAsistencia;
+	}
+
+	/**
+	 * @param mixed $tipoAsistencia
+	 */
+	public function setTipoAsistencia( $tipoAsistencia ): void {
+		$this->tipoAsistencia = $tipoAsistencia;
+	}
+
 
 }

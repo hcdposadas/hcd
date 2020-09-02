@@ -39,10 +39,7 @@ class PersonalAsistencia extends BaseClass
      */
     private $legajo;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $tipo;
+
 
     public function getId(): ?int
     {
@@ -93,18 +90,6 @@ class PersonalAsistencia extends BaseClass
     public function setLegajo(?Legajo $legajo): self
     {
         $this->legajo = $legajo;
-
-        return $this;
-    }
-
-    public function getTipo(): ?string
-    {
-        return $this->tipo;
-    }
-
-    public function setTipo(string $tipo): self
-    {
-        $this->tipo = $tipo;
 
         return $this;
     }

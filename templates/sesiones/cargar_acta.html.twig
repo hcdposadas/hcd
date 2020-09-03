@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Cargar Acta
+{% endblock title %}
+{% block body %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a href="{{ path('sesiones_index') }}" class="btn btn-default"> Volver</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ sesion.titulo }}</h3>
+                    <div class="card-tools pull-right">
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ form_widget(form.acta) }}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary margin"><i class="fa fa-save"></i> Guardar
+                        </button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Historial de Cambios
+                    </h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for log in sesion.logs %}
+                            {% if log.cambios.acta is defined %}
+                                <li>
+                                    Editado por <strong>{{ log.creadoPor }}</strong>
+                                    el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}
+                                    (<a href="{{ path('sesiones_show_log_cambios_acta', {'sesion': sesion.id, 'log': log.id}) }}">#{{ log.id }}</a>)
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('sesiones_index') }}" class="btn btn-default"> Volver</a>
+        </div>
+    </div>
+{% endblock body %}

@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        AreaAdministrativa:
+            class: App\Entity\AreaAdministrativa
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+            edit:
+                title:  'Editar Área Administrativa'
+            new:
+                title:  'Alta Área Administrativa'
+            list:
+                title:  'Área Administrativa'

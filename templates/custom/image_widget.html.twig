@@ -1,0 +1,51 @@
+{% extends '@VichUploader/Form/fields.html.twig' %}
+
+{%- block vich_file_row -%}
+    {%- set force_error = true -%}
+    {{- block('form_row') -}}
+{%- endblock -%}
+
+{%- block vich_file_widget -%}
+    <div class="vich-file">
+        {{- form_widget(form.file) -}}
+        {%- if form.delete is defined -%}
+            {{- form_row(form.delete) -}}
+        {%- endif -%}
+
+        {%- if download_uri -%}
+            <a href="{{ app_url ~ download_uri }}" target="_blank">
+                {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
+            </a>
+        {%- endif -%}
+    </div>
+{%- endblock -%}
+
+{%- block vich_image_row -%}
+    {%- set force_error = true -%}
+    {{- block('form_row') -}}
+{%- endblock -%}
+
+{%- block vich_image_widget -%}
+    <div class="vich-image">
+        {{- form_widget(form.file) -}}
+        {%- if form.delete is defined -%}
+            {{- form_row(form.delete) -}}
+        {%- endif -%}
+
+        {%- if image_uri -%}
+            <a href="{{ asset_helper is same as(true) ? asset(image_uri) : app_url ~ image_uri }}" target="_blank">
+                <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}" alt="" class="img-fluid" style="max-width: 15rem"/>
+            </a>
+        {%- endif -%}
+        {%- if download_uri -%}
+            <a href="{{ asset_helper is same as(true) ? asset(download_uri) : app_url ~ download_uri }}" download>
+                {{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}
+            </a>
+        {%- endif -%}
+    </div>
+{%- endblock -%}
+
+{%- block vich_file_label -%}
+    {%- set label = label|trans|default(label) -%}
+    {{- block('form_label') -}}
+{%- endblock -%}

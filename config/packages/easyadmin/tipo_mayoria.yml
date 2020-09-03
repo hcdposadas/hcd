@@ -1,0 +1,15 @@
+easy_admin:
+    entities:
+        TipoMayoria:
+            class: App\Entity\TipoMayoria
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'slug' }
+                    - { property: 'cantidades' }
+            edit:
+                title:  'Editar Tipo Mayoría'
+            new:
+                title:  'Alta Tipo Mayoría'
+            list:
+                title:  'Tipo Mayoría'

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HCD {{ ciudad_name }} | Olvidé la contraseña</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('css/login') }}
+    {% endblock %}
+
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="{{ path('app_homepage') }}"><b>H</b>CD</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Recuperar Contraseña</p>
+
+            {% for flashError in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+            {% endfor %}
+
+            {{ form_start(requestForm) }}
+{#                <div class="input-group mb-3">#}
+{#                    <input type="email" class="form-control" placeholder="Email">#}
+{#                    <div class="input-group-append">#}
+{#                        <div class="input-group-text">#}
+{#                            <span class="fas fa-envelope"></span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+            {{ form_row(requestForm.email) }}
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">Restablecer Contraseña</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            {{ form_end(requestForm) }}
+
+            <p class="mt-3 mb-1">
+                <a href="{{ path('app_login') }}">Volver al Inicio</a>
+            </p>
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+<!-- /.login-box -->
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('login') }}
+{% endblock %}
+</body>
+</html>

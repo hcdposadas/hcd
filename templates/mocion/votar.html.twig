@@ -1,0 +1,44 @@
+{#{% extends 'base.html.twig' %}#}
+{% extends 'sesion/autoridades.html.twig' %}
+
+{#{% block title %}#}
+    {#Moción {{ mocion }}#}
+{#{% endblock %}#}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Votar Moción {{ mocion }} - Expediente {{ mocion.expediente }}</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {% if mocion.expediente %}
+                    <div class="col-md-12">
+                        <h3>Expediente {{ mocion.expediente }}</h3>
+                        {{ mocion.fechaCreacion | date('d/m/Y') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header with-border">
+            <div class="card-title">Votación</div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if mocion.puedeVotarse %}
+                    <div class="col-md-12">
+                        <div class="well">
+                            <a href="{{ path('mocion_votar', {'id': mocion.id}) }}" class="btn btn-danger">Lanzar
+                                votación</a>
+                            <span class="text-muted">&nbsp;&nbsp;&nbsp; Se lanzará la votación por {{ segundos }}
+                                segundos.</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

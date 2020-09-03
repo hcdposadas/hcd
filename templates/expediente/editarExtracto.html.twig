@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expediente {{ expediente }} - Editar extracto
+{% endblock %}
+
+
+{% block body %}
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    <h1>Editar Extracto - {{ sesion.titulo }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Expediente {{ expediente }}</h3>
+        </div>
+        <div class="card-body">
+            {{ form_start(edit_form) }}
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(edit_form.extracto) }}
+                </div>
+                <div class="col-md-6">
+                    <p>&nbsp;</p>
+                    <ul>
+                        {% for log in logs %}
+                            {% if log.cambios.extracto is defined %}
+                                <li>
+                                    Editado por {{ log.creadoPor }}
+                                    el {{ log.fechaCreacion | date('d/m/Y H:i:s') }}
+                                    {#TODO agregar enlace o modal o tooltip con vista de cambios#}
+                                    {#(<a href="{{ path('expediente_show_edicion_extracto', {'expediente': expediente.id, 'logExpediente': log.id}) }}">#{{ log.id }}</a>)#}
+                                    (<a href="#">#{{ log.id }}</a>)
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            <div class="d-none">
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+    {#<a class="btn btn-default" href="{{ path('expediente_show', {'id': expediente.id}) }}">Volver</a>#}
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+{% endblock %}

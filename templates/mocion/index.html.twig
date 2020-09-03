@@ -1,0 +1,67 @@
+{#{% extends 'base.html.twig' %}#}
+{% extends 'sesion/autoridades.html.twig' %}
+
+{#{% block title %}#}
+    {#Mociones#}
+{#{% endblock title %}#}
+{% block body %}
+    <div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Mociones</h3>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <a class="btn btn-lg float-right btn-primary" href="{{ path('mocion_new', {'tipo': 'mocion-tipo-espontanea'}) }}">Nueva moción espontánea</a>
+                    <a class="btn btn-lg btn-default" href="{{ path('mocion_new') }}">Nueva moción</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Sesión</th>
+                            <th>Estado</th>
+                            <th>Resultado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for mocion in mocions %}
+                            <tr>
+                                <td><a href="{{ path('mocion_show', { 'id': mocion.id }) }}">{{ mocion.numero }}</a>
+                                </td>
+                                <td>{{ mocion.sesion }}</td>
+                                <td><span class="label label-{% if mocion.estado.slug == 'mocion-estados-para-votar' %}warning{% elseif mocion.estado.slug == 'mocion-estados-en-votacion' %}info{% else %}primary{% endif %}">{{ mocion.estado }}</span></td>
+                                <td>
+                                    {% if mocion.aprobado %}
+                                        <span class="label label-success">Aprobado</span>
+                                    {% else %}
+                                        <span class="label label-danger">No Aprobado</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">
+                                    <a class="btn btn-default" href="{{ path('mocion_show', { 'id': mocion.id }) }}">
+                                        <i class="fa fa-search"></i>
+                                    </a>
+                                    {% if mocion.editable %}
+                                        <a class="btn btn-default" href="{{ path('mocion_edit', { 'id': mocion.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% endif %}
+									<a class="btn btn-default" href="#" onclick="axios.get('{{ path('mocion_mostrar', { 'id': mocion.id }) }}'); return false" title="Mostrar resultado en pantalla">
+										<i class="fa fa-arrow-right" style="font-size: 0.5em; vertical-align: middle;"></i>
+                                        <i class="fa fa-desktop" style="font-size: 0.8em;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

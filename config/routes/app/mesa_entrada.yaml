@@ -1,0 +1,4 @@
+mesa_entrada_expediente:
+  resource: "routing/expediente.yaml"
+  prefix:   /expediente
+

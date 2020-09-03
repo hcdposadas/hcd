@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Incorporar a Sesión
+{% endblock title %}
+{% block body %}
+    <h1>Incorporar a Sesión</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Expediente {{ expediente }}</h3>
+        </div>
+        <div class="card-body">
+
+            <h3>Sesiones</h3>
+            <ul>
+                {% for bae in expedienteEnSesiones %}
+                    <li>{{ bae.boletinAsuntoEntrado.sesion }} -
+                        ({{ bae.boletinAsuntoEntrado.sesion.fecha | date('d/m/Y') }})
+
+                        {% if bae.incorporadoEnSesion %}
+
+                                <i class="fa fa-info-circle" data-toggle="tooltip" title="Creado el {{ bae.fechaCreacion | date('d/m/Y') }}"></i>
+
+                        {% endif %}
+                        <a class="btn btn-default"
+                           href="{{ path('proyectobae_edit' ,{'id': bae.id}) }}"><i
+                                    class="fa fa-edit"></i>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <br>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+
+{% endblock %}

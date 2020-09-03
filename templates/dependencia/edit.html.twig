@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Dependencia
+{% endblock title %}
+{% block body %}
+    <h1>Editar Dependencia</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dependencia</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            {{ form_end(edit_form) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <a class="btn btn-default pull-left" href="{{ path('dependencia_index') }}">Volver</a>
+        </div>
+    </div>
+
+{% endblock %}

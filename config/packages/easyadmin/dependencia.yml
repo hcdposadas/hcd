@@ -1,0 +1,13 @@
+easy_admin:
+    entities:
+        Dependencia:
+            class: App\Entity\Dependencia
+            form:
+                fields:
+                    - { property: 'nombre' }
+            edit:
+                title:  'Editar Dependencia'
+            new:
+                title:  'Alta Dependencia'
+            list:
+                title:  'Dependencia'

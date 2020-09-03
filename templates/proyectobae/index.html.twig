@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Proyectobaes
+{% endblock title %}
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Proyectobaes</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped data-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Esinformedem</th>
+                <th>Extracto</th>
+                <th>Activo</th>
+                <th>Fechacreacion</th>
+                <th>Fechaactualizacion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for proyectoBAE in proyectoBAEs %}
+            <tr>
+                <td><a href="{{ path('proyectobae_show', { 'id': proyectoBAE.id }) }}">{{ proyectoBAE.id }}</a></td>
+                <td>{% if proyectoBAE.esInformeDem %}Si{% else %}No{% endif %}</td>
+                <td>{{ proyectoBAE.extracto }}</td>
+                <td>{% if proyectoBAE.activo %}Si{% else %}No{% endif %}</td>
+                <td>{% if proyectoBAE.fechaCreacion %}{{ proyectoBAE.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                <td>{% if proyectoBAE.fechaActualizacion %}{{ proyectoBAE.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                <td>
+                        <a class="btn btn-default" href="{{ path('proyectobae_show', { 'id': proyectoBAE.id }) }}">
+                            <i class="fa fa-show"></i>
+                                                    </a>
+                        <a class="btn btn-default" href="{{ path('proyectobae_edit', { 'id': proyectoBAE.id }) }}">
+                            <i class="fa fa-edit"></i>
+                                                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+
+    <a class="btn btn-primary" href="{{ path('proyectobae_new') }}">Nuevo proyectoBAE</a>
+{% endblock %}

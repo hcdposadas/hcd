@@ -1,0 +1,16 @@
+easy_admin:
+    entities:
+        Parametro:
+            class: App\Entity\Parametro
+            list:
+                fields:
+                    - { property: 'slug' }
+                    - { property: 'grupo' }
+                    - { property: 'valor' }
+                    - { property: 'orden' }
+            form:
+                fields:
+                    - slug
+                    - grupo
+                    - valor
+                    - orden

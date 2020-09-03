@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expediente {{ expediente }} - Log de Edición de Expediente
+{% endblock %}
+
+
+{% block body %}
+    <h1>Log de Edición de Expediente</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Expediente {{ expediente }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ logExpediente.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha</th>
+                            <td>{{ logExpediente.fechaCreacion | date('d/m/Y H:i:s') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Editado por</th>
+                            <td>{{ logExpediente.creadoPor.persona }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <br>
+                    <table class="table">
+                        <tbody>
+                        {% for campo, cambio in logExpediente.cambios %}
+                            <tr>
+                                <th colspan="2"><h4><b>{{ campo }}</b></h4></th>
+                            </tr>
+                            <tr>
+                                <th>Valor anterior</th>
+                                <th>Valor nuevo</th>
+
+                            </tr>
+                            <tr>
+                                <td>{{ cambio.original | raw }}</td>
+                                <td>{{ cambio.nuevo | raw }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <hr>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-default" href="{{ path('expediente_editar_extracto', {'id': expediente.id}) }}">Volver</a>
+{% endblock %}

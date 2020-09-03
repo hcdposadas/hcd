@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PersonalAsistencia index{% endblock %}
+
+{% block body %}
+    <h1>PersonalAsistencia index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fecha</th>
+                <th>HoraEntrada</th>
+                <th>HoraSalida</th>
+
+                <th>Activo</th>
+                <th>FechaCreacion</th>
+                <th>FechaActualizacion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for personal_asistencium in personal_asistencias %}
+            <tr>
+                <td>{{ personal_asistencium.id }}</td>
+                <td>{{ personal_asistencium.fecha ? personal_asistencium.fecha|date('d/m/Y') : '' }}</td>
+                <td>{{ personal_asistencium.horaEntrada ? personal_asistencium.horaEntrada|date('H:i:s') : '' }}</td>
+                <td>{{ personal_asistencium.horaSalida ? personal_asistencium.horaSalida|date('H:i:s') : '' }}</td>
+
+                <td>{{ personal_asistencium.activo ? 'Yes' : 'No' }}</td>
+                <td>{{ personal_asistencium.fechaCreacion ? personal_asistencium.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>{{ personal_asistencium.fechaActualizacion ? personal_asistencium.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('personal_asistencia_show', {'id': personal_asistencium.id}) }}">show</a>
+                    <a href="{{ path('personal_asistencia_edit', {'id': personal_asistencium.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('personal_asistencia_new') }}">Create new</a>
+{% endblock %}

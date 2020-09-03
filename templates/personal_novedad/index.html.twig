@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PersonalNovedad index{% endblock %}
+
+{% block body %}
+    <h1>PersonalNovedad index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Observacion</th>
+                <th>Fecha</th>
+                <th>Archivo</th>
+                <th>Activo</th>
+                <th>FechaCreacion</th>
+                <th>FechaActualizacion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for personal_novedad in personal_novedads %}
+            <tr>
+                <td>{{ personal_novedad.id }}</td>
+                <td>{{ personal_novedad.observacion }}</td>
+                <td>{{ personal_novedad.fecha ? personal_novedad.fecha|date('d/m/Y') : '' }}</td>
+                <td>{{ personal_novedad.archivo }}</td>
+                <td>{{ personal_novedad.activo ? 'Yes' : 'No' }}</td>
+                <td>{{ personal_novedad.fechaCreacion ? personal_novedad.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>{{ personal_novedad.fechaActualizacion ? personal_novedad.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('personal_novedad_show', {'id': personal_novedad.id}) }}">show</a>
+                    <a href="{{ path('personal_novedad_edit', {'id': personal_novedad.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('personal_novedad_new') }}">Create new</a>
+{% endblock %}

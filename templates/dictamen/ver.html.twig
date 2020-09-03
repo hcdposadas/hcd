@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ver dictamen
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+    <h1>Dictamen {{ dictamen.expediente }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dictamen de {{ dictamen.tipoProyecto }}</h3>
+        </div>
+        <div class="card-body">
+
+            {{ dictamen.textoDictamen | raw }}
+
+            {% if dictamen.anexos.count > 0 %}
+                <p class="break">
+                <div class="text-center">
+                    {% for anexo in dictamen.anexos %}
+                        <h2 class="text-center">{{ anexo.descripcion }}</h2>
+                        <img class="img-responsive"
+                             src="{{ absolute_url( asset('uploads/dictamenes/anexos/') ~ anexo.anexo ) }}">
+                    {% endfor %}
+                </div>
+                </p>
+            {% endif %}
+
+            <h4>Firmantes</h4>
+            {% for firmante in dictamen.firmantes | sort %}
+                {{ firmante.iniciador | title}}<br>
+            {% endfor %}
+
+        </div>
+        <div class="card-footer">
+            {% if not is_granted('ROLE_SECRETARIO') %}
+            <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
+                <i class="fa fa-edit"></i> Editar</a>
+            {% endif %}
+            <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
+                <i class="fa fa-print"></i> Imprimir</a>
+        </div>
+    </div>
+
+
+    <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+{% endblock body %}

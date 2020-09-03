@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-box">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                {{ form_start(filter_type) }}
+                <div class="card-body">
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.tipoExpediente) }}
+                        {{ form_row(filter_type.textoDefinitivo) }}
+                        {{ form_row(filter_type.extracto) }}
+                        {{ form_row(filter_type.expediente) }}
+                        {{ form_row(filter_type.anio) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(filter_type.letra) }}
+                        {{ form_row(filter_type.fecha) }}
+                        {{ form_row(filter_type.registroMunicipal) }}
+                        {{ form_row(filter_type.iniciador) }}
+                        {{ form_row(filter_type.iniciadorParticular) }}
+                        {{ form_row(filter_type.dependencia) }}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                {{ form_end(filter_type) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Expedientes</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Expediente</th>
+                            <th>Año</th>
+                            <th>Letra</th>
+                            <th>Fecha</th>
+                            <th>Registro municipal</th>
+                            <th>Iniciador</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for expediente in expedientes %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
+                                </td>
+                                <td>{{ expediente.expediente }}</td>
+                                <td>{{ expediente.anio }}</td>
+                                <td>{{ expediente.letra }}</td>
+                                <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{{ expediente.registroMunicipal }}</td>
+                                <td>
+                                    {% if expediente.iniciadores.count > 0 %}
+                                        {% for iniciadorExpediente in expediente.iniciadores %}
+                                            {% if iniciadorExpediente.iniciador %}
+                                            {{ iniciadorExpediente.iniciador.cargoPersona }} -
+                                                {% endif %}
+                                        {% endfor %}
+                                    {% elseif expediente.iniciadorParticular %}
+                                        {{ expediente.iniciadorParticular.nombreCompleto }}
+                                    {% elseif expediente.dependencia %}
+                                        {{ expediente.dependencia }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_show', { 'id': expediente.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_edit', { 'id': expediente.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_timeline', {id: expediente.id}) }}">
+                                        <i class="fa fa-road"></i>
+                                    </a>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
+                                        <i class="fa fa-print"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+            {{ knp_pagination_render(expedientes) }}
+        </div>
+    </div>
+    <a class="btn btn-primary" href="{{ path('expediente_new') }}">Nuevo Expediente</a>
+{% endblock %}

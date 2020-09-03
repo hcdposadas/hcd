@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Recinto HCD {{ ciudad_name }} | Login</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('css/login') }}
+    {% endblock %}
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="{{ path('app_homepage') }}">RECINTO <b>HCD</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Inicie Sesión</p>
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+            {% for label, messages in app.flashes(['success','warning', 'error', 'info']) %}
+                {% for message in messages %}
+                    {% if label == 'error' %}
+                        {% set icon = 'fa-ban' %}
+                        {% set label = 'danger' %}
+                    {% elseif label == 'warning' %}
+                        {% set icon = 'fa-exclamation-triangle' %}
+                    {% elseif label == 'info' %}
+                        {% set icon = 'fa-info' %}
+                    {% else %}
+                        {% set icon = 'fa-check' %}
+                    {% endif %}
+                    <div class="alert alert-{{ label }} alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h5><i class="icon fas {{ icon }}"></i> Atención!</h5>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <form method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" value="{{ last_username }}" name="username"
+                           placeholder="Usuario" required autofocus>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+
+                    </div>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+                    <!-- /.col -->
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+<!-- /.login-box -->
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('login') }}
+{% endblock %}
+
+
+</body>
+</html>
+

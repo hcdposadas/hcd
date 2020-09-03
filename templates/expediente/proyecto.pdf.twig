@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+</head>
+<style>
+    body {
+        font-size: 16pt;
+    }
+
+    .break {
+        page-break-after: always;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+<body>
+<div style="margin-top: 10%; margin-left: 2cm; margin-left: 2cm">
+    {{ expediente.texto | raw }}
+    {% if expediente.anexos.count > 0 %}
+        <p class="break">
+        <h2 class="text-center">Anexos</h2>
+        {% for anexo in expediente.anexos %}
+            <img style="max-width: 100%; height: auto; max-height: 24cm;"
+                 src="{{ absolute_url( asset('uploads/expedientes/anexos/') ~ anexo.anexo ) }}">
+            {{ anexo.descripcion }}
+        {% endfor %}
+        </p>
+    {% endif %}
+</div>
+</body>
+</html>

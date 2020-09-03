@@ -1,0 +1,10 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: ['bootstrap_4_layout.html.twig', '@TetranzSelect2Entity/Form/fields.html.twig', 'custom\fields.html.twig', 'custom\image_widget.html.twig']
+    globals:
+        version: '%env(APP_VERSION)%'
+        id_usuario_presidente: '%env(ID_USUARIO_PRESIDENTE)%'
+        ciudad_name: '%env(CIUDAD_NAME)%'
+        app_color: '#%env(APP_COLOR)%'
+        kernelProjectDir: "%kernel.project_dir%"
+        app_url: '%env(APP_URL)%'

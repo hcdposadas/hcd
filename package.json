@@ -1,61 +1,42 @@
 {
-  "name": "hcd",
-  "version": "1.0.0",
-  "description": "Honorable Concejo Deliberante de la Ciudad de Posadas",
-  "main": "webpack.config.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "dev-server": "./node_modules/.bin/encore dev-server",
-    "dev": "./node_modules/.bin/encore dev",
-    "watch": "./node_modules/.bin/encore dev --watch",
-    "build": "./node_modules/.bin/encore production"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hcdposadas/hcd.git"
-  },
-  "author": "Honorable Concejo Deliberante de la Ciudad de Posadas",
-  "contributors": [
-    {
-      "name": "Matias Solis de la Torre",
-      "email": "matias.delatorre89@gmail.com"
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.29.0",
+        "core-js": "^3.0.0",
+        "dotenv-webpack": "^1.8.0",
+        "node-sass": "^4.14.1",
+        "regenerator-runtime": "^0.13.2",
+        "sass-loader": "^7.3.1",
+        "vue": "^2.6.11",
+        "vue-loader": "^15.9.2",
+        "vue-template-compiler": "^2.6.11",
+        "webpack-notifier": "^1.6.0"
     },
-    {
-      "name": "Raul Neis",
-      "email": "raulneis@gmail.com"
-    }
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hcdposadas/hcd/issues"
-  },
-  "homepage": "https://github.com/hcdposadas/hcd#readme",
-  "devDependencies": {
-    "@symfony/webpack-encore": "^0.19.0",
-    "bootstrap-sass": "^3.3.7",
-    "node-sass": "^4.7.2",
-    "sass-loader": "^6.0.6",
-    "vue": "^2.5.13",
-    "vue-loader": "^14.1.1",
-    "vue-template-compiler": "^2.5.13",
-    "webpack-notifier": "^1.5.1"
-  },
-  "dependencies": {
-    "admin-lte": "^2.4.3",
-    "axios": "^0.17.1",
-    "block-ui": "^2.70.1",
-    "bootstrap": "^3.3.7",
-    "express": "^4.16.2",
-    "font-awesome": "^4.7.0",
-    "ioredis": "^3.2.2",
-    "jquery": "^3.3.1",
-    "popper.js": "^1.12.9",
-    "socket.io": "^2.0.4",
-    "socket.io-client": "^2.0.4",
-    "vue-content-placeholders": "^0.2.1",
-    "vue-moment": "^3.2.0",
-    "vue-router": "^3.0.1"
-  }
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "admin-lte": "^3.0.4",
+        "axios": "^0.19.2",
+        "ckeditor": "^4.12.1",
+        "dotenv": "^8.2.0",
+        "ioredis": "^4.17.1",
+        "overlayscrollbars": "^1.12.0",
+        "socket.io": "^2.3.0",
+        "vue-moment": "^4.1.0"
+    },
+    "contributors": [
+        {
+            "name": "Matias Solis de la Torre",
+            "email": "matias.delatorre89@gmail.com"
+        },
+        {
+            "name": "Raul Neis",
+            "email": "raulneis@gmail.com"
+        }
+    ]
 }

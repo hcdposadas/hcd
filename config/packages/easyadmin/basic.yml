@@ -1,0 +1,46 @@
+#easy admin
+easy_admin:
+#    disabled_actions: ['delete']
+    site_name: '%env(APP_NAME)%'
+    show:
+        max_results: 20
+    list:
+        actions:
+            - { name: 'show', icon: 'eye', label: '' }
+            - { name: 'edit', icon: 'pencil', label: '' }
+#            - { name: 'delete', icon: 'trash', label: '' }
+
+    design:
+        brand_color: '#%env(APP_COLOR)%'
+        templates:
+            layout: 'easyadmin/default/layout.html.twig'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
+            - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+        menu:
+            - { label: 'Sesión', entity: Sesion, icon: 'file-alt' }
+            - { label: 'Proyecto BAE', entity: ProyectoBAE }
+            - { label: 'Moción', entity: Mocion, icon: 'hand-paper' }
+            - { label: 'Periodo Legislativo', entity: PeriodoLegislativo, icon: 'calendar' }
+            - { label: 'Documentos', entity: Documento, icon: 'file' }
+            - { label: 'Parametro', entity: Parametro, icon: 'cog' }
+            - { label: 'Artículo', entity: PersonalArticulo, icon: 'umbrella' }
+            - Expediente
+            - Dictamen
+            - { label: 'Tipo Expediente', entity: TipoExpediente }
+            - { label: 'Tipo Proyecto', entity: TipoProyecto }
+            - { label: 'Tipo Decreto', entity: TipoDecreto }
+            - { label: 'Tipo Mayoría', entity: TipoMayoria }
+            - { label: 'Tipo Tipo Orden de Pago', entity: TipoOrdenPago }
+            - Iniciador
+            - { label: 'Area Administrativa', entity: AreaAdministrativa }
+            - Bloque
+            - Comision
+            - Cargo
+            - Dependencia
+            - { label: 'Personas', entity: Persona, icon: 'user' }
+            - { label: 'Tipo Relación Persona', entity: TipoRelacionPersona }
+            - { label: 'Configuración', entity: Configuracion, icon: 'cog' }
+            - { label: 'Usuarios', entity: Usuario, icon: 'users' }
+        assets:
+            favicon: 'favicon.png'

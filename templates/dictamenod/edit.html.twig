@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Dictamen en sesión
+{% endblock title %}
+{% block body %}
+    <h1>Editar Dictamen en sesión</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dictamen {{ dictamenOD.dictamen }}</h3>
+        </div>
+        <div class="card-body">
+
+        {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <input class="btn btn-primary" type="submit" value="Guardar" />
+        {{ form_end(edit_form) }}
+        </div>
+    </div>
+
+<a class="btn btn-default" href="{{ path('dictamenod_incorporar_a_sesion', {'dictamen': dictamenOD.dictamen.id }) }}">Volver</a>
+
+
+
+{% endblock %}

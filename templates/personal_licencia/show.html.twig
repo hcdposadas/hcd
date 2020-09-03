@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ personal_licencium.legajo.persona }} - Licencia{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Datos de la Licencia</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table ">
+                        <tbody>
+                        <tr>
+                            <th>Fecha Desde</th>
+                            <td>{{ personal_licencium.fechaDesde ? personal_licencium.fechaDesde|date('d/m/Y') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Hasta</th>
+                            <td>{{ personal_licencium.fechaHasta ? personal_licencium.fechaHasta|date('d/m/Y') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Se reincorpora el</th>
+                            <td>{{ personal_licencium.fechaReincorporacion ? personal_licencium.fechaReincorporacion|date('d/m/Y') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Artīculo</th>
+                            <td>{{ personal_licencium.articulo }}</td>
+                        </tr>
+                        <tr>
+                            <th>Archivo</th>
+                            <td>
+                                {% if personal_licencium.archivo %}
+                                    <a href="{{ app_url }}{{ vich_uploader_asset(personal_licencium, 'archivoFile') }}"
+                                       target="_blank">
+                                        {{ personal_licencium.archivo }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Activo</th>
+                            <td>{{ personal_licencium.activo ? 'Si' : 'No' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Creacion</th>
+                            <td>{{ personal_licencium.fechaCreacion ? personal_licencium.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Actualizacion</th>
+                            <td>{{ personal_licencium.fechaActualizacion ? personal_licencium.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Creado Por</th>
+                            <td>{{ personal_licencium.creadoPor }}</td>
+                        </tr>
+                        <tr>
+                            <th>Actualizado Por</th>
+                            <td>{{ personal_licencium.actualizadoPor }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('personal_licencia_editar', {'id': personal_licencium.id}) }}"
+                       class="btn btn-primary">Editar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ path('personal_licencias', {'legajo': personal_licencium.legajo.id}) }}"
+               class="btn btn-default">Volver</a>
+
+        </div>
+    </div>
+
+
+
+
+
+    {# {{ include('personal_licencia/_delete_form.html.twig') }} #}
+{% endblock %}

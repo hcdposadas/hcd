@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyecto
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
+    <h1>Nuevo Proyecto</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Proyecto</h3>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-3">
+                    {{ form_row(form.tipoProyecto) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.fecha) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="help-block">Si el proyeto tuviera acompañantes, debe agregarlos aquí abajo.</p>
+                    {{ form_row(form.iniciadores) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(form.texto) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="help-block">Si el proyeto tuviera anexos, debe agregarlos aquí abajo. Los formatos
+                        admitidos son imágenes (.jpg, .png, .jpeg)</p>
+                    {{ form_row(form.anexos) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_widget(form.guardar) }}
+                    {{ form_widget(form.guardarYEnviar) }}
+                </div>
+            </div>
+
+
+            <div class="d-none">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        var submitConfirm = false;
+        var buttonPressed = '';
+        $("button[type=submit]").on('click', function () {
+            buttonPressed = $(this).text()
+        });
+        $(document).ready(function () {
+            $('.tipo-proyecto').change(function () {
+                var tipoId = $(this).val();
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ path("get_tipos_proyectos") }}',
+                    data: {id: tipoId},
+                    success: function (data) {
+                        console.log('data', data);
+                        CKEDITOR.instances.{{ form.texto.vars.id }}.setData(data);
+
+                    }
+                });
+            });
+
+            $('form[name="{{ form.vars.name }}"]').submit(function (event) {
+
+                if (buttonPressed == 'Guardar') {
+                    return true;
+                }
+
+                if (submitConfirm) {
+                    console.log('confirmo');
+                    // return true;
+                } else {
+                    console.log('no confirmo');
+                    event.preventDefault();
+                    if (buttonPressed == 'Guardar y enviar') {
+                        modalConfirm('¿Está seguro?', '<p>¿Realmente desea enviar el proyecto a Mesa de Entrada? <br> Esta acción es irreversible.</p>');
+                    }
+                }
+            });
+
+            $('#modal-confirm-btn-ok').click(function () {
+                submitConfirm = true;
+                $(this).addClass('disabled');
+                $(this).html('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando');
+                $('.btn-guardar-enviar').trigger('click');
+            })
+        });
+    </script>
+
+{% endblock javascripts %}

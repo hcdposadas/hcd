@@ -1,0 +1,34 @@
+proyectobae_index:
+    path:     /
+    defaults: { _controller: App\Controller\ProyectoBAEController::index }
+    methods:  GET
+
+proyectobae_show:
+    path:     /{id}/show
+    defaults: { _controller: App\Controller\ProyectoBAEController::show }
+    methods:  GET
+
+proyectobae_new:
+    path:     /new
+    defaults: { _controller: App\Controller\ProyectoBAEController::new }
+    methods:  [GET, POST]
+
+proyectobae_edit:
+    path:     /{id}/edit
+    defaults: { _controller: App\Controller\ProyectoBAEController::edit }
+    methods:  [GET, POST]
+
+proyectobae_delete:
+    path:     /{id}/delete
+    defaults: { _controller: App\Controller\ProyectoBAEController::delete }
+    methods:  DELETE
+
+proyectobae_incorporar_a_sesion:
+    path:     /{expediente}/incorporar-a-sesion
+    defaults: { _controller: App\Controller\ProyectoBAEController::incorporarASesion }
+    methods:  [GET, POST]
+
+proyectobae_incorporar_en_sesion:
+    path:     /{expediente}/incorporar-en-sesion
+    defaults: { _controller: App\Controller\ProyectoBAEController::incorporarEnSesion }
+    methods:  [GET, POST]

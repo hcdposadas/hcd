@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PersonalDeclaracionJurada{% endblock %}
+
+{% block body %}
+    <h1>Edit PersonalDeclaracionJurada</h1>
+
+    {{ include('personal_declaracion_jurada/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('personal_declaracion_jurada_index') }}">back to list</a>
+
+    {{ include('personal_declaracion_jurada/_delete_form.html.twig') }}
+{% endblock %}

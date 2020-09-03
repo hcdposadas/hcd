@@ -1,0 +1,36 @@
+dictamen_index:
+    path:     /
+    defaults: { _controller: App\Controller\DictamenController::index }
+    methods:  GET
+
+dictamen_crear:
+    path:     /crear
+    defaults: { _controller: App\Controller\DictamenController::crear }
+
+dictamen_cargar:
+    path:     /cargar
+    defaults: { _controller: App\Controller\DictamenController::index }
+
+dictamen_alta:
+    path:     /alta
+    defaults: { _controller: App\Controller\DictamenController::altaDictamenAnterior }
+
+dictamen_editar:
+    path:     /{id}/editar
+    defaults: { _controller: App\Controller\DictamenController::editarDictamenAnterior }
+
+dictamen_ver:
+    path:     /{id}/ver
+    defaults: { _controller: App\Controller\DictamenController::verDictamen }
+
+dictamen_imprimir:
+    path:     /{id}/imprimir
+    defaults: { _controller: App\Controller\DictamenController::imprimirDictamen }
+
+dictamen_asignar_a_expte:
+    path:     /asignar-a-expte
+    defaults: { _controller: App\Controller\DictamenController::asignarAExpte }
+
+incorporar_dictamenes_en_sesion_index:
+    path: /incorporar_dictamenes_en_sesion_index
+    defaults: { _controller: App\Controller\DictamenController::incorporarDictamenesEnSesion }

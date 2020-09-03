@@ -1,0 +1,24 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    # ...
+    base_path: "build/ckeditor"
+    js_path:   "build/ckeditor/ckeditor.js"
+    default_config: my_config
+    configs:
+        my_config:
+            toolbar: full
+            extraPlugins: "justify, liststyle"
+            removeButtons: 'Subscript,Superscript'
+    plugins:
+        justify:
+            path:     "build/ckeditor/plugins/justify/" # with trailing slash
+            filename: "plugin.js"
+        liststyle:
+            path:     "build/ckeditor/plugins/liststyle/" # with trailing slash
+            filename: "plugin.js"
+

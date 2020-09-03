@@ -1,0 +1,13 @@
+easy_admin:
+    entities:
+        ProyectoBAE:
+            class: App\Entity\ProyectoBAE
+            list:
+                fields: ['id', 'expediente', 'boletinAsuntoEntrado', 'creadoPor', 'fechaCreacion']
+            form:
+                fields:
+                    - { property: 'expediente' }
+                    - { property: 'boletinAsuntoEntrado' }
+                    - { property: 'giros' , type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\GiroType } }
+            search:
+                fields: ['id', 'expediente.expediente']

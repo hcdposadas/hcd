@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Licencia{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-umbrella-beach"></i> Datos de la licencia</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ include('personal_licencia/_form.html.twig', {'button_label': 'Guardar'}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-default"
+       href="{{ path('personal_licencias', {'legajo': personal_licencium.legajo.id}) }}">Volver</a>
+
+{% endblock %}

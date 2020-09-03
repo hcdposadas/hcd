@@ -1,0 +1,57 @@
+mocion_index:
+    path:     /
+    defaults: { _controller: App\Controller\MocionController::index }
+    methods:  GET
+
+mocion_show:
+    path:     /{id}/show
+    defaults: { _controller: App\Controller\MocionController::show }
+    methods:  GET
+
+mocion_new:
+    path:     /new
+    defaults: { _controller: App\Controller\MocionController::new }
+    methods:  [GET, POST]
+
+mocion_edit:
+    path:     /{id}/edit
+    defaults: { _controller: App\Controller\MocionController::edit }
+    methods:  [GET, POST]
+
+mocion_delete:
+    path:     /{id}/delete
+    defaults: { _controller: App\Controller\MocionController::delete }
+    methods:  DELETE
+
+mocion_votar:
+    path:     /{id}/show/votar
+    defaults: { _controller: App\Controller\MocionController::votar }
+    methods:  GET
+
+mocion_lanzar:
+    path:     /{id}/lanzar
+    defaults: { _controller: App\Controller\MocionController::lanzarVotacion }
+    methods: POST
+
+mocion_mostrar:
+    path:     /{id}/mostrarResultado
+    defaults: { _controller: App\Controller\MocionController::mostrarResultado }
+
+mocion_mostrarPresentes:
+    path:     /mostrarPresentes
+    defaults: { _controller: App\Controller\MocionController::mostrarPresentes }
+
+mocion_extender:
+    path:     /{id}/extender
+    defaults: { _controller: App\Controller\MocionController::extenderVotacion }
+    methods: POST
+
+mocion_finalizar:
+    path:     /{id}/finalizar
+    defaults: { _controller: App\Controller\MocionController::finalizarVotacion }
+    methods: POST
+
+mocion_resultados:
+    path:    /{id}/resultados
+    defaults: { _controller: App\Controller\MocionController::resultadosVotacion }
+    methods: POST

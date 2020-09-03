@@ -1,0 +1,29 @@
+decreto_index:
+    path:     /
+    defaults: { _controller: App\Controller\DecretoController::index }
+    methods:  GET
+
+decreto_show:
+    path:     /{id}/show
+    defaults: { _controller: App\Controller\DecretoController::show }
+    methods:  GET
+
+decreto_new:
+    path:     /new
+    defaults: { _controller: App\Controller\DecretoController::new }
+    methods:  [GET, POST]
+
+decreto_edit:
+    path:     /{id}/edit
+    defaults: { _controller: App\Controller\DecretoController::edit }
+    methods:  [GET, POST]
+
+decreto_asignar_numero:
+    path:     /{id}/asignar_numero
+    defaults: { _controller: App\Controller\DecretoController::asignarNumero }
+    methods:  [GET, POST]
+
+decreto_delete:
+    path:     /{id}/delete
+    defaults: { _controller: App\Controller\DecretoController::delete }
+    methods:  DELETE

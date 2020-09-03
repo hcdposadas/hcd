@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Cargar Acta
+{% endblock title %}
+{% block body %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a href="{{ path('sesiones_index') }}" class="btn btn-default"> Volver</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ sesion.titulo }}</h3>
+                    <div class="card-tools pull-right">
+
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ form_widget(form.homenajes) }}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary margin"><i class="fa fa-save"></i> Guardar
+                        </button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('sesiones_index') }}" class="btn btn-default"> Volver</a>
+        </div>
+    </div>
+{% endblock body %}

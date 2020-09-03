@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<script>
+    function subst() {
+        var vars = {};
+        var x = document.location.search.substring(1).split('&');
+        for (var i in x) {
+            var z = x[i].split('=', 2);
+            vars[z[0]] = unescape(z[1]);
+        }
+        var x = ['frompage', 'topage', 'page', 'webpage', 'section', 'subsection', 'subsubsection'];
+        for (var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for (var j = 0; j < y.length; ++j) y[j].textContent = vars[x[i]];
+        }
+    }
+</script>
+</head>
+<body style="border:0; margin: 0;" onload="subst()">
+<table style="width: 100%; margin-top: 10px">
+    <tr>
+        {% if dataToEncode is defined %}
+        <td style="text-align:left;">
+            <div>
+                <img style="max-width: 100%; height: auto; width: 64px;"
+                     src="{{ qr_code_data_uri(dataToEncode, { writer: 'png' }) }}"/>
+            </div>
+        </td>
+        {% endif %}
+        <td style="text-align:right">
+            Página <span class="page"></span> de <span class="topage"></span>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

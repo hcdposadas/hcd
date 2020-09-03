@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PersonalDeclaracionJurada{% endblock %}
+
+{% block body %}
+    <h1>PersonalDeclaracionJurada</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ personal_declaracion_jurada.id }}</td>
+            </tr>
+            <tr>
+                <th>Anio</th>
+                <td>{{ personal_declaracion_jurada.anio }}</td>
+            </tr>
+            <tr>
+                <th>Tratamiento</th>
+                <td>{{ personal_declaracion_jurada.tratamiento }}</td>
+            </tr>
+            <tr>
+                <th>SituacionRevista</th>
+                <td>{{ personal_declaracion_jurada.situacionRevista }}</td>
+            </tr>
+            <tr>
+                <th>Profesion</th>
+                <td>{{ personal_declaracion_jurada.profesion }}</td>
+            </tr>
+            <tr>
+                <th>NivelEstudios</th>
+                <td>{{ personal_declaracion_jurada.nivelEstudios }}</td>
+            </tr>
+            <tr>
+                <th>Titulo</th>
+                <td>{{ personal_declaracion_jurada.titulo }}</td>
+            </tr>
+            <tr>
+                <th>AniosCursados</th>
+                <td>{{ personal_declaracion_jurada.aniosCursados }}</td>
+            </tr>
+            <tr>
+                <th>FechaPresentacion</th>
+                <td>{{ personal_declaracion_jurada.fechaPresentacion ? personal_declaracion_jurada.fechaPresentacion|date('d/m/Y') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EstadoCivil</th>
+                <td>{{ personal_declaracion_jurada.estadoCivil }}</td>
+            </tr>
+            <tr>
+                <th>Categoria</th>
+                <td>{{ personal_declaracion_jurada.categoria }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{{ personal_declaracion_jurada.activo ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ personal_declaracion_jurada.fechaCreacion ? personal_declaracion_jurada.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaActualizacion</th>
+                <td>{{ personal_declaracion_jurada.fechaActualizacion ? personal_declaracion_jurada.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('personal_declaracion_jurada_index') }}">back to list</a>
+
+    <a href="{{ path('personal_declaracion_jurada_edit', {'id': personal_declaracion_jurada.id}) }}">edit</a>
+
+    {{ include('personal_declaracion_jurada/_delete_form.html.twig') }}
+{% endblock %}

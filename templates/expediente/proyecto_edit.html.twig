@@ -1,0 +1,241 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyecto
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-12 mb-3">
+            {% if is_granted('ROLE_LEGISLATIVO') or is_granted('ROLE_MESA_ENTRADA') %}
+                <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+            {% else %}
+                <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <h1>Editar Proyecto</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Proyecto</h3>
+        </div>
+        <div class="card-body">
+            {% if expediente.borrador == false and is_granted('ROLE_CONCEJAL') %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="progress active">
+                            <div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar"
+                                 aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                                <span>50% Completo</span>
+                            </div>
+                        </div>
+                        <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente, imprima el
+                            proyecto y acerquese a Mesa de Entrada</p>
+                    </div>
+                </div>
+            {% endif %}
+
+            {{ form_start(edit_form) }}
+            <div class="row">
+                <div class="col-md-3">
+                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                        <label class="control-label">Tipo de Proyecto</label>
+                        <div>
+                            {{ expediente.tipoProyecto }}
+                        </div>
+                    {% else %}
+                        {{ form_row(edit_form.tipoProyecto) }}
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                        <label class="control-label">Fecha</label>
+                        <div>
+                            {{ expediente.fecha | date('d/m/Y') }}
+                        </div>
+                    {% else %}
+                        {{ form_row(edit_form.fecha) }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+
+                {% set autor = null %}
+                {% set acompaniantes = [] %}
+
+                {% for acompaniante in expediente.iniciadores %}
+                    {% if acompaniante.autor %}
+                        {% set autor = acompaniante %}
+                    {% else %}
+                        {#{% set acompaniantes[]= acompaniante %}#}
+                        {% set acompaniantes = acompaniantes|merge([acompaniante]) %}
+                    {% endif %}
+                {% endfor %}
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <b>Autor</b>
+                        </label>
+
+                        <div>
+                            {% if expediente.iniciadores.count == 1 %}
+                                {{ expediente.iniciadores.first.iniciador.cargoPersona }}
+                            {% else %}
+                                {% if autor %}
+                                    {{ autor.iniciador.cargoPersona }}
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% if expediente.iniciadores.count > 1 %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">
+                                <b>Acompañantes</b>
+                            </label>
+                            {% for acompaniante in acompaniantes %}
+                                <div>
+                                    <span>{{ acompaniante.iniciador.cargoPersona }}</span>
+                                    <button type="button" class="btn-borrar-acompaniante btn btn-default"
+                                            data-iniciador="{{ acompaniante.iniciador.id }}"><i
+                                                class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if not is_granted('ROLE_LEGISLATIVO') %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="help-block">Si el proyeto tuviera acompañantes, debe agregarlos aquí abajo.</p>
+                        {{ form_row(edit_form.iniciadores) }}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-12">
+                    {% if expediente.borrador == true %}
+                        {{ form_row(edit_form.texto) }}
+                    {% else %}
+                        {{ expediente.texto | raw }}
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_LEGISLATIVO') %}
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ form_row(edit_form.giros) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if expediente.borrador == true %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="help-block">Si el proyeto tuviera anexos, debe agregarlos aquí abajo. Los formatos
+                            admitidos son imágenes (.jpg, .png, .jpeg)</p>
+                        {{ form_row(edit_form.anexos) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-12">
+                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                        {{ form_widget(edit_form.guardar) }}
+                    {% endif %}
+                    {% if expediente.borrador == true %}
+                        {{ form_widget(edit_form.guardar) }}
+                    {% endif %}
+
+                    {% if expediente.borrador == true %}
+                        {{ form_widget(edit_form.guardarYEnviar) }}
+                    {% endif %}
+
+                    {% if expediente.borrador == true %}
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                            <i class="fa fa-print"></i> Vista Previa Proyecto
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="d-none">
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-3">
+            {% if is_granted('ROLE_LEGISLATIVO') or is_granted('ROLE_MESA_ENTRADA') %}
+                <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+            {% else %}
+                <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+
+        {% if is_granted('ROLE_LEGISLATIVO') %}
+        $(document).on('change', '.comision_cabecera', function () {
+            $('.comision_cabecera').not(this).prop('checked', false);
+        });
+        {% endif %}
+
+        var submitConfirm = false;
+        var buttonPressed = '';
+        $("button[type=submit]").on('click', function () {
+            buttonPressed = $(this).text()
+        });
+        $(document).ready(function () {
+
+            $('.btn-borrar-acompaniante').click(function () {
+                var iniciadorId = $(this).data('iniciador');
+                $(`.select-iniciador option[value="${iniciadorId}"]:selected`).parent().parent().parent().remove();
+                $(this).parent().remove();
+            })
+
+            $('form[name="{{ edit_form.vars.name }}"]').submit(function (event) {
+
+                if (buttonPressed == 'Guardar') {
+                    return true;
+                }
+
+                if (submitConfirm) {
+                    console.log('confirmo');
+                    // return true;
+                } else {
+                    console.log('no confirmo');
+                    event.preventDefault();
+                    if (buttonPressed == 'Guardar y enviar') {
+                        modalConfirm('¿Está seguro?', '<p>¿Realmente desea enviar el proyecto a Mesa de Entrada? <br> Esta acción es irreversible.</p>');
+                    }
+                }
+            });
+
+            $('#modal-confirm-btn-ok').click(function () {
+                submitConfirm = true;
+                $(this).addClass('disabled');
+                $(this).html('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando');
+                $('.btn-guardar-enviar').trigger('click');
+            })
+
+        });
+    </script>
+{% endblock javascripts %}

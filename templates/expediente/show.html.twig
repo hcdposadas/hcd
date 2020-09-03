@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Expediente {{ expediente.expediente }}-{{ expediente.letra }}-
+                        {% if expediente.periodoLegislativo %}
+                            {{ expediente.periodoLegislativo }}
+                        {% else %}
+                            {{ expediente.anio }}
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <dl class="dl-horizontal">
+                        <dt>Id</dt>
+                        <dd>{{ expediente.id }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Texto definitivo</dt>
+                        <dd>{{ expediente.textoDefinitivo }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Extracto</dt>
+                        <dd>{{ expediente.extracto }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha</dt>
+                        <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Registro municipal</dt>
+                        <dd>{{ expediente.registroMunicipal }}</dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Activo</dt>
+                        <dd>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                    class="label label-danger">No</span>{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha creación</dt>
+                        <dd>{% if expediente.fechaCreacion %}{{ expediente.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha actualización</dt>
+                        <dd>{% if expediente.fechaActualizacion %}{{ expediente.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Iniciadores</dt>
+                        <dd>
+                            {% if expediente.iniciadores.count > 0 %}
+                                {% for iniciadorExpediente in expediente.iniciadores %}
+                                    {% if iniciadorExpediente.iniciador %}
+                                        {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
+                                    {% endif %}
+                                {% endfor %}
+                            {% elseif expediente.iniciadorParticular %}
+                                {{ expediente.iniciadorParticular.nombreCompleto }}
+                            {% elseif expediente.dependencia %}
+                                {{ expediente.dependencia }}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Creado Por</dt>
+                        <dd>
+                            {{ expediente.creadoPor }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Expediente Asignado Por</dt>
+                        <dd>
+                            {{ expediente.asignadoPor }}
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
+                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
+                        <a class="btn btn-default margin" target="_blank"
+                           href="{{ path('expediente_cargar_extracto', {id: expediente.id}) }}">
+                            <i class="fa fa-pencil"></i> Cargar Texto
+                        </a>
+                        <a class="btn btn-default margin" target="_blank"
+                           href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">
+                            <i class="fa fa-print"></i> Imprimir Carátula
+                        </a>
+                    {% endif %}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto
+                    </a>
+                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
+                        <a class="btn btn-default margin" target="_blank"
+                           href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">
+                            <i class="fa fa-print"></i> Imprimir Etiqueta
+                        </a>
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+            {% if referer is defined %}
+                <a class="btn btn-default" href="{{ referer }}">Volver</a>
+            {% else %}
+                <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+{% endblock %}

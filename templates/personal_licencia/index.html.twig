@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PersonalLicencia index{% endblock %}
+
+{% block body %}
+    <h1>PersonalLicencia index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FechaDesde</th>
+                <th>FechaHasta</th>
+                <th>Archivo</th>
+                <th>Activo</th>
+                <th>FechaCreacion</th>
+                <th>FechaActualizacion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for personal_licencium in personal_licencias %}
+            <tr>
+                <td>{{ personal_licencium.id }}</td>
+                <td>{{ personal_licencium.fechaDesde ? personal_licencium.fechaDesde|date('d/m/Y') : '' }}</td>
+                <td>{{ personal_licencium.fechaHasta ? personal_licencium.fechaHasta|date('d/m/Y') : '' }}</td>
+                <td>{{ personal_licencium.archivo }}</td>
+                <td>{{ personal_licencium.activo ? 'Yes' : 'No' }}</td>
+                <td>{{ personal_licencium.fechaCreacion ? personal_licencium.fechaCreacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>{{ personal_licencium.fechaActualizacion ? personal_licencium.fechaActualizacion|date('d/m/Y H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('personal_licencia_show', {'id': personal_licencium.id}) }}">show</a>
+                    <a href="{{ path('personal_licencia_edit', {'id': personal_licencium.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('personal_licencia_new') }}">Create new</a>
+{% endblock %}

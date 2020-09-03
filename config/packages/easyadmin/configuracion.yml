@@ -1,0 +1,21 @@
+easy_admin:
+    entities:
+        Configuracion:
+            class: App\Entity\Configuracion
+            form:
+                fields:
+                    - { property: 'appleTouchIconFile', label: 'Favicon', type: 'vich_image' }
+                    - { property: 'encabezadoTextoDefinitivoFile', label: 'Encabezado', type: 'vich_image' }
+                    - { property: 'escudoFile', label: 'Escudo', type: 'vich_image' }
+                    - { property: 'logo16File', label: 'Logo 16x16', type: 'vich_image' }
+                    - { property: 'logo32File', label: 'Logo 32x32', type: 'vich_image' }
+                    - { property: 'logo129File', label: 'Logo 129x129', type: 'vich_image' }
+                    - { property: 'logo269File', label: 'Logo 269x269', type: 'vich_image' }
+                    - { property: 'logotipoFile', label: 'Logotipo', type: 'vich_image' }
+                    - { property: 'selloPresidenciaFile', label: 'Sello Presidencia', type: 'vich_image' }
+            edit:
+                title:  'Editar Configuración'
+            new:
+                title:  'Alta Configuración'
+            list:
+                title:  'Configuración'

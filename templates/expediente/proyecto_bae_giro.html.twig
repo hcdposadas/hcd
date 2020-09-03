@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Giros
+{% endblock title %}
+{% block body %}
+
+    {% if is_granted('ROLE_LEGISLATIVO') %}
+        <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    {% endif %}
+
+    <h1>Cargar Giros - {{ sesion }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Expediente {{ expediente }}</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_start(edit_form) }}
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="control-label">Tipo de Proyecto</label>
+                    <div>
+                        {{ expediente.tipoProyecto }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Fecha</label>
+                    <div>
+                        {{ expediente.fecha | date('d/m/Y') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                {% set autor = null %}
+                {% set acompaniantes = [] %}
+
+                {% for acompaniante in expediente.iniciadores %}
+                    {% if acompaniante.autor %}
+                        {% set autor = acompaniante %}
+                    {% else %}
+                        {% set acompaniantes = acompaniantes|merge([acompaniante]) %}
+                    {% endif %}
+                {% endfor %}
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">
+                            <b>Autor</b>
+                        </label>
+
+                        <div>
+                            {% if expediente.iniciadores.count == 1 %}
+                                {{ expediente.iniciadores.first.iniciador.cargoPersona }}
+                            {% else %}
+                                {% if autor %}
+                                    {{ autor.iniciador.cargoPersona }}
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% if expediente.iniciadores.count > 1 %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">
+                                <b>Acompañantes</b>
+                            </label>
+                            <div>
+                                {% for acompaniante in acompaniantes %}
+                                    <span>{{ acompaniante.iniciador.cargoPersona }}</span>
+                                    <button type="button" class="btn-borrar-acompaniante btn btn-default"
+                                            data-iniciador="{{ acompaniante.iniciador.id }}"><i
+                                                class="fa fa-remove"></i>
+                                    </button><br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-12">
+                    {% if expediente.borrador == true %}
+                        {{ form_row(edit_form.texto) }}
+                    {% else %}
+                        {{ expediente.texto | raw }}
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(edit_form.giros) }}
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar</button>
+
+                    {% if expediente.borrador == true %}
+                        <a class="btn btn-default" target="_blank"
+                           href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                            <i class="fa fa-print"></i> Vista Previa Proyecto
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="d-none">
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+
+    {% if is_granted('ROLE_LEGISLATIVO') %}
+        <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    {% endif %}
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+
+        {% if is_granted('ROLE_LEGISLATIVO') %}
+        $(document).on('change', '.comision_cabecera', function () {
+            $('.comision_cabecera').not(this).prop('checked', false);
+        });
+        {% endif %}
+    </script>
+{% endblock javascripts %}

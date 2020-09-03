@@ -1,8 +1,0 @@
-easy_admin:
-    entities:
-        Bloque:
-            class: AppBundle\Entity\Bloque
-            form:
-                fields:
-                    - { property: 'nombre' }
-                    - { property: 'descripcion' }

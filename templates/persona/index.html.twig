@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Personas
+{% endblock title %}
+{% block body %}
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(filter_type) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.nombre) }}
+                            {{ form_row(filter_type.apellido) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.dni) }}
+                            {{ form_row(filter_type.fechaNacimiento) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                    <div class="d-none">
+                        {{ form_end(filter_type) }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Personas</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>DNI</th>
+                            <th>Tiene Legajo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for persona in personas %}
+                            <tr>
+                                <td><a href="{{ path('persona_show', { 'id': persona.id }) }}">{{ persona.id }}</a></td>
+                                <td>{{ persona.nombre }}</td>
+                                <td>{{ persona.apellido }}</td>
+                                <td>{{ persona.dni }}</td>
+                                {# <td>{% if persona.activo %}Si{% else %}No{% endif %}</td> #}
+                                <td>{% if persona.legajo %}Si{% else %}No{% endif %}</td>
+                                <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('persona_show', { 'id': persona.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    {% if persona.legajo %}
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_declaraciones_jurada', { 'persona': persona.id }) }}"
+                                           data-toggle="tooltip" title="Declaración Jurada">
+                                            <i class="fas fa-poll-h"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_novedades', { 'persona': persona.id }) }}"
+                                           data-toggle="tooltip" title="Novedades">
+                                            <i class="fas fa-newspaper"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_licencias', { 'legajo': persona.legajo.id }) }}"
+                                           data-toggle="tooltip" title="Licencias">
+                                            <i class="fas fa-umbrella-beach"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_asistencias', { 'legajo': persona.legajo.id }) }}"
+                                           data-toggle="tooltip" title="Asistencias">
+                                            <i class="fas fa-user-clock"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+            {{ knp_pagination_render(personas) }}
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <a class="btn btn-primary" href="{{ path('persona_new') }}">Nueva persona</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Editar Orden de Pago
+{% endblock title %}
+{% block body %}
+    {% include 'default/modal_add_decreto.html.twig' %}
+
+    <h1>Editar Orden de Pago</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Orden de Pago</h3>
+                </div>
+                <div class="card-body">
+
+                    {{ form_start(edit_form) }}
+                    {{ form_row(edit_form.tipoOrdenPago) }}
+                    <div class="col-md-6">{{ form_row(edit_form.numero) }}</div>
+                    <div class="col-md-6">{{ form_row(edit_form.periodoLegislativo) }}</div>
+                    {{ form_row(edit_form.fechaRendicion) }}
+                    {{ form_row(edit_form.folios) }}
+                    {{ form_row(edit_form.paginaInicio) }}
+                    {{ form_row(edit_form.paginaFin) }}
+                    {{ form_row(edit_form.numeroEstante) }}
+                    {{ form_row(edit_form.numeroCaja) }}
+                    {{ form_row(edit_form.decreto) }}
+                    <button type="button" class="btn btn-default btn-add-decreto">
+                        <i class="fa fa-plus"></i> Agregar Dereto
+                    </button>
+                    {{ form_rest(edit_form) }}
+                    <input class="btn btn-primary" type="submit" value="Guardar"/>
+                    {{ form_end(edit_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('orden_de_pago_index') }}">Volver</a>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        $('.btn-add-decreto').click(function () {
+
+            $.ajax({
+                type: 'get',
+                url: '{{ path("form_decreto") }}',
+                success: function (data) {
+                    $('#modal-add-decreto .modal-body').html(data.form);
+                    $('#modal-add-decreto').modal('toggle');
+                    inicializarPlugins();
+                }
+            });
+        });
+
+        $('#modal-add-decreto-btn-ok').click(function () {
+
+            var data = $('form[name="appbundle_decreto_ajax"]').serialize();
+
+            $.ajax({
+                type: 'post',
+                url: '{{ path("form_decreto") }}',
+                data: data,
+                success: function (data) {
+                    $('#modal-add-decreto').modal('toggle');
+                    modalAlert(data.mensaje);
+                },
+                error: function (data) {
+                    $('#modal-add-decreto .modal-body').html(data.form);
+                    inicializarPlugins();
+                },
+                500: function (data) {
+                    $('#modal-add-decreto .modal-body').html(data.form);
+                    inicializarPlugins();
+                },
+            });
+        });
+    </script>
+{% endblock javascripts %}

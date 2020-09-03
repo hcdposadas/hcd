@@ -1,0 +1,24 @@
+persona_index:
+    path:     /
+    defaults: { _controller: App\Controller\PersonaController::index }
+    methods:  GET
+
+persona_show:
+    path:     /{id}/show
+    defaults: { _controller: App\Controller\PersonaController::show }
+    methods:  GET
+
+persona_new:
+    path:     /new
+    defaults: { _controller: App\Controller\PersonaController::new }
+    methods:  [GET, POST]
+
+persona_edit:
+    path:     /{id}/edit
+    defaults: { _controller: App\Controller\PersonaController::edit }
+    methods:  [GET, POST]
+
+persona_delete:
+    path:     /{id}/delete
+    defaults: { _controller: App\Controller\PersonaController::delete }
+    methods:  DELETE

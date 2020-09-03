@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        TipoRelacionPersona:
+            class: App\Entity\TipoRelacionPersona
+            form:
+                fields:
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+            edit:
+                title:  'Editar Tipo Relación Persona'
+            new:
+                title:  'Alta Tipo Relación Persona'
+            list:
+                title:  'Tipo Relación Persona'

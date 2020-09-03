@@ -1,0 +1,17 @@
+easy_admin:
+    entities:
+        PeriodoLegislativo:
+            class: App\Entity\PeriodoLegislativo
+            form:
+                fields:
+                    - { property: 'anio' }
+                    - { property: 'frase' }
+                    - { property: 'membreteFile', label: 'Membrete', type: 'vich_image' }
+                    - { property: 'fechaInicio', type: 'date', type_options: { widget: 'single_text', html5: true } }
+                    - { property: 'fechaFin', type: 'date', type_options: { widget: 'single_text', html5: true } }
+            edit:
+                title:  'Editar Periodo Legislativo'
+            new:
+                title:  'Alta Periodo Legislativo'
+            list:
+                title:  'Periodo Legislativo'

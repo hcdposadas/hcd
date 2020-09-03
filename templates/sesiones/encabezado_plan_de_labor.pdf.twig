@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<style>
+    .row::after, .row::before {
+        display: table;
+        content: " ";
+    }
+
+    .row:after {
+        clear: both;
+    }
+
+    .row {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .col {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    h1 {
+        font-size: 14pt
+    }
+
+    h2 {
+        font-size: 12pt
+    }
+
+    h3 {
+        font-size: 11pt
+    }
+</style>
+<body>
+<div style="margin: 0;">
+    <div class="row">
+        <div class="col" style="text-align: center">
+            {#<img style="max-width: 100%; height: auto;"#}
+            {#src="{{ absolute_url(asset('uploads/varios/') ~ periodo.membrete) }}"/>#}
+            <h1>HONORABLE CONCEJO DELIBERANTE DE LA CIUDAD DE {{ ciudad_name | upper }}</h1>
+            <h3>DIRECCIÓN DE ASUNTOS LEGISLATIVOS Y COMISIONES</h3>
+            <h1>{{ sesion.titulo |upper}}</h1>
+            <img style="max-width: 100%; height: auto; height: 2cm"
+             src="{{ absolute_url(asset('uploads/sis_images/escudo.png')) }}" alt="escudo">
+            <h2>{{ documento |upper }}</h2>
+            {% set reunion = sesion.numeroReunion ? sesion.numeroReunion : sesion.titulo | split(' ')[3] %}
+
+            <h2><span style="margin-right: 33%;">FECHA: {{ sesion.fecha |format_datetime(locale='es', pattern="d 'de' MMMM Y") }}</span><span>REUNIÓN Nº: {{ reunion }}</span></h2>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+vich_uploader:
+    db_driver: orm
+    mappings:
+        expedientes_internos:
+            uri_prefix: "%app.path.expedientes_internos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/expedientes/internos"
+        expedientes_externos:
+            uri_prefix: "%app.path.expedientes_externos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/expedientes/externos"
+        dictamen:
+            uri_prefix: "%app.path.dictamenes%"
+            upload_destination: "%kernel.project_dir%/public/uploads/dictamenes"
+        sanciones:
+            uri_prefix: "%app.path.sanciones%"
+            upload_destination: "%kernel.project_dir%/public/uploads/sanciones"
+        documentos:
+            uri_prefix: "%app.path.documentos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/documentos"
+        varios:
+            uri_prefix: "%app.path.varios%"
+            upload_destination: "%kernel.project_dir%/public/uploads/varios"
+        expedientes_anexos:
+            uri_prefix: "%app.path.expedientes_anexos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/expedientes/anexos"
+            namer: "vich_uploader.namer_uniqid"
+        dictamenes_anexos:
+            uri_prefix: "%app.path.dictamenes_anexos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/dictamenes/anexos"
+            namer: "vich_uploader.namer_uniqid"
+        orden_de_pago:
+            uri_prefix: "%app.path.ordenes_de_pago%"
+            upload_destination: "%kernel.project_dir%/public/uploads/ordenes_de_pago"
+        sis_images:
+            uri_prefix: "%app.path.sis_images%"
+            upload_destination: "%kernel.project_dir%/public/uploads/sis_images"
+        textos_definitivos_anexos:
+            uri_prefix: "%app.path.textos_definitivos_anexos%"
+            upload_destination: "%kernel.project_dir%/public/uploads/textos_definitivos/anexos"
+            namer: "vich_uploader.namer_uniqid"
+        rrhh_novedad:
+            uri_prefix: "%app.path.rrhh_novedad%"
+            upload_destination: "%kernel.project_dir%/public/uploads/rrhh/novedades"
+            namer: "vich_uploader.namer_uniqid"
+        rrhh_licencia:
+            uri_prefix: "%app.path.rrhh_licencia%"
+            upload_destination: "%kernel.project_dir%/public/uploads/rrhh/licencias"
+            namer: "vich_uploader.namer_uniqid"

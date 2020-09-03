@@ -1,7 +1,0 @@
-easy_admin:
-    entities:
-        Iniciador:
-            class: MesaEntradaBundle\Entity\Iniciador
-            form:
-                fields:
-                    - { property: 'cargoPersona' }

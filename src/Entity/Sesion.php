@@ -91,6 +91,11 @@ class Sesion extends BaseClass {
 	private $homenajes;
 
 	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $numeroReunion;
+
+	/**
 	 * @return string
 	 */
 	public function __toString() {
@@ -98,7 +103,7 @@ class Sesion extends BaseClass {
 	}
 
 	public function getTituloLargo() {
-		return $this->getTitulo() .' - '. $this->getFecha()->format('d/m/Y');
+		return $this->getTitulo() . ' - ' . $this->getFecha()->format( 'd/m/Y' );
 	}
 
 	/**
@@ -332,73 +337,67 @@ class Sesion extends BaseClass {
 		return $this->tipoSesion;
 	}
 
-    /**
-     * Add od
-     *
-     * @param \App\Entity\OrdenDelDia $od
-     *
-     * @return Sesion
-     */
-    public function addOd(\App\Entity\OrdenDelDia $od)
-    {
-        $this->od[] = $od;
+	/**
+	 * Add od
+	 *
+	 * @param \App\Entity\OrdenDelDia $od
+	 *
+	 * @return Sesion
+	 */
+	public function addOd( \App\Entity\OrdenDelDia $od ) {
+		$this->od[] = $od;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove od
-     *
-     * @param \App\Entity\OrdenDelDia $od
-     */
-    public function removeOd(\App\Entity\OrdenDelDia $od)
-    {
-        $this->od->removeElement($od);
-    }
+	/**
+	 * Remove od
+	 *
+	 * @param \App\Entity\OrdenDelDia $od
+	 */
+	public function removeOd( \App\Entity\OrdenDelDia $od ) {
+		$this->od->removeElement( $od );
+	}
 
-    /**
-     * Get od
-     *
-     * @return Collection|OrdenDelDia[]
-     */
-    public function getOd()
-    {
-        return $this->od;
-    }
+	/**
+	 * Get od
+	 *
+	 * @return Collection|OrdenDelDia[]
+	 */
+	public function getOd() {
+		return $this->od;
+	}
 
-    /**
-     * Add bae
-     *
-     * @param \App\Entity\BoletinAsuntoEntrado $bae
-     *
-     * @return Sesion
-     */
-    public function addBae(\App\Entity\BoletinAsuntoEntrado $bae)
-    {
-        $this->bae[] = $bae;
+	/**
+	 * Add bae
+	 *
+	 * @param \App\Entity\BoletinAsuntoEntrado $bae
+	 *
+	 * @return Sesion
+	 */
+	public function addBae( \App\Entity\BoletinAsuntoEntrado $bae ) {
+		$this->bae[] = $bae;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Remove bae
-     *
-     * @param \App\Entity\BoletinAsuntoEntrado $bae
-     */
-    public function removeBae(\App\Entity\BoletinAsuntoEntrado $bae)
-    {
-        $this->bae->removeElement($bae);
-    }
+	/**
+	 * Remove bae
+	 *
+	 * @param \App\Entity\BoletinAsuntoEntrado $bae
+	 */
+	public function removeBae( \App\Entity\BoletinAsuntoEntrado $bae ) {
+		$this->bae->removeElement( $bae );
+	}
 
-    /**
-     * Get bae
-     *
-     * @return \Doctrine\Common\Collections\Collection|BoletinAsuntoEntrado[]
-     */
-    public function getBae()
-    {
-        return $this->bae;
-    }
+	/**
+	 * Get bae
+	 *
+	 * @return \Doctrine\Common\Collections\Collection|BoletinAsuntoEntrado[]
+	 */
+	public function getBae() {
+		return $this->bae;
+	}
 
 	/**
 	 * @return string
@@ -412,5 +411,15 @@ class Sesion extends BaseClass {
 	 */
 	public function setHomenajes( $homenajes ) {
 		$this->homenajes = $homenajes;
+	}
+
+	public function getNumeroReunion(): ?string {
+		return $this->numeroReunion;
+	}
+
+	public function setNumeroReunion( ?string $numeroReunion ): self {
+		$this->numeroReunion = $numeroReunion;
+
+		return $this;
 	}
 }

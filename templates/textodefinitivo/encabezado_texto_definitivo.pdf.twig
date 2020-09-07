@@ -73,6 +73,16 @@
                 {% endif %}
             </div>
         {% endif %}
+        {% if textoDefinitivo.tipoDocumento %}
+            <div class="col" style="float: right; text-align: center;margin-right: 20%; max-width: 5cm">
+                <h2>
+                    {{ textoDefinitivo.tipoDocumento | upper }} Nº {{ textoDefinitivo.numeroDocumento }}
+                </h2>
+                <h2>
+                    de fecha {{ textoDefinitivo.fechaDocumento | date('d-m-y') }}
+                </h2>
+            </div>
+        {% endif %}
 
     </div>
 </div>

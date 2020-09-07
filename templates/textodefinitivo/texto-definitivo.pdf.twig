@@ -25,7 +25,7 @@
     .spansubrayar {
         /*padding-bottom: 5px;*/
         border-bottom: 2px solid black;
-        line-height: 48px;
+        /*line-height: 48px;*/
     }
 
     .numero {
@@ -34,18 +34,18 @@
     }
 
     body {
-        font-size: 16pt;
+        /*font-size: 16pt;*/
     }
 
     .texto-leyenda {
         word-spacing: 3px;
-        font-size: 16pt;
-        line-height: 40px;
+        /*font-size: 16pt;*/
+        /*line-height: 40px;*/
     }
 
     .texto-definitivo-cuerpo {
-        line-height: 40px;
-        font-size: 16pt;
+        /*line-height: 40px;*/
+        /*font-size: 16pt;*/
     }
 
     .sesion {
@@ -55,21 +55,22 @@
 </style>
 <body>
 <div style="margin-top: 10%; margin-left: 2cm; margin-left: 2cm; line-height : 30px;">
-    <h2 class="titulo1">
+    <h3 class="titulo1">
         <span class="spansubrayar">
-        {{ textoDefinitivo.dictamen.tipoProyecto | upper }} {% if rama %} <span
-                    class="numero">{{ rama }}</span> {% endif %} Nº <span
+        {% if textoDefinitivo.dictamen %}{{ textoDefinitivo.dictamen.tipoProyecto | upper }}{% else %} {{ textoDefinitivo.tipoTextoDefinitivo | upper }}{% endif %} {% if rama %}
+                <span class="numero">{{ rama }}</span> {% endif %} Nº <span
                     class="numero">{{ textoDefinitivo.numero }}</span>
             </span>
-    </h2>
+    </h3>
     <p class="text-center texto-leyenda">
         {{ leyenda |upper }}
     </p>
-    <h2 class="titulo1">
+    <h3 class="titulo1">
         <span class="spansubrayar">
-        {{ textoDefinitivo.dictamen.tipoProyecto.acto | upper }}
+            {% if textoDefinitivo.dictamen %}{{ textoDefinitivo.dictamen.tipoProyecto.acto | upper }}{% else %} {{ textoDefinitivo.tipoTextoDefinitivo.acto | upper }}{% endif %}
+
         </span>
-    </h2>
+    </h3>
     <div class="texto-definitivo-cuerpo">
 
         {{ textoDefinitivo.texto | raw }}
@@ -89,16 +90,20 @@
 
     {% if textoDefinitivo.anexos.count > 0 %}
         <p class="break">
-        <h2 class="titulo1">
+        {% if textoDefinitivo.tituloAnexo %}
+            <h2 class="titulo1">
         <span class="spansubrayar">
-            {% if textoDefinitivo.anexos.count == 1 %}ANEXO ÚNICO{% else %}ANEXOS{% endif %}
+{# {% if textoDefinitivo.anexos.count == 1 %}ANEXO ÚNICO{% else %}ANEXOS{% endif %} #}
+            {{ textoDefinitivo.tituloAnexo | upper }}
         </span>
-        </h2>
+            </h2>
+        {% endif %}
         {% for anexo in textoDefinitivo.anexos %}
+            <h2 class="titulo1"><span class="spansubrayar">{{ anexo.descripcion }}</span></h2>
             <img style="max-width: 100%; height: auto; max-height: 24cm;"
                  src="{{ absolute_url( asset('uploads/textos_definitivos/anexos/') ~ anexo.anexo ) }}">
             <br>
-            {{ anexo.descripcion }}
+            {# {{ anexo.descripcion }} #}
         {% endfor %}
         </p>
     {% endif %}

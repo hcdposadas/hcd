@@ -23,4 +23,17 @@ $(document).ready(function() {
     $('.select2').select2(
         { language: "es"}
     );
+
+    $('.reset').click(function (){
+        var formNameInputName = $(this).attr('name');
+        var formName = formNameInputName.substr(formNameInputName, formNameInputName.indexOf("["))
+
+        var form = $(`form[name="${formName}"]`);
+        
+        form.find('input, textarea, input:not([type="submit"])').removeAttr('value');
+        form.find('input, textarea, input:not([type="submit"])').val('');
+        form.find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+
+        form.find('select option').removeAttr('selected').find('option:first').attr('selected', 'selected');
+    })
 });

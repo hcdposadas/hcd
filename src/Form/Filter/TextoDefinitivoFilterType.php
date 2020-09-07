@@ -5,10 +5,12 @@ namespace App\Form\Filter;
 use App\Entity\Rama;
 use App\Entity\Sesion;
 
+use App\Entity\TextoDefinitivo;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,9 +48,19 @@ class TextoDefinitivoFilterType extends AbstractType {
 				[
 					'label'        => 'Sesión',
 					'class'        => Sesion::class,
-					'placeholder'   => 'Seleccionar',
+					'placeholder'  => 'Seleccionar',
 					'choice_label' => 'tituloLargo',
 					'attr'         => [ 'class' => 'select2' ]
+				] )
+			->add( 'tipoDocumento',
+				ChoiceType::class,
+				[
+					'label'   => 'Tipo documento',
+					'placeholder'  => 'Seleccionar',
+					'choices' => [
+						TextoDefinitivo::TIPO_DOCUMENTO_ACTA    => TextoDefinitivo::TIPO_DOCUMENTO_ACTA,
+						TextoDefinitivo::TIPO_DOCUMENTO_DECRETO => TextoDefinitivo::TIPO_DOCUMENTO_DECRETO,
+					],
 				] )
 			->add( 'buscar',
 				SubmitType::class,

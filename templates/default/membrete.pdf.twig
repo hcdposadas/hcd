@@ -41,13 +41,13 @@
                  src="{{ qr_code_data_uri(dataToEncode, { writer: 'png',logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png', logo_width: 50 }) }}"/>
         </div>
     {% endif %}
-    <div class="col" style="width: 70%; float: right;">
-        <div style="text-align: end;font-size: 9pt">
-            <b>
-                {{ periodo.anio }} - "{{ periodo.frase }}"
-            </b>
-        </div>
-    </div>
+{#    <div class="col" style="width: 70%; float: right;">#}
+{#        <div style="text-align: end;font-size: 9pt">#}
+{#            <b>#}
+{#                {{ periodo.anio }} - "{{ periodo.frase }}"#}
+{#            </b>#}
+{#        </div>#}
+{#    </div>#}
 
 </div>
 {% if dictamen is defined %}

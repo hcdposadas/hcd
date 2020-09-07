@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Editar Texto definitivo (sin expediente)
+{% endblock title %}
+{% block body %}
+    <h1>Editar {{ textoDefinitivo.dictamen }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Texto de finitivo</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_start(edit_form) }}
+            <div class="row">
+                <div class="col-4">
+                    {{ form_row(edit_form.tipoDocumento) }}
+                </div>
+                <div class="col-4">
+                    {{ form_row(edit_form.numeroDocumento) }}
+                </div>
+                <div class="col-4">
+                    {{ form_row(edit_form.fechaDocumento) }}
+                </div>
+
+                <div class="col-12">
+                    {{ form_row(edit_form.tipoTextoDefinitivo) }}
+                    {{ form_row(edit_form.texto) }}
+                    {{ form_row(edit_form.firmantes) }}
+                    {{ form_row(edit_form.numero) }}
+                    {{ form_row(edit_form.rama) }}
+                    {{ form_row(edit_form.expedientesAdjuntos) }}
+                    {{ form_row(edit_form.tituloAnexo) }}
+                    {{ form_row(edit_form.anexos) }}
+                    {{ form_row(edit_form.aprobadoEnSesion) }}
+                    {{ form_row(edit_form.activo) }}
+                </div>
+
+
+
+            </div>
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            {{ form_end(edit_form) }}
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-default float-right" target="_blank"
+               href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}"><i
+                        class="fa fa-print"></i></a>
+        </div>
+    </div>
+
+    <a class="btn btn-default" href="{{ path('texto_definitivo_index') }}">Volver</a>
+
+{% endblock %}

@@ -25,7 +25,7 @@ class TextoDefinitivoController extends AbstractController {
 	/**
 	 * @Route("/", name="texto_definitivo_index")
 	 */
-	public function index(PaginatorInterface $paginator, Request $request ) {
+	public function index( PaginatorInterface $paginator, Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
 		$filterType = $this->createForm( TextoDefinitivoFilterType::class,
@@ -64,6 +64,11 @@ class TextoDefinitivoController extends AbstractController {
 	public function new( Request $request ) {
 		$textoDefinitivo = new Textodefinitivo();
 		$form            = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+		$form->remove( 'tipoDocumento' );
+		$form->remove( 'numeroDocumento' );
+		$form->remove( 'fechaDocumento' );
+		$form->remove( 'tipoTextoDefinitivo' );
+		$form->remove( 'firmantes' );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
@@ -108,7 +113,9 @@ class TextoDefinitivoController extends AbstractController {
 		$em = $this->getDoctrine()->getManager();
 
 		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
-		$editForm->remove('dictamen');
+		$editForm->remove( 'dictamen' );
+		$editForm->remove( 'tipoTextoDefinitivo' );
+		$editForm->remove( 'firmantes' );
 		$editForm->handleRequest( $request );
 
 		$anexosOriginales = new ArrayCollection();
@@ -231,15 +238,16 @@ class TextoDefinitivoController extends AbstractController {
 	/**
 	 * @Route("/{id}/imprimir", name="texto_definitivo_imprimir")
 	 */
-	public function imprimir(Pdf $knpSnappyPdf, TextoDefinitivo $textoDefinitivo ) {
+	public function imprimir( Pdf $knpSnappyPdf, TextoDefinitivo $textoDefinitivo ) {
 
-		$expediente = $textoDefinitivo->getDictamen()->getExpediente();
+//		$expediente = $textoDefinitivo->getDictamen()->getExpediente();
 
 		$title   = $textoDefinitivo->getDictamen();
 		$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda' );
 		$rama    = null;
 
-		if ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ) {
+		if ( $textoDefinitivo->getDictamen() && ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ||
+		                                          $textoDefinitivo->getTipoTextoDefinitivo()->getId() == TipoProyecto::TIPO_ORDENANZA ) ) {
 			$rama    = $textoDefinitivo->getRama()->getNumeroRomano();
 			$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda-ordenanza' );
 		}
@@ -286,5 +294,91 @@ class TextoDefinitivoController extends AbstractController {
 			]
 		);
 
+	}
+
+	/**
+	 * @Route("/nuevo-sin-expediente", name="texto_definitivo_nuevo_sin_expediente")
+	 */
+	public function nuevoSinExpediente( Request $request ) {
+		$textoDefinitivo = new Textodefinitivo();
+		$form            = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+		/*$form->get('dictamen')->remove('expediente');
+		$form->get('dictamen')->remove('fecha');
+		$form->get('dictamen')->remove('textoDictamen');
+		$form->get('dictamen')->remove('anexos');*/
+
+		$form->remove( 'dictamen' );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+//			$expediente = $form->get( "dictamen" )->get( 'expediente' )->getData();
+//			$textoDefinitivo->getDictamen()->setExpediente( $expediente );
+			$em = $this->getDoctrine()->getManager();
+			$em->persist( $textoDefinitivo );
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Texto definitivo creado correctamente'
+			);
+
+			return $this->redirectToRoute( 'texto_definitivo_show', array( 'id' => $textoDefinitivo->getId() ) );
+		}
+
+		return $this->render( 'textodefinitivo/nuevo_sin_expediente.html.twig',
+			array(
+				'textoDefinitivo' => $textoDefinitivo,
+				'form'            => $form->createView(),
+			) );
+	}
+
+	/**
+	 * @Route("/{id}/editar-sin-expediente", name="texto_definitivo_editar_sin_expediente")
+	 */
+	public function editarSinExpediente( Request $request, TextoDefinitivo $textoDefinitivo ) {
+
+		$em = $this->getDoctrine()->getManager();
+
+		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
+		$editForm->remove( 'dictamen' );
+		/*$editForm->get('dictamen')->remove('expediente');
+		$editForm->get('dictamen')->remove('fecha');
+		$editForm->get('dictamen')->remove('textoDictamen');
+		$editForm->get('dictamen')->remove('anexos');*/
+		$editForm->handleRequest( $request );
+
+		$anexosOriginales = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $textoDefinitivo->getAnexos() as $anexo ) {
+			$anexosOriginales->add( $anexo );
+		}
+
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+
+			foreach ( $anexosOriginales as $anexo ) {
+				if ( false === $textoDefinitivo->getAnexos()->contains( $anexo ) ) {
+					$anexo->setTextoDefinitivo( null );
+					$em->remove( $anexo );
+				}
+			}
+
+			$em->flush();
+
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Texto definitivo actualizado correctamente'
+			);
+
+			return $this->redirectToRoute( 'texto_definitivo_editar_sin_expediente',
+				array( 'id' => $textoDefinitivo->getId() ) );
+		}
+
+		return $this->render( 'textodefinitivo/editar_sin_expediente.html.twig',
+			array(
+				'textoDefinitivo' => $textoDefinitivo,
+				'edit_form'       => $editForm->createView()
+			) );
 	}
 }

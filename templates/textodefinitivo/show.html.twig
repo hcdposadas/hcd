@@ -64,9 +64,15 @@
                     <a class="btn btn-default" target="_blank"
                        href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}"><i
                                 class="fa fa-print"></i></a>
-                    <a class="btn btn-default pull-right"
-                       href="{{ path('texto_definitivo_edit', {'id': textoDefinitivo.id }) }}"><i
-                                class="fa fa-edit"></i></a>
+                    {% if textoDefinitivo.dictamen %}
+                        <a class="btn btn-default pull-right"
+                           href="{{ path('texto_definitivo_edit', {'id': textoDefinitivo.id }) }}"><i
+                                    class="fa fa-edit"></i></a>
+                    {% else %}
+                        <a class="btn btn-default pull-right"
+                           href="{{ path('texto_definitivo_editar_sin_expediente', {'id': textoDefinitivo.id }) }}"><i
+                                    class="fa fa-edit"></i></a>
+                    {% endif %}
                 </div>
             </div>
         </div>

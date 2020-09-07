@@ -7,6 +7,8 @@
     <div class="row mb-3">
         <div class="col-md-12">
             <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
+            <a class="btn btn-primary" href="{{ path('texto_definitivo_nuevo_sin_expediente') }}">Nuevo Texto Definitivo
+                (Sin Expte)</a>
         </div>
     </div>
     <div class="row">
@@ -15,15 +17,17 @@
                 <div class="card-header">
                     <h3 class="card-title">Filtros</h3>
                     <div class="card-tools float-right">
-                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
-                {{ form_start(filter_type) }}
+                    {{ form_start(filter_type) }}
                     <div class="row">
                         <div class="col-md-6">
                             {{ form_row(filter_type.aprobadoEnSesion) }}
+                            {{ form_row(filter_type.tipoDocumento) }}
                             {{ form_row(filter_type.expediente) }}
 
                         </div>
@@ -53,7 +57,7 @@
                     <table class="table table-bordered table-striped data-table">
                         <thead>
                         <tr>
-                            <th>Expediente</th>
+                            <th>Expediente/Documento</th>
                             <th>Numero</th>
                             <th>Aprobado en Sesión</th>
                             <th>Activo</th>
@@ -65,7 +69,13 @@
                         <tbody>
                         {% for textoDefinitivo in textoDefinitivos %}
                             <tr>
-                                <td>{{ textoDefinitivo.dictamen }}</td>
+                                <td>
+                                    {% if textoDefinitivo.dictamen %}
+                                        {{ textoDefinitivo.dictamen }}
+                                    {% else %}
+                                        {{ textoDefinitivo.tipoDocumento }} Nº {{ textoDefinitivo.numeroDocumento }}
+                                    {% endif %}
+                                </td>
                                 <td>{{ textoDefinitivo.numero }}</td>
                                 <td>{{ textoDefinitivo.aprobadoEnSesion }}</td>
                                 <td>{% if textoDefinitivo.activo %}Si{% else %}No{% endif %}</td>
@@ -76,10 +86,17 @@
                                        href="{{ path('texto_definitivo_show', { 'id': textoDefinitivo.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-default"
-                                       href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                    {% if textoDefinitivo.dictamen %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% else %}
+                                        <a class="btn btn-default"
+                                           href="{{ path('texto_definitivo_editar_sin_expediente', { 'id': textoDefinitivo.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -94,6 +111,8 @@
     <div class="row mb-3">
         <div class="col-md-12">
             <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
+            <a class="btn btn-primary" href="{{ path('texto_definitivo_nuevo_sin_expediente') }}">Nuevo Texto Definitivo
+                (Sin Expte)</a>
         </div>
     </div>
 

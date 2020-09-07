@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Nuevo Texto definitivo (sin Expediente)
+{% endblock title %}
+{% block body %}
+    <h1>{{ textoDefinitivo.dictamen }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Texto definitivo</h3>
+        </div>
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-4">
+                    {{ form_row(form.tipoDocumento) }}
+                </div>
+                <div class="col-4">
+                    {{ form_row(form.numeroDocumento) }}
+                </div>
+                <div class="col-4">
+                    {{ form_row(form.fechaDocumento) }}
+                </div>
+
+                <div class="col-12">
+                    {{ form_row(form.tipoTextoDefinitivo) }}
+                    {{ form_row(form.texto) }}
+                    {{ form_row(form.firmantes) }}
+                    {{ form_row(form.numero) }}
+                    {{ form_row(form.rama) }}
+                    {{ form_row(form.expedientesAdjuntos) }}
+                    {{ form_row(form.tituloAnexo) }}
+                    {{ form_row(form.anexos) }}
+                    {{ form_row(form.aprobadoEnSesion) }}
+                    {{ form_row(form.activo) }}
+                </div>
+
+
+
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Crear"/>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+
+    <a class="btn btn-default" href="{{ path('texto_definitivo_index') }}">Volver</a>
+
+{% endblock %}

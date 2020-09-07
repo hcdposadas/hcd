@@ -16,6 +16,11 @@ Editar Texto definitivo
             <input class="btn btn-primary" type="submit" value="Guardar" />
         {{ form_end(edit_form) }}
         </div>
+        <div class="card-footer">
+            <a class="btn btn-default float-right" target="_blank"
+               href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}"><i
+                        class="fa fa-print"></i></a>
+        </div>
     </div>
 
     <a class="btn btn-default" href="{{ path('texto_definitivo_show', {'id': textoDefinitivo.id}) }}">Volver</a>

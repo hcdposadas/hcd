@@ -14,6 +14,10 @@ use App\Entity\Base\BaseClass;
  * @ORM\Entity(repositoryClass="App\Repository\TextoDefinitivoRepository")
  */
 class TextoDefinitivo extends BaseClass {
+
+	const TIPO_DOCUMENTO_ACTA = 'Acta';
+	const TIPO_DOCUMENTO_DECRETO = 'Decreto';
+
 	/**
 	 * @var int
 	 *
@@ -71,6 +75,36 @@ class TextoDefinitivo extends BaseClass {
 	 */
 	private $aprobadoEnSesion;
 
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $tituloAnexo;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $tipoDocumento;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $numeroDocumento;
+
+	/**
+	 * @ORM\Column(type="date", nullable=true)
+	 */
+	private $fechaDocumento;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity=TipoProyecto::class)
+	 */
+	private $tipoTextoDefinitivo;
+
+	/**
+	 * @ORM\OneToMany(targetEntity=FirmanteTextoDefinitivo::class, mappedBy="textoDefinitivo", cascade={"persist"})
+	 */
+	private $firmantes;
+
 
 	/**
 	 * Get id
@@ -88,6 +122,7 @@ class TextoDefinitivo extends BaseClass {
 	public function __construct() {
 		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->expedientesAdjuntos = new ArrayCollection();
+		$this->firmantes           = new ArrayCollection();
 	}
 
 	/**
@@ -297,6 +332,84 @@ class TextoDefinitivo extends BaseClass {
 
 	public function setAprobadoEnSesion( ?Sesion $aprobadoEnSesion ): self {
 		$this->aprobadoEnSesion = $aprobadoEnSesion;
+
+		return $this;
+	}
+
+	public function getTituloAnexo(): ?string {
+		return $this->tituloAnexo;
+	}
+
+	public function setTituloAnexo( ?string $tituloAnexo ): self {
+		$this->tituloAnexo = $tituloAnexo;
+
+		return $this;
+	}
+
+	public function getTipoDocumento(): ?string {
+		return $this->tipoDocumento;
+	}
+
+	public function setTipoDocumento( ?string $tipoDocumento ): self {
+		$this->tipoDocumento = $tipoDocumento;
+
+		return $this;
+	}
+
+	public function getNumeroDocumento(): ?string {
+		return $this->numeroDocumento;
+	}
+
+	public function setNumeroDocumento( ?string $numeroDocumento ): self {
+		$this->numeroDocumento = $numeroDocumento;
+
+		return $this;
+	}
+
+	public function getFechaDocumento(): ?\DateTimeInterface {
+		return $this->fechaDocumento;
+	}
+
+	public function setFechaDocumento( ?\DateTimeInterface $fechaDocumento ): self {
+		$this->fechaDocumento = $fechaDocumento;
+
+		return $this;
+	}
+
+	public function getTipoTextoDefinitivo(): ?TipoProyecto {
+		return $this->tipoTextoDefinitivo;
+	}
+
+	public function setTipoTextoDefinitivo( ?TipoProyecto $tipoTextoDefinitivo ): self {
+		$this->tipoTextoDefinitivo = $tipoTextoDefinitivo;
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection|FirmanteTextoDefinitivo[]
+	 */
+	public function getFirmantes(): Collection {
+		return $this->firmantes;
+	}
+
+	public function addFirmante( FirmanteTextoDefinitivo $firmante ): self {
+		if ( ! $this->firmantes->contains( $firmante ) ) {
+			$this->firmantes[] = $firmante;
+			$firmante->setTextoDefinitivo( $this );
+		}
+
+		return $this;
+	}
+
+	public function removeFirmante( FirmanteTextoDefinitivo $firmante ): self {
+		if ( $this->firmantes->contains( $firmante ) ) {
+			$this->firmantes->removeElement( $firmante );
+			// set the owning side to null (unless already changed)
+			if ( $firmante->getTextoDefinitivo() === $this ) {
+				$firmante->setTextoDefinitivo( null );
+			}
+		}
 
 		return $this;
 	}

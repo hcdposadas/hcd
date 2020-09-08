@@ -247,7 +247,7 @@ class TextoDefinitivoController extends AbstractController {
 		$rama    = null;
 
 		if ( $textoDefinitivo->getDictamen() && ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ||
-		                                          $textoDefinitivo->getTipoTextoDefinitivo()->getId() == TipoProyecto::TIPO_ORDENANZA ) ) {
+		                                          ( $textoDefinitivo->getTipoTextoDefinitivo() && $textoDefinitivo->getTipoTextoDefinitivo()->getId() == TipoProyecto::TIPO_ORDENANZA ) ) ) {
 			$rama    = $textoDefinitivo->getRama()->getNumeroRomano();
 			$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda-ordenanza' );
 		}

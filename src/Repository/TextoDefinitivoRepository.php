@@ -26,6 +26,13 @@ class TextoDefinitivoRepository extends \Doctrine\ORM\EntityRepository
 					->where( "td.rama = :rama" );
 				$qb->setParameter( 'rama', $q );
 			}
+			
+			if ( isset( $filter['tipoDocumento'] ) ) {
+				$q = $filter['tipoDocumento'];
+				$qb
+					->where( "td.tipoDocumento = :tipoDocumento" );
+				$qb->setParameter( 'tipoDocumento', $q );
+			}
 
 			if ( isset( $filter['aprobadoEnSesion'] ) ) {
 				$q = $filter['aprobadoEnSesion'];

@@ -113,7 +113,9 @@ class TextoDefinitivoController extends AbstractController {
 		$em = $this->getDoctrine()->getManager();
 
 		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
-		$editForm->remove( 'dictamen' );
+		$editForm->remove( 'tipoDocumento' );
+		$editForm->remove( 'numeroDocumento' );
+		$editForm->remove( 'fechaDocumento' );
 		$editForm->remove( 'tipoTextoDefinitivo' );
 		$editForm->remove( 'firmantes' );
 		$editForm->handleRequest( $request );

@@ -94,7 +94,16 @@
     {% endif %}
 {% endblock %}
 
-{% block linkElement %}{% import _self as knp_menu %}<a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>{{ block('label') }}</a>{% endblock %}
+{% block linkElement %}{% import _self as knp_menu %}
+    {% set currAttrs = [] %}
+    {% if matcher.isCurrent(item) %}
+        {% set currAttrs = currAttrs|merge({'class': item.linkAttributes['class'] ~ ' active'}) %}
+    {% else %}
+        {% set currAttrs = item.linkAttributes %}
+    {% endif %}
+    {#    <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>{{ block('label') }}</a>#}
+    <a href="{{ item.uri }}"{{ knp_menu.attributes(currAttrs) }}>{{ block('label') }}</a>
+{% endblock %}
 
 {% block spanElement %}{% import _self as knp_menu %}<span{{ knp_menu.attributes(item.labelAttributes) }}>{{ block('label') }}</span>{% endblock %}
 

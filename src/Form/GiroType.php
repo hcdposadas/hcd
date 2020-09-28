@@ -16,7 +16,8 @@ class GiroType extends AbstractType {
 			->add( 'comisionDestino',
 				null,
 				[
-					'attr' => [ 'class' => 'select2' ]
+					'attr' => [ 'class' => 'select2' ],
+					'label'=>'Comisión Destino'
 				] )
 			->add('texto')
 			->add( 'fechaGiro',

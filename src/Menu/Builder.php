@@ -43,7 +43,8 @@ class Builder {
 			'MENU PRINCIPAL'
 		)->setAttribute( 'class', 'nav-header' );
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+		if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
+		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 
 			$keyEmpresa = 'MESA ENTRADA';
 			$menu->addChild(
@@ -59,46 +60,48 @@ class Builder {
 			     ->setExtra( 'icon', 'fas fa-exchange-alt' )
 			     ->setAttribute( 'class', 'nav-item has-treeview' );
 
+			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
 
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Imprimir Proyecto',
-					array(
-						'route'          => 'expediente_impresion_proyecto',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
+				$menu[ $keyEmpresa ]
+					->addChild(
+						'Imprimir Proyecto',
+						array(
+							'route'          => 'expediente_impresion_proyecto',
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link' ]
+						)
+					);
 
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Asingar Nº Expte',
-					array(
-						'route'          => 'expediente_asignar_numero',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
+				$menu[ $keyEmpresa ]
+					->addChild(
+						'Asingar Nº Expte',
+						array(
+							'route'          => 'expediente_asignar_numero',
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link' ]
+						)
+					);
 
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Expedientes Legislativos',
-					array(
-						'route'          => 'expedientes_legislativos_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
+				$menu[ $keyEmpresa ]
+					->addChild(
+						'Expedientes Legislativos',
+						array(
+							'route'          => 'expedientes_legislativos_index',
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link' ]
+						)
+					);
 
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Expedientes Administrativos',
-					array(
-						'route'          => 'expedientes_administrativos_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
+				$menu[ $keyEmpresa ]
+					->addChild(
+						'Expedientes Administrativos',
+						array(
+							'route'          => 'expedientes_administrativos_index',
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link' ]
+						)
+					);
+			}
 
 			$menu[ $keyEmpresa ]
 				->addChild(
@@ -109,28 +112,28 @@ class Builder {
 						'linkAttributes' => [ 'class' => 'nav-link' ]
 					)
 				);
+			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+				$menu[ $keyEmpresa ]
+					->addChild(
+						'Expedientes Administrativos Externos',
+						array(
+							'route'          => 'expediente_administrativo_externo_index',
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link' ]
+						)
+					);
 
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Expedientes Administrativos Externos',
-					array(
-						'route'          => 'expediente_administrativo_externo_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
-
-			//Dependencia
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Dependencias',
-					array(
-						'route'          => 'dependencia_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
-
+				//Dependencia
+				$menu[ $keyEmpresa ]
+					->addChild(
+						'Dependencias',
+						array(
+							'route'          => 'dependencia_index',
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link' ]
+						)
+					);
+			}
 
 		}
 		// Decretos
@@ -366,7 +369,7 @@ class Builder {
 					->addChild(
 						'Incorporar Dictamen en Sesión',
 						[
-							'route' => 'incorporar_dictamenes_en_sesion_index',
+							'route'          => 'incorporar_dictamenes_en_sesion_index',
 							'attributes'     => [ 'class' => 'nav-item' ],
 							'linkAttributes' => [ 'class' => 'nav-link' ]
 						]
@@ -427,7 +430,8 @@ class Builder {
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
+		     $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ) {
 
 			$textosDefinitivos = 'TEXTOS DEFINITIVOS';
 			$menu->addChild(

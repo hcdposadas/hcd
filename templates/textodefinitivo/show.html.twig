@@ -6,9 +6,9 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-{#                <div class="card-header">#}
+                {# <div class="card-header"> #}
 
-{#                </div>#}
+                {# </div> #}
                 <div class="card-body">
                     <table>
                         <tbody>
@@ -21,7 +21,8 @@
 
                         <tr>
                             <th>Aprobado en Sesión</th>
-                            <td><a target="_blank" href="{{ path('sesiones_ver', {'id': textoDefinitivo.aprobadoEnSesion.id }) }}">{{ textoDefinitivo.aprobadoEnSesion }}
+                            <td><a target="_blank"
+                                   href="{{ path('sesiones_ver', {'id': textoDefinitivo.aprobadoEnSesion.id }) }}">{{ textoDefinitivo.aprobadoEnSesion }}
                                     - {{ textoDefinitivo.aprobadoEnSesion.fecha | date('d/m/Y') }}</a></td>
                         </tr>
                         <tr>
@@ -29,7 +30,9 @@
                             <td>
                                 <ul>
                                     {% for expedienteAdjunto in textoDefinitivo.expedientesAdjuntos %}
-                                        <li><a target="_blank" href="{{ path('expediente_show', {'id': expedienteAdjunto.expediente.id }) }}">{{ expedienteAdjunto.expediente }}</a></li>
+                                        <li><a target="_blank"
+                                               href="{{ path('expediente_show', {'id': expedienteAdjunto.expediente.id }) }}">{{ expedienteAdjunto.expediente }}</a>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </td>
@@ -64,15 +67,18 @@
                     <a class="btn btn-default" target="_blank"
                        href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}"><i
                                 class="fa fa-print"></i></a>
-                    {% if textoDefinitivo.dictamen %}
-                        <a class="btn btn-default pull-right"
-                           href="{{ path('texto_definitivo_edit', {'id': textoDefinitivo.id }) }}"><i
-                                    class="fa fa-edit"></i></a>
-                    {% else %}
-                        <a class="btn btn-default pull-right"
-                           href="{{ path('texto_definitivo_editar_sin_expediente', {'id': textoDefinitivo.id }) }}"><i
-                                    class="fa fa-edit"></i></a>
+                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                        {% if textoDefinitivo.dictamen %}
+                            <a class="btn btn-default pull-right"
+                               href="{{ path('texto_definitivo_edit', {'id': textoDefinitivo.id }) }}"><i
+                                        class="fa fa-edit"></i></a>
+                        {% else %}
+                            <a class="btn btn-default pull-right"
+                               href="{{ path('texto_definitivo_editar_sin_expediente', {'id': textoDefinitivo.id }) }}"><i
+                                        class="fa fa-edit"></i></a>
+                        {% endif %}
                     {% endif %}
+
                 </div>
             </div>
         </div>
@@ -81,7 +87,7 @@
 
     <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
 
-    {#    <a class="btn btn-default" href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">Editar</a>#}
+    {# <a class="btn btn-default" href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">Editar</a> #}
 
 
 

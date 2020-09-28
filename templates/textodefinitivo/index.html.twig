@@ -4,13 +4,9 @@
     Textos definitivos
 {% endblock title %}
 {% block body %}
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
-            <a class="btn btn-primary" href="{{ path('texto_definitivo_nuevo_sin_expediente') }}">Nuevo Texto Definitivo
-                (Sin Expte)</a>
-        </div>
-    </div>
+
+    {{ _self.botones() }}
+
     <div class="row">
         <div class="col-md-12">
             <div class="card collapsed-card">
@@ -86,16 +82,18 @@
                                        href="{{ path('texto_definitivo_show', { 'id': textoDefinitivo.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if textoDefinitivo.dictamen %}
-                                        <a class="btn btn-default"
-                                           href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                    {% else %}
-                                        <a class="btn btn-default"
-                                           href="{{ path('texto_definitivo_editar_sin_expediente', { 'id': textoDefinitivo.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
+                                    {% if is_granted('ROLE_LEGISLATIVO') %}
+                                        {% if textoDefinitivo.dictamen %}
+                                            <a class="btn btn-default"
+                                               href="{{ path('texto_definitivo_edit', { 'id': textoDefinitivo.id }) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-default"
+                                               href="{{ path('texto_definitivo_editar_sin_expediente', { 'id': textoDefinitivo.id }) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -108,13 +106,7 @@
     </div>
 
 
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
-            <a class="btn btn-primary" href="{{ path('texto_definitivo_nuevo_sin_expediente') }}">Nuevo Texto Definitivo
-                (Sin Expte)</a>
-        </div>
-    </div>
+    {{ _self.botones() }}
 
     <div class="row">
         {# display navigation #}
@@ -125,3 +117,16 @@
         </div>
     </div>
 {% endblock %}
+
+{% macro botones() %}
+    {% if is_granted('ROLE_LEGISLATIVO') %}
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <a class="btn btn-primary" href="{{ path('texto_definitivo_new') }}">Nuevo Texto Definitivo</a>
+                <a class="btn btn-primary" href="{{ path('texto_definitivo_nuevo_sin_expediente') }}">Nuevo Texto
+                    Definitivo
+                    (Sin Expte)</a>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}

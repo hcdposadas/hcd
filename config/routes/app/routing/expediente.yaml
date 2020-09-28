@@ -121,6 +121,10 @@ expediente_legislativo_externo_editar:
     path: /{id}/expediente_legislativo_externo_editar
     defaults: { _controller: App\Controller\ExpedienteController::editarExpedienteLegislativoExterno }
 
+expediente_legislativo_externo_giro:
+    path: /{id}/expediente-legislativo-externo-giro
+    defaults: { _controller: App\Controller\ExpedienteController::asignarGiroComision }
+
 #administrativos externos
 expediente_administrativo_externo_index:
     path: /expediente_administrativo_externo_index

@@ -62,13 +62,10 @@ class ExpedienteType extends AbstractType {
 			->add( 'letra' )
 			->add( 'fecha',
 				DateType::class,
-				array(
+				[
 					'widget' => 'single_text',
-					'format' => 'dd/MM/yyyy',
-					'attr'   => array(
-						'class' => 'datepicker',
-					),
-				) )
+					'html5'  => true
+				] )
 			->add( 'registroMunicipal' )
 			->add( 'expedienteInternoFile',
 				VichFileType::class,

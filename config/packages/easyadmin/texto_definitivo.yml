@@ -1,0 +1,34 @@
+easy_admin:
+    entities:
+        TextoDefinitivo:
+            class: App\Entity\TextoDefinitivo
+            list:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'numero' }
+                    - rama
+                    - tipoDocumento
+                    - aprobadoEnSesion
+            show:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'numero' }
+                    - { property: 'rama' }
+                    - { property: 'tipoDocumento' }
+                    - { property: 'tituloAnexo' }
+                    - { property: 'anexos' }
+                    - { property: 'dictamen' }
+                    - { property: 'expedientesAdjuntos' }
+                    - { property: 'aprobadoEnSesion' }
+                    - { property: 'numeroDocumento' }
+                    - { property: 'fechaDocumento' }
+                    - { property: 'tipoTextoDefinitivo' }
+                    - { property: 'firmantes' }
+            form:
+                fields:
+                    - { property: 'numero' }
+                    - { property: 'rama' }
+                    - { property: 'tipoDocumento' }
+                    - { property: 'dictamen' }
+                    - { property: 'tipoTextoDefinitivo' }
+                    - { property: 'tipoDocumento', type: 'choice', required: false, type_options: { placeholder: 'Ninguno', multiple: false, expanded: false, choices: { 'Acta': 'Acta', 'Decreto': 'Decreto' } } }

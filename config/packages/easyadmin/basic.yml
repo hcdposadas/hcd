@@ -27,6 +27,7 @@ easy_admin:
             - { label: 'Artículo', entity: PersonalArticulo, icon: 'umbrella' }
             - Expediente
             - Dictamen
+            - { label: 'Texto Definitivo', entity: TextoDefinitivo, icon: 'file' }
             - { label: 'Tipo Expediente', entity: TipoExpediente }
             - { label: 'Tipo Proyecto', entity: TipoProyecto }
             - { label: 'Tipo Decreto', entity: TipoDecreto }

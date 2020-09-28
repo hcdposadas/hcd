@@ -121,7 +121,7 @@ class TextoDefinitivoController extends AbstractController {
 
 		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 //		$editForm->get('dictamen')->get('expediente')->setData($textoDefinitivo->getDictamen()->getExpediente());
-		$editForm->get('dictamen')->remove('expediente');
+		$editForm->get( 'dictamen' )->remove( 'expediente' );
 		$editForm->remove( 'tipoDocumento' );
 		$editForm->remove( 'numeroDocumento' );
 		$editForm->remove( 'fechaDocumento' );
@@ -260,8 +260,9 @@ class TextoDefinitivoController extends AbstractController {
 		$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda' );
 		$rama    = null;
 
-		if ( $textoDefinitivo->getDictamen() && ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ||
-		                                          ( $textoDefinitivo->getTipoTextoDefinitivo() && $textoDefinitivo->getTipoTextoDefinitivo()->getId() == TipoProyecto::TIPO_ORDENANZA ) ) ) {
+		if ( $textoDefinitivo->getDictamen() &&
+		     ( $textoDefinitivo->getDictamen()->getTipoProyecto()->getId() == TipoProyecto::TIPO_ORDENANZA ||
+		       ( $textoDefinitivo->getTipoTextoDefinitivo() && $textoDefinitivo->getTipoTextoDefinitivo()->getId() == TipoProyecto::TIPO_ORDENANZA ) ) ) {
 			$rama    = $textoDefinitivo->getRama()->getNumeroRomano();
 			$leyenda = $this->getDoctrine()->getRepository( Parametro::class )->findOneBySlug( 'texto-definitivo-leyenda-ordenanza' );
 		}

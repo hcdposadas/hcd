@@ -43,7 +43,7 @@ class ExpedienteController extends AbstractController {
 	 * Lists all expediente entities.
 	 *
 	 */
-	public function index(PaginatorInterface $paginator, Request $request ) {
+	public function index( PaginatorInterface $paginator, Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
 		$filterType = $this->createForm( ExpedienteFilterType::class,
@@ -65,8 +65,6 @@ class ExpedienteController extends AbstractController {
 
 			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntrada();
 		}
-
-
 
 
 		$expedientes = $paginator->paginate(
@@ -245,7 +243,7 @@ class ExpedienteController extends AbstractController {
 	public function seguimientoExpedienteTimeline( Request $request, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
-        $girosBae = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
+		$girosBae   = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
 
 		$referer = $request->headers
 			->get( 'referer' );
@@ -253,13 +251,13 @@ class ExpedienteController extends AbstractController {
 		return $this->render( 'expediente/timeline.html.twig',
 			array(
 				'expediente' => $expediente,
-				'girosBae' => $girosBae,
+				'girosBae'   => $girosBae,
 				'referer'    => $referer
 			) );
 
 	}
 
-	public function imprimirCaratula(Pdf $knpSnappyPdf, $id ) {
+	public function imprimirCaratula( Pdf $knpSnappyPdf, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
 		$title      = 'Carátula';
@@ -290,7 +288,7 @@ class ExpedienteController extends AbstractController {
 
 	}
 
-	public function imprimirGiro(Pdf $knpSnappyPdf, $id, $giroId, $tipoExpediente ) {
+	public function imprimirGiro( Pdf $knpSnappyPdf, $id, $giroId, $tipoExpediente ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
 
@@ -332,7 +330,7 @@ class ExpedienteController extends AbstractController {
 
 //	EXPEDIENTES LEGISLATIVOS
 
-	public function expedientesLegislativosIndex(PaginatorInterface $paginator,  Request $request ) {
+	public function expedientesLegislativosIndex( PaginatorInterface $paginator, Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
 		$tipoExpediente = $em->getRepository( TipoExpediente::class )->findOneBy( [
@@ -369,7 +367,7 @@ class ExpedienteController extends AbstractController {
 			}
 
 		}
-		
+
 		$expedientes = $paginator->paginate(
 			$expedientes,
 			$request->query->get( 'page', 1 )/* page number */,
@@ -407,7 +405,6 @@ class ExpedienteController extends AbstractController {
 			} else {
 				$proyectos = $this->getDoctrine()->getRepository( Expediente::class )->getQbProyecetosPorConcejal( $autor );
 			}
-
 
 
 			$proyectos = $paginator->paginate(
@@ -584,7 +581,7 @@ class ExpedienteController extends AbstractController {
 			$toRoute = 'proyecto_edit';
 
 			foreach ( $iniciadoresOriginales as $iniciadore ) {
-				if ( false === $expediente->getIniciadores()->contains( $iniciadore )) {
+				if ( false === $expediente->getIniciadores()->contains( $iniciadore ) ) {
 					$iniciadore->setExpediente( null );
 					$em->remove( $iniciadore );
 				}
@@ -885,7 +882,7 @@ class ExpedienteController extends AbstractController {
 			) );
 	}
 
-	public function expedienteImprimirEtiqueta(Pdf $knpSnappyPdf, Request $request, $id ) {
+	public function expedienteImprimirEtiqueta( Pdf $knpSnappyPdf, Request $request, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
 
@@ -956,7 +953,7 @@ class ExpedienteController extends AbstractController {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
 		$form       = $this->createForm( NuevoGiroExpedienteComisionType::class, $expediente );
-		$girosBae = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
+		$girosBae   = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
 
 		$form->handleRequest( $request );
 
@@ -977,14 +974,14 @@ class ExpedienteController extends AbstractController {
 		return $this->render( 'expediente/nuevo_giro_legislativo.html.twig',
 			[
 				'expediente' => $expediente,
-				'girosBae' => $girosBae,
+				'girosBae'   => $girosBae,
 				'form'       => $form->createView()
 			] );
 	}
 
 //  EXPEDIENTES ADMINISTRATIVOS
 
-	public function expedientesAdministrativosIndex(PaginatorInterface $paginator, Request $request ) {
+	public function expedientesAdministrativosIndex( PaginatorInterface $paginator, Request $request ) {
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -1008,8 +1005,6 @@ class ExpedienteController extends AbstractController {
 
 			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
 		}
-
-
 
 
 		$expedientes = $paginator->paginate(
@@ -1114,7 +1109,7 @@ class ExpedienteController extends AbstractController {
 
 	//  EXPEDIENTES LEGISLATIVOS EXTERNOS
 
-	public function expedientesLegislativoExternosIndex(PaginatorInterface $paginator, Request $request ) {
+	public function expedientesLegislativoExternosIndex( PaginatorInterface $paginator, Request $request ) {
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -1138,8 +1133,6 @@ class ExpedienteController extends AbstractController {
 
 			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesLegislativosExternos( $tipoExpediente );
 		}
-
-
 
 
 		$expedientes = $paginator->paginate(
@@ -1272,14 +1265,14 @@ class ExpedienteController extends AbstractController {
 
 		return $this->render( 'expediente/new_legislativo_externo.html.twig',
 			[
-				'form'       => $form->createView(),
+				'form' => $form->createView(),
 //				'expediente' => $expediente
 			] );
 	}
 
 	//  EXPEDIENTES ADMINISTRATIVOS EXTERNOS
 
-	public function expedientesAdministrativoExternosIndex(PaginatorInterface $paginator, Request $request ) {
+	public function expedientesAdministrativoExternosIndex( PaginatorInterface $paginator, Request $request ) {
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -1303,8 +1296,6 @@ class ExpedienteController extends AbstractController {
 
 			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
 		}
-
-
 
 
 		$expedientes = $paginator->paginate(
@@ -1460,7 +1451,7 @@ class ExpedienteController extends AbstractController {
 	}
 
 
-	public function incorporarProyectosASesionIndex( PaginatorInterface $paginator,Request $request ) {
+	public function incorporarProyectosASesionIndex( PaginatorInterface $paginator, Request $request ) {
 		$em = $this->getDoctrine()->getManager();
 
 		$tipoExpediente = $em->getRepository( TipoExpediente::class )->findOneBy( [
@@ -1501,6 +1492,65 @@ class ExpedienteController extends AbstractController {
 			array(
 				'expedientes' => $expedientes,
 				'filter_type' => $filterType->createView()
+			) );
+	}
+
+	public function asignarGiroComision( Request $request, Expediente $expediente ) {
+
+		if ( ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_CONCEJAL' ) &&
+		     ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) &&
+		     ! $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DEFENSOR' ) ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No tiene permisos para modificar un Proyecto.'
+			);
+
+			return $this->redirectToRoute( 'app_homepage' );
+		}
+
+		$em = $this->getDoctrine()->getManager();
+
+
+		$girosAComisionOriginal = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getGiros() as $giro ) {
+			$girosAComisionOriginal->add( $giro );
+		}
+
+
+		$editForm = $this->createForm( ExpedienteType::class, $expediente );
+		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			$editForm->remove( 'tipoProyecto' );
+			$editForm->remove( 'fecha' );
+		}
+		$editForm->handleRequest( $request );
+
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
+
+			$toRoute = 'expediente_legislativo_externo_giro';
+
+
+			foreach ( $girosAComisionOriginal as $giro ) {
+				if ( false === $expediente->getGiros()->contains( $giro ) ) {
+					$giro->setExpediente( null );
+					$em->remove( $giro );
+				}
+			}
+
+			$em->flush();
+			$this->get( 'session' )->getFlashBag()->add(
+				'success',
+				'Expediente modificado correctamente'
+			);
+
+			return $this->redirectToRoute( $toRoute, [ 'id' => $expediente->getId() ] );
+		}
+
+		return $this->render( 'expediente/asignar_giro.html.twig',
+			array(
+				'expediente' => $expediente,
+				'edit_form'  => $editForm->createView(),
 			) );
 	}
 }

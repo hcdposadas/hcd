@@ -62,6 +62,9 @@ class TextoDefinitivoController extends AbstractController {
 	 * @Route("/new", name="texto_definitivo_new")
 	 */
 	public function new( Request $request ) {
+		if ( ! $this->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			return $this->redirectToRoute( 'app_homepage' );
+		}
 		$textoDefinitivo = new Textodefinitivo();
 		$form            = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 		$form->remove( 'tipoDocumento' );
@@ -109,6 +112,10 @@ class TextoDefinitivoController extends AbstractController {
 	 * @Route("/{id}/edit", name="texto_definitivo_edit")
 	 */
 	public function edit( Request $request, TextoDefinitivo $textoDefinitivo ) {
+
+		if ( ! $this->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			return $this->redirectToRoute( 'app_homepage' );
+		}
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -190,6 +197,9 @@ class TextoDefinitivoController extends AbstractController {
 	 * @Route("/asignar/{dictamen}", name="texto_definitivo_asignar")
 	 */
 	public function asignar( Request $request, Dictamen $dictamen ) {
+		if ( ! $this->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			return $this->redirectToRoute( 'app_homepage' );
+		}
 		$textoDefinitivo = new Textodefinitivo();
 		$em              = $this->getDoctrine()->getManager();
 
@@ -304,20 +314,18 @@ class TextoDefinitivoController extends AbstractController {
 	 * @Route("/nuevo-sin-expediente", name="texto_definitivo_nuevo_sin_expediente")
 	 */
 	public function nuevoSinExpediente( Request $request ) {
+		if ( ! $this->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			return $this->redirectToRoute( 'app_homepage' );
+		}
 		$textoDefinitivo = new Textodefinitivo();
 		$form            = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
-		/*$form->get('dictamen')->remove('expediente');
-		$form->get('dictamen')->remove('fecha');
-		$form->get('dictamen')->remove('textoDictamen');
-		$form->get('dictamen')->remove('anexos');*/
 
 		$form->remove( 'dictamen' );
 
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-//			$expediente = $form->get( "dictamen" )->get( 'expediente' )->getData();
-//			$textoDefinitivo->getDictamen()->setExpediente( $expediente );
+
 			$em = $this->getDoctrine()->getManager();
 			$em->persist( $textoDefinitivo );
 			$em->flush();
@@ -342,14 +350,15 @@ class TextoDefinitivoController extends AbstractController {
 	 */
 	public function editarSinExpediente( Request $request, TextoDefinitivo $textoDefinitivo ) {
 
+		if ( ! $this->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			return $this->redirectToRoute( 'app_homepage' );
+		}
+
 		$em = $this->getDoctrine()->getManager();
 
 		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 		$editForm->remove( 'dictamen' );
-		/*$editForm->get('dictamen')->remove('expediente');
-		$editForm->get('dictamen')->remove('fecha');
-		$editForm->get('dictamen')->remove('textoDictamen');
-		$editForm->get('dictamen')->remove('anexos');*/
+
 		$editForm->handleRequest( $request );
 
 		$anexosOriginales = new ArrayCollection();

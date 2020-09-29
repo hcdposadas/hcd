@@ -3,11 +3,9 @@
     Expedientes Administrativos Externos Externos
 {% endblock title %}
 {% block body %}
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('expediente_administrativo_externo_nuevo') }}">Nuevo Expediente</a>
-        </div>
-    </div>
+
+    {{ _self.botones() }}
+
     <div class="row">
         <div class="col-md-12">
             <div class="card collapsed-card">
@@ -75,7 +73,7 @@
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>
                                 <td>{{ expediente.expediente }}</td>
-                                <td>{{ expediente.anio }}</td>
+                                <td>{% if expediente.anio %} {{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo }}{% endif %}</td>
                                 <td>{{ expediente.letra }}</td>
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{ expediente.registroMunicipal }}</td>
@@ -121,11 +119,9 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('expediente_administrativo_externo_nuevo') }}">Nuevo Expediente</a>
-        </div>
-    </div>
+
+    {{ _self.botones() }}
+
     <div class="row">
         {# display navigation #}
         <div class="col-md-12 text-center">
@@ -135,3 +131,11 @@
         </div>
     </div>
 {% endblock %}
+
+{% macro botones() %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('expediente_administrativo_externo_nuevo') }}">Nuevo Expediente</a>
+        </div>
+    </div>
+{% endmacro %}

@@ -27,11 +27,12 @@ easy_admin:
             - { label: 'Artículo', entity: PersonalArticulo, icon: 'umbrella' }
             - Expediente
             - Dictamen
+            - { label: 'Texto Definitivo', entity: TextoDefinitivo, icon: 'file' }
             - { label: 'Tipo Expediente', entity: TipoExpediente }
             - { label: 'Tipo Proyecto', entity: TipoProyecto }
             - { label: 'Tipo Decreto', entity: TipoDecreto }
             - { label: 'Tipo Mayoría', entity: TipoMayoria }
-            - { label: 'Tipo Tipo Orden de Pago', entity: TipoOrdenPago }
+            - { label: 'Tipo Orden de Pago', entity: TipoOrdenPago }
             - Iniciador
             - { label: 'Area Administrativa', entity: AreaAdministrativa }
             - Bloque

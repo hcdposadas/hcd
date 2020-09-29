@@ -42,16 +42,22 @@ class ExpedienteRepository extends EntityRepository {
 
 
 //		TODO sacar si no encuentran expedientes
-		$qb->andWhere('e.activo = true');
+		$qb->andWhere( 'e.activo = true' );
 
 		return $qb;
 	}
 
-	public function getQbExpedientesMesaEntrada() {
-		$qb = $this->getQbAll();
-		$qb->where( 'e.borrador is null' )
-		   ->orWhere( 'e.borrador = false' )
-		   ->andWhere( 'e.expediente is not null' );
+	public function getQbExpedientesMesaEntrada( $qb ) {
+
+		$qb
+			->andWhere(
+				$qb->expr()->andX(
+					$qb->expr()->isNotNull( 'e.borrador' ),
+					$qb->expr()->eq( 'e.borrador', 'false' )
+				),
+				$qb->expr()->isNotNull( 'e.expediente' )
+			);
+
 
 		return $qb;
 	}
@@ -72,11 +78,14 @@ class ExpedienteRepository extends EntityRepository {
 			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
 			->setParameter( 'tipoExpediente', $tipoExpediente );
 
+		$qb = $this->getQbExpedientesMesaEntrada( $qb );
+
 		return $qb;
 	}
 
 	public function getQbBuscar( $data, $tipoExpediente = null ) {
-		$qb = $this->getQbExpedientesMesaEntrada();
+//		$qb = $this->getQbExpedientesMesaEntrada();
+		$qb = $this->getQbAll();
 
 		if ( isset( $data['tipoExpediente'] ) ) {
 			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )
@@ -260,7 +269,7 @@ class ExpedienteRepository extends EntityRepository {
 
 	public function buscarExpedientesSesion( $data ) {
 		$qb = $this->getQbExpedientes( $data );
-		$qb->andWhere( $qb->expr()->isNotNull('e.expediente') );
+		$qb->andWhere( $qb->expr()->isNotNull( 'e.expediente' ) );
 
 		return $qb->getQuery()->getResult();
 	}
@@ -281,6 +290,7 @@ class ExpedienteRepository extends EntityRepository {
 
 	public function getQbBuscarExpedientesLegislativosExternos( $data, $tipoExpediente ) {
 		$qb = $this->getQbBuscar( $data, $tipoExpediente );
+		$qb = $this->getQbExpedientesMesaEntrada( $qb );
 
 		return $qb;
 	}

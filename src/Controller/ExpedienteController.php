@@ -351,6 +351,8 @@ class ExpedienteController extends AbstractController {
 			$expedientes = $em->getRepository( Expediente::class )->getQbBuscar( $filterType->getData(),
 				$tipoExpediente );
 
+			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntrada($expedientes);
+
 
 		} else {
 
@@ -1129,6 +1131,7 @@ class ExpedienteController extends AbstractController {
 
 			$expedientes = $em->getRepository( Expediente::class )->getQbBuscarExpedientesLegislativosExternos( $filterType->getData(),
 				$tipoExpediente );
+
 		} else {
 
 			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesLegislativosExternos( $tipoExpediente );

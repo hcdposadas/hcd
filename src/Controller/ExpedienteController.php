@@ -243,7 +243,7 @@ class ExpedienteController extends AbstractController {
 	public function seguimientoExpedienteTimeline( Request $request, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
-		$girosBae   = $em->getRepository( ProyectoBAE::class )->findByExpediente( $expediente );
+		$girosBae   = $em->getRepository( ProyectoBAE::class )->findByExpedienteTimeline( $expediente );
 
 		$referer = $request->headers
 			->get( 'referer' );

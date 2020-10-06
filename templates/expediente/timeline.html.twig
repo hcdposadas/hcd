@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    Seguimiento Expediente
+    Seguimiento Expediente - {{ expediente }}
 {% endblock title %}
 
 {% block contentHeader %}
@@ -75,7 +75,7 @@
                             </span>
                                     <h3 class="timeline-header"><a>{{ giro.comisionDestino }}</a> {{ giro.texto }}
                                         {% if giroBae.boletinAsuntoEntrado %}
-                                            ({{ giroBae.boletinAsuntoEntrado.sesion }} - {{ giroBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }})
+                                            ({{ giroBae.boletinAsuntoEntrado.sesion }} - {{ giroBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }}){% if giro.cabecera %} - <span class="text-primary">Comisión de Cabecera</span>{% endif %}
                                         {% endif %}
                                     </h3>
 

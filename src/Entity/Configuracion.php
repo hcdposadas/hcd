@@ -304,6 +304,11 @@ class Configuracion extends BaseClass {
 	private $selloPresidenciaFile;
 
 	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $consolidacionEnCurso;
+
+	/**
 	 *
 	 * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $file
 	 *
@@ -416,6 +421,16 @@ class Configuracion extends BaseClass {
 
 	public function setSelloPresidencia( ?string $selloPresidencia ): self {
 		$this->selloPresidencia = $selloPresidencia;
+
+		return $this;
+	}
+
+	public function getConsolidacionEnCurso(): ?string {
+		return $this->consolidacionEnCurso;
+	}
+
+	public function setConsolidacionEnCurso( ?string $consolidacionEnCurso ): self {
+		$this->consolidacionEnCurso = $consolidacionEnCurso;
 
 		return $this;
 	}

@@ -13,6 +13,7 @@ easy_admin:
                     - { property: 'logo269File', label: 'Logo 269x269', type: 'vich_image' }
                     - { property: 'logotipoFile', label: 'Logotipo', type: 'vich_image' }
                     - { property: 'selloPresidenciaFile', label: 'Sello Presidencia', type: 'vich_image' }
+                    - { property: 'consolidacionEnCurso', label: 'Consolidación en curso', type: 'url' }
             edit:
                 title:  'Editar Configuración'
             new:

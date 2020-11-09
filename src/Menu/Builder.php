@@ -2,6 +2,8 @@
 
 namespace App\Menu;
 
+use App\Entity\Configuracion;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -10,15 +12,21 @@ class Builder {
 
 	private $factory;
 	private $authorizationChecker;
+	private $em;
 
 	/**
 	 * @param FactoryInterface $factory
 	 *
 	 * Add any other dependency you need
 	 */
-	public function __construct( FactoryInterface $factory, AuthorizationCheckerInterface $authorizationChecker ) {
+	public function __construct(
+		FactoryInterface $factory,
+		AuthorizationCheckerInterface $authorizationChecker,
+		EntityManagerInterface $em
+	) {
 		$this->factory              = $factory;
 		$this->authorizationChecker = $authorizationChecker;
+		$this->em                   = $em;
 	}
 
 	public function mainMenu( array $options ) {
@@ -455,6 +463,34 @@ class Builder {
 						'linkAttributes' => [ 'class' => 'nav-link' ]
 					)
 				);
+
+			//DIGESTO
+			$digesto = 'DIGESTO';
+			$menu->addChild(
+				$digesto,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'nav nav-treeview',
+					),
+				)
+			)
+			     ->setUri( '#' )
+			     ->setLinkAttribute( 'class', 'nav-link' )
+			     ->setExtra( 'icon', 'fas fa-book-open' )
+			     ->setAttribute( 'class', 'nav-item has-treeview' );
+
+			$configuracion = $this->em->getRepository( Configuracion::class )->findAll()[0];
+			if ( $configuracion ) {
+				$menu[ $digesto ]
+					->addChild(
+						'Consolidación en curso',
+						[
+							'uri'            => $configuracion->getConsolidacionEnCurso(),
+							'attributes'     => [ 'class' => 'nav-item' ],
+							'linkAttributes' => [ 'class' => 'nav-link', 'target' => '_blank' ]
+						]
+					);
+			}
 		}
 
 		$keyPersonal = 'DOCUMENTOS';

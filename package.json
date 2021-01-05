@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "admin-lte": "^3.0.4",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "ckeditor": "^4.12.1",
         "dotenv": "^8.2.0",
         "ioredis": "^4.17.1",

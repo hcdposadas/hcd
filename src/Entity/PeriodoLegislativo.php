@@ -48,7 +48,7 @@ class PeriodoLegislativo extends BaseClass
     /**
      * @var string
      *
-     * @ORM\Column(name="frase", type="string", length=255)
+     * @ORM\Column(name="frase", type="string", length=500)
      */
     private $frase;
 

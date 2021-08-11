@@ -39,7 +39,7 @@
             <li class="nav-item dropdown">
                 {% set nombreusuario = app.user %}
                 {% if app.user.persona %}
-                    {% set nombreusuario = app.user.persona %}
+                    {% set nombreusuario = app.user.persona | title %}
                 {% endif %}
                 <a class="nav-link" data-toggle="dropdown" href="#">
                     <i class="far fa-user"></i>

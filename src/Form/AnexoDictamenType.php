@@ -28,7 +28,7 @@ class AnexoDictamenType extends AbstractType {
 								'image/*',
 								'application/pdf'
 							],
-							'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg, .pdf',
+							'mimeTypesMessage' => 'Solo se aceptan archivos .jpg, .png, .jpeg, .pdf',
 						] )
 					]
 				] );

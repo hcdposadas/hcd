@@ -43,7 +43,7 @@
             <div class="row">
                 <div class="col-md-12">
                     {{ form_widget(form.guardar) }}
-                    {{ form_widget(form.guardarYEnviar) }}
+                    {{ form_widget(form.guardarYFirmar) }}
                 </div>
             </div>
 
@@ -58,8 +58,8 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-        var submitConfirm = false;
-        var buttonPressed = '';
+        let submitConfirm = false;
+        let buttonPressed = '';
         $("button[type=submit]").on('click', function () {
             buttonPressed = $(this).text()
         });
@@ -91,7 +91,7 @@
                 } else {
                     console.log('no confirmo');
                     event.preventDefault();
-                    if (buttonPressed == 'Guardar y enviar') {
+                    if (buttonPressed == 'Guardar y firmar') {
                         modalConfirm('¿Está seguro?', '<p>¿Realmente desea enviar el proyecto a Mesa de Entrada? <br> Esta acción es irreversible.</p>');
                     }
                 }

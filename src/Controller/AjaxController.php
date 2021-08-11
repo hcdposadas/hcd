@@ -31,6 +31,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -342,24 +344,22 @@ class AjaxController extends AbstractController {
 		return JsonResponse::create( $expedientes );
 	}
 
-	public function enviarMailCodigoProyecto( Request $request ) {
+	public function enviarMailCodigoProyecto( Request $request, MailerInterface $mailer ) {
 
 		$expedienteId = $request->get( 'expedienteId' );
 		$expediente   = $this->getDoctrine()->getRepository( Expediente::class )->find( $expedienteId );
 
 		if ( ! $expediente ) {
-			return new JsonResponse( 'No se encontro el tipo de proyeto', 404 );
+			return new JsonResponse( 'No se encontro el proyecto', 404 );
 		}
-
-		$mailer = $this->get( 'mailer' );
 
 		$mail = $this->getUser()->getEmail();
 
 		$asunto = 'HCD ' . $_ENV['CIUDAD_NAME'] . ' - Código Impresión Proyecto';
 
 		$code = new QrCode( $expediente->getCodigoReferencia() );
-		$code->setLogoPath( $this->get( 'kernel' )->getRootDir() . '/../public/uploads/sis_images/apple-touch-icon.png' )
-		     ->setLogoWidth( 50 );
+		$code->setLogoPath( $this->getParameter( 'sis_images_dir' ) . '/apple-touch-icon.png' );
+		$code->setLogoSize( 50, 50 );
 
 		$nombreAdjunto = $expediente->getId() . '.png';
 

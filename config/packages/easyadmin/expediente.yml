@@ -15,3 +15,26 @@ easy_admin:
                     - { property: 'borrador' }
                     - { property: 'proyectoDem' }
                     - { property: 'activo' }
+            show:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'tipoExpediente' }
+                    - { property: 'extracto' }
+                    - { property: 'periodoLegislativo' }
+                    - { property: 'expediente' }
+                    - { property: 'letra' }
+                    - { property: 'anio' }
+                    - { property: 'fecha', format: 'd/m/Y' }
+                    - { property: 'texto', type: raw }
+                    - { property: 'iniciadores' }
+                    - { property: 'dependencia' }
+                    - { property: 'iniciadorParticular' }
+                    - { property: 'registroMunicipal' }
+                    - { property: 'numeroNota' }
+                    - { property: 'giros' }
+                    - { property: 'giroAdministrativo' }
+                    - { property: 'proyectoDem' }
+                    - { property: 'creadoPor'}
+                    - { property: 'actualizadoPor'}
+                    - { property: 'asignadoPor'}
+                    - { property: 'fechaPresentacion', format: 'd/m/Y' }

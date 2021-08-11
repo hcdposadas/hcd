@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ProyectoFirmado{% endblock %}
+
+{% block body %}
+    <h1>Edit ProyectoFirmado</h1>
+
+    {{ include('proyecto_firmado/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('proyecto_firmado_index') }}">back to list</a>
+
+    {{ include('proyecto_firmado/_delete_form.html.twig') }}
+{% endblock %}

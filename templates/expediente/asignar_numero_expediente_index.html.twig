@@ -56,11 +56,8 @@
                         <thead>
                         <tr>
                             <th>Id</th>
-{#                            <th>Expediente</th>#}
-{#                            <th>Letra</th>#}
                             <th>Año</th>
                             <th>Fecha</th>
-{#                            <th>Registro municipal</th>#}
                             <th>Iniciador</th>
                             <th>Acción</th>
                         </tr>
@@ -71,11 +68,8 @@
                                 <td>
                                     <a href="{{ path('expediente_show', { 'id': proyecto.id }) }}">{{ proyecto.id }}</a>
                                 </td>
-{#                                <td>{{ proyecto.expediente }}</td>#}
-{#                                <td>{{ proyecto.letra }}</td>#}
                                 <td>{% if proyecto.anio %}{{ proyecto.anio }}{% else %} {{ proyecto.periodoLegislativo }} {% endif %}</td>
                                 <td>{% if proyecto.fecha %}{{ proyecto.fecha|date('d/m/Y') }}{% endif %}</td>
-{#                                <td>{{ proyecto.registroMunicipal }}</td>#}
                                 <td>
                                     {% if proyecto.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in proyecto.iniciadores %}
@@ -92,9 +86,9 @@
 
                                 <td>
                                     {% if is_granted('ROLE_MESA_ENTRADA') %}
-                                        <a class="btn btn-default"
-                                           href="{{ path('expediente_legislativo_externo_editar', { 'id': proyecto.id }) }}">
-                                            <i class="fas fa-signature"></i>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Asingar Número de Expediente"
+                                           href="{{ path('expediente_asignar_numero', { 'id': proyecto.id }) }}">
+                                            <i class="fas fa-file-signature"></i>
                                         </a>
                                     {% endif %}
                                     <a class="btn btn-default"

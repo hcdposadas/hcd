@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProyectoFirmado index{% endblock %}
+
+{% block body %}
+    <h1>ProyectoFirmado index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Archivo</th>
+                <th>Activo</th>
+                <th>FechaCreacion</th>
+                <th>FechaActualizacion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for proyecto_firmado in proyecto_firmados %}
+            <tr>
+                <td>{{ proyecto_firmado.id }}</td>
+                <td>{{ proyecto_firmado.archivo }}</td>
+                <td>{{ proyecto_firmado.activo ? 'Yes' : 'No' }}</td>
+                <td>{{ proyecto_firmado.fechaCreacion ? proyecto_firmado.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ proyecto_firmado.fechaActualizacion ? proyecto_firmado.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('proyecto_firmado_show', {'id': proyecto_firmado.id}) }}">show</a>
+                    <a href="{{ path('proyecto_firmado_edit', {'id': proyecto_firmado.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('proyecto_firmado_new') }}">Create new</a>
+{% endblock %}

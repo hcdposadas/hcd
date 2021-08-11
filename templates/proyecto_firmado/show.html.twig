@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProyectoFirmado{% endblock %}
+
+{% block body %}
+    <h1>ProyectoFirmado</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ proyecto_firmado.id }}</td>
+            </tr>
+            <tr>
+                <th>Archivo</th>
+                <td>{{ proyecto_firmado.archivo }}</td>
+            </tr>
+            <tr>
+                <th>Activo</th>
+                <td>{{ proyecto_firmado.activo ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ proyecto_firmado.fechaCreacion ? proyecto_firmado.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaActualizacion</th>
+                <td>{{ proyecto_firmado.fechaActualizacion ? proyecto_firmado.fechaActualizacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('proyecto_firmado_index') }}">back to list</a>
+
+    <a href="{{ path('proyecto_firmado_edit', {'id': proyecto_firmado.id}) }}">edit</a>
+
+    {{ include('proyecto_firmado/_delete_form.html.twig') }}
+{% endblock %}

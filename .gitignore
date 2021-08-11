@@ -45,6 +45,8 @@ yarn-error.log
 !public/uploads/rrhh/licencias/.gitkeep
 /public/uploads/rrhh/novedades/*
 !public/uploads/rrhh/novedades/.gitkeep
+/public/uploads/expedientes/proyectos/*
+!public/uploads/expedientes/proyectos/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim
@@ -115,3 +117,7 @@ Icon
 .Spotlight-V100
 .Trashes
 /docker-compose.override.yml
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

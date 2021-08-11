@@ -57,10 +57,10 @@ class ProyectoType extends AbstractType {
 				] )
 			->add( 'fecha',
 				DateType::class,
-				array(
+				[
 					'widget' => 'single_text',
 					'html5'  => true
-				) )
+				] )
 			->add( 'giros',
 				BootstrapCollectionType::class,
 				[
@@ -80,14 +80,14 @@ class ProyectoType extends AbstractType {
 				] )
 			->add( 'guardar',
 				SubmitType::class,
-				array(
-					'attr' => array( 'class' => 'btn btn-default btn-guardar' ),
-				) )
-			->add( 'guardarYEnviar',
+				[
+					'attr' => [ 'class' => 'btn btn-default btn-guardar' ],
+				] )
+			->add( 'guardarYFirmar',
 				SubmitType::class,
-				array(
+				[
 					'attr' => array( 'class' => 'btn btn-primary float-right btn-guardar-enviar' ),
-				) );
+				] );
 	}
 
 	/**

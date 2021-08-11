@@ -17,7 +17,6 @@ class AnexoExpedienteType extends AbstractType {
 		$builder
 			->add( 'descripcion' )
 			->add( 'anexoFile',
-//				VichFileType::class,
 				VichImageType::class,
 				[
 					'label'       => 'Archivo',

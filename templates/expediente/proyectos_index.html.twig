@@ -120,6 +120,12 @@
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     {% endif %}
+                                    {% if not expediente.firmado %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Firmar Proyecto"
+                                           href="{{ path('proyecto_firmar', { 'expediente': expediente.id }) }}">
+                                            <i class="fa fa-signature"></i>
+                                        </a>
+                                    {% endif %}
                                     <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento Expte"
                                        href="{{ path('expediente_timeline', {id: expediente.id}) }}">
                                         <i class="fa fa-road"></i>

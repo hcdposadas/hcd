@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ProyectoFirmado{% endblock %}
+
+{% block body %}
+    <h1>Create new ProyectoFirmado</h1>
+
+    {{ include('proyecto_firmado/_form.html.twig') }}
+
+    <a href="{{ path('proyecto_firmado_index') }}">back to list</a>
+{% endblock %}

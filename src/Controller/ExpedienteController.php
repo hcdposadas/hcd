@@ -33,6 +33,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Routing\Annotation\Route;
+use Vich\UploaderBundle\Handler\DownloadHandler;
 
 /**
  * Expediente controller.
@@ -351,7 +353,7 @@ class ExpedienteController extends AbstractController {
 			$expedientes = $em->getRepository( Expediente::class )->getQbBuscar( $filterType->getData(),
 				$tipoExpediente );
 
-			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntrada($expedientes);
+			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntrada( $expedientes );
 
 
 		} else {
@@ -432,9 +434,9 @@ class ExpedienteController extends AbstractController {
 	public function showProyecto( Expediente $expediente ) {
 
 		return $this->render( 'expediente/proyecto_show.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
-			) );
+			] );
 
 	}
 
@@ -451,31 +453,35 @@ class ExpedienteController extends AbstractController {
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
 
-			$toRoute = 'proyecto_edit';
+//			$toRoute = 'proyecto_edit';
 			if ( $form->get( 'guardar' )->isClicked() ) {
 				$expediente->setBorrador( true );
-
 			}
 
-			if ( $form->get( 'guardarYEnviar' )->isClicked() ) {
+			if ( $form->get( 'guardarYFirmar' )->isClicked() ) {
 				$expediente->setBorrador( false );
 				$codigoReferencia = md5( uniqid( 'hcd_' ) );
 				$expediente->setCodigoReferencia( $codigoReferencia );
 
 //				Departamento de Mesa de Entradas y Salidas
 
-				$giroAdministrativo = new GiroAdministrativo();
-				$areaDestino        = $em->getRepository( AreaAdministrativa::class )->findOneBy( [
-					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
-				] );
-				$giroAdministrativo->setAreaDestino( $areaDestino );
-				$giroAdministrativo->setExpediente( $expediente );
-				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+//				$giroAdministrativo = new GiroAdministrativo();
+//				$areaDestino        = $em->getRepository( AreaAdministrativa::class )->findOneBy( [
+//					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
+//				] );
+//				$giroAdministrativo->setAreaDestino( $areaDestino );
+//				$giroAdministrativo->setExpediente( $expediente );
+//				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+//
+//
+//				$expediente->addGiroAdministrativo( $giroAdministrativo );
+//				$em->persist( $giroAdministrativo );
+				$em->persist($expediente);
+				$em->flush();
 
+				$url = $this->generateUrl( 'proyecto_firmar', [ 'expediente' => $expediente->getId() ] );
 
-				$expediente->addGiroAdministrativo( $giroAdministrativo );
-				$em->persist( $giroAdministrativo );
-				$toRoute = 'proyecto_show';
+//				return $this->redirectToRoute( 'proyecto_firmar', [ 'expediente' => $expediente->getId() ] );
 
 			}
 
@@ -523,15 +529,18 @@ class ExpedienteController extends AbstractController {
 				'Proyecto creado correctamente'
 			);
 
+			if ( ! isset( $url ) ) {
+				$url = $this->generateUrl( 'proyecto_edit', [ 'id' => $expediente->getId() ] );
+			}
 
-			return $this->redirectToRoute( $toRoute, array( 'id' => $expediente->getId() ) );
+			return $this->redirect( $url );
 		}
 
 		return $this->render( 'expediente/proyecto_new.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
 				'form'       => $form->createView(),
-			) );
+			] );
 	}
 
 	public function editProyecto( Request $request, Expediente $expediente ) {
@@ -609,25 +618,28 @@ class ExpedienteController extends AbstractController {
 				}
 			}
 
-			if ( $editForm->get( 'guardarYEnviar' )->isClicked() ) {
+			if ( $editForm->get( 'guardarYFirmar' )->isClicked() ) {
 				$expediente->setBorrador( false );
 				$codigoReferencia = md5( uniqid( 'hcd_' ) );
 				$expediente->setCodigoReferencia( $codigoReferencia );
 
 //				Departamento de Mesa de Entradas y Salidas
 
-				$giroAdministrativo = new GiroAdministrativo();
-				$areaDestino        = $em->getRepository( AreaAdministrativa::class )->findOneBy( [
-					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
-				] );
-				$giroAdministrativo->setAreaDestino( $areaDestino );
-				$giroAdministrativo->setExpediente( $expediente );
-				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+//				$giroAdministrativo = new GiroAdministrativo();
+//				$areaDestino        = $em->getRepository( AreaAdministrativa::class )->findOneBy( [
+//					'nombre' => 'Departamento de Mesa de Entradas y Salidas'
+//				] );
+//				$giroAdministrativo->setAreaDestino( $areaDestino );
+//				$giroAdministrativo->setExpediente( $expediente );
+//				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+//
+//
+//				$expediente->addGiroAdministrativo( $giroAdministrativo );
+//				$em->persist( $giroAdministrativo );
+//				$toRoute = 'proyecto_firmar';
+				$em->flush();
 
-
-				$expediente->addGiroAdministrativo( $giroAdministrativo );
-				$em->persist( $giroAdministrativo );
-				$toRoute = 'proyecto_show';
+				return $this->redirectToRoute( 'proyecto_firmar', [ 'expediente' => $expediente->getId() ] );
 
 			}
 
@@ -637,20 +649,31 @@ class ExpedienteController extends AbstractController {
 				'Proyecto modificado correctamente'
 			);
 
-			return $this->redirectToRoute( $toRoute, array( 'id' => $expediente->getId() ) );
+			return $this->redirectToRoute( $toRoute, [ 'id' => $expediente->getId() ] );
 		}
 
 		return $this->render( 'expediente/proyecto_edit.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
-			) );
+			] );
 	}
 
-	public function imprimirProyecto( Pdf $knpSnappyPdf, $id ) {
+	public function imprimirProyecto( Pdf $knpSnappyPdf, DownloadHandler $downloadHandler, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
 
+		if ( $expediente->getFirmasProyectos()->count() >= 1 ) {
+			$response = $downloadHandler->downloadObject( $expediente->getFirmasProyectos()->last(),
+				'archivoFile',
+				null,
+				null,
+				false );
+
+			$response->headers->set( 'Content-Type', 'application/pdf' );
+
+			return $response;
+		}
 
 		$dataToEncode = $expediente->getCodigoReferencia();
 		if ( $expediente->getBorrador() ) {
@@ -705,10 +728,10 @@ class ExpedienteController extends AbstractController {
 //                    'margin-bottom' => "1cm"
 				)
 			)
-			, 200, array(
+			, 200, [
 				'Content-Type'        => 'application/pdf',
 				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
+			]
 		);
 
 	}
@@ -780,108 +803,134 @@ class ExpedienteController extends AbstractController {
 			) );
 	}
 
-	public function asignarNumeroExpediente( Request $request ) {
+	public function asignarNumeroExpediente( Request $request, Expediente $id ) {
 		$em = $this->getDoctrine()->getManager();
 
-
-		$expediente       = null;
-		$codigoReferencia = null;
-		$form             = null;
-
-		if ( $request->getMethod() == 'POST' ) {
-
-			$form = $this->createForm( AsignarNumeroType::class, $expediente );
-
-			$form->handleRequest( $request );
-
-			if ( $form->get( 'asignar' )->isClicked() ) {
+		$expediente = $id;
+//		$codigoReferencia = null;
+//		$form             = null;
 
 
-				if ( $form->isSubmitted() && $form->isValid() ) {
+		$form = $this->createForm( AsignarNumeroType::class, $expediente );
+
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
 
 
-					$expediente = $em->getRepository( Expediente::class )->findOneByCodigoReferencia( $request->get( 'codigoReferencia' ) );
+			$expediente = $em->getRepository( Expediente::class )->find( $id );
 
-					$existeExpediente = $em->getRepository( Expediente::class )->findOneBy(
-						[
-							'expediente'         => $form->getData()->getExpediente(),
-							'periodoLegislativo' => $expediente->getPeriodoLegislativo()
-						]
-					);
+			$existeExpediente = $em->getRepository( Expediente::class )->findOneBy(
+				[
+					'expediente'         => $form->getData()->getExpediente(),
+					'periodoLegislativo' => $expediente->getPeriodoLegislativo()
+				]
+			);
 
-					if ( $existeExpediente ) {
-						$form->get( 'expediente' )->addError( new FormError( 'Ya existe el expediente en el año' ) );
-
-						return $this->render( 'expediente/asignar_numero_expediente.html.twig',
-							array(
-								'expediente'       => $existeExpediente,
-								'form'             => $form->createView(),
-								'codigoReferencia' => $request->get( 'codigoReferencia' )
-							) );
-
-					} else {
-						//			Prosecretaria Legislativa
-
-						$giroAdministrativo = new GiroAdministrativo();
-						$areaDestino        = $em->getRepository( 'App:AreaAdministrativa' )->findOneBy( [
-							'nombre' => 'Prosecretaria Legislativa'
-						] );
-						$giroAdministrativo->setAreaDestino( $areaDestino );
-						$giroAdministrativo->setExpediente( $expediente );
-						$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
-
-
-						$expediente->addGiroAdministrativo( $giroAdministrativo );
-						$em->persist( $giroAdministrativo );
-
-						$expediente->setExpediente( $form->getData()->getExpediente() );
-						$expediente->setLetra( $form->getData()->getLetra() );
-						$expediente->setFechaPresentacion( new \DateTime( 'now' ) );
-						$expediente->setAsignadoPor( $this->getUser() );
-
-						$em->flush();
-
-						return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
-					}
-
-
-				}
-
-			}
-
-			$codigoReferencia = substr( $request->get( 'codigoReferencia' ),
-				7,
-				strlen( $request->get( 'codigoReferencia' ) ) );
-
-			$expediente = $em->getRepository( Expediente::class )->findOneByCodigoReferencia( $codigoReferencia );
-
-
-			if ( $expediente->getExpediente() && $expediente->getLetra() ) {
-				$this->get( 'session' )->getFlashBag()->add(
-					'info',
-					'El Proyecto ya tiene asignado un Número y una Letra'
-				);
+			if ( $existeExpediente ) {
+				$form->get( 'expediente' )->addError( new FormError( 'Ya existe el expediente en el año' ) );
 
 				return $this->render( 'expediente/asignar_numero_expediente.html.twig',
-					array(
-						'expediente'       => $expediente,
-						'codigoReferencia' => $codigoReferencia
-					) );
-			}
+					[
+						'expediente' => $existeExpediente,
+						'form'       => $form->createView(),
+//						'codigoReferencia' => $request->get( 'codigoReferencia' )
+					] );
 
-			if ( $form ) {
-				$form = $form->createView();
+			} else {
+				//			Prosecretaria Legislativa
+
+				$giroAdministrativo = new GiroAdministrativo();
+				$areaDestino        = $em->getRepository( 'App:AreaAdministrativa' )->findOneBy( [
+					'nombre' => 'Prosecretaria Legislativa'
+				] );
+				$giroAdministrativo->setAreaDestino( $areaDestino );
+				$giroAdministrativo->setExpediente( $expediente );
+				$giroAdministrativo->setFechaGiro( new \DateTime( 'now' ) );
+
+
+				$expediente->addGiroAdministrativo( $giroAdministrativo );
+				$em->persist( $giroAdministrativo );
+
+				$expediente->setExpediente( $form->getData()->getExpediente() );
+				$expediente->setLetra( $form->getData()->getLetra() );
+				$expediente->setFechaPresentacion( new \DateTime( 'now' ) );
+				$expediente->setAsignadoPor( $this->getUser() );
+
+				$em->flush();
+
+				return $this->redirectToRoute( 'expediente_show', [ 'id' => $expediente->getId() ] );
 			}
 
 
 		}
 
+		if ( $expediente->getExpediente() && $expediente->getLetra() ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'info',
+				'El Proyecto ya tiene asignado un Número y una Letra'
+			);
+
+			return $this->render( 'expediente/asignar_numero_expediente.html.twig',
+				[
+					'expediente' => $expediente,
+				] );
+		}
+
+		if ( $form ) {
+			$form = $form->createView();
+		}
+
+
+//		}
+
 		return $this->render( 'expediente/asignar_numero_expediente.html.twig',
-			array(
-				'expediente'       => $expediente,
-				'form'             => $form,
-				'codigoReferencia' => $codigoReferencia
-			) );
+			[
+				'expediente' => $expediente,
+				'form'       => $form,
+//				'codigoReferencia' => $codigoReferencia
+			] );
+	}
+
+	public function asignarNumeroExpedienteIndex( Request $request, PaginatorInterface $paginator ) {
+		$em = $this->getDoctrine()->getManager();
+
+		$tipoExpediente = $em->getRepository( TipoExpediente::class )->findOneBy( [
+			'slug' => 'externo'
+		] );
+
+		$filterType = $this->createForm( ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			] );
+
+		$filterType->handleRequest( $request );
+
+		if ( $filterType->get( 'buscar' )->isClicked() ) {
+
+			$proyectos = $em->getRepository( Expediente::class )->getQbBuscarExpedientesLegislativosExternos( $filterType->getData(),
+				$tipoExpediente );
+
+		} else {
+			$proyectos = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntradaTipo( $tipoExpediente );
+		}
+
+		$proyectos->andWhere( 'e.firmado = true' )
+		          ->andWhere( 'e.expediente is null' );
+
+		$proyectos = $paginator->paginate(
+			$proyectos,
+			$request->query->get( 'page', 1 )/* page number */,
+			10/* limit per page */
+		);
+
+		return $this->render( 'expediente/asignar_numero_expediente_index.html.twig',
+			[
+				'proyectos'   => $proyectos,
+				'filter_type' => $filterType->createView(),
+//				'codigoReferencia' => $codigoReferencia
+			] );
 	}
 
 	public function expedienteImprimirEtiqueta( Pdf $knpSnappyPdf, Request $request, $id ) {

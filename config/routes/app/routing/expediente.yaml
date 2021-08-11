@@ -76,8 +76,12 @@ expediente_impresion_proyecto:
     path: /expediente_impresion_proyecto
     defaults: { _controller: App\Controller\ExpedienteController::impresionProyecto }
 
+expediente_asignar_numero_index:
+    path: /expediente_asignar_numero_index
+    defaults: { _controller: App\Controller\ExpedienteController::asignarNumeroExpedienteIndex }
+
 expediente_asignar_numero:
-    path: /expediente_asignar_numero
+    path: /expediente_asignar_numero/{id}
     defaults: { _controller: App\Controller\ExpedienteController::asignarNumeroExpediente }
 
 expediente_imprimir_etiqueta:

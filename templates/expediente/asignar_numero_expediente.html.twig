@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Asignar Nº Expte
+{% endblock title %}
+{% block body %}
+
+    {% if expediente %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {{ expediente.texto | raw }}
+                        <a class="btn btn-primary" target="_blank"
+                           href="{{ absolute_url(asset('uploads/expedientes/proyectos/'~ expediente.firmasProyectos.last.archivo)) }}">
+                            <i class="fa fa-eye"></i>
+                            Ver Expediente Firmado</a>
+                    </div>
+                </div>
+                {% if form is defined and form is not null %}
+                    <div class="card">
+                        <div class="card-body">
+
+                            {{ form_start(form) }}
+                            {# <input class="form-control" type="hidden" name="codigoReferencia" autofocus #}
+                            {# autocomplete="off" value="{{ codigoReferencia }}"> #}
+
+                            <div class="col-md-4">
+                                {{ form_row(form.expediente) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.letra) }}
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ form_row(form.asignar) }}
+                            </div>
+                            <div class="d-none">
+                                {{ form_end(form) }}
+                            </div>
+
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    {% endif %}
+
+
+
+
+
+{% endblock %}

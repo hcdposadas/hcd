@@ -72,19 +72,9 @@ class Builder {
 
 				$menu[ $keyEmpresa ]
 					->addChild(
-						'Imprimir Proyecto',
-						array(
-							'route'          => 'expediente_impresion_proyecto',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
-						)
-					);
-
-				$menu[ $keyEmpresa ]
-					->addChild(
 						'Asingar Nº Expte',
 						array(
-							'route'          => 'expediente_asignar_numero',
+							'route'          => 'expediente_asignar_numero_index',
 							'attributes'     => [ 'class' => 'nav-item' ],
 							'linkAttributes' => [ 'class' => 'nav-link' ]
 						)

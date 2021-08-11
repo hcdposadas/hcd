@@ -80,293 +80,281 @@ class Giro extends BaseClass {
 	 */
 	private $orden;
 
-    /**
-     * @var
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\ProyectoBAE", inversedBy="giros")
-     * @ORM\JoinColumn(name="proyecto_bae_id", referencedColumnName="id")
-     */
-    private $proyectoBae;
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToOne(targetEntity="App\Entity\ProyectoBAE", inversedBy="giros")
+	 * @ORM\JoinColumn(name="proyecto_bae_id", referencedColumnName="id")
+	 */
+	private $proyectoBae;
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	public function __toString(): string{
 
-    /**
-     * Set cabecera
-     *
-     * @param boolean $cabecera
-     *
-     * @return Giro
-     */
-    public function setCabecera($cabecera)
-    {
-        $this->cabecera = $cabecera;
+		$giro = $this->comisionDestino;
 
-        return $this;
-    }
+		if ( $this->cabecera ) {
+			$giro .= ' (Comisión de Cabecera)';
+		}
 
-    /**
-     * Get cabecera
-     *
-     * @return boolean
-     */
-    public function getCabecera()
-    {
-        return $this->cabecera;
-    }
+		return $giro;
+	}
 
-    /**
-     * Set fechaGiro
-     *
-     * @param \DateTime $fechaGiro
-     *
-     * @return Giro
-     */
-    public function setFechaGiro($fechaGiro)
-    {
-        $this->fechaGiro = $fechaGiro;
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId() {
+		return $this->id;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set cabecera
+	 *
+	 * @param boolean $cabecera
+	 *
+	 * @return Giro
+	 */
+	public function setCabecera( $cabecera ) {
+		$this->cabecera = $cabecera;
 
-    /**
-     * Get fechaGiro
-     *
-     * @return \DateTime
-     */
-    public function getFechaGiro()
-    {
-        return $this->fechaGiro;
-    }
+		return $this;
+	}
 
-    /**
-     * Set fechaCreacion
-     *
-     * @param \DateTime $fechaCreacion
-     *
-     * @return Giro
-     */
-    public function setFechaCreacion($fechaCreacion)
-    {
-        $this->fechaCreacion = $fechaCreacion;
+	/**
+	 * Get cabecera
+	 *
+	 * @return boolean
+	 */
+	public function getCabecera() {
+		return $this->cabecera;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set fechaGiro
+	 *
+	 * @param \DateTime $fechaGiro
+	 *
+	 * @return Giro
+	 */
+	public function setFechaGiro( $fechaGiro ) {
+		$this->fechaGiro = $fechaGiro;
 
-    /**
-     * Set fechaActualizacion
-     *
-     * @param \DateTime $fechaActualizacion
-     *
-     * @return Giro
-     */
-    public function setFechaActualizacion($fechaActualizacion)
-    {
-        $this->fechaActualizacion = $fechaActualizacion;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get fechaGiro
+	 *
+	 * @return \DateTime
+	 */
+	public function getFechaGiro() {
+		return $this->fechaGiro;
+	}
 
-    /**
-     * Set comisionOrigen
-     *
-     * @param \App\Entity\Comision $comisionOrigen
-     *
-     * @return Giro
-     */
-    public function setComisionOrigen(\App\Entity\Comision $comisionOrigen = null)
-    {
-        $this->comisionOrigen = $comisionOrigen;
+	/**
+	 * Set fechaCreacion
+	 *
+	 * @param \DateTime $fechaCreacion
+	 *
+	 * @return Giro
+	 */
+	public function setFechaCreacion( $fechaCreacion ) {
+		$this->fechaCreacion = $fechaCreacion;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get comisionOrigen
-     *
-     * @return \App\Entity\Comision
-     */
-    public function getComisionOrigen()
-    {
-        return $this->comisionOrigen;
-    }
+	/**
+	 * Set fechaActualizacion
+	 *
+	 * @param \DateTime $fechaActualizacion
+	 *
+	 * @return Giro
+	 */
+	public function setFechaActualizacion( $fechaActualizacion ) {
+		$this->fechaActualizacion = $fechaActualizacion;
 
-    /**
-     * Set comisionDestino
-     *
-     * @param \App\Entity\Comision $comisionDestino
-     *
-     * @return Giro
-     */
-    public function setComisionDestino(\App\Entity\Comision $comisionDestino = null)
-    {
-        $this->comisionDestino = $comisionDestino;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set comisionOrigen
+	 *
+	 * @param \App\Entity\Comision $comisionOrigen
+	 *
+	 * @return Giro
+	 */
+	public function setComisionOrigen( \App\Entity\Comision $comisionOrigen = null ) {
+		$this->comisionOrigen = $comisionOrigen;
 
-    /**
-     * Get comisionDestino
-     *
-     * @return \App\Entity\Comision
-     */
-    public function getComisionDestino()
-    {
-        return $this->comisionDestino;
-    }
+		return $this;
+	}
 
-    /**
-     * Set expediente
-     *
-     * @param \App\Entity\Expediente $expediente
-     *
-     * @return Giro
-     */
-    public function setExpediente(\App\Entity\Expediente $expediente = null)
-    {
-        $this->expediente = $expediente;
+	/**
+	 * Get comisionOrigen
+	 *
+	 * @return \App\Entity\Comision
+	 */
+	public function getComisionOrigen() {
+		return $this->comisionOrigen;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set comisionDestino
+	 *
+	 * @param \App\Entity\Comision $comisionDestino
+	 *
+	 * @return Giro
+	 */
+	public function setComisionDestino( \App\Entity\Comision $comisionDestino = null ) {
+		$this->comisionDestino = $comisionDestino;
 
-    /**
-     * Get expediente
-     *
-     * @return \App\Entity\Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
+		return $this;
+	}
 
-    /**
-     * Set creadoPor
-     *
-     * @param \App\Entity\Usuario $creadoPor
-     *
-     * @return Giro
-     */
-    public function setCreadoPor(\App\Entity\Usuario $creadoPor = null)
-    {
-        $this->creadoPor = $creadoPor;
+	/**
+	 * Get comisionDestino
+	 *
+	 * @return \App\Entity\Comision
+	 */
+	public function getComisionDestino() {
+		return $this->comisionDestino;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set expediente
+	 *
+	 * @param \App\Entity\Expediente $expediente
+	 *
+	 * @return Giro
+	 */
+	public function setExpediente( \App\Entity\Expediente $expediente = null ) {
+		$this->expediente = $expediente;
 
-    /**
-     * Set actualizadoPor
-     *
-     * @param \App\Entity\Usuario $actualizadoPor
-     *
-     * @return Giro
-     */
-    public function setActualizadoPor(\App\Entity\Usuario $actualizadoPor = null)
-    {
-        $this->actualizadoPor = $actualizadoPor;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Get expediente
+	 *
+	 * @return \App\Entity\Expediente
+	 */
+	public function getExpediente() {
+		return $this->expediente;
+	}
 
-    /**
-     * Set archivado
-     *
-     * @param boolean $archivado
-     *
-     * @return Giro
-     */
-    public function setArchivado($archivado)
-    {
-        $this->archivado = $archivado;
+	/**
+	 * Set creadoPor
+	 *
+	 * @param \App\Entity\Usuario $creadoPor
+	 *
+	 * @return Giro
+	 */
+	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
+		$this->creadoPor = $creadoPor;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get archivado
-     *
-     * @return boolean
-     */
-    public function getArchivado()
-    {
-        return $this->archivado;
-    }
+	/**
+	 * Set actualizadoPor
+	 *
+	 * @param \App\Entity\Usuario $actualizadoPor
+	 *
+	 * @return Giro
+	 */
+	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
+		$this->actualizadoPor = $actualizadoPor;
 
-    /**
-     * Set texto
-     *
-     * @param string $texto
-     *
-     * @return Giro
-     */
-    public function setTexto($texto)
-    {
-        $this->texto = $texto;
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set archivado
+	 *
+	 * @param boolean $archivado
+	 *
+	 * @return Giro
+	 */
+	public function setArchivado( $archivado ) {
+		$this->archivado = $archivado;
 
-    /**
-     * Get texto
-     *
-     * @return string
-     */
-    public function getTexto()
-    {
-        return $this->texto;
-    }
+		return $this;
+	}
 
-    /**
-     * Set orden
-     *
-     * @param integer $orden
-     *
-     * @return Giro
-     */
-    public function setOrden($orden)
-    {
-        $this->orden = $orden;
+	/**
+	 * Get archivado
+	 *
+	 * @return boolean
+	 */
+	public function getArchivado() {
+		return $this->archivado;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set texto
+	 *
+	 * @param string $texto
+	 *
+	 * @return Giro
+	 */
+	public function setTexto( $texto ) {
+		$this->texto = $texto;
 
-    /**
-     * Get orden
-     *
-     * @return integer
-     */
-    public function getOrden()
-    {
-        return $this->orden;
-    }
+		return $this;
+	}
 
-    /**
-     * Set proyectoBae
-     *
-     * @param \App\Entity\ProyectoBAE $proyectoBae
-     *
-     * @return Giro
-     */
-    public function setProyectoBae(\App\Entity\ProyectoBAE $proyectoBae = null)
-    {
-        $this->proyectoBae = $proyectoBae;
+	/**
+	 * Get texto
+	 *
+	 * @return string
+	 */
+	public function getTexto() {
+		return $this->texto;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set orden
+	 *
+	 * @param integer $orden
+	 *
+	 * @return Giro
+	 */
+	public function setOrden( $orden ) {
+		$this->orden = $orden;
 
-    /**
-     * Get proyectoBae
-     *
-     * @return \App\Entity\ProyectoBAE
-     */
-    public function getProyectoBae()
-    {
-        return $this->proyectoBae;
-    }
+		return $this;
+	}
+
+	/**
+	 * Get orden
+	 *
+	 * @return integer
+	 */
+	public function getOrden() {
+		return $this->orden;
+	}
+
+	/**
+	 * Set proyectoBae
+	 *
+	 * @param \App\Entity\ProyectoBAE $proyectoBae
+	 *
+	 * @return Giro
+	 */
+	public function setProyectoBae( \App\Entity\ProyectoBAE $proyectoBae = null ) {
+		$this->proyectoBae = $proyectoBae;
+
+		return $this;
+	}
+
+	/**
+	 * Get proyectoBae
+	 *
+	 * @return \App\Entity\ProyectoBAE
+	 */
+	public function getProyectoBae() {
+		return $this->proyectoBae;
+	}
 }

@@ -22,7 +22,7 @@ class IniciadorExpedienteType extends AbstractType {
 				[
 					'remote_route' => 'get_cargos_por_nombre',
 					'class'        => 'App\Entity\Iniciador',
-					'required'     => false,
+					'required'     => true,
 					'placeholder'  => 'Por Nombre',
 					'attr'         => [ 'class' => 'select-iniciador' ],
 					'label'        => 'Concejal'

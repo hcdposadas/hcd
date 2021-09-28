@@ -1521,6 +1521,13 @@ class ExpedienteController extends AbstractController {
 			$girosAComisionOriginal->add( $giro );
 		}
 
+		$girosAdministrativosOriginal = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Tag objects in the database
+		foreach ( $expediente->getGiroAdministrativos() as $giroAdministrativo ) {
+			$girosAdministrativosOriginal->add( $giroAdministrativo );
+		}
+
 
 		$editForm = $this->createForm( ExpedienteType::class, $expediente );
 		if ( $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) ) {
@@ -1538,6 +1545,13 @@ class ExpedienteController extends AbstractController {
 				if ( false === $expediente->getGiros()->contains( $giro ) ) {
 					$giro->setExpediente( null );
 					$em->remove( $giro );
+				}
+			}
+
+			foreach ( $girosAdministrativosOriginal as $giroAdministrativo ) {
+				if ( false === $expediente->getGiroAdministrativos()->contains( $giroAdministrativo ) ) {
+					$giroAdministrativo->setExpediente( null );
+					$em->remove( $giroAdministrativo );
 				}
 			}
 

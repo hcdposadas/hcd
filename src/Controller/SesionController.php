@@ -28,10 +28,13 @@ use App\Entity\Log;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Snappy\GeneratorInterface;
 use Knp\Snappy\Pdf;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -204,9 +207,9 @@ class SesionController extends AbstractController {
 		}
 
 		return $this->render( 'sesiones/conformar_plan_de_labor_index.html.twig',
-			array(
+			[
 				'sesion' => $sesion
-			) );
+			] );
 	}
 
 	public function asignarProyectosABAE( Request $request, $sesionId ) {
@@ -462,7 +465,7 @@ class SesionController extends AbstractController {
 			) );
 	}
 
-	public function conformarPlanDeLaborConfirmar( Request $request, $sesionId ) {
+	public function conformarPlanDeLaborConfirmar( Request $request, MailerInterface $mailer, $sesionId ) {
 
 		$em     = $this->getDoctrine()->getManager();
 		$sesion = $em->getRepository( Sesion::class )->find( $sesionId );
@@ -482,7 +485,7 @@ class SesionController extends AbstractController {
 					'El plan de labor fue creado correctamente.'
 				);
 
-				if ( $this->notificarConcejales( $sesion ) ) {
+				if ( $this->notificarConcejales( $sesion, $mailer ) ) {
 					$this->get( 'session' )->getFlashBag()->add(
 						'info',
 						'Se ha enviado un mail a los concejales para notificarles que está disponible el plan de labor.'
@@ -513,9 +516,7 @@ class SesionController extends AbstractController {
 
 	}
 
-	public function notificarConcejales( Sesion $sesion ) {
-
-		$mailer = $this->get( 'mailer' );
+	public function notificarConcejales( Sesion $sesion, MailerInterface $mailer) {
 
 		$em                      = $this->getDoctrine()->getManager();
 		$parametroMail           = $em->getRepository( Parametro::class )->findOneBySlug( 'mail-concejales' );
@@ -525,24 +526,35 @@ class SesionController extends AbstractController {
 		if ( $parametroMail && $parametroMailDefensor ) {
 			$asunto = 'HCD Posadas - Plan de Labor ' . $sesion->getTitulo();
 
-			$message = ( new \Swift_Message( $asunto ) );
+//			$message = ( new \Swift_Message( $asunto ) );
 
-			$message
-				->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
-				->setTo( $parametroMail->getValor() )
+//			$message
+//				->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
+//				->setTo( $parametroMail->getValor() )
+//				->addTo( $parametroMailDefensor->getValor() )
+//				->addTo( $parametroMailSecretario->getValor() )
+//				->setBody(
+//					$this->renderView(
+//						'emails/plan_de_labor.html.twig',
+//						[
+//							'sesion' => $sesion
+//						]
+//					),
+//					'text/html'
+//				);
+
+			$email = ( new TemplatedEmail() )
+				->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+				->to( $parametroMail->getValor() )
 				->addTo( $parametroMailDefensor->getValor() )
 				->addTo( $parametroMailSecretario->getValor() )
-				->setBody(
-					$this->renderView(
-						'emails/plan_de_labor.html.twig',
-						[
-							'sesion' => $sesion
-						]
-					),
-					'text/html'
-				);
+				->subject( $asunto )
+				->htmlTemplate( 'emails/plan_de_labor.html.twig' )
+				->context( [
+					'sesion' => $sesion
+				] );
 
-			$mailer->send( $message );
+			$mailer->send( $email );
 
 			return true;
 		} else {

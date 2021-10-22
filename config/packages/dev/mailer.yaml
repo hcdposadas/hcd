@@ -1,0 +1,5 @@
+framework:
+  mailer:
+    envelope:
+      sender: '%env(EMAIL_FROM)%'
+      recipients: ['matias.delatorre89@gmail.com']

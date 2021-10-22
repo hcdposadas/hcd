@@ -47,16 +47,21 @@
 
                         {% else %}
                             <form method="post">
-                                <button class="btn btn-primary">Crear Plan de Labor</button>
+                                <button class="btn btn-primary btn-crear-plan-de-labor">Crear Plan de Labor</button>
                             </form>
                         {% endif %}
 
                     </div>
                     {% if is_granted('ROLE_PROSECRETARIO_LEGISLATIVO') %}
-                        <div class="card-footer">
-                            <a href="#"
-                               class="btn btn-primary btn-confirmar">Conformar Plan de Labor</a>
-                        </div>
+                        {% if sesion.od.count > 0 and sesion.bae.count > 0 %}
+                            {% if sesion.od.first.cerrado == false and sesion.bae.first.cerrado == false %}
+                                <div class="card-footer">
+                                    <a href="#"
+                                       class="btn btn-primary btn-confirmar {% if sesion.od.count <= 0 and sesion.bae.count <= 0 %} disabled {% endif %}">
+                                        Conformar Plan de Labor</a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -68,6 +73,12 @@
 {% block javascripts %}
     <script>
         $(document).ready(function () {
+
+            $('.btn-crear-plan-de-labor').click(function () {
+                $(this).addClass('disabled');
+                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="sr-only">Creando...</span>  Creando');
+            })
+
             $('.btn-confirmar').click(function () {
                 modalConfirm('Atención!', 'Está seguro que desea conformar el plan de labor? <br> Esta opción es irreversible', '#');
             });
@@ -75,7 +86,7 @@
             {% if sesion %}
             $('#modal-confirm-btn-ok').click(function () {
                 $(this).addClass('disabled');
-                $(this).html('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando');
+                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="sr-only">Enviando...</span>  Enviando');
                 location.href = '{{ path('sesiones_conformar_plan_de_labor_cerrar', {'sesionId': sesion.id}) }}';
             });
             {% endif %}

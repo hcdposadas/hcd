@@ -243,17 +243,50 @@ class ExpedienteController extends AbstractController {
 	public function seguimientoExpedienteTimeline( Request $request, $id ) {
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository( Expediente::class )->find( $id );
-		$girosBae   = $em->getRepository( ProyectoBAE::class )->findByExpedienteTimeline( $expediente );
+		if ( ! $expediente ) {
+			$this->get( 'session' )->getFlashBag()->add(
+				'warning',
+				'No existe el expediente'
+			);
+
+			return $this->redirectToRoute( 'app_homepage' );
+		}
+		$girosBae = $em->getRepository( ProyectoBAE::class )->findByExpedienteTimeline( $expediente );
+
+		$giros = [];
+
+		foreach ( $girosBae as $giroBae ) {
+			foreach ( $giroBae->getGiros() as $itemGiro ) {
+				$giros[] = $itemGiro;
+			}
+		}
+
+		foreach ( $expediente->getGiros() as $giro ) {
+			$giros[] = $giro;
+		}
+		foreach ( $expediente->getGiroAdministrativos() as $giroAdministrativo ) {
+			$giros[] = $giroAdministrativo;
+		}
+		usort( $giros, function ( $a, $b ) {
+			if ( $a->getFechaGiro() > $b->getFechaGiro() || $a->getFechaCreacion() > $b->getFechaCreacion() ) {
+				return 1;
+			} else if ( $a->getFechaGiro() < $b->getFechaGiro() || $a->getFechaCreacion() > $b->getFechaCreacion() ) {
+				return - 1;
+			} else {
+				return 0;
+			}
+		} );
 
 		$referer = $request->headers
 			->get( 'referer' );
 
 		return $this->render( 'expediente/timeline.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
 				'girosBae'   => $girosBae,
+				'giros'      => $giros,
 				'referer'    => $referer
-			) );
+			] );
 
 	}
 
@@ -351,7 +384,7 @@ class ExpedienteController extends AbstractController {
 			$expedientes = $em->getRepository( Expediente::class )->getQbBuscar( $filterType->getData(),
 				$tipoExpediente );
 
-			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntrada($expedientes);
+			$expedientes = $em->getRepository( Expediente::class )->getQbExpedientesMesaEntrada( $expedientes );
 
 
 		} else {

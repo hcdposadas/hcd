@@ -27,11 +27,15 @@ use App\Entity\Expediente;
 use App\Entity\Giro;
 use App\Entity\IniciadorExpediente;
 use App\Entity\Log;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 
 class AjaxController extends AbstractController {
@@ -342,7 +346,7 @@ class AjaxController extends AbstractController {
 		return JsonResponse::create( $expedientes );
 	}
 
-	public function enviarMailCodigoProyecto( Request $request ) {
+	public function enviarMailCodigoProyecto( Request $request, MailerInterface $mailer ) {
 
 		$expedienteId = $request->get( 'expedienteId' );
 		$expediente   = $this->getDoctrine()->getRepository( Expediente::class )->find( $expedienteId );
@@ -351,41 +355,39 @@ class AjaxController extends AbstractController {
 			return new JsonResponse( 'No se encontro el tipo de proyeto', 404 );
 		}
 
-		$mailer = $this->get( 'mailer' );
-
 		$mail = $this->getUser()->getEmail();
 
 		$asunto = 'HCD ' . $_ENV['CIUDAD_NAME'] . ' - Código Impresión Proyecto';
 
 		$code = new QrCode( $expediente->getCodigoReferencia() );
-		$code->setLogoPath( $this->get( 'kernel' )->getRootDir() . '/../public/uploads/sis_images/apple-touch-icon.png' )
-		     ->setLogoWidth( 50 );
+		$code->setLogoPath( $this->getParameter( 'kernel.project_dir' ) . '/public/uploads/sis_images/apple-touch-icon.png' );
+		$code->setLogoWidth( 50 );
 
-		$nombreAdjunto = $expediente->getId() . '.png';
+		$nombreAdjunto = $expediente . '.png';
 
-		$message = ( new \Swift_Message( $asunto ) );
+		$img = $code->writeDataUri();
 
-		$img = $message->embed( \Swift_Image::newInstance( $code->writeString(),
-			$nombreAdjunto,
-			$code->getContentType() ) );
+		$email = ( new TemplatedEmail() )
+			->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+			->to( new Address( $mail ) )
+			->subject( $asunto )
+			->embed( fopen( $img, 'r' ), $nombreAdjunto )
+			->htmlTemplate( 'emails/codigo_proyecto.html.twig' )
+			->context( [
+				'expediente' => $expediente,
+				'img'        => $img
+			] );
 
-		$message
-			->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
-			->setTo( $mail )
-			->setBody(
-				$this->renderView(
-					'emails/codigo_proyecto.html.twig',
-					[
-						'expediente' => $expediente,
-						'img'        => $img
-					]
-				),
-				'text/html'
-			);
+		try {
+			$mailer->send( $email );
 
-		$mailer->send( $message );
+			return new JsonResponse( 'ok' );
+		} catch ( TransportExceptionInterface $e ) {
+			// some error prevented the email sending; display an
+			// error message or try to resend the message
+			return new JsonResponse( 'error', 500 );
+		}
 
-		return new JsonResponse( 'ok' );
 	}
 
 	public function getProyectosBAE( Request $request ) {

@@ -104,7 +104,7 @@
         $(document).ready(function () {
             $('.btn-enviar-mail').click(function () {
 
-                modalAlert('<i class="fa fa-circle-o-notch fa-spin"></i> Enviando Mail');
+                modalAlert('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="sr-only">Enviando...</span> Enviando Mail');
 
                 $.ajax({
                     type: 'post',

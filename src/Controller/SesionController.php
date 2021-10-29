@@ -31,8 +31,10 @@ use Knp\Snappy\Pdf;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
@@ -457,12 +459,12 @@ class SesionController extends AbstractController {
 		] );
 
 		return $this->render( 'expediente/editarExtracto.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
 				'sesion'     => $sesion,
 				'logs'       => $logs,
-			) );
+			] );
 	}
 
 	public function conformarPlanDeLaborConfirmar( Request $request, MailerInterface $mailer, $sesionId ) {
@@ -516,7 +518,7 @@ class SesionController extends AbstractController {
 
 	}
 
-	public function notificarConcejales( Sesion $sesion, MailerInterface $mailer) {
+	public function  notificarConcejales( Sesion $sesion, MailerInterface $mailer) {
 
 		$em                      = $this->getDoctrine()->getManager();
 		$parametroMail           = $em->getRepository( Parametro::class )->findOneBySlug( 'mail-concejales' );
@@ -525,23 +527,6 @@ class SesionController extends AbstractController {
 
 		if ( $parametroMail && $parametroMailDefensor ) {
 			$asunto = 'HCD Posadas - Plan de Labor ' . $sesion->getTitulo();
-
-//			$message = ( new \Swift_Message( $asunto ) );
-
-//			$message
-//				->setFrom( $this->getParameter( 'mailer_sender_as' ), $this->getParameter( 'mailer_sender' ) )
-//				->setTo( $parametroMail->getValor() )
-//				->addTo( $parametroMailDefensor->getValor() )
-//				->addTo( $parametroMailSecretario->getValor() )
-//				->setBody(
-//					$this->renderView(
-//						'emails/plan_de_labor.html.twig',
-//						[
-//							'sesion' => $sesion
-//						]
-//					),
-//					'text/html'
-//				);
 
 			$email = ( new TemplatedEmail() )
 				->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
@@ -554,9 +539,15 @@ class SesionController extends AbstractController {
 					'sesion' => $sesion
 				] );
 
-			$mailer->send( $email );
+			try {
+				$mailer->send($email);
+				return true;
+			} catch (TransportExceptionInterface $e) {
+				// some error prevented the email sending; display an
+				// error message or try to resend the message
+				return false;
+			}
 
-			return true;
 		} else {
 			return false;
 		}

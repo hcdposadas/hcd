@@ -156,6 +156,14 @@ class ExpedienteRepository extends EntityRepository {
 			$qb->andWhere( 'e.fecha = :fecha' );
 			$qb->setParameter( 'fecha', $data['fecha'] );
 		}
+
+		if ( $data['tipoProyecto'] ) {
+
+			$q = $data['tipoProyecto'];
+			$qb->andWhere( 'e.tipoProyecto = :tipoProyecto ' )
+			   ->setParameter( 'tipoProyecto', $q );
+		}
+
 		if ( ( $data['anio'] ) ) {
 
 			$qb->innerJoin( 'e.periodoLegislativo', 'pl' );

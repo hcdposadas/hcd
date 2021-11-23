@@ -128,10 +128,10 @@ class ExpedienteController extends AbstractController {
 //		}
 
 		return $this->render( 'expediente/show.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
 				'referer'    => $referer
-			) );
+			] );
 	}
 
 	/**
@@ -410,10 +410,11 @@ class ExpedienteController extends AbstractController {
 		);
 
 		return $this->render( 'expediente/expedientes_legislativos_index.html.twig',
-			array(
+			[
 				'expedientes' => $expedientes,
 				'filter_type' => $filterType->createView()
-			) );
+			]
+			 );
 	}
 
 	public function proyectosIndex( PaginatorInterface $paginator, Request $request ) {
@@ -465,9 +466,9 @@ class ExpedienteController extends AbstractController {
 	public function showProyecto( Expediente $expediente ) {
 
 		return $this->render( 'expediente/proyecto_show.html.twig',
-			array(
+			[
 				'expediente' => $expediente,
-			) );
+			] );
 
 	}
 

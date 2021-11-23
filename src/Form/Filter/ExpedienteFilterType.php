@@ -3,6 +3,7 @@
 namespace App\Form\Filter;
 
 use App\Entity\Dependencia;
+use App\Entity\TipoProyecto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -49,16 +50,20 @@ class ExpedienteFilterType extends AbstractType {
 			->add( 'registroMunicipal' )
 			->add( 'iniciador' )
 			->add( 'iniciadorParticular' )
-			->add( 'dependencia')
+			->add( 'dependencia' )
+			->add( 'tipoProyecto', EntityType::class, [
+				'class' => TipoProyecto::class,
+				'required' => false
+			] )
 			->add( 'buscar',
 				SubmitType::class,
 				array(
-					'attr' => array( 'class' => 'btn btn-primary' ),
+					'attr' => [ 'class' => 'btn btn-primary' ],
 				) )
 			->add( 'limpiar',
 				ResetType::class,
 				array(
-					'attr' => array( 'class' => 'btn btn-default reset' ),
+					'attr' => [ 'class' => 'btn btn-default reset' ],
 				) );
 	}
 
@@ -66,11 +71,13 @@ class ExpedienteFilterType extends AbstractType {
 	 * {@inheritdoc}
 	 */
 	public function configureOptions( OptionsResolver $resolver ) {
-		$resolver->setDefaults( array(
-//			'data_class' => 'App\Entity\Expediente'
-			'csrf_protection' => false,
-			'required'        => false
-		) );
+		$resolver->setDefaults(
+			[
+				//			'data_class' => 'App\Entity\Expediente'
+				'csrf_protection' => false,
+				'required'        => false
+			]
+		);
 	}
 
 	/**

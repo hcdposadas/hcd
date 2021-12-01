@@ -89,6 +89,9 @@
         $(document).on('change', '.comision_cabecera', function () {
             $('.comision_cabecera').not(this).prop('checked', false);
         });
+        $(document).ready(function () {
+            $('#{{ edit_form.extracto.vars.id }}').removeAttr('required');
+        });
         {% endif %}
 
     </script>

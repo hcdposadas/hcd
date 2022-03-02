@@ -15,7 +15,7 @@
         width: 30px;
         position: absolute;
         left: 5px;
-        top: 5px;
+        top: 0px;
     }
 
     #title {
@@ -94,6 +94,7 @@
         margin-bottom: 10px;
         color: #fff;
     }
+
 </style>
 <template>
     <div id="miniDisplay">

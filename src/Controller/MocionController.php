@@ -29,7 +29,7 @@ class MocionController extends AbstractController {
 	protected $notificacionesManager;
 
 	public function __construct( VotacionManager $votacionManager, NotificationsManager $notificacionesManager ) {
-		$this->votacionManager = $votacionManager;
+		$this->votacionManager       = $votacionManager;
 		$this->notificacionesManager = $notificacionesManager;
 	}
 
@@ -231,15 +231,21 @@ class MocionController extends AbstractController {
 		$aNoVotaron      = [];
 
 		foreach ( $votos as $voto ) {
+
+			$concejal = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
+			if ( $voto->getConcejal()->getPersona()->getNombreDisplay() ) {
+				$concejal = strtoupper( $voto->getConcejal()->getPersona()->getNombreDisplay() );
+			}
+
 			switch ( $voto->getValor() ) {
 				case Voto::VOTO_AFIRMATIVO:
-					$votaronPositivo[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
+					$votaronPositivo[] = $concejal;
 					break;
 				case Voto::VOTO_NEGATIVO:
-					$votaronNegativo[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
+					$votaronNegativo[] = $concejal;
 					break;
 				case Voto::VOTO_ABSTENCION:
-					$aNoVotaron[] = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
+					$aNoVotaron[] = $concejal;
 					break;
 			}
 		}

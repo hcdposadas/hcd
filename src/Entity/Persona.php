@@ -105,6 +105,11 @@ class Persona extends BaseClass {
 	 */
 	private $tipoDocumento;
 
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $nombreDisplay;
+
 	public function __toString() {
 		return $this->nombre . ' ' . $this->apellido;
 	}
@@ -378,7 +383,7 @@ class Persona extends BaseClass {
 	 * @return Persona
 	 */
 	public function addContactoPersona( \App\Entity\ContactoPersona $contactoPersona ) {
-		
+
 		$contactoPersona->setPersona( $this );
 
 		$this->contactoPersona->add( $contactoPersona );
@@ -487,6 +492,16 @@ class Persona extends BaseClass {
 	 */
 	public function setGenero( $genero ): void {
 		$this->genero = $genero;
+	}
+
+	public function getNombreDisplay(): ?string {
+		return $this->nombreDisplay;
+	}
+
+	public function setNombreDisplay( ?string $nombreDisplay ): self {
+		$this->nombreDisplay = $nombreDisplay;
+
+		return $this;
 	}
 
 

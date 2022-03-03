@@ -7,6 +7,7 @@ easy_admin:
                     - { property: 'nombre' }
                     - { property: 'apellido' }
                     - { property: 'dni' }
+                    - { property: 'nombreDisplay' }
                     - { property: 'fechaNacimiento' }
                     - { property: 'domicilioPersona' , type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\DomicilioPersonaType } }
                     - { property: 'cargoPersona' , type: 'collection' , type_options: { by_reference: false, allow_delete: true, entry_type: App\Form\CargoPersonaType } }

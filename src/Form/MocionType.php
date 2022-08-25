@@ -14,6 +14,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class MocionType extends AbstractType {
 	/**
@@ -42,8 +43,7 @@ class MocionType extends AbstractType {
 					'data'          => $sesion,
 					'query_builder' => function ( EntityRepository $er ) {
 						return $er->createQueryBuilder( 's' )
-						          ->where( 's.activo = true' )
-						          ;
+						          ->where( 's.activo = true' );
 					},
 
 				] )
@@ -64,21 +64,22 @@ class MocionType extends AbstractType {
 			->add( 'tipoMayoria',
 				EntityType::class,
 				array(
-					'label' => 'Tipo de mayoría',
-					'class' => TipoMayoria::class,
+					'label'         => 'Tipo de mayoría',
+					'class'         => TipoMayoria::class,
 					'query_builder' => function ( EntityRepository $er ) {
 						return $er->createQueryBuilder( 'tm' )
-						          ->orderBy('tm.id', 'ASC')
-							;
+						          ->orderBy( 'tm.id', 'ASC' );
 					},
 				) )
 			->add( 'expediente',
-				EntityType::class,
-				array(
-					'required' => false,
-					'label'    => 'Expediente',
-					'class'    => Expediente::class,
-				) );
+				Select2EntityType::class,
+				[
+					'remote_route' => 'get_expedientes',
+					'class'        => Expediente::class,
+					'required'     => true,
+					'placeholder'  => 'Por Expte'
+
+				] );
 	}
 
 	/**

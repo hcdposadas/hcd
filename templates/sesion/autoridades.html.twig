@@ -17,7 +17,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{ encore_entry_link_tags('main') }}
     {{ encore_entry_script_tags('admin-lte') }}
     <style>
-        .navbar-primary{
+        .navbar-primary {
             background-color: {{ app_color }} !important;
         }
     </style>
@@ -37,14 +37,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="collapse navbar-collapse order-3" id="navbarCollapse">
                 <!-- Left navbar links -->
                 <ul class="navbar-nav">
-{#                    <li class="nav-item">#}
-{#                        <a href="index3.html" class="nav-link">BAE</a>#}
-                        <button type="button" class="btn btn-app btn-primary-hcd"
-                                id="verAe">
-                            <i class="fa fa-file" aria-hidden="true"></i>
-                            BAE
-                        </button>
-{#                    </li>#}
+                    {#                    <li class="nav-item"> #}
+                    {#                        <a href="index3.html" class="nav-link">BAE</a> #}
+                    <button type="button" class="btn btn-app btn-primary-hcd"
+                            id="verAe">
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                        BAE
+                    </button>
+                    {#                    </li> #}
                     <button type="button" class="btn btn-app btn-primary-hcd"
                             id="consultarExpte">
                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -278,5 +278,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         })
     });
 </script>
+{% block after_javascripts %}
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+{% endblock after_javascripts %}
+
 </body>
 </html>

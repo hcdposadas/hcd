@@ -52,7 +52,8 @@ class Builder {
 		)->setAttribute( 'class', 'nav-header' );
 
 		if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
+		     $this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' )) {
 
 			$keyEmpresa = 'MESA ENTRADA';
 			$menu->addChild(
@@ -89,6 +90,9 @@ class Builder {
 							'linkAttributes' => [ 'class' => 'nav-link' ]
 						)
 					);
+			}
+			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
+				$this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ) {
 
 				$menu[ $keyEmpresa ]
 					->addChild(
@@ -99,17 +103,18 @@ class Builder {
 							'linkAttributes' => [ 'class' => 'nav-link' ]
 						)
 					);
-
-				$menu[ $keyEmpresa ]
-					->addChild(
-						'Expedientes Administrativos',
-						array(
-							'route'          => 'expedientes_administrativos_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
-						)
-					);
-			}
+				if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' )){
+					$menu[ $keyEmpresa ]
+						->addChild(
+							'Expedientes Administrativos',
+							array(
+								'route'          => 'expedientes_administrativos_index',
+								'attributes'     => [ 'class' => 'nav-item' ],
+								'linkAttributes' => [ 'class' => 'nav-link' ]
+							)
+							);
+				}
+			
 
 			$menu[ $keyEmpresa ]
 				->addChild(
@@ -120,6 +125,7 @@ class Builder {
 						'linkAttributes' => [ 'class' => 'nav-link' ]
 					)
 				);
+			}	
 			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
 				$menu[ $keyEmpresa ]
 					->addChild(
@@ -327,7 +333,8 @@ class Builder {
 		if ( $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ||
 		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
 		     $this->authorizationChecker->isGranted( 'ROLE_DEFENSOR' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+		     $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
+		     $this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ) {
 			$keyPersonal = 'SESIONES';
 			$menu->addChild(
 				$keyPersonal,

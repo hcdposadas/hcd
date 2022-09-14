@@ -83,7 +83,7 @@ class Builder {
 
 				$menu[ $keyEmpresa ]
 					->addChild(
-						'Asingar Nº Expte',
+						'Asingar NÂº Expte',
 						array(
 							'route'          => 'expediente_asignar_numero',
 							'attributes'     => [ 'class' => 'nav-item' ],
@@ -91,9 +91,9 @@ class Builder {
 						)
 					);
 			}
-			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
-				$this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ||
-				$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) || 
+		       		$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
+				$this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ) {
 
 				$menu[ $keyEmpresa ]
 					->addChild(
@@ -104,7 +104,7 @@ class Builder {
 							'linkAttributes' => [ 'class' => 'nav-link' ]
 						)
 					);
-				if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
+				if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' )||
 				$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' )){
 					$menu[ $keyEmpresa ]
 						->addChild(
@@ -284,7 +284,7 @@ class Builder {
 		if ( $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ||
 		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 
-			$keyDictamenes = 'DICTÁMENES';
+			$keyDictamenes = 'DICTÃMENES';
 			$menu->addChild(
 				$keyDictamenes,
 				array(
@@ -375,7 +375,7 @@ class Builder {
 			if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 				$menu[ $keyPersonal ]
 					->addChild(
-						'Incorporar Expedientes en Sesión',
+						'Incorporar Expedientes en SesiÃ³n',
 						[
 							'route'          => 'incorporar_expedientes_a_sesion_index',
 							'attributes'     => [ 'class' => 'nav-item' ],
@@ -384,7 +384,7 @@ class Builder {
 					);
 				$menu[ $keyPersonal ]
 					->addChild(
-						'Incorporar Dictamen en Sesión',
+						'Incorporar Dictamen en SesiÃ³n',
 						[
 							'route'          => 'incorporar_dictamenes_en_sesion_index',
 							'attributes'     => [ 'class' => 'nav-item' ],
@@ -492,7 +492,7 @@ class Builder {
 			if ( $configuracion ) {
 				$menu[ $digesto ]
 					->addChild(
-						'Consolidación en curso',
+						'ConsolidaciÃ³n en curso',
 						[
 							'uri'            => $configuracion->getConsolidacionEnCurso(),
 							'attributes'     => [ 'class' => 'nav-item' ],
@@ -517,7 +517,7 @@ class Builder {
 		     ->setAttribute( 'class', 'nav-item has-treeview' );
 		$menu[ $keyPersonal ]
 			->addChild(
-				'Carta Orgánica',
+				'Carta OrgÃ¡nica',
 				array(
 					'route'          => 'documento_carta_organica',
 					'attributes'     => [ 'class' => 'nav-item' ],

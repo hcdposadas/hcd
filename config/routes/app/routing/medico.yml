@@ -1,0 +1,4 @@
+paciente_new:
+    path:     /new
+    defaults: { _controller: App\Controller\MedicoController::new }
+    methods:  [GET, POST]

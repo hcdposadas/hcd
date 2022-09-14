@@ -92,7 +92,8 @@ class Builder {
 					);
 			}
 			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
-				$this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ) {
+				$this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ||
+				$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
 
 				$menu[ $keyEmpresa ]
 					->addChild(
@@ -103,7 +104,8 @@ class Builder {
 							'linkAttributes' => [ 'class' => 'nav-link' ]
 						)
 					);
-				if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' )){
+				if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
+				$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' )){
 					$menu[ $keyEmpresa ]
 						->addChild(
 							'Expedientes Administrativos',

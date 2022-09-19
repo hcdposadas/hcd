@@ -8,7 +8,8 @@ use Knp\Menu\FactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 
-class Builder {
+class Builder
+{
 
 	private $factory;
 	private $authorizationChecker;
@@ -29,10 +30,11 @@ class Builder {
 		$this->em                   = $em;
 	}
 
-	public function mainMenu( array $options ) {
-//		$menu = $factory->createItem('root');
-//
-//		$menu->addChild('Home', array('route' => 'app_homepage'));
+	public function mainMenu(array $options)
+	{
+		//		$menu = $factory->createItem('root');
+		//
+		//		$menu->addChild('Home', array('route' => 'app_homepage'));
 
 
 		$menu = $this->factory->createItem(
@@ -49,11 +51,13 @@ class Builder {
 
 		$menu->addChild(
 			'MENU PRINCIPAL'
-		)->setAttribute( 'class', 'nav-header' );
+		)->setAttribute('class', 'nav-header');
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' )) {
+		if (
+			$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
+			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
+			$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')
+		) {
 
 			$keyEmpresa = 'MESA ENTRADA';
 			$menu->addChild(
@@ -64,98 +68,103 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fas fa-exchange-alt' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fas fa-exchange-alt')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
+			if ($this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA')) {
 
-				$menu[ $keyEmpresa ]
+				$menu[$keyEmpresa]
 					->addChild(
 						'Imprimir Proyecto',
 						array(
 							'route'          => 'expediente_impresion_proyecto',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
 
-				$menu[ $keyEmpresa ]
+				$menu[$keyEmpresa]
 					->addChild(
 						'Asingar NÂº Expte',
 						array(
 							'route'          => 'expediente_asignar_numero',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
 			}
-			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) || 
-		       		$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
-				$this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ) {
+			if (
+				$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
+				$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
+				$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')
+			) {
 
-				$menu[ $keyEmpresa ]
+				$menu[$keyEmpresa]
 					->addChild(
 						'Expedientes Legislativos',
 						array(
 							'route'          => 'expedientes_legislativos_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
-				if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' )||
-				$this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' )){
-					$menu[ $keyEmpresa ]
+				if (
+					$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
+					$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
+				) {
+					$menu[$keyEmpresa]
 						->addChild(
 							'Expedientes Administrativos',
 							array(
 								'route'          => 'expedientes_administrativos_index',
-								'attributes'     => [ 'class' => 'nav-item' ],
-								'linkAttributes' => [ 'class' => 'nav-link' ]
+								'attributes'     => ['class' => 'nav-item'],
+								'linkAttributes' => ['class' => 'nav-link']
 							)
-							);
+						);
 				}
-			
 
-			$menu[ $keyEmpresa ]
-				->addChild(
-					'Expedientes Legislativos Externos',
-					array(
-						'route'          => 'expediente_legislativo_externo_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
-					)
-				);
-			}	
-			if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ) {
-				$menu[ $keyEmpresa ]
+
+				$menu[$keyEmpresa]
+					->addChild(
+						'Expedientes Legislativos Externos',
+						array(
+							'route'          => 'expediente_legislativo_externo_index',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);
+			}
+			if ($this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA')) {
+				$menu[$keyEmpresa]
 					->addChild(
 						'Expedientes Administrativos Externos',
 						array(
 							'route'          => 'expediente_administrativo_externo_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
 
 				//Dependencia
-				$menu[ $keyEmpresa ]
+				$menu[$keyEmpresa]
 					->addChild(
 						'Dependencias',
 						array(
 							'route'          => 'dependencia_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
 			}
-
 		}
 		// Decretos
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_SECRETARIO' ) ) {
+		if (
+			$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
+			$this->authorizationChecker->isGranted('ROLE_SECRETARIO')
+		) {
 			$keyDecretos = 'Decretos';
 			$menu->addChild(
 				$keyDecretos,
@@ -165,23 +174,23 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fas fa-file-alt' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fas fa-file-alt')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[ $keyDecretos ]
+			$menu[$keyDecretos]
 				->addChild(
 					'Listado',
 					array(
 						'route'          => 'decreto_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_RRHH' ) ) {
+		if ($this->authorizationChecker->isGranted('ROLE_RRHH')) {
 
 			$keyPersonal = 'Recursos Humanos';
 			$menu->addChild(
@@ -192,23 +201,51 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fa fa-users' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
-			$menu[ $keyPersonal ]
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-users')
+				->setAttribute('class', 'nav-item has-treeview');
+			$menu[$keyPersonal]
 				->addChild(
 					'Personas',
 					array(
 						'route'          => 'persona_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ],
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link'],
 					)
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_DEFENSOR' ) ) {
+		if ($this->authorizationChecker->isGranted('ROLE_RRMM')) {
+
+			$keyPersonal = 'Recursos Médicos';
+			$menu->addChild(
+				$keyPersonal,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'nav nav-treeview',
+					),
+				)
+			)
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-users')
+				->setAttribute('class', 'nav-item has-treeview');
+			$menu[$keyPersonal]
+				->addChild(
+					'Pacientes',
+					array(
+						'route'          => 'paciente_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link'],
+					)
+				);
+		}
+
+		if (
+			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
+			$this->authorizationChecker->isGranted('ROLE_DEFENSOR')
+		) {
 
 			$keyPersonal = 'PROYECTOS';
 			$menu->addChild(
@@ -219,40 +256,40 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fa fa-folder-open' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
-			$menu[ $keyPersonal ]
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
+			$menu[$keyPersonal]
 				->addChild(
 					'Mis Proyectos',
 					array(
 						'route'          => 'proyectos_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-			$menu[ $keyPersonal ]
+			$menu[$keyPersonal]
 				->addChild(
 					'Nuevo Proyecto',
 					array(
 						'route'          => 'proyecto_new',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-			$menu[ $keyPersonal ]
+			$menu[$keyPersonal]
 				->addChild(
 					'Otros Proyectos',
 					array(
 						'route'          => 'expedientes_legislativos_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		if ($this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')) {
 
 			$keyPersonal = 'PROYECTOS';
 			$menu->addChild(
@@ -263,26 +300,26 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fa fa-folder-open' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[ $keyPersonal ]
+			$menu[$keyPersonal]
 				->addChild(
 					'Listado',
 					array(
 						'route'          => 'expedientes_legislativos_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-
-
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
+		if (
+			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
+			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
+		) {
 
 			$keyDictamenes = 'DICTÃMENES';
 			$menu->addChild(
@@ -293,50 +330,53 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'far fa-file' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'far fa-file')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[ $keyDictamenes ]
+			$menu[$keyDictamenes]
 				->addChild(
 					'Listado',
 					array(
 						'route'          => 'dictamen_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) &&
-		     ! $this->authorizationChecker->isGranted( 'ROLE_SECRETARIO' )
+		if (
+			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') &&
+			!$this->authorizationChecker->isGranted('ROLE_SECRETARIO')
 		) {
-			$menu[ $keyDictamenes ]
+			$menu[$keyDictamenes]
 				->addChild(
 					'Crear Dictamen',
 					array(
 						'route'          => 'dictamen_alta',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-			$menu[ $keyDictamenes ]
+			$menu[$keyDictamenes]
 				->addChild(
 					'Crear Dictamen a Expte Existente',
 					array(
 						'route'          => 'dictamen_asignar_a_expte',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_DEFENSOR' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_MESA_ENTRADA' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_BIBLIOTECA' ) ) {
+		if (
+			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
+			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
+			$this->authorizationChecker->isGranted('ROLE_DEFENSOR') ||
+			$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
+			$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')
+		) {
 			$keyPersonal = 'SESIONES';
 			$menu->addChild(
 				$keyPersonal,
@@ -346,55 +386,57 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'far fa-file-alt' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'far fa-file-alt')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) &&
-			     ! $this->authorizationChecker->isGranted( 'ROLE_SECRETARIO' ) ) {
-				$menu[ $keyPersonal ]
+			if (
+				$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') &&
+				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO')
+			) {
+				$menu[$keyPersonal]
 					->addChild(
 						'Conformar Plan de Labor',
 						array(
 							'route'          => 'sesiones_conformar_plan_de_labor_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
 			}
-			$menu[ $keyPersonal ]
+			$menu[$keyPersonal]
 				->addChild(
 					'Listado',
 					array(
 						'route'          => 'sesiones_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-			if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ) {
-				$menu[ $keyPersonal ]
+			if ($this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')) {
+				$menu[$keyPersonal]
 					->addChild(
 						'Incorporar Expedientes en SesiÃ³n',
 						[
 							'route'          => 'incorporar_expedientes_a_sesion_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						]
 					);
-				$menu[ $keyPersonal ]
+				$menu[$keyPersonal]
 					->addChild(
 						'Incorporar Dictamen en SesiÃ³n',
 						[
 							'route'          => 'incorporar_dictamenes_en_sesion_index',
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
 						]
 					);
 			}
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_CEREMONIAL' ) ) {
+		if ($this->authorizationChecker->isGranted('ROLE_CEREMONIAL')) {
 			$keyCeremonial = 'CEREMONIAL';
 			$menu->addChild(
 				$keyCeremonial,
@@ -404,24 +446,24 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fa fa-folder-open' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[ $keyCeremonial ]
+			$menu[$keyCeremonial]
 				->addChild(
 					'Homenajes',
 					array(
 						'route'          => 'sesiones_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 		}
 
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_ADMINISTRACION' ) ) {
+		if ($this->authorizationChecker->isGranted('ROLE_ADMINISTRACION')) {
 			$keyAdministracion = 'ADMINISTRACION';
 			$menu->addChild(
 				$keyAdministracion,
@@ -431,24 +473,26 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fa fa-folder-open' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[ $keyAdministracion ]
+			$menu[$keyAdministracion]
 				->addChild(
 					'Ordenes de pago',
 					array(
 						'route'          => 'orden_de_pago_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 		}
 
-		if ( $this->authorizationChecker->isGranted( 'ROLE_LEGISLATIVO' ) ||
-		     $this->authorizationChecker->isGranted( 'ROLE_CONCEJAL' ) ) {
+		if (
+			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
+			$this->authorizationChecker->isGranted('ROLE_CONCEJAL')
+		) {
 
 			$textosDefinitivos = 'TEXTOS DEFINITIVOS';
 			$menu->addChild(
@@ -459,17 +503,17 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fa fa-folder-open' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
-			$menu[ $textosDefinitivos ]
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
+			$menu[$textosDefinitivos]
 				->addChild(
 					'Textos definitivos',
 					array(
 						'route'          => 'texto_definitivo_index',
-						'attributes'     => [ 'class' => 'nav-item' ],
-						'linkAttributes' => [ 'class' => 'nav-link' ]
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
 
@@ -483,20 +527,20 @@ class Builder {
 					),
 				)
 			)
-			     ->setUri( '#' )
-			     ->setLinkAttribute( 'class', 'nav-link' )
-			     ->setExtra( 'icon', 'fas fa-book-open' )
-			     ->setAttribute( 'class', 'nav-item has-treeview' );
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fas fa-book-open')
+				->setAttribute('class', 'nav-item has-treeview');
 
-			$configuracion = $this->em->getRepository( Configuracion::class )->findAll()[0];
-			if ( $configuracion ) {
-				$menu[ $digesto ]
+			$configuracion = $this->em->getRepository(Configuracion::class)->findAll()[0];
+			if ($configuracion) {
+				$menu[$digesto]
 					->addChild(
 						'ConsolidaciÃ³n en curso',
 						[
 							'uri'            => $configuracion->getConsolidacionEnCurso(),
-							'attributes'     => [ 'class' => 'nav-item' ],
-							'linkAttributes' => [ 'class' => 'nav-link', 'target' => '_blank' ]
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link', 'target' => '_blank']
 						]
 					);
 			}
@@ -511,17 +555,17 @@ class Builder {
 				),
 			)
 		)
-		     ->setUri( '#' )
-		     ->setLinkAttribute( 'class', 'nav-link' )
-		     ->setExtra( 'icon', 'far fa-file-alt' )
-		     ->setAttribute( 'class', 'nav-item has-treeview' );
-		$menu[ $keyPersonal ]
+			->setUri('#')
+			->setLinkAttribute('class', 'nav-link')
+			->setExtra('icon', 'far fa-file-alt')
+			->setAttribute('class', 'nav-item has-treeview');
+		$menu[$keyPersonal]
 			->addChild(
 				'Carta OrgÃ¡nica',
 				array(
 					'route'          => 'documento_carta_organica',
-					'attributes'     => [ 'class' => 'nav-item' ],
-					'linkAttributes' => [ 'class' => 'nav-link' ]
+					'attributes'     => ['class' => 'nav-item'],
+					'linkAttributes' => ['class' => 'nav-link']
 				)
 			);
 

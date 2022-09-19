@@ -59,7 +59,7 @@
         </tr>
         <tr>
             <th>Activo</th>
-            <td>{% if persona.activo %}Yes{% else %}No{% endif %}</td>
+            <td>{% if persona.activo %}Si{% else %}No{% endif %}</td>
         </tr>
         <tr>
             <th>Fecha creación</th>
@@ -75,7 +75,7 @@
 
     <a class="btn btn-default" href="{{ path('persona_index') }}">Volver</a>
 
-    <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">Editar</a>
+    <a class="btn btn-default" href="{{ path('paciente_edit', { 'id': persona.id }) }}">Editar</a>
 
 
 {% endblock %}

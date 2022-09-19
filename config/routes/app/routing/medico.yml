@@ -1,4 +1,10 @@
+paciente_index:
+  path: /
+  defaults: { _controller: App\Controller\MedicoController::index }
+  methods: [GET, POST]
+
 paciente_new:
-    path:     /new
-    defaults: { _controller: App\Controller\MedicoController::new }
-    methods:  [GET, POST]
+  path: /new/{id}
+  controller: App\Controller\MedicoController::new
+  defaults: { id: null }
+  methods: [GET, POST]

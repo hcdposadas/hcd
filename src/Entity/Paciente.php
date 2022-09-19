@@ -36,14 +36,16 @@ class Paciente
     private $factor;
 
     /**
-     * @ORM\OneToMany(targetEntity=Orden::class, mappedBy="paciente")
+     * @ORM\OneToMany(targetEntity=OrdenMedica::class, mappedBy="paciente")
      */
-    private $ordens;
+    private $ordenMedicas;
 
     public function __construct()
     {
-        $this->ordens = new ArrayCollection();
+        $this->ordenMedicas = new ArrayCollection();
     }
+
+
 
     public function getId(): ?int
     {
@@ -87,30 +89,30 @@ class Paciente
     }
 
     /**
-     * @return Collection|Orden[]
+     * @return Collection|OrdenMedica[]
      */
-    public function getOrdens(): Collection
+    public function getOrdenMedicas(): Collection
     {
-        return $this->ordens;
+        return $this->ordenMedicas;
     }
 
-    public function addOrden(Orden $orden): self
+    public function addOrdenMedica(OrdenMedica $ordenMedica): self
     {
-        if (!$this->ordens->contains($orden)) {
-            $this->ordens[] = $orden;
-            $orden->setPaciente($this);
+        if (!$this->ordenMedicas->contains($ordenMedica)) {
+            $this->ordenMedicas[] = $ordenMedica;
+            $ordenMedica->setPaciente($this);
         }
 
         return $this;
     }
 
-    public function removeOrden(Orden $orden): self
+    public function removeOrdenMedica(OrdenMedica $ordenMedica): self
     {
-        if ($this->ordens->contains($orden)) {
-            $this->ordens->removeElement($orden);
+        if ($this->ordenMedicas->contains($ordenMedica)) {
+            $this->ordenMedicas->removeElement($ordenMedica);
             // set the owning side to null (unless already changed)
-            if ($orden->getPaciente() === $this) {
-                $orden->setPaciente(null);
+            if ($ordenMedica->getPaciente() === $this) {
+                $ordenMedica->setPaciente(null);
             }
         }
 

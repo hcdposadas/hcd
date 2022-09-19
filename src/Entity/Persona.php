@@ -17,7 +17,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     message="Ya existe una persona con este tipo y Nro de DNI"
  * )
  */
-class Persona extends BaseClass {
+class Persona extends BaseClass
+{
 
 	const PERSONA_GENERO_FEMENINO = 'Femenino';
 	const PERSONA_GENERO_MASCULINO = 'Masculino';
@@ -110,20 +111,23 @@ class Persona extends BaseClass {
 	 */
 	private $nombreDisplay;
 
-	public function __toString() {
+	public function __toString()
+	{
 		return $this->nombre . ' ' . $this->apellido;
 	}
 
-	public function getNombreCompleto() {
+	public function getNombreCompleto()
+	{
 
 		return $this->apellido . ' ' . $this->nombre;
-
 	}
 
-	public function esPresidenteComision() {
-		foreach ( $this->cargoPersona as $cargoPersona ) {
-			if ( strtoupper( $cargoPersona->getCargo()->getNombre() ) == 'PRESIDENTE' &&
-			     $cargoPersona->getComision()
+	public function esPresidenteComision()
+	{
+		foreach ($this->cargoPersona as $cargoPersona) {
+			if (
+				strtoupper($cargoPersona->getCargo()->getNombre()) == 'PRESIDENTE' &&
+				$cargoPersona->getComision()
 			) {
 				return $cargoPersona;
 			}
@@ -135,7 +139,8 @@ class Persona extends BaseClass {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->domicilioPersona = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->cargoPersona     = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contactoPersona  = new \Doctrine\Common\Collections\ArrayCollection();
@@ -146,7 +151,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return integer
 	 */
-	public function getId() {
+	public function getId()
+	{
 		return $this->id;
 	}
 
@@ -157,7 +163,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setNombre( $nombre ) {
+	public function setNombre($nombre)
+	{
 		$this->nombre = $nombre;
 
 		return $this;
@@ -168,7 +175,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return string
 	 */
-	public function getNombre() {
+	public function getNombre()
+	{
 		return $this->nombre;
 	}
 
@@ -179,7 +187,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setApellido( $apellido ) {
+	public function setApellido($apellido)
+	{
 		$this->apellido = $apellido;
 
 		return $this;
@@ -190,7 +199,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return string
 	 */
-	public function getApellido() {
+	public function getApellido()
+	{
 		return $this->apellido;
 	}
 
@@ -201,7 +211,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setDni( $dni ) {
+	public function setDni($dni)
+	{
 		$this->dni = $dni;
 
 		return $this;
@@ -212,7 +223,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return string
 	 */
-	public function getDni() {
+	public function getDni()
+	{
 		return $this->dni;
 	}
 
@@ -223,7 +235,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setFechaNacimiento( $fechaNacimiento ) {
+	public function setFechaNacimiento($fechaNacimiento)
+	{
 		$this->fechaNacimiento = $fechaNacimiento;
 
 		return $this;
@@ -234,7 +247,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return \DateTime
 	 */
-	public function getFechaNacimiento() {
+	public function getFechaNacimiento()
+	{
 		return $this->fechaNacimiento;
 	}
 
@@ -245,7 +259,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setFechaCreacion( $fechaCreacion ) {
+	public function setFechaCreacion($fechaCreacion)
+	{
 		$this->fechaCreacion = $fechaCreacion;
 
 		return $this;
@@ -258,7 +273,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setFechaActualizacion( $fechaActualizacion ) {
+	public function setFechaActualizacion($fechaActualizacion)
+	{
 		$this->fechaActualizacion = $fechaActualizacion;
 
 		return $this;
@@ -267,12 +283,13 @@ class Persona extends BaseClass {
 	/**
 	 * @param mixed $domicilioPersona
 	 */
-	public function setDomicilioPersona( $domicilioPersona ) {
+	public function setDomicilioPersona($domicilioPersona)
+	{
 
-		foreach ( $domicilioPersona as $item ) {
+		foreach ($domicilioPersona as $item) {
 
-			$this->domicilioPersona->add( $item );
-			$item->setPersona( $this );
+			$this->domicilioPersona->add($item);
+			$item->setPersona($this);
 		}
 
 		return $this;
@@ -285,11 +302,12 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function addDomicilioPersona( \App\Entity\DomicilioPersona $domicilioPersona ) {
+	public function addDomicilioPersona(\App\Entity\DomicilioPersona $domicilioPersona)
+	{
 
-		$domicilioPersona->setPersona( $this );
+		$domicilioPersona->setPersona($this);
 
-		$this->domicilioPersona->add( $domicilioPersona );
+		$this->domicilioPersona->add($domicilioPersona);
 
 		return $this;
 	}
@@ -299,8 +317,9 @@ class Persona extends BaseClass {
 	 *
 	 * @param \App\Entity\DomicilioPersona $domicilioPersona
 	 */
-	public function removeDomicilioPersona( \App\Entity\DomicilioPersona $domicilioPersona ) {
-		$this->domicilioPersona->removeElement( $domicilioPersona );
+	public function removeDomicilioPersona(\App\Entity\DomicilioPersona $domicilioPersona)
+	{
+		$this->domicilioPersona->removeElement($domicilioPersona);
 	}
 
 	/**
@@ -308,19 +327,21 @@ class Persona extends BaseClass {
 	 *
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
-	public function getDomicilioPersona() {
+	public function getDomicilioPersona()
+	{
 		return $this->domicilioPersona;
 	}
 
 	/**
 	 * @param mixed $cargoPersona
 	 */
-	public function setCargoPersona( $cargoPersona ) {
+	public function setCargoPersona($cargoPersona)
+	{
 
-		foreach ( $cargoPersona as $item ) {
+		foreach ($cargoPersona as $item) {
 
-			$this->cargoPersona->add( $item );
-			$item->setPersona( $this );
+			$this->cargoPersona->add($item);
+			$item->setPersona($this);
 		}
 
 		return $this;
@@ -333,11 +354,12 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function addCargoPersona( \App\Entity\CargoPersona $cargoPersona ) {
+	public function addCargoPersona(\App\Entity\CargoPersona $cargoPersona)
+	{
 
-		$cargoPersona->setPersona( $this );
+		$cargoPersona->setPersona($this);
 
-		$this->cargoPersona->add( $cargoPersona );
+		$this->cargoPersona->add($cargoPersona);
 
 		return $this;
 	}
@@ -347,8 +369,9 @@ class Persona extends BaseClass {
 	 *
 	 * @param \App\Entity\CargoPersona $cargoPersona
 	 */
-	public function removeCargoPersona( \App\Entity\CargoPersona $cargoPersona ) {
-		$this->cargoPersona->removeElement( $cargoPersona );
+	public function removeCargoPersona(\App\Entity\CargoPersona $cargoPersona)
+	{
+		$this->cargoPersona->removeElement($cargoPersona);
 	}
 
 	/**
@@ -356,7 +379,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return CargoPersona[]|\Doctrine\Common\Collections\Collection
 	 */
-	public function getCargoPersona() {
+	public function getCargoPersona()
+	{
 		return $this->cargoPersona;
 	}
 
@@ -364,12 +388,13 @@ class Persona extends BaseClass {
 	/**
 	 * @param mixed $domicilioPersona
 	 */
-	public function setContactoPersona( $contactoPersona ) {
+	public function setContactoPersona($contactoPersona)
+	{
 
-		foreach ( $contactoPersona as $item ) {
+		foreach ($contactoPersona as $item) {
 
-			$this->contactoPersona->add( $item );
-			$item->setPersona( $this );
+			$this->contactoPersona->add($item);
+			$item->setPersona($this);
 		}
 
 		return $this;
@@ -382,11 +407,12 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function addContactoPersona( \App\Entity\ContactoPersona $contactoPersona ) {
+	public function addContactoPersona(\App\Entity\ContactoPersona $contactoPersona)
+	{
 
-		$contactoPersona->setPersona( $this );
+		$contactoPersona->setPersona($this);
 
-		$this->contactoPersona->add( $contactoPersona );
+		$this->contactoPersona->add($contactoPersona);
 
 		return $this;
 	}
@@ -396,8 +422,9 @@ class Persona extends BaseClass {
 	 *
 	 * @param \App\Entity\ContactoPersona $contactoPersona
 	 */
-	public function removeContactoPersona( \App\Entity\ContactoPersona $contactoPersona ) {
-		$this->contactoPersona->removeElement( $contactoPersona );
+	public function removeContactoPersona(\App\Entity\ContactoPersona $contactoPersona)
+	{
+		$this->contactoPersona->removeElement($contactoPersona);
 	}
 
 	/**
@@ -405,7 +432,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
-	public function getContactoPersona() {
+	public function getContactoPersona()
+	{
 		return $this->contactoPersona;
 	}
 
@@ -416,10 +444,11 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setLegajo( \App\Entity\Legajo $legajo = null ) {
+	public function setLegajo(\App\Entity\Legajo $legajo = null)
+	{
 		$this->legajo = $legajo;
 
-		$legajo->setPersona( $this );
+		$legajo->setPersona($this);
 
 		return $this;
 	}
@@ -429,7 +458,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return \App\Entity\Legajo
 	 */
-	public function getLegajo() {
+	public function getLegajo()
+	{
 		return $this->legajo;
 	}
 
@@ -440,7 +470,8 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
+	public function setCreadoPor(\App\Entity\Usuario $creadoPor = null)
+	{
 		$this->creadoPor = $creadoPor;
 
 		return $this;
@@ -453,28 +484,33 @@ class Persona extends BaseClass {
 	 *
 	 * @return Persona
 	 */
-	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
+	public function setActualizadoPor(\App\Entity\Usuario $actualizadoPor = null)
+	{
 		$this->actualizadoPor = $actualizadoPor;
 
 		return $this;
 	}
 
-	public function getLugarNacimiento(): ?string {
+	public function getLugarNacimiento(): ?string
+	{
 		return $this->lugarNacimiento;
 	}
 
-	public function setLugarNacimiento( ?string $lugarNacimiento ): self {
+	public function setLugarNacimiento(?string $lugarNacimiento): self
+	{
 		$this->lugarNacimiento = $lugarNacimiento;
 
 		return $this;
 	}
 
 
-	public function getTipoDocumento(): ?string {
+	public function getTipoDocumento(): ?string
+	{
 		return $this->tipoDocumento;
 	}
 
-	public function setTipoDocumento( ?string $tipoDocumento ): self {
+	public function setTipoDocumento(?string $tipoDocumento): self
+	{
 		$this->tipoDocumento = $tipoDocumento;
 
 		return $this;
@@ -483,26 +519,28 @@ class Persona extends BaseClass {
 	/**
 	 * @return mixed
 	 */
-	public function getGenero() {
+	public function getGenero()
+	{
 		return $this->genero;
 	}
 
 	/**
 	 * @param mixed $genero
 	 */
-	public function setGenero( $genero ): void {
+	public function setGenero($genero): void
+	{
 		$this->genero = $genero;
 	}
 
-	public function getNombreDisplay(): ?string {
+	public function getNombreDisplay(): ?string
+	{
 		return $this->nombreDisplay;
 	}
 
-	public function setNombreDisplay( ?string $nombreDisplay ): self {
+	public function setNombreDisplay(?string $nombreDisplay): self
+	{
 		$this->nombreDisplay = $nombreDisplay;
 
 		return $this;
 	}
-
-
 }

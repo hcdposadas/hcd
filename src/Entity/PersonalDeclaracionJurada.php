@@ -120,10 +120,10 @@ class PersonalDeclaracionJurada extends BaseClass {
 	 */
 	private $tipoAsistencia = PersonalDeclaracionJurada::TIPO_ASISTENCIA_CONTINUO;
 
-//	public function __construct() {
-//		$this->personalDDJJPersonaACargos = new ArrayCollection();
-//		$this->personalDDJJConyuges       = new ArrayCollection();
-//	}
+	public function __construct() {
+		$this->personalDDJJPersonaACargos = new ArrayCollection();
+		$this->personalDDJJConyuges       = new ArrayCollection();
+	}
 
 
 	public function getId(): ?int {

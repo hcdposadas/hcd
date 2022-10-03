@@ -96,7 +96,13 @@ class MedicoController extends AbstractController
 		);
 
 		if ($form->isSubmitted() && $form->isValid()) {
+			$data = $form->getData();
 			$paciente = new Paciente();
+			$paciente->setPersona($em->getRepository(Persona::class)->find($id));
+			$paciente->setFactor($data['factor']);
+			$paciente->setGrupo($data['grupo']);
+			$paciente->setFotoFile($data['foto']);
+			$paciente->setObservaciones($data['observaciones']);
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($paciente);
 			$em->flush();

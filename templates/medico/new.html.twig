@@ -130,7 +130,12 @@
 						<b>Apellido:</b>
 						{{ paciente.apellido }}<br>
 						<b>Legajo:</b>
-						{{ paciente.legajo.numero }}<br>
+						{% if (paciente.legajo) %}
+						{{paciente.legajo.numero }}
+						{% else %}
+						-
+						{% endif %}<br>
+
 						<b>{{ paciente.tipoDocumento }}:</b>
 						{{ paciente.dni }}
 						<br>
@@ -184,6 +189,9 @@
 					</div>
 				</div>
 			</div>
+
+
+			{% if (paciente.legajo) %}
 			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
@@ -270,7 +278,7 @@
 					<div class="card-body"></div>
 				</div>
 			</div>
-
+			{% endif %}
 		</div>
 
 

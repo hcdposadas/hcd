@@ -69,7 +69,8 @@
                         <tbody>
                         {% for paciente in pacientes %}
                             <tr>
-                                <td><a href="{{ path('paciente_show', { 'id': paciente.id }) }}">{{ paciente.id }}</a></td>
+                                {# <td><a href="{{ path('paciente_show', { 'id': paciente.id }) }}">{{ paciente.id }}</a></td> #}
+                                <td></td>
                                 <td>{{ paciente.persona.nombre }}</td>
                                 <td>{{ paciente.persona.apellido }}</td>
                                 <td>{{ paciente.persona.dni }}</td>

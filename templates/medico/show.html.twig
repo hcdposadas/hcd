@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Persona</h1>
+
+    <table>
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ paciente.id }}</td>
+        </tr>
+        <tr>
+            <th>Nombre</th>
+            <td>{{ paciente.persona.nombre }}</td>
+        </tr>
+        <tr>
+            <th>Apellido</th>
+            <td>{{ paciente.persona.apellido }}</td>
+        </tr>
+        <tr>
+            <th>DNI</th>
+            <td>{{ paciente.persona.dni }}</td>
+        </tr>
+        <tr>
+            <th>Grupo</th>
+            <td>{{ paciente.grupo }}</td>
+        </tr>
+        <tr>
+            <th>Factor</th>
+            <td>{{ paciente.factor }}</td>
+        </tr>
+        <tr>
+            <th>Fecha nacimiento</th>
+            <td>{% if persona.fechaNacimiento %}{{ persona.fechaNacimiento|date('d/m/Y') }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Telefono</th>
+            <td>
+                {% for contacto in persona.contactoPersona %}
+                    {{ contacto.telefono }}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Celular</th>
+            <td>
+                {% for contacto in persona.contactoPersona %}
+                    {{ contacto.celular }}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Mail</th>
+            <td>
+                {% for contacto in persona.contactoPersona %}
+                    {{ contacto.mail }}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Activo</th>
+            <td>{% if persona.activo %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Fecha creación</th>
+            <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Fecha actualización</th>
+            <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <a class="btn btn-default" href="{{ path('persona_index') }}">Volver</a>
+
+    <a class="btn btn-default" href="{{ path('persona_edit', { 'id': persona.id }) }}">Editar</a>
+
+
+{% endblock %}

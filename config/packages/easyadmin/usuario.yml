@@ -30,6 +30,7 @@ easy_admin:
                           'ROLE_CEREMONIAL': 'ROLE_CEREMONIAL',
                           'ROLE_ADMINISTRACION': 'ROLE_ADMINISTRACION',
                           'ROLE_RRHH': 'ROLE_RRHH',
+                          'ROLE_BIBLIOTECA': 'ROLE_BIBLIOTECA',
                           'ROLE_RRHH_ADMIN': 'ROLE_RRHH_ADMIN',
                         }
                       }

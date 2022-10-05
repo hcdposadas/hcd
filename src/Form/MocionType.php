@@ -76,7 +76,7 @@ class MocionType extends AbstractType {
 				[
 					'remote_route' => 'get_expedientes',
 					'class'        => Expediente::class,
-					'required'     => true,
+					'required'     => false,
 					'placeholder'  => 'Por Expte'
 
 				] );

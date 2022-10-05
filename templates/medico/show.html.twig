@@ -1,81 +1,237 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+	Paciente
+{% endblock title %}
 {% block body %}
-    <h1>Persona</h1>
-
-    <table>
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ paciente.id }}</td>
-        </tr>
-        <tr>
-            <th>Nombre</th>
-            <td>{{ paciente.persona.nombre }}</td>
-        </tr>
-        <tr>
-            <th>Apellido</th>
-            <td>{{ paciente.persona.apellido }}</td>
-        </tr>
-        <tr>
-            <th>DNI</th>
-            <td>{{ paciente.persona.dni }}</td>
-        </tr>
-        <tr>
-            <th>Grupo</th>
-            <td>{{ paciente.grupo }}</td>
-        </tr>
-        <tr>
-            <th>Factor</th>
-            <td>{{ paciente.factor }}</td>
-        </tr>
-        <tr>
-            <th>Fecha nacimiento</th>
-            <td>{% if persona.fechaNacimiento %}{{ persona.fechaNacimiento|date('d/m/Y') }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Telefono</th>
-            <td>
-                {% for contacto in persona.contactoPersona %}
-                    {{ contacto.telefono }}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>Celular</th>
-            <td>
-                {% for contacto in persona.contactoPersona %}
-                    {{ contacto.celular }}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>Mail</th>
-            <td>
-                {% for contacto in persona.contactoPersona %}
-                    {{ contacto.mail }}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>Activo</th>
-            <td>{% if persona.activo %}Si{% else %}No{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Fecha creación</th>
-            <td>{% if persona.fechaCreacion %}{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Fecha actualización</th>
-            <td>{% if persona.fechaActualizacion %}{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-        </tr>
-        </tbody>
-    </table>
 
 
-    <a class="btn btn-default" href="{{ path('persona_index') }}">Volver</a>
-
-    <a class="btn btn-default" href="{{ path('paciente_edit', { 'id': persona.id }) }}">Editar</a>
+	<h1>Alta de Paciente</h1>
 
 
-{% endblock %}
+		<div class="row">
+
+			<div class="col-md-6">
+				<div class="card ">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>
+							Datos de la Persona</h3>
+					</div>
+					<div class="card-body">
+
+						<b>Nombre:</b>
+						{{ paciente.persona.nombre }}<br>
+						<b>Apellido:</b>
+						{{ paciente.persona.apellido }}<br>
+						<b>Legajo:</b>
+						{% if (paciente.persona.legajo) %}
+						{{paciente.persona.legajo.numero }}
+						{% else %}
+						-
+						{% endif %}<br>
+
+						<b>{{ paciente.persona.tipoDocumento }}:</b>
+						{{ paciente.persona.dni }}
+						<br>
+						<b>Género:</b>
+						{{ paciente.persona.genero}}<br>
+						<b>Fecha de Nacimiento:</b>
+						{{ paciente.persona.fechaNacimiento|date('d/m/Y') }}
+
+
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fas fa-road"></i>
+							Datos del Domicilio</h3>
+					</div>
+					<div class="card-body">
+						{% if paciente.persona.domicilioPersona.last %}
+							<b>Calle:</b>
+							{{ paciente.persona.domicilioPersona.last.domicilio.calle }}<br>
+							<b>Altura:</b>
+							{{ paciente.persona.domicilioPersona.last.domicilio.alturacalle }}<br>
+							<b>Barrio:</b>
+							{{ paciente.persona.domicilioPersona.last.domicilio.barrio }}<br>
+							<b>Otros:</b>
+							{{ paciente.persona.domicilioPersona.last.domicilio.otros }}<br>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-phone"></i>
+							Datos de Contacto</h3>
+					</div>
+					<div class="card-body">
+						{% if paciente.persona.contactoPersona.last %}
+							<b>Telefono:</b>
+							{{ paciente.persona.contactoPersona.last.contacto.telefono }}<br>
+							<b>Celular:</b>
+							{{ paciente.persona.contactoPersona.last.contacto.celular }}<br>
+							<b>Email:</b>
+							{{ paciente.persona.contactoPersona.last.contacto.mail }}<br>
+						{% endif %}
+
+					</div>
+				</div>
+			</div>
+
+
+			{% if (paciente.persona.legajo) %}
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>Conyuge</h3>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Apellido</th>
+										<th>DNI</th>
+										<th>Genero</th>
+										<th>Fecha De Nacimiento</th>
+										<th>Fecha Enlace</th>
+										<th>Trabaja</th>
+										<th>Convive</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for declaracion in paciente.persona.legajo.personalDeclaracionJuradas.last.personalDDJJConyuges %}
+										<td>{{declaracion.conyuge.persona.nombre}}</td>
+										<td>{{declaracion.conyuge.persona.apellido}}</td>
+										<td>{{declaracion.conyuge.persona.dni}}</td>
+										<td>{{declaracion.conyuge.persona.genero}}</td>
+										<td>{{declaracion.conyuge.persona.fechaNacimiento|date('d/m/Y')}}</td>
+										<td>{{declaracion.conyuge.fechaEnlace|date('d/m/Y') }}</td>
+										<td>
+                                            {% if persona.trabaja %}
+												Si
+											{% else %}
+												No
+											{% endif %}
+                                        </td>
+										<td>
+											{% if persona.razonSocialLugarTrabajo %}
+												{{persona.razonSocialLugarTrabajo}}
+											{% else %}
+												No
+											{% endif %}
+										</td>
+                                    {% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-body"></div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>Personas A Cargo</h3>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Apellido</th>
+										<th>DNI</th>
+										<th>Genero</th>
+										<th>Fecha De Nacimiento</th>
+										<th>Estudios</th>
+										<th>Relacion</th>
+										<th>Convive</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for persona in paciente.persona.legajo.personalDeclaracionJuradas.last.personalDDJJPersonaACargos %}
+										<td>{{persona.personasACargo.personaACargo.nombre}}</td>
+										<td>{{persona.personasACargo.personaACargo.apellido}}</td>
+										<td>{{persona.personasACargo.personaACargo.dni}}</td>
+										<td>{{persona.personasACargo.personaACargo.genero}}</td>
+										<td>{{persona.personasACargo.personaACargo.fechaNacimiento|date('d/m/Y')}}</td>
+										<td>{{persona.personasACargo.estudiosCursados}}</td>
+										<td>{{persona.personasACargo.tipoRelacionPersona}}</td>
+										<td>
+											{% if persona.personasACargo.conviveConDeclarante %}
+												Si
+											{% else %}
+												No
+											{% endif %}
+										</td>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-body"></div>
+				</div>
+			</div>
+            			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>Ordenes Medicas</h3>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Medico Otorgante</th>
+										<th>Dias</th>
+										<th>Desde</th>
+										<th>Hasta</th>
+										<th>Articulo</th>
+										<th>Diagnostico</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for orden in paciente.ordenMedicas %}
+										<td>{{orden.id}}</td>
+										<td>{{orden.medico}}</td>
+										<td>{{orden.dias}}</td>
+										<td>{{orden.desde}}</td>
+										<td>{{orden.hasta}}</td>
+										<td>{{orden.articulo}}</td>
+										<td>{{orden.diagnostico}}</td>
+									{% endfor %}
+                                    {{ form_start(form) }}
+                                        <tr>
+                                    	<td>{{form_row(form.guardar)}}</td> 
+										<td>{{form_widget(form.medicoOtorgante)}}</td>
+										<td>--</td>
+										<td>{{form_widget(form.desde)}}</td>
+										<td>{{form_widget(form.hasta)}}</td>
+										<td>{{form_widget(form.articulo)}}</td>
+										<td>{{form_widget(form.diagnostico)}}</td>
+                                        </tr>
+                                        {{ form_end(form) }}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-body"></div>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+
+		<div class="row ">
+			<div>
+				<a class="btn btn-default" href="{{ path('paciente_index') }}">Volver</a>
+			</div>
+		</div>
+
+{% endblock body %}

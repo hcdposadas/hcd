@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Form\Filter\PersonaFilterType;
 use App\Form\PacienteType;
+use App\Form\OrdenType;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Paciente;
@@ -127,11 +128,12 @@ class MedicoController extends AbstractController
 	 */
 	public function show(Paciente $paciente)
 	{
-		//		$deleteForm = $this->createDeleteForm( $persona );
 
+		$form    = $this->createForm(OrdenType::class);
 		return $this->render(
 			'medico/show.html.twig',
 			array(
+				'form'    => $form->createView(),
 				'paciente' => $paciente,
 				//				'delete_form' => $deleteForm->createView(),
 			)

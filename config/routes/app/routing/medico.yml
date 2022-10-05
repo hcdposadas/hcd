@@ -8,3 +8,8 @@ paciente_new:
   controller: App\Controller\MedicoController::new
   defaults: { id: null }
   methods: [GET, POST]
+
+paciente_show:
+  path: /show/{id}
+  controller: App\Controller\MedicoController::show
+  methods: [GET, POST]

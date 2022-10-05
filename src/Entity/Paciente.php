@@ -35,15 +35,7 @@ class Paciente
      */
     private $factor;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Orden::class, mappedBy="paciente")
-     */
-    private $ordens;
 
-    public function __construct()
-    {
-        $this->ordens = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -86,34 +78,6 @@ class Paciente
         return $this;
     }
 
-    /**
-     * @return Collection|Orden[]
-     */
-    public function getOrdens(): Collection
-    {
-        return $this->ordens;
-    }
 
-    public function addOrden(Orden $orden): self
-    {
-        if (!$this->ordens->contains($orden)) {
-            $this->ordens[] = $orden;
-            $orden->setPaciente($this);
-        }
 
-        return $this;
-    }
-
-    public function removeOrden(Orden $orden): self
-    {
-        if ($this->ordens->contains($orden)) {
-            $this->ordens->removeElement($orden);
-            // set the owning side to null (unless already changed)
-            if ($orden->getPaciente() === $this) {
-                $orden->setPaciente(null);
-            }
-        }
-
-        return $this;
-    }
 }

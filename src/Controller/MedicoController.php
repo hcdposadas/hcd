@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\OrdenMedica;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Form\Filter\PersonaFilterType;
 use App\Form\PacienteType;
@@ -31,7 +32,7 @@ class MedicoController extends AbstractController
 
 
 		if ($filterType->get('buscar')->isClicked()) {
-			//$pacientes = $em->getRepository( Paciente::class )->getQbAll($filterType->getData());
+			$pacientes = $em->getRepository(Paciente::class)->getQbAll($filterType->getData());
 		} else {
 
 			$pacientes = $em->getRepository(Paciente::class)->findAll();
@@ -128,8 +129,21 @@ class MedicoController extends AbstractController
 	 */
 	public function show(Paciente $paciente)
 	{
-
+		$orden = new OrdenMedica;
 		$form    = $this->createForm(OrdenType::class);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$data = $form->getData();
+			$orden->setPaciente($paciente);
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($orden);
+			$em->flush();
+
+			return $this->redirectToRoute('paciente_show', array('id' => $paciente->getId()));
+		}
+
+
+
 		return $this->render(
 			'medico/show.html.twig',
 			array(

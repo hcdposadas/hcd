@@ -19,6 +19,7 @@ parameters:
     app.path.rrhh_novedad: '/uploads/rrhh/novedades'
     app.path.rrhh_licencia: '/uploads/rrhh/licencias'
     app.path.rrmm_perfil: '/uploads/rrmm/perfiles'
+    app.path.rrmm_diagnostico: '/uploads/rrmm/diagnosticos'
 
 services:
     # default configuration for services in *this* file

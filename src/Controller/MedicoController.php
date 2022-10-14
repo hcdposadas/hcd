@@ -127,13 +127,19 @@ class MedicoController extends AbstractController
 	 * Finds and displays a persona entity.
 	 *
 	 */
-	public function show(Paciente $paciente)
+	public function show(Paciente $paciente, Request $request)
 	{
 		$orden = new OrdenMedica;
 		$form    = $this->createForm(OrdenType::class);
 
+		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
+			$orden->setMedicoOtorgante($data['medicoOtorgante']);
+			$orden->setDesde($data['desde']);
+			$orden->setHasta($data['hasta']);
+			$orden->setArticulo($data['articulo']);
+			$orden->setDiagnosticoFile($data['diagnostico']);
 			$orden->setPaciente($paciente);
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($orden);

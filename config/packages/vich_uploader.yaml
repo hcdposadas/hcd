@@ -49,3 +49,7 @@ vich_uploader:
             uri_prefix: "%app.path.rrmm_perfil%"
             upload_destination: "%kernel.project_dir%/public/uploads/rrmm/perfiles"
             namer: "vich_uploader.namer_uniqid"
+        rrmm_diagnostico:
+            uri_prefix: "%app.path.rrmm_diagnostico%"
+            upload_destination: "%kernel.project_dir%/public/uploads/rrmm/diagnosticos"
+            namer: "vich_uploader.namer_uniqid"

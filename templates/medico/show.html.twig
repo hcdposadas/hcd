@@ -9,84 +9,94 @@
 	<h1>Alta de Paciente</h1>
 
 
-		<div class="row">
+	<div class="row">
 
-			<div class="col-md-6">
-				<div class="card ">
-					<div class="card-header">
-						<h3 class="card-title">
-							<i class="fa fa-user"></i>
-							Datos de la Persona</h3>
-					</div>
-					<div class="card-body">
-
-						<b>Nombre:</b>
-						{{ paciente.persona.nombre }}<br>
-						<b>Apellido:</b>
-						{{ paciente.persona.apellido }}<br>
-						<b>Legajo:</b>
-						{% if (paciente.persona.legajo) %}
+		<div class="col-md-6">
+			<div class="card ">
+				<div class="card-header">
+					<h3 class="card-title">
+						<i class="fa fa-user"></i>
+						Datos de la Persona</h3>
+				</div>
+				<div class="card-body">
+					<div class="col-md-12">
+					<div class="row">
+					<div class="col-md-6">	
+					<b>Nombre:</b>
+					{{ paciente.persona.nombre }}<br>
+					<b>Apellido:</b>
+					{{ paciente.persona.apellido }}<br>
+					<b>Legajo:</b>
+					{% if (paciente.persona.legajo) %}
 						{{paciente.persona.legajo.numero }}
-						{% else %}
+					{% else %}
 						-
-						{% endif %}<br>
+					{% endif %}<br>
 
-						<b>{{ paciente.persona.tipoDocumento }}:</b>
-						{{ paciente.persona.dni }}
-						<br>
-						<b>Género:</b>
-						{{ paciente.persona.genero}}<br>
-						<b>Fecha de Nacimiento:</b>
-						{{ paciente.persona.fechaNacimiento|date('d/m/Y') }}
-
-
+					<b>{{ paciente.persona.tipoDocumento }}:</b>
+					{{ paciente.persona.dni }}
+					<br>
+					<b>Género:</b>
+					{{ paciente.persona.genero}}<br>
+					<b>Fecha de Nacimiento:</b>
+					{{ paciente.persona.fechaNacimiento|date('d/m/Y') }}
+					</div>
+					<div class="col-md-6">      
+               		 <img src="{{ asset('uploads/rrmm/perfiles/' ~ paciente.foto) }}" alt="Foto Personal"
+                     style="width:100%">
+					</div>
+					</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">
-							<i class="fas fa-road"></i>
-							Datos del Domicilio</h3>
-					</div>
-					<div class="card-body">
-						{% if paciente.persona.domicilioPersona.last %}
-							<b>Calle:</b>
-							{{ paciente.persona.domicilioPersona.last.domicilio.calle }}<br>
-							<b>Altura:</b>
-							{{ paciente.persona.domicilioPersona.last.domicilio.alturacalle }}<br>
-							<b>Barrio:</b>
-							{{ paciente.persona.domicilioPersona.last.domicilio.barrio }}<br>
-							<b>Otros:</b>
-							{{ paciente.persona.domicilioPersona.last.domicilio.otros }}<br>
-						{% endif %}
-					</div>
+		</div>
+		<div class="col-md-3">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">
+						<i class="fas fa-road"></i>
+						Datos del Domicilio</h3>
+				</div>
+				<div class="card-body">
+					{% if paciente.persona.domicilioPersona.last %}
+						<b>Calle:</b>
+						{{ paciente.persona.domicilioPersona.last.domicilio.calle }}<br>
+						<b>Altura:</b>
+						{{ paciente.persona.domicilioPersona.last.domicilio.alturacalle }}<br>
+						<b>Barrio:</b>
+						{{ paciente.persona.domicilioPersona.last.domicilio.barrio }}<br>
+						<b>Otros:</b>
+						{{ paciente.persona.domicilioPersona.last.domicilio.otros }}<br>
+					{% endif %}
 				</div>
 			</div>
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">
-							<i class="fa fa-phone"></i>
-							Datos de Contacto</h3>
-					</div>
-					<div class="card-body">
-						{% if paciente.persona.contactoPersona.last %}
-							<b>Telefono:</b>
-							{{ paciente.persona.contactoPersona.last.contacto.telefono }}<br>
-							<b>Celular:</b>
-							{{ paciente.persona.contactoPersona.last.contacto.celular }}<br>
-							<b>Email:</b>
-							{{ paciente.persona.contactoPersona.last.contacto.mail }}<br>
-						{% endif %}
+		</div>
+		<div class="col-md-3">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">
+						<i class="fa fa-phone"></i>
+						Datos de Contacto</h3>
+				</div>
+				<div class="card-body">
+		
+					{% if paciente.persona.contactoPersona.last %}
+						<b>Telefono:</b>
+						{{ paciente.persona.contactoPersona.last.contacto.telefono }}<br>
+						<b>Celular:</b>
+						{{ paciente.persona.contactoPersona.last.contacto.celular }}<br>
+						<b>Email:</b>
+						{{ paciente.persona.contactoPersona.last.contacto.mail }}<br>
+					{% endif %}
+				</div>
 
-					</div>
+				</div>
 				</div>
 			</div>
+		</div>
 
 
-			{% if (paciente.persona.legajo) %}
+		{% if (paciente.persona.legajo) %}
 			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
@@ -115,12 +125,12 @@
 										<td>{{declaracion.conyuge.persona.fechaNacimiento|date('d/m/Y')}}</td>
 										<td>{{declaracion.conyuge.fechaEnlace|date('d/m/Y') }}</td>
 										<td>
-                                            {% if persona.trabaja %}
+											{% if persona.trabaja %}
 												Si
 											{% else %}
 												No
 											{% endif %}
-                                        </td>
+										</td>
 										<td>
 											{% if persona.razonSocialLugarTrabajo %}
 												{{persona.razonSocialLugarTrabajo}}
@@ -128,12 +138,11 @@
 												No
 											{% endif %}
 										</td>
-                                    {% endfor %}
+									{% endfor %}
 								</tbody>
 							</table>
 						</div>
 					</div>
-					<div class="card-body"></div>
 				</div>
 			</div>
 			<div class="col-md-12">
@@ -176,62 +185,128 @@
 							</table>
 						</div>
 					</div>
-					<div class="card-body"></div>
 				</div>
 			</div>
-            			<div class="col-md-12">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">
-							<i class="fa fa-user"></i>Ordenes Medicas</h3>
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<thead>
+			
+			
+		{% endif %}
+
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">
+						<i class="fa fa-file"></i>
+						Observaciones</h3>
+				</div>
+				<div class="card-body">
+					{% if paciente.observaciones %}
+						{{paciente.observaciones}}
+					{% endif %}
+				</div>
+
+				
+			</div>
+		</div>
+
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">
+						<i class="fa fa-file"></i>Ordenes Medicas</h3>
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Medico Otorgante</th>
+									<th>Dias</th>
+									<th>Desde</th>
+									<th>Hasta</th>
+									<th>Articulo</th>
+									<th style="width:20%">Diagnostico</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for orden in paciente.ordenMedicas %}
 									<tr>
-										<th>Id</th>
-										<th>Medico Otorgante</th>
-										<th>Dias</th>
-										<th>Desde</th>
-										<th>Hasta</th>
-										<th>Articulo</th>
-										<th>Diagnostico</th>
+									<td>{{orden.id}}</td>
+									<td>{{orden.medicoOtorgante}}</td>
+									<td>{{orden.articulo.dias}}</td>
+									<td>{{orden.desde|date('d/m/Y')}}</td>
+									<td>{{orden.hasta|date('d/m/Y')}}</td>
+									<td>{{orden.articulo}}</td>
+									<td><a class="btn btn-secondary" role="button" data-toggle="modal"
+                                           data-target="#exampleModal"
+                                           data-src="{{ asset('uploads/rrmm/diagnosticos/' ~ orden.diagnostico) }}"><i class="far fa-images"></i></a></td>
+									<td></td>
 									</tr>
-								</thead>
-								<tbody>
-									{% for orden in paciente.ordenMedicas %}
-										<td>{{orden.id}}</td>
-										<td>{{orden.medico}}</td>
-										<td>{{orden.dias}}</td>
-										<td>{{orden.desde}}</td>
-										<td>{{orden.hasta}}</td>
-										<td>{{orden.articulo}}</td>
-										<td>{{orden.diagnostico}}</td>
-									{% endfor %}
-                                    {{ form_start(form) }}
-                                        <tr>
-                                    	<td>{{form_row(form.guardar)}}</td> 
-										<td>{{form_widget(form.medicoOtorgante)}}</td>
-										<td>--</td>
-										<td>{{form_widget(form.desde)}}</td>
-										<td>{{form_widget(form.hasta)}}</td>
-										<td>{{form_widget(form.articulo)}}</td>
-										<td>{{form_widget(form.diagnostico)}}</td>
-                                        </tr>
-                                        {{ form_end(form) }}
-								</tbody>
-							</table>
-						</div>
+								{% endfor %}
+								{{ form_start(form) }}
+								<tr>
+									<td>--</td>
+									<td>{{form_widget(form.medicoOtorgante)}}</td>
+									<td>--</td>
+									<td>{{form_widget(form.desde)}}</td>
+									<td>{{form_widget(form.hasta)}}</td>
+									<td>{{form_widget(form.articulo)}}</td>
+									<td>{{form_widget(form.diagnostico)}}</td>
+									<td>{{form_row(form.guardar)}}</td>
+								</tr>
+								{{ form_end(form) }}
+							</tbody>
+						</table>
 					</div>
-					<div class="card-body"></div>
 				</div>
-			</div>
-			{% endif %}
-		</div>
-
-		<div class="row ">
-			<div>
-				<a class="btn btn-default" href="{{ path('paciente_index') }}">Volver</a>
+				<div class="card-body"></div>
 			</div>
 		</div>
+	</div>
 
+	<div class="row ">
+		<div>
+			<a class="btn btn-default" href="{{ path('paciente_index') }}">Volver</a>
+		</div>
+	</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title  " id="exampleModalLabel">Diagnostico</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ">
+                    <img class="card-img-modal col-md-12 ml-auto"
+                         src=""
+                         alt="Imagen Diagnostico" style="margin:0 auto;">
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock body %}
+
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            get();
+        });
+
+        function get() {
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                console.log('click');
+
+                let button = $(event.relatedTarget); // Button that triggered the modal
+                let imagen = button.data('src');
+                let modal = $(this);
+                modal.find('.card-img-modal').attr('src', imagen);
+                console.log(imagen);
+            })
+        }
+
+    </script>
+{% endblock javascripts %}

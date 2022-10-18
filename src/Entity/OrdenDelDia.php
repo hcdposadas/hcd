@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Entity;
@@ -309,16 +310,21 @@ class OrdenDelDia extends BaseClass {
 				$numeroa = $numeroa . $numero2a;
 			} else {
 				list( $numeroa, $letraa, $anioa ) = explode( '-', $expA, 3 );
-//				TODO si no funciona con los de iprodha eliminar esta linea
-				$numeroa = intval( $numeroa );
 			}
+
+			// TODO si no funciona con los de iprodha eliminar esta linea o RM
+			$numeroa = (int) filter_var( $numeroa, FILTER_SANITIZE_NUMBER_INT );
 
 			if ( substr_count( $expB, '-' ) == 3 ) {
 				list( $numerob, $numero2b, $letrab, $aniob ) = explode( '-', $expB, 4 );
 				$numerob = $numerob . $numero2b;
 			} else {
 				list( $numerob, $letrab, $aniob ) = explode( '-', $expB, 3 );
+
 			}
+			
+			// TODO si no funciona con los de iprodha eliminar esta linea o RM
+			$numerob = (int) filter_var( $numerob, FILTER_SANITIZE_NUMBER_INT );
 
 			// Compara por anio, y si son iguales, por numero
 
@@ -340,3 +346,4 @@ class OrdenDelDia extends BaseClass {
 		return new ArrayCollection( iterator_to_array( $iterator ) );
 	}
 }
+

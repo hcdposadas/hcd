@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Entity;
@@ -196,3 +197,4 @@ class Paciente
         return $this;
     }
 }
+

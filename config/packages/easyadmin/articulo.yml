@@ -6,6 +6,7 @@ easy_admin:
                 fields:
                     - { property: 'numero' }
                     - { property: 'descripcion' }
+                    - { property: 'dias' }
                     - { property: 'activo' }
 
             edit:

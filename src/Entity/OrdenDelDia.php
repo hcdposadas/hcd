@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Entity;
@@ -345,3 +346,4 @@ class OrdenDelDia extends BaseClass {
 		return new ArrayCollection( iterator_to_array( $iterator ) );
 	}
 }
+

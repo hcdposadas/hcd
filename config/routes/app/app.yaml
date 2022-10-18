@@ -1,41 +1,45 @@
 app_homepage:
-  path:     /
+  path: /
   defaults: { _controller: App\Controller\DefaultController::index }
 
 app_proyectobae:
   resource: "routing/proyectobae.yml"
-  prefix:   /proyectobae
+  prefix: /proyectobae
 
 app_dictamenes:
   resource: "routing/dictamen.yml"
-  prefix:   /dictamen
+  prefix: /dictamen
 
 app_dependencia:
   resource: "routing/dependencia.yml"
-  prefix:   /dependencia
+  prefix: /dependencia
 
 app_persona:
   resource: "routing/persona.yml"
-  prefix:   /persona
+  prefix: /persona
+
+app_medico:
+  resource: "routing/medico.yml"
+  prefix: /paciente
 
 app_ajax:
   resource: "routing/ajax.yml"
-  prefix:   /ajax
+  prefix: /ajax
 
 app_mocion:
   resource: "routing/mocion.yml"
-  prefix:   /sesion/mocion
+  prefix: /sesion/mocion
 
 app_tipomayoria:
   resource: "routing/tipomayoria.yml"
-  prefix:   /tipomayoria
+  prefix: /tipomayoria
 
 app_concejal:
-  path:     /concejal
+  path: /concejal
   defaults: { _controller: App\Controller\DefaultController::concejal }
 
 documento_carta_organica:
-  path:     /documento_carta_organica
+  path: /documento_carta_organica
   defaults: { _controller: App\Controller\DefaultController::cartaOrganica }
 
 get_concejales_admin:
@@ -48,7 +52,7 @@ sesiones:
 
 app_decreto:
   resource: "routing/decreto.yml"
-  prefix:   /decreto
+  prefix: /decreto
 
 #app_display:
 #    path:     /display
@@ -61,5 +65,4 @@ app_decreto:
 
 app_orden_de_pago:
   resource: "routing/ordendepago.yml"
-  prefix:   /orden-de-pago
-
+  prefix: /orden-de-pago

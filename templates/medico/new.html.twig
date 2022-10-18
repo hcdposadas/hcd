@@ -1,157 +1,377 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Paciente
+	Paciente
 {% endblock title %}
 {% block body %}
 
-    {# modal add persona #}
-    {% include 'default/modal_add_paciente.html.twig' %}
-    {# modal add persona #}
 
-    <h1>Alta de Paciente</h1>
-
-    <div class="row">
-        <div class="row">
+	<h1>Alta de Paciente</h1>
 
 
-        </div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card collapsed-card">
+				<div class="card-header">
+					<h3 class="card-title">Buscar Persona</h3>
+					<div class="card-tools pull-right">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fa fa-plus"></i>
+						</button>
+					</div>
+				</div>
+				<div class="card-body">
+					{{ form_start(filter_type) }}
+					<div class="row">
+						<div class="col-md-6">
+							{{ form_row(filter_type.nombre) }}
+							{{ form_row(filter_type.apellido) }}
+						</div>
+						<div class="col-md-6">
+							{{ form_row(filter_type.dni) }}
+							{{ form_row(filter_type.fechaNacimiento) }}
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					{{ form_widget(filter_type.buscar) }}
+					{{ form_widget(filter_type.limpiar) }}
+					<div class="d-none">
+						{{ form_end(filter_type) }}
+					</div>
+				</div>
 
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-user"></i> Datos de la Persona</h3>
-                </div>
-                <div class="card-body">
+			</div>
+		</div>
+	</div>
 
-                    {# {{ form_row(form.nombre) }}
-                    {{ form_row(form.apellido) }} #}
-                         {# {{ form_widget(form.legajo) }}
+	{% if not(paciente) %}
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Personas</h3>
+					</div>
+					<div class="card-body">
+						<table class="table table-bordered table-striped data-table">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Nombre</th>
+									<th>Apellido</th>
+									<th>DNI</th>
+									<th>Tiene Legajo</th>
+									<th>Fecha creación</th>
+									<th>Fecha actualización</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for persona in personas %}
+									<tr>
+										<td>
+											<a href="{{ path('persona_show', { 'id': persona.id }) }}">{{ persona.id }}</a>
+										</td>
+										<td>{{ persona.nombre }}</td>
+										<td>{{ persona.apellido }}</td>
+										<td>{{ persona.dni }}</td>
+										<td>
+											{% if persona.activo %}Si{% else %}No
+											{% endif %}
+										</td>
+										<td>
+											{% if persona.legajo %}Si{% else %}No
+											{% endif %}
+										</td>
+										<td>
+											{% if persona.fechaCreacion %}
+												{{ persona.fechaCreacion|date('d/m/Y H:i:s') }}
+											{% endif %}
+										</td>
+										<td>
+											{% if persona.fechaActualizacion %}
+												{{ persona.fechaActualizacion|date('d/m/Y H:i:s') }}
+											{% endif %}
+										</td>
+										<td>
+											<a class="btn btn-default" href="{{ path('paciente_new', { 'id': persona.id }) }}">
+												<i class="fa fa-plus"></i>
+											</a>
 
-                    <div class="row">
-                        {# <div class="col-6">{{ form_row(form.tipoDocumento) }}</div>
-                        <div class="col-6">{{ form_row(form.dni) }}</div> #}
-                    </div>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 text-center">
+			<div class="navigation">
+				{{ knp_pagination_render(personas) }}
+			</div>
+		</div>
+	{% endif %}
+	{% if paciente %}
+		<div class="row">
 
-                    <div class="row">
-                        <div class="col-6">
-                            {# {{ form_row(form.genero) }} #}
-                        </div>
-                        {# <div class="col-6">{{ form_row(form.fechaNacimiento) }}</div> #}
-                    </div>
+			<div class="col-md-6">
+				<div class="card ">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>
+							Datos de la Persona</h3>
+					</div>
+					<div class="card-body">
 
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-phone"></i> Datos de Contacto</h3>
-                </div>
-                <div class="card-body">
+						<b>Nombre:</b>
+						{{ paciente.nombre }}<br>
+						<b>Apellido:</b>
+						{{ paciente.apellido }}<br>
+						<b>Legajo:</b>
+						{% if (paciente.legajo) %}
+						{{paciente.legajo.numero }}
+						{% else %}
+						-
+						{% endif %}<br>
 
-                    {# {{ form_widget(form.contactoPersona) }} #}
-
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-road"></i> Datos del Domicilio</h3>
-                </div>
-                <div class="card-body">
-
-                    {# {{ form_widget(form.domicilioPersona) }} #}
-
-                </div>
-            </div>
-
-        </div>
-
-        
-    </div>
-   {{ form_start(form) }}
-    {{ form_end(form) }}
-
-    <div class="row pb-3">
-        <div class="col-12">
-            <input class="btn btn-primary" type="submit" value="Guardar"/>
-            <a class="btn btn-default" href="{{ path('persona_index') }}">Volver</a>
-        </div>
-    </div>
+						<b>{{ paciente.tipoDocumento }}:</b>
+						{{ paciente.dni }}
+						<br>
+						<b>Género:</b>
+						{{ paciente.genero}}<br>
+						<b>Fecha de Nacimiento:</b>
+						{{ paciente.fechaNacimiento|date('d/m/Y') }}
 
 
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fas fa-road"></i>
+							Datos del Domicilio</h3>
+					</div>
+					<div class="card-body">
+						{% if paciente.domicilioPersona.last %}
+							<b>Calle:</b>
+							{{ paciente.domicilioPersona.last.domicilio.calle }}<br>
+							<b>Altura:</b>
+							{{ paciente.domicilioPersona.last.domicilio.alturacalle }}<br>
+							<b>Barrio:</b>
+							{{ paciente.domicilioPersona.last.domicilio.barrio }}<br>
+							<b>Otros:</b>
+							{{ paciente.domicilioPersona.last.domicilio.otros }}<br>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-phone"></i>
+							Datos de Contacto</h3>
+					</div>
+					<div class="card-body">
+						{% if paciente.contactoPersona.last %}
+							<b>Telefono:</b>
+							{{ paciente.contactoPersona.last.contacto.telefono }}<br>
+							<b>Celular:</b>
+							{{ paciente.contactoPersona.last.contacto.celular }}<br>
+							<b>Email:</b>
+							{{ paciente.contactoPersona.last.contacto.mail }}<br>
+						{% endif %}
+
+					</div>
+				</div>
+			</div>
 
 
+			{% if (paciente.legajo) %}
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>Conyuge</h3>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Apellido</th>
+										<th>DNI</th>
+										<th>Genero</th>
+										<th>Fecha De Nacimiento</th>
+										<th>Estudios</th>
+										<th>Relacion</th>
+										<th>Convive</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for persona in paciente.legajo.personalDeclaracionJuradas.last.personalDDJJPersonaACargos %}
+										<td>{{persona.personasACargo.personaACargo.nombre}}</td>
+										<td>{{persona.personasACargo.personaACargo.apellido}}</td>
+										<td>{{persona.personasACargo.personaACargo.dni}}</td>
+										<td>{{persona.personasACargo.personaACargo.genero}}</td>
+										<td>{{persona.personasACargo.personaACargo.fechaNacimiento|date('d/m/Y')}}</td>
+										<td>{{persona.personasACargo.estudiosCursados}}</td>
+										<td>{{persona.personasACargo.tipoRelacionPersona}}</td>
+										<td>
+											{% if persona.personasACargo.conviveConDeclarante %}
+												Si
+											{% else %}
+												No
+											{% endif %}
+										</td>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-body"></div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">
+							<i class="fa fa-user"></i>Personas A Cargo</h3>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Apellido</th>
+										<th>DNI</th>
+										<th>Genero</th>
+										<th>Fecha De Nacimiento</th>
+										<th>Estudios</th>
+										<th>Relacion</th>
+										<th>Convive</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for persona in paciente.legajo.personalDeclaracionJuradas.last.personalDDJJPersonaACargos %}
+										<td>{{persona.personasACargo.personaACargo.nombre}}</td>
+										<td>{{persona.personasACargo.personaACargo.apellido}}</td>
+										<td>{{persona.personasACargo.personaACargo.dni}}</td>
+										<td>{{persona.personasACargo.personaACargo.genero}}</td>
+										<td>{{persona.personasACargo.personaACargo.fechaNacimiento|date('d/m/Y')}}</td>
+										<td>{{persona.personasACargo.estudiosCursados}}</td>
+										<td>{{persona.personasACargo.tipoRelacionPersona}}</td>
+										<td>
+											{% if persona.personasACargo.conviveConDeclarante %}
+												Si
+											{% else %}
+												No
+											{% endif %}
+										</td>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-body"></div>
+				</div>
+			</div>
+			{% endif %}
+		</div>
 
+
+		{{ form_start(form) }}<div class="row">
+			<div class="col-8">{{ form_row(form.observaciones) }}</div>
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-6">{{ form_row(form.grupo) }}</div>
+					<div class="col-6">{{ form_row(form.factor) }}</div>
+					<div class="col-12">{{ form_row(form.foto) }}</div>
+				</div>
+			</div>
+
+
+		</div>
+		<div class="row ">
+			<div>
+				<a class="btn btn-default" href="{{ path('paciente_index') }}">Volver</a>
+			</div>
+			<div style="margin-left: auto;
+																																																margin-right: 0;">{{ form_row(form.guardar) }}</div>
+		</div>
+		{{ form_end(form) }}
+	{% endif %}
 
 {% endblock %}
-
 {% block javascripts %}
-    <script>
-        $(document).ready(function () {
+	<script>
+		$(document).ready(function () {
 
-            // $('.select2entity').each(function (index) {
-            //     $(this).select2({
-            //         ajax: {
-            //             url: $(this).data('rpath'),
-            //             dataType: $(this).data('data-type'),
-            //             delay: 250,
-            //             data: function (params) {
-            //                 return {
-            //                     q: params.term,
-            //                     page_limit: $(this).data('page-limit')
-            //                 };
-            //             },
-            //             processResults: function (data) {
-            //                 var myResults = [];
-            //                 $.each(data, function (index, item) {
-            //                     myResults.push({
-            //                         'id': item.id,
-            //                         'text': item.text
-            //                     });
-            //                 });
-            //                 return {
-            //                     results: myResults
-            //                 };
-            //             }
-            //         },
-            //     });
-            // });
+// $('.select2entity').each(function (index) {
+//     $(this).select2({
+//         ajax: {
+//             url: $(this).data('rpath'),
+//             dataType: $(this).data('data-type'),
+//             delay: 250,
+//             data: function (params) {
+//                 return {
+//                     q: params.term,
+//                     page_limit: $(this).data('page-limit')
+//                 };
+//             },
+//             processResults: function (data) {
+//                 var myResults = [];
+//                 $.each(data, function (index, item) {
+//                     myResults.push({
+//                         'id': item.id,
+//                         'text': item.text
+//                     });
+//                 });
+//                 return {
+//                     results: myResults
+//                 };
+//             }
+//         },
+//     });
+// });
 
-            $('.btn-add-persona').click(function () {
+$('.btn-add-persona').click(function () {
 
-                $.ajax({
-                    type: 'get',
-                    url: '{{ path("form_persona") }}',
-                    success: function (data) {
-                        $('#modal-add-persona .modal-body').html(data.form);
-                        $('#modal-add-persona').modal('toggle');
-                        inicializarPlugins();
-                    }
-                });
-            });
+$.ajax({
+type: 'get',
+url: '{{ path("form_persona") }}',
+success: function (data) {
+$('#modal-add-persona .modal-body').html(data.form);
+$('#modal-add-persona').modal('toggle');
+inicializarPlugins();
+}
+});
+});
 
-            $('#modal-add-persona-btn-ok').click(function () {
+$('#modal-add-persona-btn-ok').click(function () {
 
-                var data = $('form[name="app_persona"]').serialize();
+var data = $('form[name="app_persona"]').serialize();
 
-                $.ajax({
-                    type: 'post',
-                    url: '{{ path("form_persona") }}',
-                    data: data,
-                    success: function (data) {
-                        $('#modal-add-persona').modal('toggle');
-                        modalAlert(data.mensaje);
-                    },
-                    error: function (data) {
-                        $('#modal-add-persona .modal-body').html(data.form);
-                        inicializarPlugins();
-                    },
-                    500: function (data) {
-                        $('#modal-add-persona .modal-body').html(data.form);
-                        inicializarPlugins();
-                    },
-                });
-            });
-        });
-    </script>
+$.ajax({
+type: 'post',
+url: '{{ path("form_persona") }}',
+data: data,
+success: function (data) {
+$('#modal-add-persona').modal('toggle');
+modalAlert(data.mensaje);
+},
+error: function (data) {
+$('#modal-add-persona .modal-body').html(data.form);
+inicializarPlugins();
+},
+500: function (data) {
+$('#modal-add-persona .modal-body').html(data.form);
+inicializarPlugins();
+}
+});
+});
+});
+	</script>
 {% endblock javascripts %}

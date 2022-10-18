@@ -239,7 +239,10 @@
 									<td><a class="btn btn-secondary" role="button" data-toggle="modal"
                                            data-target="#exampleModal"
                                            data-src="{{ asset('uploads/rrmm/diagnosticos/' ~ orden.diagnostico) }}"><i class="far fa-images"></i></a></td>
-									<td></td>
+									<td>
+										<a class="btn btn-default" href="{{ path('orden_delete', { 'id': orden.id }) }}">
+                                        <i class="fa fa-fw fa-trash"></i>
+                                    </a></td>
 									</tr>
 								{% endfor %}
 								{{ form_start(form) }}

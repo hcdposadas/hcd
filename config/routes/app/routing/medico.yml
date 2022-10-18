@@ -13,3 +13,8 @@ paciente_show:
   path: /show/{id}
   controller: App\Controller\MedicoController::show
   methods: [GET, POST]
+
+orden_delete:
+  path: orden/{id}/delete
+  controller: App\Controller\MedicoController::ordenDelete
+  methods: [GET, POST]

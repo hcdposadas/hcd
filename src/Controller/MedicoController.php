@@ -159,4 +159,13 @@ class MedicoController extends AbstractController
 			)
 		);
 	}
+
+	public function ordenDelete(OrdenMedica $orden)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$paciente = $orden->getPaciente();
+		$em->remove($orden);
+
+		return $this->redirectToRoute('paciente_show', array('id' => $paciente->getId()));
+	}
 }

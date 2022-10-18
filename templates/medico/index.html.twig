@@ -78,12 +78,12 @@
                                 <td>{% if paciente.persona.fechaCreacion %}{{ paciente.persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>{% if paciente.persona.fechaActualizacion %}{{ paciente.persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>
-                                    <a class="btn btn-default" href="{{ path('persona_show', { 'id': paciente.persona.id }) }}">
+                                    <a class="btn btn-default" href="{{ path('paciente_show', { 'id': paciente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-default" href="{{ path('persona_edit', { 'id': paciente.persona.id }) }}">
+                                    {# <a class="btn btn-default" href="{{ path('persona_edit', { 'id': paciente.persona.id }) }}">
                                         <i class="fa fa-edit"></i>
-                                    </a>
+                                    </a> #}
                                     {# {% if paciente.persona.legajo %}
 
                                         <a class="btn btn-default"
@@ -118,6 +118,77 @@
                 </div>
             </div>
         </div>
+         {# <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Pacientes</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>DNI</th>
+                            <th>Tiene Legajo</th>
+                            <th>Fecha creación</th>
+                            <th>Fecha actualización</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for paciente in pacientes %}
+                            <tr>
+                                <td><a href="{{ path('paciente_show', { 'id': paciente.id }) }}">{{ paciente.id }}</a></td>
+                                <td>{{ paciente.persona.nombre }}</td>
+                                <td>{{ paciente.persona.apellido }}</td>
+                                <td>{{ paciente.persona.dni }}</td>
+                                {# <td>{% if persona.activo %}Si{% else %}No{% endif %}</td> #}
+                                <td>{% if paciente.persona.legajo %}Si{% else %}No{% endif %}</td>
+                                <td>{% if paciente.persona.fechaCreacion %}{{ paciente.persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>{% if paciente.persona.fechaActualizacion %}{{ paciente.persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{ path('paciente_show', { 'id': paciente.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    {# <a class="btn btn-default" href="{{ path('persona_edit', { 'id': paciente.persona.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a> #}
+                                    {# {% if paciente.persona.legajo %}
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_declaraciones_jurada', { 'persona': paciente.persona.id }) }}"
+                                           data-toggle="tooltip" title="Declaración Jurada">
+                                            <i class="fas fa-poll-h"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_novedades', { 'persona': paciente.persona.id }) }}"
+                                           data-toggle="tooltip" title="Novedades">
+                                            <i class="fas fa-newspaper"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_licencias', { 'legajo': persona.legajo.id }) }}"
+                                           data-toggle="tooltip" title="Licencias">
+                                            <i class="fas fa-umbrella-beach"></i>
+                                        </a>
+
+                                        <a class="btn btn-default"
+                                           href="{{ path('personal_asistencias', { 'legajo': persona.legajo.id }) }}"
+                                           data-toggle="tooltip" title="Asistencias">
+                                            <i class="fas fa-user-clock"></i>
+                                        </a>
+                                    {% endif %} #}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> #}
     </div>
     {# display navigation #}
     <div class="col-md-12 text-center">

@@ -6,7 +6,7 @@
 {% block body %}
     <div class="row mb-3">
         <div class="col-md-3">
-            <a class="btn btn-primary" href="{{ path('paciente_new') }}">Nuevo Paciente</a>
+            <a class="btn btn-primary" href="{{ path('paciente_new') }}">Nuevo Registro</a>
         </div>
     </div>
 
@@ -50,7 +50,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Pacientes</h3>
+                    <h3 class="card-title">Personal</h3>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped data-table">
@@ -118,10 +118,10 @@
                 </div>
             </div>
         </div>
-         {# <div class="col-md-12">
+           <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Pacientes</h3>
+                    <h3 class="card-title">Vencimientos  de la semana</h3>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped data-table">
@@ -131,64 +131,31 @@
                             <th>Nombre</th>
                             <th>Apellido</th>
                             <th>DNI</th>
-                            <th>Tiene Legajo</th>
-                            <th>Fecha creación</th>
-                            <th>Fecha actualización</th>
-                            <th>Acciones</th>
+                            <th>Legajo</th>
+                            <th>Desde</th>
+                            <th>Hasta</th>
+                            <th>Diagnostico</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for paciente in pacientes %}
+                        {% for licencia in licencias %}
                             <tr>
-                                <td><a href="{{ path('paciente_show', { 'id': paciente.id }) }}">{{ paciente.id }}</a></td>
-                                <td>{{ paciente.persona.nombre }}</td>
-                                <td>{{ paciente.persona.apellido }}</td>
-                                <td>{{ paciente.persona.dni }}</td>
-                                {# <td>{% if persona.activo %}Si{% else %}No{% endif %}</td> #}
-                                <td>{% if paciente.persona.legajo %}Si{% else %}No{% endif %}</td>
-                                <td>{% if paciente.persona.fechaCreacion %}{{ paciente.persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-                                <td>{% if paciente.persona.fechaActualizacion %}{{ paciente.persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-                                <td>
-                                    <a class="btn btn-default" href="{{ path('paciente_show', { 'id': paciente.id }) }}">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                    {# <a class="btn btn-default" href="{{ path('persona_edit', { 'id': paciente.persona.id }) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a> #}
-                                    {# {% if paciente.persona.legajo %}
-
-                                        <a class="btn btn-default"
-                                           href="{{ path('personal_declaraciones_jurada', { 'persona': paciente.persona.id }) }}"
-                                           data-toggle="tooltip" title="Declaración Jurada">
-                                            <i class="fas fa-poll-h"></i>
-                                        </a>
-
-                                        <a class="btn btn-default"
-                                           href="{{ path('personal_novedades', { 'persona': paciente.persona.id }) }}"
-                                           data-toggle="tooltip" title="Novedades">
-                                            <i class="fas fa-newspaper"></i>
-                                        </a>
-
-                                        <a class="btn btn-default"
-                                           href="{{ path('personal_licencias', { 'legajo': persona.legajo.id }) }}"
-                                           data-toggle="tooltip" title="Licencias">
-                                            <i class="fas fa-umbrella-beach"></i>
-                                        </a>
-
-                                        <a class="btn btn-default"
-                                           href="{{ path('personal_asistencias', { 'legajo': persona.legajo.id }) }}"
-                                           data-toggle="tooltip" title="Asistencias">
-                                            <i class="fas fa-user-clock"></i>
-                                        </a>
-                                    {% endif %} #}
-                                </td>
+                                <td><a href="{{ path('paciente_show', { 'id': licencia.paciente.id }) }}">{{ licencia.paciente.id }}</a></td>
+                                <td>{{ licencia.paciente.persona.nombre }}</td>
+                                <td>{{ licencia.paciente.persona.apellido }}</td>
+                                <td>{{ licencia.paciente.persona.dni }}</td>
+                                <td>{% if licencia.paciente.persona.legajo %}{{licencia.paciente.persona.legajo}}{% else %}-{% endif %}</td>
+                                <td>{{ licencia.desde|date('d/m/Y H:i:s') }}</td>
+                                <td>{{licencia.hasta|date('d/m/Y H:i:s') }}</td>
+                                <td>{{licencia.articulo }}</td>
+                                    
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div> #}
+        </div>  
     </div>
     {# display navigation #}
     <div class="col-md-12 text-center">
@@ -199,7 +166,7 @@
 
     <div class="row mb-3">
         <div class="col-md-3">
-            <a class="btn btn-primary" href="{{ path('paciente_new') }}">Nuevo paciente</a>
+            <a class="btn btn-primary" href="{{ path('paciente_new') }}">Nuevo Registro</a>
         </div>
     </div>
 {% endblock %}

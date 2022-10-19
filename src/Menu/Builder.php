@@ -233,7 +233,7 @@ class Builder
 				->setAttribute('class', 'nav-item has-treeview');
 			$menu[$keyPersonal]
 				->addChild(
-					'Pacientes',
+					'Personal',
 					array(
 						'route'          => 'paciente_index',
 						'attributes'     => ['class' => 'nav-item'],

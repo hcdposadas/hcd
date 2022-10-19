@@ -38,6 +38,8 @@ class MedicoController extends AbstractController
 			$pacientes = $em->getRepository(Paciente::class)->findAll();
 		}
 
+		$licencias=$em->getRepository(OrdenMedica::class)->findUltimas();
+
 		$pacientes = $paginator->paginate(
 			$pacientes,
 			$request->query->get('page', 1)/* page number */,
@@ -47,6 +49,7 @@ class MedicoController extends AbstractController
 		return $this->render(
 			'medico/index.html.twig',
 			array(
+				'licencias' => $licencias,
 				'pacientes'    => $pacientes,
 				'filter_type' => $filterType->createView()
 			)

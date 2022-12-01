@@ -186,7 +186,10 @@
                         this.tiempo = msg.data.tiempo;
                         break;
                     case 'votacion.tick':
-                        this.tiempo = msg.data.tiempo;
+                        this.tiempo = msg.data.tiempo - 1000 ;
+                        if(this.tiempo==0){
+                            this.display= false;
+                        }
                         break;
                     case 'votacion.cerrada':
                         this.display = false;

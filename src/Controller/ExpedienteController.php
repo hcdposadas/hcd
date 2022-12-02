@@ -536,7 +536,7 @@ class ExpedienteController extends AbstractController
 				$codigoReferencia = md5(uniqid('hcd_'));
 				$expediente->setCodigoReferencia($codigoReferencia);
 				$texto = $expediente->getTexto();
-				$TimeStamp->stamp($expediente);
+
 
 
 				//				Departamento de Mesa de Entradas y Salidas
@@ -553,6 +553,8 @@ class ExpedienteController extends AbstractController
 				$expediente->addGiroAdministrativo($giroAdministrativo);
 				$em->persist($giroAdministrativo);
 				$toRoute = 'proyecto_show';
+				$TimeStamp->stamp($expediente);
+
 			}
 
 			$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
@@ -822,6 +824,7 @@ class ExpedienteController extends AbstractController
 			$form->handleRequest($request);
 
 			if ($form->get('asignar')->isClicked()) {
+
 				$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($request->get('codigoReferencia'));
 
 
@@ -942,9 +945,11 @@ class ExpedienteController extends AbstractController
 						$expediente->setFechaPresentacion(new \DateTime('now'));
 						$expediente->setAsignadoPor($this->getUser());
 
+						$TimeStamp->stampDefinitivo($expediente);
+
 						$em->flush();
 
-						$TimeStamp->stampDefinitivo($expediente);
+
 
 						return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
 					}
@@ -956,7 +961,7 @@ class ExpedienteController extends AbstractController
 				7,
 				strlen($request->get('codigoReferencia'))
 			);
-
+			
 			$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($codigoReferencia);
 
 

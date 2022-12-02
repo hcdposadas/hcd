@@ -238,7 +238,7 @@ class Expediente extends BaseClass
 	private $numeroDeHojas;
 
 	/**
-	 * @ORM\Column(name="marca_temporal", type="string", length=255, nullable=true)
+	 * @ORM\Column(name="marca_temporal", type="text",  nullable=true)
 	 * @var string
 	 */
 	private $marcaTemporal;

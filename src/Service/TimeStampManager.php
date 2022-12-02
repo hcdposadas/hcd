@@ -29,7 +29,7 @@ class TimeStampManager
             $response = $this->client->request('POST', 'http://66.97.38.185:3030/stamp/', [
                 'json' => ["file_hash" => $hash]
             ]);
-            $response->toArray();
+            $response=$response->toArray();
             $expediente->setHash($hash);
             $expediente->setMarcaTemporal($response['temporary_rd']);
             $expediente->SetMarcaDefinitivo(false);
@@ -47,8 +47,8 @@ class TimeStampManager
             $response = $this->client->request('POST', 'http://66.97.38.185:3030/verify/', [
                 'json' => ["file_hash" => $hash, "rd" => $tiempo]
             ]);
-            $response->toArray();
-            $expediente->setMarcaTemporal($response['rd']);
+            $response=$response->toArray();
+            $expediente->setMarcaTemporal($response['permanent_rd']);
             $expediente->SetMarcaDefinitivo(true);
         } catch (Exception $e) {
         }

@@ -881,7 +881,7 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function asignarNumeroExpediente(Request $request)
+	public function asignarNumeroExpediente(Request $request,TimeStampManager $TimeStamp)
 	{
 		$em = $this->getDoctrine()->getManager();
 
@@ -943,6 +943,8 @@ class ExpedienteController extends AbstractController
 						$expediente->setAsignadoPor($this->getUser());
 
 						$em->flush();
+
+						$TimeStamp->stampDefinitivo($expediente);
 
 						return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
 					}

@@ -1148,7 +1148,7 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
-
+//agregar block
 	public function nuevoExpedienteAdministrativo(Request $request)
 	{
 
@@ -1289,7 +1289,7 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
-
+//agregar block
 	public function nuevoExpedienteLegislativoExterno(Request $request)
 	{
 
@@ -1464,7 +1464,7 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
-
+//agregar block
 	public function nuevoExpedienteAdministrativoExterno(Request $request)
 	{
 

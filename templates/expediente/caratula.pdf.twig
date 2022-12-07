@@ -138,6 +138,11 @@
             <td colspan="5"><strong>{{ expediente.extracto }}</strong></td>
         </tr>
     </table>
+    <div class="col-md-6" style="margin-top: 0.5rem;">
+        <img style="max-width: 100%; height: auto;"
+             src="{{ qr_code_data_uri("texto prueba", { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}"/>
+
+    </div>
 </div>
 <hr>
 

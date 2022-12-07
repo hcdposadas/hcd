@@ -70,6 +70,16 @@
                         <dt>Fecha</dt>
                         <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
                     </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Codificación</dt>
+                        <dd>{{expediente.hash}}</dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal</dt>
+                        <dd>{{expediente.marcaTemporal}}</dd>
+                    </dl>
                 </div>
             </div>
         </div>

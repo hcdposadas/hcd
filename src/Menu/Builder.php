@@ -87,7 +87,7 @@ class Builder
 
 				$menu[$keyEmpresa]
 					->addChild(
-						'Asingar NÂº Expte',
+						'Asingar Nº Expte',
 						array(
 							'route'          => 'expediente_asignar_numero',
 							'attributes'     => ['class' => 'nav-item'],
@@ -321,7 +321,7 @@ class Builder
 			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
 		) {
 
-			$keyDictamenes = 'DICTÃMENES';
+			$keyDictamenes = 'DICTÁMENES';
 			$menu->addChild(
 				$keyDictamenes,
 				array(

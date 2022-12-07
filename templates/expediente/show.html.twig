@@ -78,6 +78,24 @@
                             {{ expediente.asignadoPor }}
                         </dd>
                     </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Codificación</dt>
+                        <dd>
+                            {{ expediente.hash }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal</dt>
+                        <dd>
+                            {{ expediente.marcaTemporal }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal Definitiva</dt>
+                        <dd>
+                            {{ expediente.marcaDefinitivo ? 'SI' : 'NO' }}
+                        </dd>
+                    </dl>
                 </div>
                 <div class="card-footer">
                     {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}

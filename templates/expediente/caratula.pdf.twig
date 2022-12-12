@@ -142,7 +142,7 @@
     <div class="col-md-6" style="margin-top: 0.5rem;">
     VERIFICADOR BLOCKCHAIN <br>
         <img style="max-width: 10%; height: auto;"
-             src="{{ qr_code_data_uri("texto prueba", { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 10 }) }}"/>
+             src="{{ qr_code_data_uri('sistemashcd.com/verificar/'~{expediente.hash}~'/'~{expediente.marcaTemporal}, { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 10 }) }}"/>
 
     </div>
 </div>

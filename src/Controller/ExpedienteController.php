@@ -1180,7 +1180,8 @@ class ExpedienteController extends AbstractController
 			'expediente/new_administrativo.html.twig',
 			[
 				'form'       => $form->createView(),
-				'expediente' => $expediente
+				'expediente' => $expediente,
+				'edit' => true
 			]
 		);
 	}
@@ -1742,5 +1743,23 @@ class ExpedienteController extends AbstractController
 				'edit_form'  => $editForm->createView(),
 			)
 		);
+	}
+
+	public function cambiarExternoExpediente(Expediente $expediente ){
+		
+		$em             = $this->getDoctrine()->getManager();
+		$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
+			'slug' => 'externo'
+		]);
+
+		$expediente->setTipoExpediente($tipoExpediente);
+
+		$em->flush();
+		$this->get('session')->getFlashBag()->add(
+			'success',
+			'Expediente modificado correctamente'
+		);
+
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
 	}
 }

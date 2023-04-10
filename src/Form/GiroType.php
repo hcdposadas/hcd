@@ -17,7 +17,12 @@ class GiroType extends AbstractType {
 				null,
 				[
 					'attr' => [ 'class' => 'select2' ],
-					'label'=>'Comisión Destino'
+					'label'=>'Comisión Destino',
+					'query_builder' => function ( EntityRepository $er ) {
+										return $er->createQueryBuilder( 'aa' )
+										          ->where( 'aa.activo = :act' )
+										          ->setParameter( 'act', true );
+									}
 				] )
 			->add('texto')
 			->add( 'fechaGiro',

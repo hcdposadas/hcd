@@ -74,7 +74,7 @@
                                 <td>{{ paciente.persona.apellido }}</td>
                                 <td>{{ paciente.persona.dni }}</td>
                                 {# <td>{% if persona.activo %}Si{% else %}No{% endif %}</td> #}
-                                <td>{% if paciente.persona.legajo %}Si{% else %}No{% endif %}</td>
+                                <td>{% if paciente.persona.legajo %}{{paciente.persona.legajo.numero}}{% else %}No{% endif %}</td>
                                 <td>{% if paciente.persona.fechaCreacion %}{{ paciente.persona.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>{% if paciente.persona.fechaActualizacion %}{{ paciente.persona.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
                                 <td>
@@ -134,7 +134,7 @@
                             <th>Legajo</th>
                             <th>Desde</th>
                             <th>Hasta</th>
-                            <th>Diagnostico</th>
+                            <th>Articulo</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -144,10 +144,10 @@
                                 <td>{{ licencia.paciente.persona.nombre }}</td>
                                 <td>{{ licencia.paciente.persona.apellido }}</td>
                                 <td>{{ licencia.paciente.persona.dni }}</td>
-                                <td>{% if licencia.paciente.persona.legajo %}{{licencia.paciente.persona.legajo}}{% else %}-{% endif %}</td>
+                                <td>{% if licencia.paciente.persona.legajo %}{{licencia.paciente.persona.legajo.numero}}{% else %}-{% endif %}</td>
                                 <td>{{ licencia.desde|date('d/m/Y H:i:s') }}</td>
                                 <td>{{licencia.hasta|date('d/m/Y H:i:s') }}</td>
-                                <td>{{licencia.articulo }}</td>
+                                <td>{{licencia.articulo }} ({{licencia.articulo.dias }})</td>
                                     
                             </tr>
                         {% endfor %}

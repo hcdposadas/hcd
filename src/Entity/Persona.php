@@ -112,7 +112,7 @@ class Persona extends BaseClass
 	private $nombreDisplay;
 
     /**
-     * @ORM\OneToOne(targetEntity=Paciente::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Paciente::class, mappedBy="persona", cascade={"persist", "remove"})
      */
     private $paciente;
 

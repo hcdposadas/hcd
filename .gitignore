@@ -45,6 +45,10 @@ yarn-error.log
 !public/uploads/rrhh/licencias/.gitkeep
 /public/uploads/rrhh/novedades/*
 !public/uploads/rrhh/novedades/.gitkeep
+/public/uploads/rrhh/diagnosticos/*
+!public/uploads/rrhh/diagnosticos/.gitkeep
+/public/uploads/rrhh/perfiles/*
+!public/uploads/rrhh/perfiles/.gitkeep
 /public/uploads/expedientes/proyectos/*
 !public/uploads/expedientes/proyectos/.gitkeep
 

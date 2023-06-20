@@ -39,7 +39,6 @@ class MedicoController extends AbstractController
 		}
 
 		$licencias=$em->getRepository(OrdenMedica::class)->findUltimas();
-
 		$pacientes = $paginator->paginate(
 			$pacientes,
 			$request->query->get('page', 1)/* page number */,
@@ -168,6 +167,7 @@ class MedicoController extends AbstractController
 		$em = $this->getDoctrine()->getManager();
 		$paciente = $orden->getPaciente();
 		$em->remove($orden);
+		$em->flush();
 
 		return $this->redirectToRoute('paciente_show', array('id' => $paciente->getId()));
 	}

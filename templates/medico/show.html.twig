@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Paciente
+	Personal
 {% endblock title %}
 {% block body %}
 
 
-	<h1>Alta de Paciente</h1>
+	<h1> Datos Personal</h1>
 
 
 	<div class="row">
@@ -38,6 +38,10 @@
 					<br>
 					<b>Género:</b>
 					{{ paciente.persona.genero}}<br>
+					<b>Grupo:</b>
+					{{ paciente.grupo }}<br>
+					<b>Factor:</b>
+					{{ paciente.factor }}<br>
 					<b>Fecha de Nacimiento:</b>
 					{{ paciente.persona.fechaNacimiento|date('d/m/Y') }}
 					</div>
@@ -223,7 +227,7 @@
 									<th>Desde</th>
 									<th>Hasta</th>
 									<th>Articulo</th>
-									<th style="width:20%">Diagnostico</th>
+									<th style="width:10%">Diagnostico</th>
 									<th>Acciones</th>
 								</tr>
 							</thead>
@@ -235,12 +239,12 @@
 									<td>{{orden.articulo.dias}}</td>
 									<td>{{orden.desde|date('d/m/Y')}}</td>
 									<td>{{orden.hasta|date('d/m/Y')}}</td>
-									<td>{{orden.articulo}}</td>
+									<td>{{orden.articulo}}-{{orden.articulo.descripcion}}</td>
 									<td><a class="btn btn-secondary" role="button" data-toggle="modal"
                                            data-target="#exampleModal"
                                            data-src="{{ asset('uploads/rrmm/diagnosticos/' ~ orden.diagnostico) }}"><i class="far fa-images"></i></a></td>
 									<td>
-										<a class="btn btn-default" href="{{ path('orden_delete', { 'id': orden.id }) }}">
+										{#<a class="btn btn-default" href="{{ path('orden_delete', { 'id': orden.id }) }}"> #}
                                         <i class="fa fa-fw fa-trash"></i>
                                     </a></td>
 									</tr>

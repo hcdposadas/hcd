@@ -230,13 +230,21 @@ class MocionController extends AbstractController {
 		$votaronNegativo = [];
 		$aNoVotaron      = [];
 
-		foreach ( $votos as $voto ) {
+		foreach ( $votos as $claveVoto => $voto ) {
 
 			$concejal = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
 			if ( $voto->getConcejal()->getPersona()->getNombreDisplay() ) {
 				$concejal = strtoupper( $voto->getConcejal()->getPersona()->getNombreDisplay() );
 			}
 
+
+			if ( ((array_search($concejal, $votaronPositivo)) !== false) || ((array_search($concejal, $votaronNegativo)) !== false) ) {
+				unset($votos[$claveVoto]);
+				continue;
+			} // (si llega primero SI/NO, luego abstencion)
+			elseif (($claveNoVotaron = array_search($concejal, $aNoVotaron)) !== false) {
+				unset($aNoVotaron[$claveNoVotaron]);
+			}
 			switch ( $voto->getValor() ) {
 				case Voto::VOTO_AFIRMATIVO:
 					$votaronPositivo[] = $concejal;

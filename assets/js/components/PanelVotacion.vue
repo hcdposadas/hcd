@@ -54,7 +54,7 @@
                         <div class="col-md-12">
                             <div class="clearfix">
                                 <span class="pull-left">{{ tipoMayoria }}</span>
-                                <small class="float-right">Restan {{ duracion - tiempo }} segundo{{ (duracion - tiempo)
+                                <small class="float-right">Restan {{ duracion - tiempo - 1001 }} segundo{{ (duracion - tiempo -1001) 
                                     ===
                                     1 ? '': 's' }}
                                 </small>
@@ -131,7 +131,7 @@
                 if (!this.duracion) {
                     return 0
                 }
-                return this.tiempo * 100 / this.duracion
+                return (this.tiempo + 1001) * 100 / this.duracion
             }
         },
         watch: {
@@ -183,11 +183,13 @@
                         this.tipoMayoria = msg.data.tipoMayoria;
                         this.textoMocion = msg.data.textoMocion;
                         this.duracion = msg.data.duracion;
-                        this.tiempo = msg.data.tiempo;
+                        this.tiempo = msg.data.tiempo- 1000;
                         break;
                     case 'votacion.tick':
-                        this.tiempo = msg.data.tiempo;
-                        break;
+                                                this.tiempo = msg.data.tiempo - 1000 ;
+                        if(this.tiempo==0){
+                            this.display= false;
+                        }                        break;
                     case 'votacion.cerrada':
                         this.display = false;
                         break;

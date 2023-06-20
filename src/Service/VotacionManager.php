@@ -190,12 +190,29 @@ class VotacionManager {
 		$votaronNegativo = [];
 		$aNoVotaron      = [];
 
-		foreach ( $votos as $voto ) {
+		foreach ( $votos as $claveVoto => $voto ) {
 
 			$concejal = strtoupper( $voto->getConcejal()->getPersona()->getApellido() );
 			if ( $voto->getConcejal()->getPersona()->getNombreDisplay() ) {
 				$concejal = strtoupper( $voto->getConcejal()->getPersona()->getNombreDisplay() );
 			}
+
+			if ( ((array_search($concejal, $votaronPositivo)) !== false) || ((array_search($concejal, $votaronNegativo)) !== false) ) {
+				//$eliminado=$votos[$claveVoto];
+				unset($votos[$claveVoto]);
+				//$this->entityManager->remove($eliminado);
+
+			} // (si llega primero SI/NO, luego abstencion)
+			elseif (($claveNoVotaron = array_search($concejal, $aNoVotaron)) !== false) {
+				$claveNoVotos = array_search($concejal, $votos);
+				//$eliminado=$aNoVotaron[$claveNoVotaron];
+				unset($votos[$claveNoVotos]);
+				unset($aNoVotaron[$claveNoVotaron]);
+				//$this->entityManager->remove($eliminado);
+
+
+			} // modificacion para borrar si figura en abstencion para evitar duplicados (si llega primero abstencion y luego SI/NO)
+
 
 			switch ( $voto->getValor() ) {
 				case Voto::VOTO_AFIRMATIVO:

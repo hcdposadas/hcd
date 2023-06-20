@@ -18,6 +18,7 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 class ExpedienteAdministrativoExternoType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
+			->add( 'tipoExpediente' )
 			->add( 'expediente',
 				TextType::class,
 				[

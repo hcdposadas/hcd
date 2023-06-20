@@ -67,6 +67,23 @@
                         </dd>
                     </dl>
                     <dl class="dl-horizontal">
+                                            <dt>Adjuntos</dt>
+                        <dd>
+                            {% if expediente.expedientesAdjunto.count > 0 %}
+                                {% for adjuntoExpediente in expediente.expedientesAdjunto %}
+                                    {% if adjuntoExpediente.expediente %}
+                                        {{ adjuntoExpediente.expediente }}-{{ adjuntoExpediente.letra }}-
+                                        {% if adjuntoExpediente.periodoLegislativo %}
+                                            {{ adjuntoExpediente.periodoLegislativo }}
+                                        {% else %}
+                                            {{ adjuntoExpediente.anio }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
                         <dt>Creado Por</dt>
                         <dd>
                             {{ expediente.creadoPor }}
@@ -76,6 +93,24 @@
                         <dt>Expediente Asignado Por</dt>
                         <dd>
                             {{ expediente.asignadoPor }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Codificación</dt>
+                        <dd>
+                            {{ expediente.hash }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal</dt>
+                        <dd>
+                            {{ expediente.marcaTemporal }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal Definitiva</dt>
+                        <dd>
+                            {{ expediente.marcaDefinitivo ? 'SI' : 'NO' }}
                         </dd>
                     </dl>
                 </div>

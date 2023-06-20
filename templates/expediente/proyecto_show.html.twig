@@ -17,6 +17,7 @@
                 <div class="card-body">
                     {% if expediente.borrador == false and (is_granted('ROLE_CONCEJAL') or is_granted('ROLE_DEFENSOR')) %}
                         {% if expediente.expediente %}
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="progress active">
@@ -44,6 +45,9 @@
                                     </div>
                                     <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente
                                         acerquese a Mesa de Entrada con el código que se muestra a la derecha</p>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
+                                                class="fa fa-print"></i></a>
                                 </div>
                             </div>
                         {% endif %}
@@ -69,6 +73,32 @@
                     <dl class="dl-horizontal">
                         <dt>Fecha</dt>
                         <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                                            <dt>Adjuntos</dt>
+                        <dd>
+                            {% if expediente.expedientesAdjunto.count > 0 %}
+                                {% for adjuntoExpediente in expediente.expedientesAdjunto %}
+                                    {% if adjuntoExpediente.expediente %}
+                                        {{ adjuntoExpediente.expediente }}-{{ adjuntoExpediente.letra }}-
+                                        {% if adjuntoExpediente.periodoLegislativo %}
+                                            {{ adjuntoExpediente.periodoLegislativo }}
+                                        {% else %}
+                                            {{ adjuntoExpediente.anio }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Codificación</dt>
+                        <dd>{{expediente.hash}}</dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal</dt>
+                        <dd>{{expediente.marcaTemporal}}</dd>
                     </dl>
                 </div>
             </div>

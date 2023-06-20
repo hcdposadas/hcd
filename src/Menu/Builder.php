@@ -56,7 +56,9 @@ class Builder
 		if (
 			$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
 			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
-			$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')
+			$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')  ||
+			$this->authorizationChecker->isGranted('ROLE_PROSECRETARIO')
+
 		) {
 
 			$keyEmpresa = 'MESA ENTRADA';
@@ -98,7 +100,9 @@ class Builder
 			if (
 				$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
 				$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
-				$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')
+				$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')  ||
+				 $this->authorizationChecker->isGranted('ROLE_PROSECRETARIO')
+
 			) {
 
 				$menu[$keyEmpresa]
@@ -112,7 +116,9 @@ class Builder
 					);
 				if (
 					$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
-					$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
+					$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
+                                        $this->authorizationChecker->isGranted('ROLE_PROSECRETARIO')
+
 				) {
 					$menu[$keyEmpresa]
 						->addChild(

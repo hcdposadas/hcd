@@ -49,6 +49,11 @@ class TextoDefinitivoRepository extends \Doctrine\ORM\EntityRepository
 					->andWhere( 'UPPER(expediente.expediente) LIKE UPPER(:expediente)' )
 					->setParameter( 'expediente', "%$q%" );
 			}
+			if ( isset( $filter['texto'] ) ) {
+				$q = $filter['texto'];
+				$qb->andWhere( 'UPPER(td.texto) LIKE UPPER(:texto)' )
+				->setParameter( 'texto', "%$q%" );
+			}
 		}
 
 		return $qb;

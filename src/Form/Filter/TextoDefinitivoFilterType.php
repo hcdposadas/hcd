@@ -50,7 +50,13 @@ class TextoDefinitivoFilterType extends AbstractType {
 					'class'        => Sesion::class,
 					'placeholder'  => 'Seleccionar',
 					'choice_label' => 'tituloLargo',
-					'attr'         => [ 'class' => 'select2' ]
+					'attr'         => [ 'class' => 'select2' ],
+					'query_builder' => function ( EntityRepository $er ) {
+						$qb = $er->createQueryBuilder( 'r' );
+						$qb->orderBy( 'r.id', 'DESC' );
+
+						return $qb;
+					}
 				] )
 			->add( 'tipoDocumento',
 				ChoiceType::class,
@@ -62,6 +68,7 @@ class TextoDefinitivoFilterType extends AbstractType {
 						TextoDefinitivo::TIPO_DOCUMENTO_DECRETO => TextoDefinitivo::TIPO_DOCUMENTO_DECRETO,
 					],
 				] )
+			->add('texto')
 			->add( 'buscar',
 				SubmitType::class,
 				[

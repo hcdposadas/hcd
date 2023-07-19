@@ -261,6 +261,8 @@ class SesionController extends AbstractController {
 
 	public function editarExtractoBAE( Request $request, Expediente $expediente ) {
 
+		$referer = $request->headers->get('referer');
+
 		$em = $this->getDoctrine()->getManager();
 
 		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
@@ -332,6 +334,7 @@ class SesionController extends AbstractController {
 				'edit_form'  => $editForm->createView(),
 				'sesion'     => $sesion,
 				'logs'       => $logs,
+				'referer'	 => $referer
 			) );
 	}
 
@@ -836,6 +839,8 @@ class SesionController extends AbstractController {
 			return $this->redirectToRoute( 'app_homepage' );
 		}
 
+		$referer = $request->headers->get('referer');
+
 		$em = $this->getDoctrine()->getManager();
 
 		$sesionQb = $em->getRepository( Sesion::class )->findQbUltimaSesion();
@@ -894,6 +899,7 @@ class SesionController extends AbstractController {
 				'expediente' => $expediente,
 				'sesion'     => $sesion,
 				'edit_form'  => $editForm->createView(),
+				'referer'	 => $referer
 			) );
 	}
 

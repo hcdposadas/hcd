@@ -3,6 +3,11 @@ proyectobae_index:
     defaults: { _controller: App\Controller\ProyectoBAEController::index }
     methods:  GET
 
+proyectobae_sesion:
+    path:     /{id}
+    defaults: { _controller: App\Controller\ProyectoBAEController::indexSesion }
+    methods:  GET
+
 proyectobae_show:
     path:     /{id}/show
     defaults: { _controller: App\Controller\ProyectoBAEController::show }

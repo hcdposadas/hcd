@@ -32,6 +32,22 @@ class ProyectoBAEController extends AbstractController {
 			) );
 	}
 
+
+	public function indexSesion(Sesion $sesion) {
+		$em = $this->getDoctrine()->getManager();
+		$proyectoBAEs = $em->getRepository( ProyectoBAE::class )->findAll();
+
+		$proyectoBAEs = $sesion->getBae()[0]->getProyectos();
+//		dump($proyectoBAEs);
+//		die();
+
+		return $this->render( 'proyectobae/index.html.twig',
+			array(
+				'proyectoBAEs' => $proyectoBAEs,
+				'sesion' => $sesion->getTitulo()
+			) );
+	}	
+
 	/**
 	 * Creates a new proyectoBAE entity.
 	 *

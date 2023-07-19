@@ -1,24 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-Proyectobaes
+Proyectos BAE 
 {% endblock title %}
 {% block body %}
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Proyectobaes</h3>
+        <h3 class="card-title"> {{ sesion }}</h3>
     </div>
     <div class="card-body">
         <table class="table table-bordered table-striped data-table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Esinformedem</th>
+                <th>DEM</th>
                 <th>Extracto</th>
-                <th>Activo</th>
-                <th>Fechacreacion</th>
-                <th>Fechaactualizacion</th>
-                <th>Acciones</th>
+                <th>Fecha</th>
+                <th style="width:20%" >Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -26,17 +24,33 @@ Proyectobaes
             <tr>
                 <td><a href="{{ path('proyectobae_show', { 'id': proyectoBAE.id }) }}">{{ proyectoBAE.id }}</a></td>
                 <td>{% if proyectoBAE.esInformeDem %}Si{% else %}No{% endif %}</td>
-                <td>{{ proyectoBAE.extracto }}</td>
-                <td>{% if proyectoBAE.activo %}Si{% else %}No{% endif %}</td>
-                <td>{% if proyectoBAE.fechaCreacion %}{{ proyectoBAE.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</td>
-                <td>{% if proyectoBAE.fechaActualizacion %}{{ proyectoBAE.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</td>
+                <td>{{ proyectoBAE.extracto | raw }}</td>
+                <td>{% if proyectoBAE.fechaCreacion %}{{ proyectoBAE.fechaCreacion|date('d/m/Y ') }}{% endif %}</td>
                 <td>
-                        <a class="btn btn-default" href="{{ path('proyectobae_show', { 'id': proyectoBAE.id }) }}">
-                            <i class="fa fa-show"></i>
-                                                    </a>
-                        <a class="btn btn-default" href="{{ path('proyectobae_edit', { 'id': proyectoBAE.id }) }}">
-                            <i class="fa fa-edit"></i>
-                                                    </a>
+
+                                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Expediente"
+                                       href="{{ path('expediente_show', { 'id': proyectoBAE.expediente.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                                    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Cargar Giros"
+                                           href="{{ path('proyecto_bae_giro', { 'expediente': proyectoBAE.expediente.id }) }}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Extracto BAE"
+                                           href="{{ path('editar_extracto_bae', { 'expediente': proyectoBAE.expediente.id }) }}">
+                                            <i class="far fa-file-alt"></i> BAE
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Editar Extracto OD"
+                                           href="{{ path('editar_extracto_od', { 'expediente': proyectoBAE.expediente.id }) }}">
+                                            <i class="fas fa-file-alt"></i> OD
+                                        </a>
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento"
+                                       href="{{ path('expediente_timeline', {id: proyectoBAE.expediente.id}) }}">
+                                        <i class="fas fa-road"></i>
+                                    </a>
+                                    {% endif %}
+
                 </td>
             </tr>
         {% endfor %}

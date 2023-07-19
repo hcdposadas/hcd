@@ -85,6 +85,10 @@
                                            href="{{ path('sesiones_cargar_acta', { 'sesionId': sesion.id }) }}">
                                             <i class="fa fa-edit"></i> Cargar Acta
                                         </a>
+                                            <a class="btn btn-default"
+                                           href="{{ path('proyectobae_sesion', { 'id': sesion.id }) }}">
+                                            <i class="fa fa-eye"></i> Proyectos BAE
+                                        </a>
                                     {% endif %}
                                     {% if is_granted('ROLE_CEREMONIAL') %}
                                         <a class="btn btn-default"

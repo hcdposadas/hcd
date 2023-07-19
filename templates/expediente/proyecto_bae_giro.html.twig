@@ -5,7 +5,11 @@
 {% block body %}
 
     {% if is_granted('ROLE_LEGISLATIVO') %}
+               {% if referer is defined %}
+        <a class="btn btn-default" href="{{ referer }}">Volver</a>
+    {% else %}
         <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    {% endif %}
     {% endif %}
 
     <h1>Cargar Giros - {{ sesion }}</h1>
@@ -123,7 +127,11 @@
     </div>
 
     {% if is_granted('ROLE_LEGISLATIVO') %}
+               {% if referer is defined %}
+        <a class="btn btn-default" href="{{ referer }}">Volver</a>
+    {% else %}
         <a class="btn btn-default" href="{{ path('expedientes_legislativos_index') }}">Volver</a>
+    {% endif %}
     {% endif %}
 
 {% endblock %}

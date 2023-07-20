@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Controller;
+require_once (dirname(dirname(__DIR__)).'/PDFMerger/PDFMerger.php');
 
 use App\Entity\AreaAdministrativa;
 use App\Entity\Giro;
@@ -34,6 +34,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\FormError;
+use PDFMerger\PDFMerger;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Expediente controller.
@@ -734,10 +738,11 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function imprimirProyecto(Pdf $knpSnappyPdf, $id)
+	public function imprimirProyecto(Pdf $knpSnappyPdf, $id, Request $request)
 	{
 		$em         = $this->getDoctrine()->getManager();
 		$expediente = $em->getRepository(Expediente::class)->find($id);
+
 
 
 		$dataToEncode = $expediente->getCodigoReferencia();
@@ -769,40 +774,66 @@ class ExpedienteController extends AbstractController
 
 		$footer = $this->renderView('default/pie_pagina.pdf.twig');
 
+
+		$array=array(
+			'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+			//                    'margin-bottom' => "1cm"
+		);
+
 		$html = $this->renderView(
 			'expediente/proyecto.pdf.twig',
 			[
 				'expediente' => $expediente,
 				'title'      => $title,
-			]
+			],$array
 		);
 
 		//        return new Response($html);
+		$pdfMerge = new PDFMerger;
 
-		return new Response(
-			$knpSnappyPdf->getOutputFromHtml(
-				$html,
-				array(
-					'page-size'      => 'Legal',
-					//					'page-width'     => '220mm',
-					//					'page-height'     => '340mm',
-					//					'margin-left'    => "3cm",
-					//					'margin-right'   => "3cm",
-					'margin-top'     => "5cm",
-					'margin-bottom'  => "2cm",
-					'header-html'    => $header,
-					'header-spacing' => 4,
-					'footer-spacing' => 5,
-					'footer-html'    => $footer,
-					//                    'margin-bottom' => "1cm"
-				)
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
-		);
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,'filePDF.pdf'
+			);
+		
+	
+		$pdfMerge->addPDF('filePDF.pdf');
+
+		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
+
+		return new Response($pdf4			,
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+	
 	}
 
 	public function impresionProyecto(Request $request)

@@ -27,9 +27,20 @@
         <p class="break">
         <h2 class="text-center">Anexos</h2>
         {% for anexo in expediente.anexos %}
+            {% set filePath = anexo.anexo %}
+            {% set extension = filePath|split('.')|last|lower %}
+            {% if extension != 'pdf' %}
             <img style="max-width: 100%; height: auto; max-height: 24cm;"
                  src="{{ absolute_url( asset('uploads/expedientes/anexos/') ~ anexo.anexo ) }}">
             {{ anexo.descripcion }}
+            {% endif %}
+        {% endfor %}
+        {% for anexo in expediente.anexos %}
+            {% set filePath = anexo.anexo %}
+            {% set extension = filePath|split('.')|last|lower %}
+            {% if extension == 'pdf' %}
+            {{ anexo.descripcion }}
+            {% endif %}
         {% endfor %}
         </p>
     {% endif %}

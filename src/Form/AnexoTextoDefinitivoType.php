@@ -22,11 +22,12 @@ class AnexoTextoDefinitivoType extends AbstractType {
 					'required'    => false,
 					'constraints' => [
 						new File( [
-							'maxSize'          => '8M',
+							'maxSize'          => '20M',
 							'mimeTypes'        => [
-								'image/*'
+								'image/*',
+								'application/pdf'
 							],
-							'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg',
+							'mimeTypesMessage' => 'Solo se aceptan imágenes .jpg, .png, .jpeg, .pdf',
 						] )
 					]
 				] );;

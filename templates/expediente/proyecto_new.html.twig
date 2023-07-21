@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <p class="help-block">Si el proyeto tuviera anexos, debe agregarlos aquí abajo. Los formatos
-                        admitidos son imágenes (.jpg, .png, .jpeg)</p>
+                        admitidos son pdf e imágenes(.jpg, .png, .jpeg)</p>
                     {{ form_row(form.anexos) }}
                 </div>
             </div>
@@ -57,6 +57,7 @@
     <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
+ <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
     <script>
         var submitConfirm = false;
         var buttonPressed = '';
@@ -64,6 +65,7 @@
             buttonPressed = $(this).text()
         });
         $(document).ready(function () {
+            bsCustomFileInput.init()
             $('.tipo-proyecto').change(function () {
                 var tipoId = $(this).val();
 
@@ -105,5 +107,8 @@
             })
         });
     </script>
+            <script>
+$('input[type="file"]').change(function(e){ var array = []; for (let i = 0; i < e.target.files.length; i++) { array.push(e.target.files[i].name) } console.log(e.target.files) $('.custom-file-label').html(array.join(', ')); });
+        </script>
 
 {% endblock javascripts %}

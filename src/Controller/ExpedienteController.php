@@ -795,7 +795,7 @@ class ExpedienteController extends AbstractController
 			[
 				'expediente' => $expediente,
 				'title'      => $title,
-			],$array
+			]
 		);
 
 		//        return new Response($html);
@@ -803,7 +803,21 @@ class ExpedienteController extends AbstractController
 
 		$knpSnappyPdf->generateFromHtml(
 				$html
-				,'filePDF.pdf'
+				,'filePDF.pdf', array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				//                    'margin-bottom' => "1cm"
+					
+				)
 			);
 		
 	
@@ -824,10 +838,24 @@ class ExpedienteController extends AbstractController
 		}
 
 		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
-		$filesystem = new Filesystem();
-		$filesystem->remove('filePDF.pdf');
+		//$filesystem = new Filesystem();
+		//$filesystem->remove('filePDF.pdf');
 
-		return new Response($pdf4			,
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
 		200,
 		array(
 			'Content-Type'        => 'application/pdf',

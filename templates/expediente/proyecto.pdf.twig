@@ -39,7 +39,9 @@
             {% set filePath = anexo.anexo %}
             {% set extension = filePath|split('.')|last|lower %}
             {% if extension == 'pdf' %}
+            <br>
             {{ anexo.descripcion }}
+            </br>
             {% endif %}
         {% endfor %}
         </p>

@@ -80,12 +80,14 @@
                             {% if expediente.expedientesAdjunto.count > 0 %}
                                 {% for adjuntoExpediente in expediente.expedientesAdjunto %}
                                     {% if adjuntoExpediente.adjunto %}
+                                    <br>
                                         {{ adjuntoExpediente.adjunto.expediente }}-{{ adjuntoExpediente.adjunto.letra }}-
                                         {% if adjuntoExpediente.adjunto.periodoLegislativo %}
                                             {{ adjuntoExpediente.adjunto.periodoLegislativo }}
                                         {% else %}
                                             {{ adjuntoExpediente.adjunto.anio }}
                                         {% endif %}
+                                    </br>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}

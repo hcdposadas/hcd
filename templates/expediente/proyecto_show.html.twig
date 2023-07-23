@@ -79,12 +79,12 @@
                         <dd>
                             {% if expediente.expedientesAdjunto.count > 0 %}
                                 {% for adjuntoExpediente in expediente.expedientesAdjunto %}
-                                    {% if adjuntoExpediente.expediente %}
-                                        {{ adjuntoExpediente.expediente }}-{{ adjuntoExpediente.letra }}-
-                                        {% if adjuntoExpediente.periodoLegislativo %}
-                                            {{ adjuntoExpediente.periodoLegislativo }}
+                                    {% if adjuntoExpediente.adjunto %}
+                                        {{ adjuntoExpediente.adjunto.expediente }}-{{ adjuntoExpediente.adjunto.letra }}-
+                                        {% if adjuntoExpediente.adjunto.periodoLegislativo %}
+                                            {{ adjuntoExpediente.adjunto.periodoLegislativo }}
                                         {% else %}
-                                            {{ adjuntoExpediente.anio }}
+                                            {{ adjuntoExpediente.adjunto.anio }}
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}

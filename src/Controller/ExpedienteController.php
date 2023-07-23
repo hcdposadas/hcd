@@ -838,8 +838,8 @@ class ExpedienteController extends AbstractController
 		}
 
 		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
-		//$filesystem = new Filesystem();
-		//$filesystem->remove('filePDF.pdf');
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
 
 		return new Response($pdf4, array(
 			'page-size'      => 'Legal',

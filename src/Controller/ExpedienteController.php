@@ -801,9 +801,16 @@ class ExpedienteController extends AbstractController
 		//        return new Response($html);
 		$pdfMerge = new PDFMerger;
 
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
+
 		$knpSnappyPdf->generateFromHtml(
 				$html
-				,'filePDF.pdf', array(
+				,$nombre, array(
 					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
@@ -820,8 +827,8 @@ class ExpedienteController extends AbstractController
 				)
 			);
 		
-	
-		$pdfMerge->addPDF('filePDF.pdf');
+
+		$pdfMerge->addPDF($nombre);
 
 		foreach ($expediente->getAnexos() as $anexo){
 
@@ -838,8 +845,7 @@ class ExpedienteController extends AbstractController
 		}
 
 		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
-		$filesystem = new Filesystem();
-		$filesystem->remove('filePDF.pdf');
+
 
 		return new Response($pdf4, array(
 			'page-size'      => 'Legal',

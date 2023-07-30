@@ -68,10 +68,15 @@
                     <table class="table table-bordered table-striped data-table">
                         <thead>
                         <tr>
+                        
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
+                            {% if is_granted('ROLE_LEGISLATIVO') %}
+                            <th style="width:30%">Extracto</th>
+                            {% else %}
                             <th>Registro municipal</th>
+                            {% endif %}
                             <th>Iniciador</th>
                             <th>Acción</th>
                         </tr>
@@ -86,7 +91,11 @@
                                     -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
 
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                {% if is_granted('ROLE_LEGISLATIVO') %}
+                                <td>{{ expediente.extracto }}</td>
+                                {% else %}
                                 <td>{{ expediente.registroMunicipal }}</td>
+                                {% endif %}
                                 <td>
                                     {% if expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in expediente.iniciadores %}

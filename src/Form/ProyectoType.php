@@ -69,6 +69,14 @@ class ProyectoType extends AbstractType {
 					'allow_delete' => true,
 					'by_reference' => false,
 				] )
+			->add( 'expedientesAdjunto',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => ExpedienteAdjuntoType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
 			->add( 'anexos',
 				BootstrapCollectionType::class,
 				[

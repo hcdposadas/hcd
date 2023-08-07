@@ -131,6 +131,31 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    {% if not is_granted('ROLE_LEGISLATIVO') %}
+                        {{ form_row(edit_form.expedientesAdjunto) }}
+                    {% else %}
+                        <b>Adjuntos</b>
+                            {% if expediente.expedientesAdjunto.count > 0 %}
+                                {% for adjuntoExpediente in expediente.expedientesAdjunto %}
+                                    {% if adjuntoExpediente.adjunto %}
+                                        <br>
+                                        {{ adjuntoExpediente.adjunto.expediente }}-{{ adjuntoExpediente.adjunto.letra }}-
+                                        {% if adjuntoExpediente.adjunto.periodoLegislativo %}
+                                            {{ adjuntoExpediente.adjunto.periodoLegislativo }}
+                                        {% else %}
+                                            {{ adjuntoExpediente.adjunto.anio }}
+                                        {% endif %}
+                                        </br>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        
+                    {% endif %}
+                </div>
+            </div>
+
             {% if is_granted('ROLE_LEGISLATIVO') %}
                 <div class="row">
                     <div class="col-md-12">

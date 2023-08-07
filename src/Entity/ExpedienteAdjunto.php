@@ -158,4 +158,11 @@ class ExpedienteAdjunto extends BaseClass {
 
         return $this;
     }
+
+	public function __toString() {
+		if (!$this->getAdjunto()){
+			return "Sin Adjunto";
+		}
+		return $this->getAdjunto()-> __toString();
+	}
 }

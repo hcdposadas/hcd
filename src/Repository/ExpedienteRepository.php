@@ -336,4 +336,8 @@ class ExpedienteRepository extends EntityRepository {
 
 		return $dictamenes;
 	}
+
+	public static function allExp( EntityRepository $er ) {
+		return $qb = $er->createQueryBuilder( 'e' );
+	}
 }

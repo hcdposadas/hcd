@@ -12,6 +12,7 @@ easy_admin:
                     - { property: 'iniciadores' , type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\AdminIniciadorExpedienteType } }
                     - { property: 'anexos' , type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\AnexoExpedienteType } }
 #                    - { property: 'expedienteExternoFile', type: 'vich_file' }
+                    - { property: 'expedientesAdjunto' , type: 'entity' , type_options: { by_reference: false,'query_builder': ['App\Repository\ExpedienteRepository', 'allExp'] } }
                     - { property: 'borrador' }
                     - { property: 'proyectoDem' }
                     - { property: 'activo' }

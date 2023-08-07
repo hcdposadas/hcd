@@ -213,4 +213,12 @@ class AnexoExpediente extends BaseClass {
 
 		return $this;
 	}
+
+
+	public function __toString() {
+		if (!$this->getDescripcion()){
+			return "Sin Descripcion";
+		}
+		return $this->getDescripcion() ;
+	}
 }

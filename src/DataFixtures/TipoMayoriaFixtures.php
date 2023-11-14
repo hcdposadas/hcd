@@ -12,7 +12,7 @@ class TipoMayoriaFixtures extends Fixture {
 		$tipoMayoria = new TipoMayoria();
 		$tipoMayoria->setNombre('Mayoría Simple');
 		$tipoMayoria->setSlug('mayoriaSimple');
-		$tipoMayoria->setCantidades('{"14":8,"13":7,"12":7,"11":6,"10":6,"9":5,"8":5}');
+		$tipoMayoria->setCantidades('{"14":8,"13":7,"12":7,"11":6,"10":6,"9":5,"8":5,"15":8,"16":8,"17":8,"18":8}');
 		$manager->persist( $tipoMayoria );
 
 		$tipoMayoria = new TipoMayoria();
@@ -24,7 +24,7 @@ class TipoMayoriaFixtures extends Fixture {
 		$tipoMayoria = new TipoMayoria();
 		$tipoMayoria->setNombre('Mayoría Calificada Presentes');
 		$tipoMayoria->setSlug('mayoriaCalificadaPresentes');
-		$tipoMayoria->setCantidades('{"14":10,"13":9,"12":8,"11":8,"10":7,"9":6,"8":6}');
+		$tipoMayoria->setCantidades('{"14":10,"13":9,"12":8,"11":8,"10":7,"9":6,"8":6,"15":10,"16":10,"17":10,"18":10}');
 		$manager->persist( $tipoMayoria );
 
 		$manager->flush();

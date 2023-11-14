@@ -237,7 +237,7 @@ class VotacionManager {
 		$mocion->setCuentaNegativos( $negativos );
 		$mocion->setCuentaAbstenciones( $abstenciones );
 		$mocion->setCuentaTotal( $total );
-
+		//Todo totaL
 		$mocion->setAprobado( $this->tipoMayoriaManager->seAprueba( $mocion ) );
 
 		$this->entityManager->persist( $mocion );

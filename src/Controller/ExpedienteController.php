@@ -6,6 +6,7 @@ use App\Entity\AreaAdministrativa;
 use App\Entity\Giro;
 use App\Entity\PeriodoLegislativo;
 use App\Entity\ProyectoBAE;
+use App\Entity\Dependencia;
 use App\Entity\TipoExpediente;
 use App\Form\AsignarHojasType;
 use App\Form\AsignarNumeroType;
@@ -19,6 +20,7 @@ use App\Entity\Log;
 use App\Form\EditarExtractoType;
 use App\Form\ExpedienteAdministrativoExternoType;
 use App\Form\ExpedienteAdministrativoType;
+use App\Form\ExpedienteAdministrativoSectorType;
 use App\Form\ExpedienteExtractoType;
 use App\Form\ExpedienteLegislativoExternoType;
 use App\Form\Filter\ExpedienteFilterType;
@@ -870,6 +872,138 @@ class ExpedienteController extends AbstractController
 	
 	}
 
+	public function imprimirProyectoBlock(Pdf $knpSnappyPdf, $hash, Request $request)
+	{
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository(Expediente::class)->findOneBy(array('hash'=>$hash));
+
+
+
+		$dataToEncode = $expediente->getCodigoReferencia();
+		if ($expediente->getBorrador()) {
+			$dataToEncode = null;
+		}
+
+		$title = 'Proyecto';
+
+		if (!$expediente->getPeriodoLegislativo()) {
+			$this->get('session')->getFlashBag()->add(
+				'error',
+				'El expediente no tiene periodo legislativo asignado'
+			);
+
+			return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+		}
+
+		$header = null;
+		if (!$expediente->getBorrador()) {
+			$header = $this->renderView(
+				'default/membrete.pdf.twig',
+				[
+					"periodo"      => $expediente->getPeriodoLegislativo(),
+					'dataToEncode' => $dataToEncode
+				]
+			);
+		}
+
+		$footer = $this->renderView('default/pie_pagina.pdf.twig');
+
+
+		$array=array(
+			'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+			//                    'margin-bottom' => "1cm"
+		);
+
+		$html = $this->renderView(
+			'expediente/proyecto.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+		//        return new Response($html);
+		$pdfMerge = new PDFMerger;
+
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+		
+
+		$pdfMerge->addPDF($nombre);
+
+		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+
+
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+	
+	}
+
 	public function impresionProyecto(Request $request)
 	{
 
@@ -1197,6 +1331,7 @@ class ExpedienteController extends AbstractController
 		} else {
 
 			$expedientes = $em->getRepository(Expediente::class)->getQbExpedientesMesaEntradaTipo($tipoExpediente);
+		
 		}
 
 
@@ -1214,6 +1349,125 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
+
+	public function expedientesAdministrativosSecretarioIndex(PaginatorInterface $paginator, Request $request)
+	{
+
+		$em = $this->getDoctrine()->getManager();
+
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
+		$dependencia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area]);
+
+
+		$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
+			'slug' => 'interno'
+		]);
+
+		$filterType = $this->createForm(
+			ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			]
+		);
+
+		$filterType->handleRequest($request);
+
+		if ($filterType->get('buscar')->isClicked()) {
+
+			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
+				$filterType->getData(),
+				$tipoExpediente,$dependencia
+			);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+		} else {
+			if ($dependencia){
+			$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente'=>$tipoExpediente,'dependencia'=>$dependencia]);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+			}else{
+				$expedientes=null;
+			}
+		}
+
+
+
+
+		return $this->render(
+			'expediente/expedientes_administrativos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			)
+		);
+	}
+
+	public function expedientesAdministrativosSectorIndex(PaginatorInterface $paginator, Request $request)
+	{
+
+		$em = $this->getDoctrine()->getManager();
+
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
+		$dependencia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area]);
+
+
+		$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
+			'slug' => 'interno'
+		]);
+
+		$filterType = $this->createForm(
+			ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			]
+		);
+
+		$filterType->handleRequest($request);
+
+		if ($filterType->get('buscar')->isClicked()) {
+
+			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
+				$filterType->getData(),
+				$tipoExpediente,$dependencia
+			);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+		} else {
+			if ($dependencia){
+			$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente'=>$tipoExpediente,'dependencia'=>$dependencia]);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+			}else{
+				$expedientes=null;
+			}
+		}
+
+
+
+
+		return $this->render(
+			'expediente/expedientes_administrativos_index.html.twig',
+			array(
+				'expedientes' => $expedientes,
+				'filter_type' => $filterType->createView()
+			)
+		);
+	}
+
 //agregar block
 	public function nuevoExpedienteAdministrativo(Request $request)
 	{
@@ -1223,14 +1477,33 @@ class ExpedienteController extends AbstractController
 			'slug' => 'interno'
 		]);
 
+
 		$expediente = new Expediente();
 		$expediente->setTipoExpediente($tipoExpediente);
 
-		$form = $this->createForm(ExpedienteAdministrativoType::class, $expediente);
+
+		if ($this->get('security.authorization_checker')->isGranted('ROLE_SECTOR')){
+			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
+			$dependecia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area
+		]);
+		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
+		if (!$dependecia ){
+			$dependecia = new Dependencia();
+			$dependecia->setNombre($area);
+			$em->persist($dependecia);
+			$em->flush();
+		}
+		$expediente->setDependencia($dependecia);
+		$expediente->setPeriodoLegislativo($periodo);
+			}
+	
+
+		$form = $this->createForm(ExpedienteAdministrativoSectorType::class, $expediente);
 
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
+			$expediente->setBorrador(false);
 			$em->persist($expediente);
 			$em->flush();
 
@@ -1239,12 +1512,13 @@ class ExpedienteController extends AbstractController
 				'Expediente creado correctamente'
 			);
 
-			return $this->redirectToRoute('expediente_administrativo_editar', ['id' => $expediente->getId()]);
+			return $this->redirectToRoute('expedientes_administrativos_sector_index');
 		}
-
+		
 		return $this->render(
-			'expediente/new_administrativo.html.twig',
+			'expediente/new_administrativo_sector.html.twig',
 			[
+				'edit' => false,
 				'form'       => $form->createView(),
 				'expediente' => $expediente
 			]

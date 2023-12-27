@@ -89,7 +89,9 @@
                                     {% elseif expediente.iniciadorParticular %}
                                         {{ expediente.iniciadorParticular.nombreCompleto }}
                                     {% elseif expediente.dependencia %}
+                                                                            {% if expediente.dependencia %}
                                         {{ expediente.dependencia }}
+                                    {% endif %}
                                     {% endif %}
                                 </td>
 

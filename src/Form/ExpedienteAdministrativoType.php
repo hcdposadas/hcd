@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class ExpedienteAdministrativoType extends AbstractType {
 	/**
@@ -21,6 +22,16 @@ class ExpedienteAdministrativoType extends AbstractType {
 		$builder
 			->add( 'tipoExpediente' )
 			->add( 'textoDefinitivo' )
+			->add( 'texto',
+			CKEditorType::class,
+			[
+				'required' => true,
+				'config'   => array(
+					'uiColor' => '#ffffff',
+//						'height'  => '600px'
+				),
+				'attr'     => [ 'class' => 'texto_por_defecto' ]
+			] )
 			->add( 'extracto',
 				TextareaType::class,
 				[

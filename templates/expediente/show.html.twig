@@ -20,10 +20,18 @@
                         <dt>Id</dt>
                         <dd>{{ expediente.id }}</dd>
                     </dl>
+
+                    {% if not is_granted('ROLE_SECTOR') %}
                     <dl class="dl-horizontal">
                         <dt>Texto definitivo</dt>
                         <dd>{{ expediente.textoDefinitivo }}</dd>
                     </dl>
+                    {% else %}
+                    <dl class="dl-horizontal">
+                        <dt>Texto </dt>
+                        <dd>{{ expediente.texto|raw}}</dd>
+                    </dl>
+                    {% endif %}
                     <dl class="dl-horizontal">
                         <dt>Extracto</dt>
                         <dd>{{ expediente.extracto }}</dd>
@@ -91,6 +99,7 @@
                             {{ expediente.creadoPor }}
                         </dd>
                     </dl>
+                    {% if not is_granted('ROLE_SECTOR') %}
                     <dl class="dl-horizontal">
                         <dt>Expediente Asignado Por</dt>
                         <dd>
@@ -103,7 +112,7 @@
                             {{ expediente.hash }}
                         </dd>
                     </dl>
-                    <dl class="dl-horizontal">
+                     <dl class="dl-horizontal">
                         <dt>Marca Temporal</dt>
                         <dd>
                             {{ expediente.marcaTemporal }}
@@ -114,7 +123,8 @@
                         <dd>
                             {{ expediente.marcaDefinitivo ? 'SI' : 'NO' }}
                         </dd>
-                    </dl>
+                    </dl> 
+                    {% endif %}
                 </div>
                 <div class="card-footer">
                     {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
@@ -143,10 +153,10 @@
                 </div>
 
             </div>
-            {% if referer is defined %}
-                <a class="btn btn-default" href="{{ referer }}">Volver</a>
+            {% if not is_granted('ROLE_SECTOR') %}
+                <a class="btn btn-default" href="/">Volver</a>
             {% else %}
-                <a class="btn btn-default" href="{{ path('expediente_index') }}">Volver</a>
+                <a class="btn btn-default" href="{{ path('expedientes_administrativos_sector_index') }}">Volver</a>
             {% endif %}
         </div>
     </div>

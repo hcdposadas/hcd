@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    Expediente Administrativo Externo
+    Expediente Administrativo
 {% endblock title %}
 {% block body %}
     {# modal add persona #}
@@ -11,78 +11,60 @@
     {#<h1>Expediente Administrativo</h1>#}
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Expediente Administrativo Externo</h3>
+            <h3 class="card-title">Expediente Administrativo</h3>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
-            {#<div class="row">#}
-            {#<div class="col-md-6">#}
-            {#{{ form_row(form.numeroNota) }}#}
-            {#</div>#}
-            {#</div>#}
             <div class="row">
-                <div class="col-md-2">
-                    {{ form_row(form.expediente) }}
-                </div>
-                <div class="col-md-1">
-                    {{ form_row(form.letra) }}
-                </div>
-                <div class="col-md-2">
-                    {{ form_row(form.periodoLegislativo) }}
-                </div>
                 <div class="col-md-3">
                     {{ form_row(form.fecha) }}
                 </div>
-                <div class="col-md-4">
-                    {{ form_row(form.registroMunicipal) }}
-                </div>
-                {% if edit %}
-                <div class="col-md-4">
-                    {{ form_row(form.tipoExpediente) }}
-                </div>
-                {% endif %}
-
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <div>
-                        {{ form_row(form.dependencia) }}
-                        <button type="button" class="btn btn-default btn-add-dependencia">
-                            <i class="fa fa-plus"></i> Agregar Dependencia
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.extracto) }}
+                <div class="col-md-3">
+                    Dependencia: <b>{{expediente.dependencia}}</b>
                 </div>
             </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    {{ form_row(form.iniciadorParticular) }}
-                    <button type="button" class="btn btn-default btn-add-persona">
-                        <i class="fa fa-plus"></i> Agregar Persona
-                    </button>
-                </div>
-            </div>
+            {#TODO debe ser un textarea por ahora#}
+            {#<div class="row">#}
+            {#Expedientes adjuntos#}
+            {#</div>#}
             <div class="row">
                 <div class="col-md-12">
-                    {{ form_row(form.giroAdministrativos) }}
+                    {{ form_row(form.texto) }}
                 </div>
             </div>
+            {#<div class="row expediente-externo">#}
+            {#<div class="col-md-12">#}
+            {#{{ form_row(form.expedienteExternoFile) }}#}
+            {#</div>#}
+            {#</div>#}
+            {#<div class="row expediente-interno">#}
+            {#<div class="col-md-12">#}
+            {#{{ form_row(form.expedienteInternoFile) }}#}
+            {#</div>#}
+            {#</div>#}
+
+            {#<div class="row expediente-externo">#}
+            {#<div class="col-md-12">#}
+            {#{{ form_row(form.giros) }}#}
+            {#</div>#}
+            {#</div>#}
 
 
-            <div class="row">
-                <div class="col-md-12">
-                    <input class="btn btn-primary" type="submit" value="Guardar"/>
-                    <div class="d-none">
-                        {{ form_end(form) }}
-                    </div>
-                </div>
+            {#<div class="row">#}
+                {#<div class="col-md-12">#}
+                    {#{{ form_widget(form) }}#}
+                {#</div>#}
+            {#</div>#}
+            <input class="btn btn-primary" type="submit" value="Enviar"/>
+            <div class="d-none">
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
 
-    <a class="btn btn-default" href="{{ path('expediente_administrativo_externo_index') }}">Volver</a>
+    <a class="btn btn-default" href="{{ path('expedientes_administrativos_sector_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
     {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
@@ -108,7 +90,6 @@
             $('#modal-add-persona-btn-ok').click(function () {
 
                 var data = $('form[name="app_persona"]').serialize();
-                console.log(data);
 
                 $.ajax({
                     type: 'post',

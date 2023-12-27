@@ -26,7 +26,7 @@ class TimeStampManager
         $hash = hash('sha256', $texto);
 
         try {
-            $response = $this->client->request('POST', 'http://66.97.38.185:3030/stamp/', [
+            $response = $this->client->request('POST', 'http://54.243.240.221:3030/stamp/', [
                 'json' => ["file_hash" => $hash]
             ]);
             $response=$response->toArray();
@@ -44,7 +44,7 @@ class TimeStampManager
 
 
         try {
-            $response = $this->client->request('POST', 'http://66.97.38.185:3030/verify/', [
+            $response = $this->client->request('POST', 'http://54.243.240.221:3030/verify/', [
                 'json' => ["file_hash" => $hash, "rd" => $tiempo]
             ]);
             $response=$response->toArray();

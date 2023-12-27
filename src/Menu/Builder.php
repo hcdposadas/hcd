@@ -74,7 +74,17 @@ class Builder
 				->setLinkAttribute('class', 'nav-link')
 				->setExtra('icon', 'fas fa-exchange-alt')
 				->setAttribute('class', 'nav-item has-treeview');
-
+				// if ($this->authorizationChecker->isGranted('ROLE_SECRETARIO')) {
+				// 	$menu[$keyEmpresa]
+				// 	->addChild(
+				// 		'Expedientes Secretaria',
+				// 		array(
+				// 			'route'          => 'expedientes_administrativos_secretario_index',
+				// 			'attributes'     => ['class' => 'nav-item'],
+				// 			'linkAttributes' => ['class' => 'nav-link']
+				// 		)
+				// 	);
+				// }
 			if ($this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA')) {
 
 				$menu[$keyEmpresa]
@@ -89,7 +99,7 @@ class Builder
 
 				$menu[$keyEmpresa]
 					->addChild(
-						'Asingar NÂº Expte',
+						'Asingar Nº Expte',
 						array(
 							'route'          => 'expediente_asignar_numero',
 							'attributes'     => ['class' => 'nav-item'],
@@ -327,7 +337,7 @@ class Builder
 			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
 		) {
 
-			$keyDictamenes = 'DICTÃMENES';
+			$keyDictamenes = 'DICTÁMENES';
 			$menu->addChild(
 				$keyDictamenes,
 				array(
@@ -423,7 +433,7 @@ class Builder
 			if ($this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')) {
 				$menu[$keyPersonal]
 					->addChild(
-						'Incorporar Expedientes en SesiÃ³n',
+						'Incorporar Expedientes en Sesión',
 						[
 							'route'          => 'incorporar_expedientes_a_sesion_index',
 							'attributes'     => ['class' => 'nav-item'],
@@ -432,7 +442,7 @@ class Builder
 					);
 				$menu[$keyPersonal]
 					->addChild(
-						'Incorporar Dictamen en SesiÃ³n',
+						'Incorporar Dictamen en Sesión',
 						[
 							'route'          => 'incorporar_dictamenes_en_sesion_index',
 							'attributes'     => ['class' => 'nav-item'],
@@ -468,7 +478,31 @@ class Builder
 				);
 		}
 
+		if ($this->authorizationChecker->isGranted('ROLE_SECTOR')) {
+			$keyAdministracion = 'EXPEDIENTES';
+			$menu->addChild(
+				$keyAdministracion,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'nav nav-treeview',
+					),
+				)
+			)
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
 
+			$menu[$keyAdministracion]
+				->addChild(
+					'Mis Expedientes',
+					array(
+						'route'          => 'expedientes_administrativos_sector_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+		}
 		if ($this->authorizationChecker->isGranted('ROLE_ADMINISTRACION')) {
 			$keyAdministracion = 'ADMINISTRACION';
 			$menu->addChild(
@@ -567,7 +601,7 @@ class Builder
 			->setAttribute('class', 'nav-item has-treeview');
 		$menu[$keyPersonal]
 			->addChild(
-				'Carta OrgÃ¡nica',
+				'Carta Orgánica',
 				array(
 					'route'          => 'documento_carta_organica',
 					'attributes'     => ['class' => 'nav-item'],

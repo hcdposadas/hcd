@@ -70,7 +70,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    {{ form_row(form.textoDefinitivo) }}
+                    {{ form_row(form.texto) }}
                 </div>
             </div>
             {#<div class="row expediente-externo">#}
@@ -132,7 +132,7 @@
 
             $('#modal-add-persona-btn-ok').click(function () {
 
-                var data = $('form[name="appbundle_persona"]').serialize();
+                var data = $('form[name="app_persona"]').serialize();
 
                 $.ajax({
                     type: 'post',
@@ -168,7 +168,7 @@
 
             $('#modal-add-dependencia-btn-ok').click(function () {
 
-                var data = $('form[name="appbundle_dependencia"]').serialize();
+                var data = $('form[name="app_dependencia_ajax"]').serialize();
 
                 $.ajax({
                     type: 'post',

@@ -69,7 +69,7 @@
     <figure>
         <img style="margin-left:40%" src="{{ absolute_url(asset('uploads/sis_images/apple-touch-icon.png')) }}" alt="HCD Logo" class="logo-hcd">
          <img style="max-width: 25%; height: auto; margin-left:18%"
-             src="{{ qr_code_data_uri("138.117.79.232/blockchain/index.php/verificar/#{expediente.hash}/#{expediente.marcaTemporal}/#{expediente.expediente}-#{expediente.letra}" , { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 0 }) }}"/>
+             src="{{ qr_code_data_uri("http://138.117.79.232/blockchain/index.php/verificar/#{expediente.hash}/#{expediente.marcaTemporal}/#{expediente.expediente}-#{expediente.letra}" , { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 0 }) }}"/>
     </figure>
 </div>
 <h2 class="text-center">Municipalidad de la Ciudad de {{ ciudad_name }}</h2>

@@ -21,7 +21,7 @@ class AnexoExpedienteType extends AbstractType {
 				VichImageType::class,
 				[
 					'label'       => 'Archivo',
-					'required'    => false,
+					'required'    => true,
 					'constraints' => [
 						new File( [
 							'maxSize'          => '20M',

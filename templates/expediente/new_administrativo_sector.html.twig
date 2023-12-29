@@ -73,12 +73,17 @@
 {% endblock %}
 {% block javascripts %}
     {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
+
+
     <script>
-    $('.custom-file input').change(function (e) {
-        if (e.target.files.length) {
-            $(this).next('.custom-file-label').html(e.target.files[0].name);
-        }
-    });
 
         $(document).ready(function () {
 

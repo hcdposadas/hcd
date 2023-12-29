@@ -36,7 +36,18 @@ class ExpedienteAdministrativoSectorType extends AbstractType {
 				array(
 					'html5'  => true,
 					'widget' => 'single_text',
-				) );
+				) )
+			->add( 'anexos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => AnexoExpedienteType::class,
+					'required' => true,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Anexos'
+				] )
+				;
 	}
 
 	/**

@@ -154,7 +154,11 @@
 
             </div>
             {% if not is_granted('ROLE_SECTOR') %}
-                <a class="btn btn-default" href="/">Volver</a>
+            {% if referer is defined %}
+                <a class="btn btn-default" href="{{ referer }}">Volver</a>
+        {% else %}
+                <a class="btn btn-default" href="/hcd/">Volver</a>
+        {% endif %}
             {% else %}
                 <a class="btn btn-default" href="{{ path('expedientes_administrativos_sector_index') }}">Volver</a>
             {% endif %}

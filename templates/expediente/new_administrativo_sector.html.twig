@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-6">
                     Dependencia: <b>{{expediente.dependencia}}</b>
                 </div>
             </div>
@@ -32,6 +32,11 @@
             <div class="row">
                 <div class="col-md-12">
                     {{ form_row(form.texto) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form_row(form.anexos) }}
                 </div>
             </div>
             {#<div class="row expediente-externo">#}
@@ -69,7 +74,11 @@
 {% block javascripts %}
     {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
     <script>
-
+    $('.custom-file input').change(function (e) {
+        if (e.target.files.length) {
+            $(this).next('.custom-file-label').html(e.target.files[0].name);
+        }
+    });
 
         $(document).ready(function () {
 

@@ -479,9 +479,9 @@ class Builder
 		}
 
 		if ($this->authorizationChecker->isGranted('ROLE_SECTOR')) {
-			$keyAdministracion = 'EXPEDIENTES';
+			$keySector = 'EXPEDIENTES';
 			$menu->addChild(
-				$keyAdministracion,
+				$keySector,
 				array(
 					'childrenAttributes' => array(
 						'class' => 'nav nav-treeview',
@@ -493,7 +493,7 @@ class Builder
 				->setExtra('icon', 'fa fa-folder-open')
 				->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[$keyAdministracion]
+			$menu[$keySector]
 				->addChild(
 					'Mis Expedientes',
 					array(
@@ -501,8 +501,54 @@ class Builder
 						'attributes'     => ['class' => 'nav-item'],
 						'linkAttributes' => ['class' => 'nav-link']
 					)
+					);
+				$menu[$keySector]	->addChild(
+					'Giros Enviados',
+					array(
+						'route'          => 'expedientes_administrativos_sector_enviados',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+					);
+					$menu[$keySector]->addChild(
+					'Giros Recibidos',
+					array(
+						'route'          => 'expedientes_administrativos_sector_recibidos',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
 				);
+				$keyTicket = 'TICKETS';
+				$menu->addChild(
+					$keyTicket,
+					array(
+						'childrenAttributes' => array(
+							'class' => 'nav nav-treeview',
+						),
+					)
+					)
+					->setUri('#')
+					->setLinkAttribute('class', 'nav-link')
+					->setExtra('icon', 'fa fa-folder-open')
+					->setAttribute('class', 'nav-item has-treeview');
+					$menu[$keySector]	->addChild(
+						'Tickets Enviados',
+						array(
+							'route'          => 'tickets_enviados',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
+						$menu[$keySector]->addChild(
+						'Tickets Recibidos',
+						array(
+							'route'          => 'tickets_recibidos',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
 		}
+
 		if ($this->authorizationChecker->isGranted('ROLE_ADMINISTRACION')) {
 			$keyAdministracion = 'ADMINISTRACION';
 			$menu->addChild(

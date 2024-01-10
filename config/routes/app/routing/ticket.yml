@@ -1,0 +1,24 @@
+tickets_recibidos:
+  path: /tickets_recibidos
+  defaults: { _controller: App\Controller\TicketController::recibidoindex }
+  methods: GET
+
+tickets_enviados:
+  path: /tickets_enviados
+  defaults: { _controller: App\Controller\TicketController::enviadoindex }
+  methods: GET
+
+ticket_new:
+  path: /new/ticket
+  defaults: { _controller: App\Controller\TicketController::newTicket }
+  methods: [GET, POST]
+
+ticket_close:
+  path: /close/ticket/{id}
+  defaults: { _controller: App\Controller\TicketController::closeTicket }
+  methods: [GET, POST]
+
+ticket_cancel:
+  path: /cancel/ticket/{id}
+  defaults: { _controller: App\Controller\TicketController::cancelTicket }
+  methods: [GET, POST]

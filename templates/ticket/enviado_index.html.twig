@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Ticket De Servicio
+{% endblock title %}
+{% block body %}
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('ticket_new') }}">Nuevo Ticket</a>
+        </div>
+    </div>
+
+{#     <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div> #}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Ticket De Servicio Enviados</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th class="col-md-4">Ticket</th>
+                            <th>Área De Destino</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th class="col-md-2">Observación</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for ticket in tickets %}
+                            <tr>
+                                <td>
+                                    {{ ticket.id }}
+                                </td>
+                                <td>{{ ticket.texto }}</td>
+                                <td>{{ ticket.areaDestino }}</td>
+                                <td>{{ ticket.fecha | date('d/m/Y') }}</td>
+                                <td>
+                                    {% if ticket.observacion == 'Cancelado' %}
+                                    Cancelado
+                                {% elseif ticket.completo %}
+                                        Completo
+                                    {% else %}
+                                        Pendiente
+                                    {% endif %}    
+                                        </td>
+                                <td>{% if ticket.completo %}
+                                {{ ticket.observacion }}
+                                {% endif %}
+                                </td>
+                                                                
+
+                                <td>
+                                    {% if ticket.completo == false and ticket.observacion != 'Cancelado' %}
+                                    <a class="btn btn-default"
+                                       href="{{ path('ticket_cancel', { 'id': ticket.id }) }}">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+        {% if tickets %}
+            {{ knp_pagination_render(tickets) }}
+        {% endif %}
+        </div>
+    </div>
+    <a class="btn btn-primary mb-3" href="{{ path('ticket_new') }}">Nuevo Ticket</a>
+{% endblock %}
+

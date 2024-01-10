@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Tickets
+{% endblock title %}
+{% block body %}
+    {# modal add persona #}
+    {% include 'default/modal_add_persona.html.twig' %}
+    {% include 'default/modal_add_dependencia.html.twig' %}
+    {# modal add persona #}
+
+    <h1> Ticket De Servicio</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Cerrar Ticket</h3>
+        </div>
+        <div class="card-body">
+
+                <dl class="dl-horizontal">
+                <dt>Área De Origen</dt>
+                <dd>
+                            {{ ticket.AreaOrigen }}
+                </dd>
+                    </dl>
+                                <dl class="dl-horizontal">
+                <dt>Descripción</dt>
+                <dd>
+                            {{ ticket.texto }}
+                </dd>
+                    </dl>
+
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-8">
+                    {{ form_row(form.observacion) }}
+                </div>
+            </div>           
+            </div>
+            <input class="btn btn-primary col-md-3 mb-3 ml-3" type="submit" value="Cerrar Ticket"/>
+            {{ form_end(form) }}
+        </div>
+{% endblock %}

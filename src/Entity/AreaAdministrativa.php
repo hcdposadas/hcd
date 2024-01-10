@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Base\BaseClass;
 
@@ -38,9 +40,24 @@ class AreaAdministrativa extends BaseClass
      */
     private $descripcion;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Ticket::class, mappedBy="areaOrigen")
+     */
+    private $ticketsO;
+
+        /**
+     * @ORM\OneToMany(targetEntity=Ticket::class, mappedBy="areaDestino")
+     */
+    private $ticketsD;
+
+    public function __construct()
+    {
+        $this->tickets = new ArrayCollection();
+    }
+
 	public function __toString() {
-		return $this->nombre;
-	}
+                        		return $this->nombre;
+                        	}
 
 
     /**
@@ -147,6 +164,68 @@ class AreaAdministrativa extends BaseClass
     public function setActualizadoPor(\App\Entity\Usuario $actualizadoPor = null)
     {
         $this->actualizadoPor = $actualizadoPor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ticket[]
+     */
+    public function getTicketsO(): Collection
+    {
+        return $this->ticketsO;
+    }
+
+    public function addTicketO(Ticket $ticket): self
+    {
+        if (!$this->ticketsO->contains($ticket)) {
+            $this->ticketsO[] = $ticket;
+            $ticket->setAreaOrigen($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketO(Ticket $ticket): self
+    {
+        if ($this->ticketsO->contains($ticket)) {
+            $this->ticketsO->removeElement($ticket);
+            // set the owning side to null (unless already changed)
+            if ($ticket->getAreaOrigen() === $this) {
+                $ticket->setAreaOrigen(null);
+            }
+        }
+
+        return $this;
+    }
+
+        /**
+     * @return Collection|Ticket[]
+     */
+    public function getTicketsD(): Collection
+    {
+        return $this->ticketsD;
+    }
+
+    public function addTicketD(Ticket $ticket): self
+    {
+        if (!$this->ticketsD->contains($ticket)) {
+            $this->ticketsD[] = $ticket;
+            $ticket->setAreaOrigen($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketD(Ticket $ticket): self
+    {
+        if ($this->ticketsD->contains($ticket)) {
+            $this->ticketsD->removeElement($ticket);
+            // set the owning side to null (unless already changed)
+            if ($ticket->getAreaOrigen() === $this) {
+                $ticket->setAreaOrigen(null);
+            }
+        }
 
         return $this;
     }

@@ -2,6 +2,7 @@
 {% block title %}
     Expediente Administrativo
 {% endblock title %}
+
 {% block body %}
     {# modal add persona #}
     {% include 'default/modal_add_persona.html.twig' %}
@@ -30,15 +31,11 @@
             {#Expedientes adjuntos#}
             {#</div>#}
             <div class="row">
-                <div class="col-md-12">
-                    {{ form_row(form.texto) }}
+                <div class="col-md-4">
+                    {{ form_row(form.expedienteInternoFile) }}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    {{ form_row(form.anexos) }}
-                </div>
-            </div>
+
             {#<div class="row expediente-externo">#}
             {#<div class="col-md-12">#}
             {#{{ form_row(form.expedienteExternoFile) }}#}
@@ -50,11 +47,11 @@
             {#</div>#}
             {#</div>#}
 
-            {#<div class="row expediente-externo">#}
-            {#<div class="col-md-12">#}
-            {#{{ form_row(form.giros) }}#}
-            {#</div>#}
-            {#</div>#}
+            <div class="row expediente-externo">
+            <div class="col-md-6">
+            {{ form_row(form.giroAdministrativos) }}
+            </div>
+            </div>
 
 
             {#<div class="row">#}
@@ -72,6 +69,12 @@
     <a class="btn btn-default" href="{{ path('expedientes_administrativos_sector_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
     {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

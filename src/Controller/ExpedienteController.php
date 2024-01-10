@@ -1468,6 +1468,292 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
+	public function expedientesAdministrativosRecibidosIndex(PaginatorInterface $paginator, Request $request)
+	{
+
+		$em = $this->getDoctrine()->getManager();
+
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+
+
+		$filterType = $this->createForm(
+			ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			]
+		);
+
+		$filterType->handleRequest($request);
+
+		if ($filterType->get('buscar')->isClicked()) {
+
+			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
+				$filterType->getData(),
+				$tipoExpediente,$dependencia
+			);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+		} else {
+
+			$giros = $em->getRepository(GiroAdministrativo::class)->findByAreaDestino($area);
+			
+
+				$giros = $paginator->paginate(
+				$giros,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+
+
+			
+		}
+		$contador=0;
+		foreach($giros as $giro){
+			
+			$estado=$giro->getEstado();
+			if ($estado == 'pendiente'){
+				$contador=$contador+1;
+			}
+
+		}
+		if ($contador > 0){
+		$this->get('session')->getFlashBag()->add(
+			'info',
+			'Expedientes pendientes: '.$contador.''
+		);
+	}
+
+
+		return $this->render(
+			'expediente/expedientes_administrativos_recibidos_index.html.twig',
+			array(
+				'giros' => $giros,
+				'filter_type' => $filterType->createView()
+			)
+		);
+	}
+
+	public function expedientesAdministrativosEnviadosIndex(PaginatorInterface $paginator, Request $request)
+	{
+
+		$em = $this->getDoctrine()->getManager();
+
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+
+
+		$filterType = $this->createForm(
+			ExpedienteFilterType::class,
+			null,
+			[
+				'method' => 'GET'
+			]
+		);
+
+		$filterType->handleRequest($request);
+
+		if ($filterType->get('buscar')->isClicked()) {
+
+			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
+				$filterType->getData(),
+				$tipoExpediente,$dependencia
+			);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+		} else {
+			
+			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaOrigen'=>$area]);
+			
+				$giros = $paginator->paginate(
+				$giros,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+
+		}
+
+
+
+		return $this->render(
+			'expediente/expedientes_administrativos_enviados_index.html.twig',
+			array(
+				'giros' => $giros,
+				'filter_type' => $filterType->createView()
+			)
+		);
+	}
+
+
+
+	public function showExpedienteRecibido(GiroAdministrativo $id)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$giro=$id;
+		if ($giro->getEstado() == 'pendiente') {
+			$giro->setEstado('abierto');
+		}
+		$em->flush();
+		
+		$expediente=$giro->getExpediente();
+
+		return $this->render(
+			'expediente/proyecto_show.html.twig',
+			[	
+				'ruta' => 'recibido',
+				'expediente' => $expediente,
+			]
+		);
+	}
+
+	public function RechazarExpedienteSector(GiroAdministrativo $id)
+	{
+		if ($giro->getEstado() == 'abierto') {
+			$giro->setEstado('rechazado');
+		}
+
+		$expediente=$giro->getExpediente();
+
+		return $this->render(
+			'expediente/proyecto_show.html.twig',
+			[
+				'ruta' => 'recibido',
+				'expediente' => $expediente,
+			]
+		);
+	}
+
+
+	public function nuevoGiroAdministrativoSector(Request $request, $id)
+	{
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+
+
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository(Expediente::class)->find($id);
+		$form       = $this->createForm(NuevoGiroExpedienteDependenciaType::class, $expediente);
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+
+			$em->flush();
+
+			$this->get('session')->getFlashBag()->add(
+				'success',
+				'El expediente se ha girado a la/s dependencia/s'
+			);
+
+			return $this->redirectToRoute('expedientes_administrativos_index');
+		}
+
+
+		return $this->render(
+			'expediente/nuevo_giro_administrativo.html.twig',
+			[
+				'expediente' => $expediente,
+				'form'       => $form->createView()
+			]
+		);
+	}
+
+	public function nuevoExpedienteAdministrativoSector(Request $request)
+	{
+
+		$em             = $this->getDoctrine()->getManager();
+		$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
+			'slug' => 'interno'
+		]);
+
+
+		$expediente = new Expediente();
+		$expediente->setTipoExpediente($tipoExpediente);
+
+
+
+			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
+			$dependecia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area]);
+			
+		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
+		if (!$dependecia ){
+			$dependecia = new Dependencia();
+			$dependecia->setNombre($area);
+			$em->persist($dependecia);
+			$em->flush();
+		}
+		$expediente->setDependencia($dependecia);
+		$expediente->setPeriodoLegislativo($periodo);
+		
+	
+
+		$form = $this->createForm(ExpedienteAdministrativoSectorType::class, $expediente);
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$em->persist($expediente);
+
+
+			foreach ($expediente->getGirosAdministatrivos() as $giro){
+
+				$giro->setAreaOrigen($area);
+
+			}
+
+			$em->flush();
+
+			foreach ($expediente->getGirosAdministatrivos() as $giro){
+			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
+			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
+			$mail = $user->getEmail();
+
+	
+			if ( $email ) {
+				$asunto = 'HCD Posadas - Expediente Administrativo ' . $expediente->getNumero().' '. $expediente->getLetra(). ' '. $expediente->getAno().'';
+	
+				$email = ( new TemplatedEmail() )
+					->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+					->to( $mail )
+					->subject( $asunto )
+					->htmlTemplate( 'emails/plan_de_labor.html.twig' )
+					->context( [
+						'sesion' => '1'
+					] );
+	
+				try {
+					$mailer->send($email);
+					return true;
+				} catch (TransportExceptionInterface $e) {
+					// some error prevented the email sending; display an
+					// error message or try to resend the message
+					return false;
+				}
+	
+			} 
+		}
+			$this->get('session')->getFlashBag()->add(
+				'success',
+				'Expediente creado correctamente'
+			);
+
+			return $this->redirectToRoute('expedientes_administrativos_sector_index');
+		}
+		
+		return $this->render(
+			'expediente/new_administrativo_sector.html.twig',
+			[
+				'edit' => false,
+				'form'       => $form->createView(),
+				'expediente' => $expediente
+			]
+		);
+	}
+
 //agregar block
 	public function nuevoExpedienteAdministrativo(Request $request)
 	{
@@ -1840,6 +2126,7 @@ class ExpedienteController extends AbstractController
 		return $this->render(
 			'expediente/new_administrativo_externo.html.twig',
 			[
+				'edit' => false,
 				'form'       => $form->createView(),
 				'expediente' => $expediente
 			]

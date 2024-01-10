@@ -65,6 +65,25 @@ expedientes_administrativos_sector_index:
       _controller: App\Controller\ExpedienteController::expedientesAdministrativosSectorIndex,
     }
 
+expedientes_administrativos_sector_recibidos:
+  path: /expedientes_administrativos_sector_recibidos
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::expedientesAdministrativosRecibidosIndex,
+    }
+
+expedientes_administrativos_sector_enviados:
+  path: /expedientes_administrativos_sector_enviados
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::expedientesAdministrativosEnviadosIndex,
+    }
+
+expediente_administrativo_sector_show:
+  path: /expediente_administrativo_sector_show/{id}
+  defaults:
+    { _controller: App\Controller\ExpedienteController::showExpedienteRecibido }
+
 #legislativos
 expedientes_legislativos_index:
   path: /expedientes_legislativos_index

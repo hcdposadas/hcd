@@ -23,7 +23,7 @@ class ExpedienteAdministrativoSectorType extends AbstractType {
 			->add( 'texto',
 			CKEditorType::class,
 			[
-				'required' => true,
+				'required' => false,
 				'config'   => array(
 					'uiColor' => '#ffffff',
 //						'height'  => '600px'
@@ -46,6 +46,22 @@ class ExpedienteAdministrativoSectorType extends AbstractType {
 					'allow_delete' => true,
 					'by_reference' => false,
 					'label'        => 'Anexos'
+				] )
+			->add( 'giroAdministrativos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => GiroAdministrativoSectorType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+				] )
+				->add( 'expedienteInternoFile',
+				VichFileType::class,
+				[
+					'label'        => 'Archivo Expediente',
+					'required'     => true,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
 				] )
 				;
 	}

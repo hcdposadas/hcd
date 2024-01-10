@@ -22,10 +22,18 @@ class ExpedienteAdministrativoType extends AbstractType {
 		$builder
 			->add( 'tipoExpediente' )
 			->add( 'textoDefinitivo' )
+			->add( 'expedienteInternoFile',
+			VichFileType::class,
+			[
+				'label'        => 'Archivo',
+				'required'     => true,
+				'allow_delete' => true, // optional, default is true
+				'download_uri' => true, // optional, default is true
+			] )
 			->add( 'texto',
 			CKEditorType::class,
 			[
-				'required' => true,
+				'required' => false,
 				'config'   => array(
 					'uiColor' => '#ffffff',
 //						'height'  => '600px'

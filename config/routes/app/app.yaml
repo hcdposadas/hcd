@@ -22,6 +22,10 @@ app_medico:
   resource: "routing/medico.yml"
   prefix: /paciente
 
+app_ticket:
+  resource: "routing/ticket.yml"
+  prefix: /ticket
+
 app_ajax:
   resource: "routing/ajax.yml"
   prefix: /ajax

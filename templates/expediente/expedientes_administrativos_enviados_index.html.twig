@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes Administrativos
+{% endblock title %}
+{% block body %}
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('expediente_administrativo_nuevo') }}">Nuevo Expediente</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                {{ form_start(filter_type) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {#{{ form_row(filter_type.tipoExpediente) }}#}
+                            {{ form_row(filter_type.textoDefinitivo) }}
+                            {{ form_row(filter_type.extracto) }}
+                            {{ form_row(filter_type.expediente) }}
+                            {{ form_row(filter_type.anio) }}
+                            {{ form_row(filter_type.texto) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.letra) }}
+                            {{ form_row(filter_type.fecha) }}
+                            {{ form_row(filter_type.registroMunicipal) }}
+                            {{ form_row(filter_type.iniciador) }}
+                            {{ form_row(filter_type.iniciadorParticular) }}
+                            {{ form_row(filter_type.dependencia) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="d-none">
+                    {{ form_end(filter_type) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Expedientes Administrativos</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Expediente</th>
+                            <th>Fecha</th>
+                            <th>Registro municipal</th>
+                            <th>Iniciador</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for giro in giros %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
+                                </td>
+                                <td>{{ giro.expediente.expediente }}-{{ giro.expediente.letra }}
+                                    -{% if giro.expediente.periodoLegislativo %}{{ giro.expediente.periodoLegislativo }}{% else %}{{ giro.expediente.anio }}{% endif %}</td>
+                                <td>{% if giro.expediente.fecha %}{{ giro.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{{ giro.expediente.registroMunicipal }}</td>
+                                <td>
+                                    {% if giro.expediente.iniciadores.count > 0 %}
+                                        {% for iniciadorExpediente in giro.expediente.iniciadores %}
+                                            {% if iniciadorExpediente.iniciador %}
+                                                {{ iniciadorExpediente.iniciador.cargoPersona }} -
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elseif giro.expediente.iniciadorParticular %}
+                                        {{ giro.expediente.iniciadorParticular.nombreCompleto }}
+                                    {% elseif giro.expediente.dependencia %}
+                                    {% if giro.expediente.dependencia %}
+                                        {{ giro.expediente.dependencia }}
+                                    {% endif %}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_show', { 'id': giro.expediente.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    {% if not is_granted('ROLE_SECTOR') %}
+                                    
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_administrativo_editar', { 'id': giro.expediente.id }) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    {% endif %}
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_timeline', {id: giro.expediente.id}) }}">
+                                        <i class="fa fa-road"></i>
+                                    </a>
+                                    {% if not is_granted('ROLE_SECTOR') %}
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Nuevo Giro Administrativo"
+                                       href="{{ path('expediente_nuevo_giro_administrativo', { 'id': giro.expediente.id }) }}">
+                                        <i class="fa fa-map-signs"></i>
+                                        <i class="fa fa-book"></i>
+                                    </a>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('expediente_imprimir_caratula', {id: giro.expediente.id}) }}">
+                                        <i class="fa fa-print"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+        {% if giros %}
+            {{ knp_pagination_render(giros) }}
+        {% endif %}
+        </div>
+    </div>
+    <a class="btn btn-primary mb-3" href="{{ path('expediente_administrativo_nuevo') }}">Nuevo Expediente</a>
+{% endblock %}

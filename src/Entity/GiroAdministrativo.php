@@ -59,10 +59,15 @@ class GiroAdministrativo extends BaseClass {
 	 */
 	private $texto;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $estado;
+
 
 	public function __toString(): ?string {
-		return $this->areaDestino;
-	}
+         		return $this->areaDestino;
+         	}
 
 
 	/**
@@ -71,8 +76,8 @@ class GiroAdministrativo extends BaseClass {
 	 * @return integer
 	 */
 	public function getId() {
-		return $this->id;
-	}
+         		return $this->id;
+         	}
 
 	/**
 	 * Set fechaGiro
@@ -82,10 +87,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setFechaGiro( $fechaGiro ) {
-		$this->fechaGiro = $fechaGiro;
-
-		return $this;
-	}
+         		$this->fechaGiro = $fechaGiro;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get fechaGiro
@@ -93,8 +98,8 @@ class GiroAdministrativo extends BaseClass {
 	 * @return \DateTime
 	 */
 	public function getFechaGiro() {
-		return $this->fechaGiro;
-	}
+         		return $this->fechaGiro;
+         	}
 
 	/**
 	 * Set fechaCreacion
@@ -104,10 +109,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setFechaCreacion( $fechaCreacion ) {
-		$this->fechaCreacion = $fechaCreacion;
-
-		return $this;
-	}
+         		$this->fechaCreacion = $fechaCreacion;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set fechaActualizacion
@@ -117,10 +122,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setFechaActualizacion( $fechaActualizacion ) {
-		$this->fechaActualizacion = $fechaActualizacion;
-
-		return $this;
-	}
+         		$this->fechaActualizacion = $fechaActualizacion;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set areaOrigen
@@ -130,10 +135,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setAreaOrigen( \App\Entity\AreaAdministrativa $areaOrigen = null ) {
-		$this->areaOrigen = $areaOrigen;
-
-		return $this;
-	}
+         		$this->areaOrigen = $areaOrigen;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get areaOrigen
@@ -141,8 +146,8 @@ class GiroAdministrativo extends BaseClass {
 	 * @return \App\Entity\AreaAdministrativa
 	 */
 	public function getAreaOrigen() {
-		return $this->areaOrigen;
-	}
+         		return $this->areaOrigen;
+         	}
 
 	/**
 	 * Set areaDestino
@@ -152,10 +157,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setAreaDestino( \App\Entity\AreaAdministrativa $areaDestino = null ) {
-		$this->areaDestino = $areaDestino;
-
-		return $this;
-	}
+         		$this->areaDestino = $areaDestino;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get areaDestino
@@ -163,8 +168,8 @@ class GiroAdministrativo extends BaseClass {
 	 * @return \App\Entity\AreaAdministrativa
 	 */
 	public function getAreaDestino() {
-		return $this->areaDestino;
-	}
+         		return $this->areaDestino;
+         	}
 
 	/**
 	 * Set expediente
@@ -174,10 +179,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setExpediente( \App\Entity\Expediente $expediente = null ) {
-		$this->expediente = $expediente;
-
-		return $this;
-	}
+         		$this->expediente = $expediente;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get expediente
@@ -185,8 +190,8 @@ class GiroAdministrativo extends BaseClass {
 	 * @return \App\Entity\Expediente
 	 */
 	public function getExpediente() {
-		return $this->expediente;
-	}
+         		return $this->expediente;
+         	}
 
 	/**
 	 * Set creadoPor
@@ -196,10 +201,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
-		$this->creadoPor = $creadoPor;
-
-		return $this;
-	}
+         		$this->creadoPor = $creadoPor;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set actualizadoPor
@@ -209,10 +214,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
-		$this->actualizadoPor = $actualizadoPor;
-
-		return $this;
-	}
+         		$this->actualizadoPor = $actualizadoPor;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set texto
@@ -222,10 +227,10 @@ class GiroAdministrativo extends BaseClass {
 	 * @return GiroAdministrativo
 	 */
 	public function setTexto( $texto ) {
-		$this->texto = $texto;
-
-		return $this;
-	}
+         		$this->texto = $texto;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get texto
@@ -233,6 +238,18 @@ class GiroAdministrativo extends BaseClass {
 	 * @return string
 	 */
 	public function getTexto() {
-		return $this->texto;
-	}
+         		return $this->texto;
+         	}
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(?string $estado): self
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
 }

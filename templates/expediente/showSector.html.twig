@@ -29,10 +29,6 @@
                         <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
                     </dl>
                     <dl class="dl-horizontal">
-                        <dt>Registro municipal</dt>
-                        <dd>{{ expediente.registroMunicipal }}</dd>
-                    </dl>
-                    <dl class="dl-horizontal">
                         <dt>Iniciador</dt>
                         <dd>
                             {% if expediente.iniciadores.count > 0 %}
@@ -50,10 +46,49 @@
                     </dl>
 
                     <dl class="dl-horizontal">
-                        <dt>Creado Por</dt>
+                        <dt>Giros</dt>
                         <dd>
-                            {{ expediente.creadoPor }}
+                        <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Área Órigen</th>
+                            <th>Área Destino</th>
+                            <th>Anexo</th>
+                            <th>Fecha</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% if expediente.giroAdministrativos.count > 0 %}
+                                {% for giro in expediente.giroAdministrativos %}
+                                    <tr>
+                                    <td>{{giro.areaOrigen}}</td>
+                                    <td>{{giro.AreaDestino}}</td>
+                                    <td>Anexo</td>
+                                    <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                        </table>
                         </dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                    {% if giro.estado != 'abierto'  %}
+                    <a class="btn btn-success" 
+                       href="{{ path('expediente_administrativo_sector_giro', {id: giro.expediente.id}) }}">
+                        <i class=""></i> Nuevo Giro
+                    </a>
+                    {% endif %}
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                    {% if giro.estado == 'abierto'  %}
+                    <a class="btn btn-danger" 
+                       href="{{ path('expediente_administrativo_sector_rechazar', {id: giro.id}) }}">
+                        <i class=""></i> Rechazar Expediente
+                    </a>
+                    {% endif %}
                     </dl>
                     {% if not is_granted('ROLE_SECTOR') %}
                     <dl class="dl-horizontal">
@@ -93,7 +128,7 @@
                     {% endif %}
                     <a class="btn btn-default" target="_blank"
                        href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Proyecto
+                        <i class="fa fa-print"></i> Imprimir Expediente
                     </a>
                     {% if expediente.letra and expediente.expediente  %}
                         <a class="btn btn-default margin" target="_blank"
@@ -106,15 +141,8 @@
                 </div>
 
             </div>
-            {% if not is_granted('ROLE_SECTOR') %}
-            {% if referer is defined %}
-                <a class="btn btn-default" href="{{ referer }}">Volver</a>
-        {% else %}
-                <a class="btn btn-default" href="/hcd/">Volver</a>
-        {% endif %}
-            {% else %}
-                <a class="btn btn-default" href="{{ path('expedientes_administrativos_sector_index') }}">Volver</a>
-            {% endif %}
+
+                <a class="btn btn-default" href="{{ path(ruta) }}">Volver</a>
         </div>
     </div>
 

@@ -18,14 +18,8 @@ class GiroAdministrativoType extends AbstractType {
 				[
 					'attr' => [ 'class' => 'select2' ]
 				] )
-			->add( 'texto' )
-			->add( 'fechaGiro',
-				DateType::class,
-				[
-					'widget' => 'single_text',
-					'html5'  => true
-				]
-			);
+			->add( 'texto' );
+
 	}
 
 	/**

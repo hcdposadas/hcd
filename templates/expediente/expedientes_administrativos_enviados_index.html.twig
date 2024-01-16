@@ -56,7 +56,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Expedientes Administrativos</h3>
+                    <h3 class="card-title">Expedientes Administrativos Enviados</h3>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped data-table">
@@ -65,8 +65,9 @@
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
-                            <th>Registro municipal</th>
                             <th>Iniciador</th>
+                            <th>Area De Destino</th>
+                            <th>Estado</th>
                             <th>Acción</th>
                         </tr>
                         </thead>
@@ -74,12 +75,11 @@
                         {% for giro in giros %}
                             <tr>
                                 <td>
-                                    <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
+                                    <a href="{{ path('expediente_administrativo_sector_show', { 'id': giro.id }) }}">{{ giro.id }}</a>
                                 </td>
                                 <td>{{ giro.expediente.expediente }}-{{ giro.expediente.letra }}
                                     -{% if giro.expediente.periodoLegislativo %}{{ giro.expediente.periodoLegislativo }}{% else %}{{ giro.expediente.anio }}{% endif %}</td>
                                 <td>{% if giro.expediente.fecha %}{{ giro.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
-                                <td>{{ giro.expediente.registroMunicipal }}</td>
                                 <td>
                                     {% if giro.expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in giro.expediente.iniciadores %}
@@ -95,10 +95,11 @@
                                     {% endif %}
                                     {% endif %}
                                 </td>
-
+                                <td>{{ giro.AreaDestino }}
+                                <td>{{giro.estado | upper}}</td>
                                 <td>
                                     <a class="btn btn-default"
-                                       href="{{ path('expediente_show', { 'id': giro.expediente.id }) }}">
+                                       href="{{ path('expediente_administrativo_sector_show', { 'id': giro.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     {% if not is_granted('ROLE_SECTOR') %}

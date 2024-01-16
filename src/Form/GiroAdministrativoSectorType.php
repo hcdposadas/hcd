@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\GiroAdministrativo;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,7 +20,7 @@ class GiroAdministrativoSectorType extends AbstractType
             ->add('areaDestino',null,
             [
                 'attr' => [ 'class' => 'select2' ]
-            ] )
+            ] );
 
         ;
     }

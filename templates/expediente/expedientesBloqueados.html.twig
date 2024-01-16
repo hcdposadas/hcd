@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes Bloqueados
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col">
+        <div class="row">
+
+        {{form_start(form)}}
+        <div class="row align-items-center ml-1">
+        <div class="col-3">
+        {{form_row(form.numero)}}
+        </div>
+        <div class="col-2">
+        {{form_row(form.letra)}}
+        </div>
+        <div class="col-2 ">
+        <button class="btn btn-primary text-white" type="submit">Bloquear</button>
+        </div>
+        {{form_end(form)}}
+        </div>
+        </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title text-lg">Expedientes Bloqueados</h3>
+                </div>
+                <div class="card-body ">
+                <div class="row">
+                {% for bloqueado in bloqueados %}
+                    <div class="card text-lg text-center pt-1 m-2" style="width:8%">
+                    {{bloqueado.numero}} - {{bloqueado.letra}} - {{bloqueado.ano}}  <a class="btn btn-danger mt-1 " href="{{ path('bloqueo_delete', {id: bloqueado.id}) }}"><i class="fa fa-trash"></i></a>
+                    </div>
+                {% endfor %}
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

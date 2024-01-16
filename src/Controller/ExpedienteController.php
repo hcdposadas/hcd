@@ -7,9 +7,11 @@ use App\Entity\Giro;
 use App\Entity\PeriodoLegislativo;
 use App\Entity\ProyectoBAE;
 use App\Entity\Dependencia;
+use App\Entity\ExpedienteBloqueado;
 use App\Entity\TipoExpediente;
 use App\Form\AsignarHojasType;
 use App\Form\AsignarNumeroType;
+use App\Form\GiroAdministrativoSectorType;
 use App\Form\ExpedienteType;
 use App\Form\ProyectoType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,6 +22,7 @@ use App\Entity\Log;
 use App\Form\EditarExtractoType;
 use App\Form\ExpedienteAdministrativoExternoType;
 use App\Form\ExpedienteAdministrativoType;
+use App\Form\BloqueadoType;
 use App\Form\ExpedienteAdministrativoSectorType;
 use App\Form\ExpedienteExtractoType;
 use App\Form\ExpedienteLegislativoExternoType;
@@ -1593,19 +1596,28 @@ class ExpedienteController extends AbstractController
 
 	public function showExpedienteRecibido(GiroAdministrativo $id)
 	{
-		$em = $this->getDoctrine()->getManager();
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+		$ruta='expedientes_administrativos_sector_enviados';
 		$giro=$id;
-		if ($giro->getEstado() == 'pendiente') {
-			$giro->setEstado('abierto');
+		$rechazar= false;
+		if($area == $giro->getAreaDestino()){
+			$em = $this->getDoctrine()->getManager();
+			$rechazar= true;
+			if ($giro->getEstado() == 'pendiente') {
+				$giro->setEstado('abierto');
+			}
+			$em->flush();
+			$ruta= 'expedientes_administrativos_sector_recibidos';
 		}
-		$em->flush();
+
 		
 		$expediente=$giro->getExpediente();
 
 		return $this->render(
-			'expediente/proyecto_show.html.twig',
-			[	
-				'ruta' => 'recibido',
+			'expediente/showSector.html.twig',
+			[	'rechazar' => $rechazar,
+				'giro' => $giro,
+				'ruta' => $ruta,
 				'expediente' => $expediente,
 			]
 		);
@@ -1613,30 +1625,28 @@ class ExpedienteController extends AbstractController
 
 	public function RechazarExpedienteSector(GiroAdministrativo $id)
 	{
+		$em = $this->getDoctrine()->getManager();
+
+		$giro=$id;
+
 		if ($giro->getEstado() == 'abierto') {
 			$giro->setEstado('rechazado');
+			$em->flush();
 		}
 
-		$expediente=$giro->getExpediente();
+		
 
-		return $this->render(
-			'expediente/proyecto_show.html.twig',
-			[
-				'ruta' => 'recibido',
-				'expediente' => $expediente,
-			]
-		);
+		return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
 	}
 
 
-	public function nuevoGiroAdministrativoSector(Request $request, $id)
+	public function nuevoGiroAdministrativoSector(Request $request,Expediente $id)
 	{
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
-
+		$expediente=$id;
 		$em         = $this->getDoctrine()->getManager();
-		$expediente = $em->getRepository(Expediente::class)->find($id);
-		$form       = $this->createForm(NuevoGiroExpedienteDependenciaType::class, $expediente);
+		$form       = $this->createForm(NuevoGiroExpedienteDependenciaType::class);
 
 		$form->handleRequest($request);
 
@@ -1649,12 +1659,12 @@ class ExpedienteController extends AbstractController
 				'El expediente se ha girado a la/s dependencia/s'
 			);
 
-			return $this->redirectToRoute('expedientes_administrativos_index');
+			return $this->redirectToRoute('expedientes_administrativos_recibidos_index');
 		}
 
 
 		return $this->render(
-			'expediente/nuevo_giro_administrativo.html.twig',
+			'expediente/nuevo_giro_sector.html.twig',
 			[
 				'expediente' => $expediente,
 				'form'       => $form->createView()
@@ -1669,6 +1679,7 @@ class ExpedienteController extends AbstractController
 		$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
 			'slug' => 'interno'
 		]);
+		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
 
 
 		$expediente = new Expediente();
@@ -1694,19 +1705,45 @@ class ExpedienteController extends AbstractController
 		$form = $this->createForm(ExpedienteAdministrativoSectorType::class, $expediente);
 
 		$form->handleRequest($request);
-
+		$numero=0;
 		if ($form->isSubmitted() && $form->isValid()) {
-			$em->persist($expediente);
+			$ultimo = $em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','periodoLegislativo'=>$periodo],['expediente' => 'DESC']);
 
+			if($ultimo){
+				$numero=$ultimo->getExpediente(); 
+			}
 
-			foreach ($expediente->getGirosAdministatrivos() as $giro){
+			$nuevo=$numero+1;
+			$existe=$em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo,'periodoLegislativo'=>$periodo]);
+			if($existe ==  null){
+				$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['letra'=>'X','numero'=>$nuevo,'ano'=>date('Y')]);
+			}
+
+			while($existe != null ){ 
+				$nuevo=$nuevo+1;
+				$existe=$em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo]);
+				if($existe ==  null){
+					$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo,'ano'=>date('Y')]);
+				}
+			}
+			$expediente->setExpediente($nuevo);
+			$expediente->setLetra('X');
+			$date = new \DateTime();
+			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+			foreach ($expediente->getGiroAdministrativos() as $giro){
 
 				$giro->setAreaOrigen($area);
+				$giro->setFechaGiro($date);
+				$giro->setEstado('pendiente');
 
 			}
 
-			$em->flush();
+			$em->persist($expediente);
 
+
+
+			$em->flush();
+/* 
 			foreach ($expediente->getGirosAdministatrivos() as $giro){
 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
 			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
@@ -1735,7 +1772,7 @@ class ExpedienteController extends AbstractController
 				}
 	
 			} 
-		}
+		} */
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Expediente creado correctamente'
@@ -1753,6 +1790,70 @@ class ExpedienteController extends AbstractController
 			]
 		);
 	}
+
+	public function bloqueadoIndex(Request $request){
+		$em= $this->getDoctrine()->getManager();
+		$bloqueados=$em->getRepository(ExpedienteBloqueado::class)->findAll();
+		$bloqueado= new ExpedienteBloqueado;
+		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
+
+		$form = $this->createForm(BloqueadoType::class, $bloqueado);
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$bloqueado->setAno(date('Y'));
+			$repetido=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['ano' => date('Y'),'numero'=>$bloqueado->getNumero(),'letra'=>$bloqueado->getLetra()]);
+			$existe=$em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo' => $periodo,'expediente'=>$bloqueado->getNumero(),'letra'=>$bloqueado->getLetra()]);
+			if($existe){
+				$this->get('session')->getFlashBag()->add(
+					'warning',
+					'Expediente ya existe'
+				);
+				return $this->redirectToRoute('expedientes_bloqueados');
+			}
+			if($repetido){
+				$this->get('session')->getFlashBag()->add(
+					'warning',
+					'Expediente ya esta bloqueado'
+				);
+				return $this->redirectToRoute('expedientes_bloqueados');
+			}
+			$em->persist($bloqueado);
+			$em->flush();
+
+			$this->get('session')->getFlashBag()->add(
+				'success',
+				'Expediente bloqueado correctamente'
+			);
+
+			return $this->redirectToRoute('expedientes_bloqueados');
+		}
+
+		return $this->render(
+			'expediente/expedientesBloqueados.html.twig',
+			[
+
+				'form'       => $form->createView(),
+				'bloqueados' => $bloqueados
+			]
+		);
+	}
+	
+	public function deleteBloqueado(ExpedienteBloqueado $id){
+		$em= $this->getDoctrine()->getManager();
+
+		$em->remove($id);
+		
+		$em->flush();
+	$this->get('session')->getFlashBag()->add(
+	'success',
+	'Bloqueo eliminado correctamente'
+);
+
+		return $this->redirectToRoute('expedientes_bloqueados');
+	}
+	
 
 //agregar block
 	public function nuevoExpedienteAdministrativo(Request $request)

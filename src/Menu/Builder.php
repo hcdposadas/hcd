@@ -106,6 +106,15 @@ class Builder
 							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
+				$menu[$keyEmpresa]
+					->addChild(
+						'Bloquear Nº Expte',
+						array(
+							'route'          => 'expedientes_bloqueados',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);
 			}
 			if (
 				$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
@@ -531,7 +540,7 @@ class Builder
 					->setLinkAttribute('class', 'nav-link')
 					->setExtra('icon', 'fa fa-folder-open')
 					->setAttribute('class', 'nav-item has-treeview');
-					$menu[$keySector]	->addChild(
+					$menu[$keyTicket]	->addChild(
 						'Tickets Enviados',
 						array(
 							'route'          => 'tickets_enviados',
@@ -539,7 +548,7 @@ class Builder
 							'linkAttributes' => ['class' => 'nav-link']
 						)
 						);
-						$menu[$keySector]->addChild(
+						$menu[$keyTicket]->addChild(
 						'Tickets Recibidos',
 						array(
 							'route'          => 'tickets_recibidos',

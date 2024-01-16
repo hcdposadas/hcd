@@ -84,6 +84,47 @@ expediente_administrativo_sector_show:
   defaults:
     { _controller: App\Controller\ExpedienteController::showExpedienteRecibido }
 
+expediente_administrativo_sector_new:
+  path: /expediente_administrativo_sector_new
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::nuevoExpedienteAdministrativoSector,
+    }
+
+bloqueo_delete:
+  path: /expediente_bloqueados/{id}/delete
+  defaults:
+    { _controller: App\Controller\ExpedienteController::deleteBloqueado }
+
+expedientes_bloqueados:
+  path: /expediente_bloqueados
+  defaults: { _controller: App\Controller\ExpedienteController::bloqueadoIndex }
+
+expediente_administrativo_sector_rechazar:
+  path: /expediente_administrativo_sector_rechazar/{id}
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::RechazarExpedienteSector,
+    }
+
+expediente_administrativo_sector_giro:
+  path: /expediente_administrativo_sector_giro/{id}
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::nuevoGiroAdministrativoSector,
+    }
+
+expediente_bloqueado_index:
+  path: /expediente_bloqueado_index
+  defaults: { _controller: App\Controller\ExpedienteController::bloqueadoIndex }
+
+expediente_bloqueado_delete:
+  path: /expediente_bloqueado_delete/{id}
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteCController::deleteExpedienteBloqueado,
+    }
+
 #legislativos
 expedientes_legislativos_index:
   path: /expedientes_legislativos_index

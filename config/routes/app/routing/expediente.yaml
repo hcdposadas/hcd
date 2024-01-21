@@ -84,6 +84,23 @@ expediente_administrativo_sector_show:
   defaults:
     { _controller: App\Controller\ExpedienteController::showExpedienteRecibido }
 
+expediente_sector_show:
+  path: /expediente_sector_show/{id}
+  defaults:
+    { _controller: App\Controller\ExpedienteController::showExpedienteCreado }
+
+imprimir_expediente_sector:
+  path: /expediente_sector_imprimir/{id}
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::imprimirExpedienteSector,
+    }
+
+imprimir_anexo_sector:
+  path: /anexo_sector_imprimir/{id}
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirAnexoSector }
+
 expediente_administrativo_sector_new:
   path: /expediente_administrativo_sector_new
   defaults:

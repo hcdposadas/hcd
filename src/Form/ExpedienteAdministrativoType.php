@@ -26,7 +26,7 @@ class ExpedienteAdministrativoType extends AbstractType {
 			VichFileType::class,
 			[
 				'label'        => 'Archivo',
-				'required'     => true,
+				'required'     => false,
 				'allow_delete' => true, // optional, default is true
 				'download_uri' => true, // optional, default is true
 			] )

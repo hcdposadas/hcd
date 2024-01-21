@@ -76,9 +76,8 @@ class GiroAdministrativo extends BaseClass {
 
 
 	/**
-	 * @Vich\UploadableField(mapping="giros_anexos", fileNameProperty="anexo")
+	 * @Vich\UploadableField(mapping="anexo_giro", fileNameProperty="anexo")
 	 * @var File
-	 * @Assert\Image(mimeTypes={ "image/*" })
 	 */
 	private $anexoFile;
 
@@ -112,6 +111,25 @@ class GiroAdministrativo extends BaseClass {
 		return $this->anexoFile;
 	}
 
+		/**
+	 * @param string $anexo
+	 *
+	 * @return GiroAdministrativo
+	 */
+	public function setAnexo($anexo)
+	{
+		$this->anexo = $anexo;
+
+		return $this;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getAnexo()
+	{
+		return $this->anexo;
+	}
 
 	public function __toString(): ?string {
          		return $this->areaDestino;

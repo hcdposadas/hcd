@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+
 
 class GiroAdministrativoSectorType extends AbstractType
 {
@@ -20,6 +22,13 @@ class GiroAdministrativoSectorType extends AbstractType
             ->add('areaDestino',null,
             [
                 'attr' => [ 'class' => 'select2' ]
+            ] )
+            ->add('anexoFile',VichFileType::class,
+            [
+                'label'        => 'Anexo Giro',
+                'required'     => false,
+                'allow_delete' => true, // optional, default is true
+                'download_uri' => true, // optional, default is true
             ] );
 
         ;

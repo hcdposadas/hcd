@@ -63,7 +63,17 @@
                                     <tr>
                                     <td>{{giro.areaOrigen}}</td>
                                     <td>{{giro.AreaDestino}}</td>
-                                    <td>Anexo</td>
+                                    <td>
+                                     
+                                    {% if expediente.dependencia.nombre == giro.AreaDestino.nombre or expediente.dependencia.nombre == giro.AreaOrigen.nombre %}
+                                    {% if giro.Anexo %}
+                                                        <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_anexo_sector', {id: giro.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Anexo 
+                    </a>
+                                    {% endif %}
+                                    {% endif %}
+                                    </td>
                                     <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
                                     </tr>
                                 {% endfor %}
@@ -73,25 +83,6 @@
                         </dd>
                     </dl>
 
-                    <dl class="dl-horizontal">
-                    {% if giro %}
-                    {% if giro.estado != 'abierto'  %}
-                    <a class="btn btn-success" 
-                       href="{{ path('expediente_administrativo_sector_giro', {id: giro.expediente.id}) }}">
-                        <i class=""></i> Nuevo Giro
-                    </a>
-                    {% endif %}
-                    </dl>
-
-                    <dl class="dl-horizontal">
-                    {% if giro.estado == 'abierto'  %}
-                    <a class="btn btn-danger" 
-                       href="{{ path('expediente_administrativo_sector_rechazar', {id: giro.id}) }}">
-                        <i class=""></i> Rechazar Expediente
-                    </a>
-                    {% endif %}
-                    {% endif %}
-                    </dl>
                     {% if not is_granted('ROLE_SECTOR') %}
                     <dl class="dl-horizontal">
                         <dt>Expediente Asignado Por</dt>
@@ -129,7 +120,7 @@
                         </a>
                     {% endif %} #}
                     <a class="btn btn-default" target="_blank"
-                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
                         <i class="fa fa-print"></i> Imprimir Expediente
                     </a>
 {#                     {% if expediente.letra and expediente.expediente  %}

@@ -12,6 +12,7 @@ use App\Entity\TipoExpediente;
 use App\Form\AsignarHojasType;
 use App\Form\AsignarNumeroType;
 use App\Form\GiroAdministrativoSectorType;
+use App\Form\GiroAdministrativoType;
 use App\Form\ExpedienteType;
 use App\Form\ProyectoType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,6 +44,8 @@ use PDFMerger\PDFMerger;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 /**
  * Expediente controller.
@@ -1448,7 +1451,7 @@ class ExpedienteController extends AbstractController
 			);
 		} else {
 			if ($dependencia){
-			$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente'=>$tipoExpediente,'dependencia'=>$dependencia]);
+			$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente'=>$tipoExpediente,'dependencia'=>$dependencia],['id'=>'DESC']);
 			$expedientes = $paginator->paginate(
 				$expedientes,
 				$request->query->get('page', 1)/* page number */,
@@ -1463,7 +1466,7 @@ class ExpedienteController extends AbstractController
 
 
 		return $this->render(
-			'expediente/expedientes_administrativos_index.html.twig',
+			'expediente/expedientes_administrativos_sector.html.twig',
 			array(
 				'expedientes' => $expedientes,
 				'filter_type' => $filterType->createView()
@@ -1502,7 +1505,7 @@ class ExpedienteController extends AbstractController
 			);
 		} else {
 
-			$giros = $em->getRepository(GiroAdministrativo::class)->findByAreaDestino($area);
+			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
 			
 
 				$giros = $paginator->paginate(
@@ -1571,7 +1574,7 @@ class ExpedienteController extends AbstractController
 			);
 		} else {
 			
-			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaOrigen'=>$area]);
+			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaOrigen'=>$area],['id'=>'DESC']);
 			
 				$giros = $paginator->paginate(
 				$giros,
@@ -1593,6 +1596,63 @@ class ExpedienteController extends AbstractController
 	}
 
 
+	public function showExpedienteCreado(Expediente $id)
+	{
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+		$ruta='expedientes_administrativos_sector_index';
+
+		if($area->getNombre() == $id->getDependencia()){
+
+
+			return $this->render(
+				'expediente/showExpedienteSector.html.twig',
+				[	
+					'ruta' => $ruta,
+					'expediente' => $id,
+				]
+			);
+
+		}
+
+		
+
+	}
+
+	public function imprimirExpedienteSector(Expediente $id)
+    {
+        $expediente=$id->getExpedienteInterno();
+
+
+
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
+
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
+
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+
+        return $response;
+    }
+
+	public function imprimirAnexoSector(GiroAdministrativo $id)
+    {
+        $anexo=$id->getAnexo();
+
+
+
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/giros/' . $anexo;
+
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
+
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+
+        return $response;
+    }
 
 	public function showExpedienteRecibido(GiroAdministrativo $id)
 	{
@@ -1643,15 +1703,21 @@ class ExpedienteController extends AbstractController
 	public function nuevoGiroAdministrativoSector(Request $request,Expediente $id)
 	{
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-
+		
 		$expediente=$id;
 		$em         = $this->getDoctrine()->getManager();
-		$form       = $this->createForm(NuevoGiroExpedienteDependenciaType::class);
+		$giro=new giroAdministrativo;
+		$form       = $this->createForm(GiroAdministrativoSectorType::class,$giro);
 
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-
+			$date = new \DateTime();
+			$giro->setFechaGiro($date);
+			$giro->setEstado('pendiente');
+			$giro->setAreaOrigen($area);
+			$em->persist($giro);
+			$expediente->addGiroAdministrativo($giro);
 			$em->flush();
 
 			$this->get('session')->getFlashBag()->add(
@@ -1659,7 +1725,7 @@ class ExpedienteController extends AbstractController
 				'El expediente se ha girado a la/s dependencia/s'
 			);
 
-			return $this->redirectToRoute('expedientes_administrativos_recibidos_index');
+			return $this->redirectToRoute('expedientes_administrativos_sector_enviados');
 		}
 
 
@@ -1723,7 +1789,7 @@ class ExpedienteController extends AbstractController
 				$nuevo=$nuevo+1;
 				$existe=$em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo]);
 				if($existe ==  null){
-					$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo,'ano'=>date('Y')]);
+					$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['letra'=>'X','numero'=>$nuevo,'ano'=>date('Y')]);
 				}
 			}
 			$expediente->setExpediente($nuevo);
@@ -1864,46 +1930,28 @@ class ExpedienteController extends AbstractController
 			'slug' => 'interno'
 		]);
 
-
 		$expediente = new Expediente();
 		$expediente->setTipoExpediente($tipoExpediente);
 
-
-		if ($this->get('security.authorization_checker')->isGranted('ROLE_SECTOR')){
-			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
-			$dependecia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area
-		]);
-		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
-		if (!$dependecia ){
-			$dependecia = new Dependencia();
-			$dependecia->setNombre($area);
-			$em->persist($dependecia);
-			$em->flush();
-		}
-		$expediente->setDependencia($dependecia);
-		$expediente->setPeriodoLegislativo($periodo);
-			}
+		$form = $this->createForm(ExpedienteAdministrativoType::class, $expediente);
 	
-
-		$form = $this->createForm(ExpedienteAdministrativoSectorType::class, $expediente);
 
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$expediente->setBorrador(false);
 			$em->persist($expediente);
 			$em->flush();
 
+  
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Expediente creado correctamente'
 			);
-
-			return $this->redirectToRoute('expedientes_administrativos_sector_index');
+			return $this->redirectToRoute('expediente_administrativo_editar', ['id' => $expediente->getId()]);
 		}
 		
 		return $this->render(
-			'expediente/new_administrativo_sector.html.twig',
+			'expediente/new_administrativo.html.twig',
 			[
 				'edit' => false,
 				'form'       => $form->createView(),

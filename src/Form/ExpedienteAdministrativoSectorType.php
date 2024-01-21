@@ -63,6 +63,11 @@ class ExpedienteAdministrativoSectorType extends AbstractType {
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
 				] )
+				->add( 'extracto',
+				TextareaType::class,
+				[
+					'attr' => [ 'rows' => 3 ]
+				] )
 				;
 	}
 

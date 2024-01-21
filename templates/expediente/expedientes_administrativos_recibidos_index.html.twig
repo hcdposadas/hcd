@@ -6,7 +6,7 @@
 
     <div class="row mb-3">
         <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('expediente_administrativo_nuevo') }}">Nuevo Expediente</a>
+            <a class="btn btn-primary" href="{{ path('expediente_administrativo_sector_new') }}">Nuevo Expediente</a>
         </div>
     </div>
 
@@ -65,7 +65,7 @@
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
-                            
+                            <th>Extracto</th>
                             <th>Iniciador</th>
                             <th>Área De Origen</th>
                             <th>Estado</th>
@@ -81,6 +81,7 @@
                                 <td>{{ giro.expediente.expediente }}-{{ giro.expediente.letra }}
                                     -{% if giro.expediente.periodoLegislativo %}{{ giro.expediente.periodoLegislativo }}{% else %}{{ giro.expediente.anio }}{% endif %}</td>
                                 <td>{% if giro.expediente.fecha %}{{ giro.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{{giro.expediente.extracto}}</td>
                                 <td>
                                     {% if giro.expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in giro.expediente.iniciadores %}
@@ -120,6 +121,11 @@
                                        href="{{ path('expediente_timeline', {id: giro.expediente.id}) }}">
                                         <i class="fa fa-road"></i>
                                     </a>
+                                                                        <a class="btn btn-default" data-toggle="tooltip" title="Nuevo Giro Administrativo"
+                                       href="{{ path('expediente_administrativo_sector_giro', { 'id': giro.expediente.id }) }}">
+                                        <i class="fa fa-map-signs"></i>
+                                        <i class="fa fa-book"></i>
+                                    </a>
                                     {% if not is_granted('ROLE_SECTOR') %}
                                     <a class="btn btn-default" data-toggle="tooltip" title="Nuevo Giro Administrativo"
                                        href="{{ path('expediente_nuevo_giro_administrativo', { 'id': giro.expediente.id }) }}">
@@ -148,5 +154,4 @@
         {% endif %}
         </div>
     </div>
-    <a class="btn btn-primary mb-3" href="{{ path('expediente_administrativo_nuevo') }}">Nuevo Expediente</a>
 {% endblock %}

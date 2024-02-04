@@ -1864,9 +1864,9 @@ class ExpedienteController extends AbstractController
 			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
 			$mail = $user->getEmail();
 			*/
-			$mail=$giro->getAreaDestino()->getEmail();
+			$email=$giro->getAreaDestino()->getEmail();
 
-	
+			$email=false;
 			if ( $email ) {
 				$asunto = 'HCD Posadas - Expediente Administrativo ' . $expediente->getNumero().' '. $expediente->getLetra(). ' '. $expediente->getAno().'';
 	

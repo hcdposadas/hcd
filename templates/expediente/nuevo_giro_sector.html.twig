@@ -23,4 +23,20 @@
     </div>
 
     <a class="btn btn-default" href="{{ path('expedientes_administrativos_sector_recibidos') }}">Volver</a>
+
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
+    {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
 {% endblock body %}

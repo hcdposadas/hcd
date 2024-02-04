@@ -95,6 +95,12 @@
                                        href="{{ path('expediente_sector_show', { 'id': expediente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
+                                                        </a>
+                                                                        <a class="btn btn-default" data-toggle="tooltip" title="Nuevo Giro Administrativo"
+                                       href="{{ path('expediente_administrativo_sector_giro', { 'id': expediente.id }) }}">
+                                        <i class="fa fa-map-signs"></i>
+                                        <i class="fa fa-book"></i>
+                                    </a>
                                     {% if not is_granted('ROLE_SECTOR') %}
                                     
                                     <a class="btn btn-default"

@@ -29,8 +29,13 @@
                                 <span>50% Completo</span>
                             </div>
                         </div>
-                        <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente, imprima el
-                            proyecto y acerquese a Mesa de Entrada</p>
+                        {% if expediente.expedienteInternoFile == null %}
+                        <p class="text-light-blue">Para avanzar con el otro el camino del expediente, cargue el expediente con todas las firmas solicitadas.</p>
+                        {{ form_start(signature_form) }}
+                            {{ form_row(signature_form.expedienteInternoFile) }}
+                        {% else %}
+                        <p class="text-light-blue">Para finalizar con el expediente acerquese a mesa de entrada con el codigo QR.</p>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -215,6 +220,18 @@
 
 {% endblock %}
 {% block javascripts %}
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
     <script>
 
         {% if is_granted('ROLE_LEGISLATIVO') %}

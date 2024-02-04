@@ -43,13 +43,27 @@
                                             <span>50% Completo</span>
                                         </div>
                                     </div>
-                                    <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente
-                                        acerquese a Mesa de Entrada con el código que se muestra a la derecha</p>
-                                    <a class="btn btn-default" target="_blank"
-                                       href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
-                                                class="fa fa-print"></i></a>
                                 </div>
                             </div>
+                        {% if expediente.expedienteInterno == null %}
+                        <p class="text-light-blue">Para avanzar con el otro el camino del expediente, cargue el expediente con todas las firmas solicitadas.</p>
+                                                            <a class="btn btn-default" target="_blank"
+                                       href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
+                                                class="fa fa-print"></i></a>
+                        {{ form_start(signature_form) }}
+                            {{ form_row(signature_form.expedienteInternoFile) }}
+                                        <input class="btn btn-primary mb-4" type="submit" value="Enviar"/>
+                {{ form_end(signature_form) }}
+
+                        {% else %}
+                                                          <p class="text-light-blue">Para finalizar con el otro 50% del camino del expediente
+                                        acerquese a Mesa de Entrada con el código que se muestra a la derecha . </p>
+<p class="text-light-blue">Si deasea modificar el proyecto firmado ingrese un nuevo archivo. </p>
+                                                                {{ form_start(signature_form) }}
+                            {{ form_row(signature_form.expedienteInternoFile) }}
+                                        <input class="btn btn-primary mb-4" type="submit" value="Modificar"/>
+                {{ form_end(signature_form) }}
+                        {% endif %}
                         {% endif %}
                     {% endif %}
                     <dl class="dl-horizontal">
@@ -132,6 +146,19 @@
 
 {% endblock %}
 {% block javascripts %}
+
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
     <script>
         $(document).ready(function () {
             $('.btn-enviar-mail').click(function () {

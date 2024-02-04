@@ -21,6 +21,7 @@ use App\Entity\GiroAdministrativo;
 use App\Entity\IniciadorExpediente;
 use App\Entity\Log;
 use App\Form\EditarExtractoType;
+use App\Form\FirmaType;
 use App\Form\ExpedienteAdministrativoExternoType;
 use App\Form\ExpedienteAdministrativoType;
 use App\Form\BloqueadoType;
@@ -511,12 +512,24 @@ class ExpedienteController extends AbstractController
 		}
 	}
 
-	public function showProyecto(Expediente $expediente)
+	public function showProyecto(Request $request,Expediente $expediente)
 	{
+		$em = $this->getDoctrine()->getManager();
 
+		$signatureForm= $this->createForm(FirmaType::class, $expediente);
+
+		$signatureForm->handleRequest($request);
+
+		if ($signatureForm->isSubmitted() && $signatureForm->isValid()) {
+		
+			$em->flush();
+
+
+		}
 		return $this->render(
 			'expediente/proyecto_show.html.twig',
 			[
+				'signature_form' => $signatureForm->createView(),
 				'expediente' => $expediente,
 			]
 		);
@@ -628,6 +641,7 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
+
 	public function editProyecto(Request $request, Expediente $expediente, TimeStampManager $TimeStamp)
 	{
 
@@ -667,6 +681,7 @@ class ExpedienteController extends AbstractController
 			$girosAComisionOriginal->add($giro);
 		}
 
+		$signatureForm= $this->createForm(FirmaType::class, $expediente);
 
 		$editForm = $this->createForm(ProyectoType::class, $expediente);
 		if ($this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
@@ -674,6 +689,19 @@ class ExpedienteController extends AbstractController
 			$editForm->remove('fecha');
 		}
 		$editForm->handleRequest($request);
+		$signatureForm->handleRequest($request);
+
+		if ($signatureForm->isSubmitted() && $signatureForm->isValid()){
+			$em->flush();
+			$this->get('session')->getFlashBag()->add(
+				'success',
+				'Proyecto modificado correctamente'
+			);
+
+			return $this->redirectToRoute($toRoute, array('id' => $expediente->getId()));
+
+
+		}
 
 		if ($editForm->isSubmitted() && $editForm->isValid()) {
 
@@ -742,6 +770,7 @@ class ExpedienteController extends AbstractController
 			array(
 				'expediente' => $expediente,
 				'edit_form'  => $editForm->createView(),
+				'signature_form' => $signatureForm->CreateView(),
 			)
 		);
 	}
@@ -1635,6 +1664,25 @@ class ExpedienteController extends AbstractController
 
         return $response;
     }
+	
+	public function imprimirProyectoFirmado(Expediente $id)
+    {
+        $expediente=$id->getExpedienteInterno();
+
+
+
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
+
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
+
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+
+        return $response;
+    }
+
 
 	public function imprimirAnexoSector(GiroAdministrativo $id)
     {
@@ -1676,6 +1724,7 @@ class ExpedienteController extends AbstractController
 		return $this->render(
 			'expediente/showSector.html.twig',
 			[	'rechazar' => $rechazar,
+			'area'=> $area->getNombre(),
 				'giro' => $giro,
 				'ruta' => $ruta,
 				'expediente' => $expediente,
@@ -1809,11 +1858,13 @@ class ExpedienteController extends AbstractController
 
 
 			$em->flush();
-/* 
+
 			foreach ($expediente->getGirosAdministatrivos() as $giro){
-			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
+/* 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
 			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
 			$mail = $user->getEmail();
+			*/
+			$mail=$giro->getAreaDestino()->getEmail();
 
 	
 			if ( $email ) {
@@ -1838,7 +1889,7 @@ class ExpedienteController extends AbstractController
 				}
 	
 			} 
-		} */
+		} 
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Expediente creado correctamente'

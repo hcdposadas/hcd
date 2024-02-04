@@ -63,7 +63,15 @@
                                     <tr>
                                     <td>{{giro.areaOrigen}}</td>
                                     <td>{{giro.AreaDestino}}</td>
-                                    <td>Anexo</td>
+                                    <td> 
+                                    {% if expediente.dependencia.nombre == giro.AreaDestino.nombre or expediente.dependencia.nombre == giro.AreaOrigen.nombre or  area == giro.AreaDestino.nombre or area == giro.AreaOrigen.nombre %}
+                                    {% if giro.Anexo %}
+                                                        <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_anexo_sector', {id: giro.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Anexo 
+                    </a>
+                                    {% endif %}
+                                    {% endif %}</td>
                                     <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
                                     </tr>
                                 {% endfor %}
@@ -129,7 +137,7 @@
                         </a>
                     {% endif %} #}
                     <a class="btn btn-default" target="_blank"
-                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
                         <i class="fa fa-print"></i> Imprimir Expediente
                     </a>
 {#                     {% if expediente.letra and expediente.expediente  %}

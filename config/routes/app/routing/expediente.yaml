@@ -96,6 +96,13 @@ imprimir_expediente_sector:
       _controller: App\Controller\ExpedienteController::imprimirExpedienteSector,
     }
 
+imprimir_proyecto_firmado:
+  path: /expediente_firmado_imprimir/{id}
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::imprimirProyectoFirmado,
+    }
+
 imprimir_anexo_sector:
   path: /anexo_sector_imprimir/{id}
   defaults:
@@ -158,7 +165,7 @@ proyectos_index:
 proyecto_show:
   path: /{id}/proyecto-ver
   defaults: { _controller: App\Controller\ExpedienteController::showProyecto }
-  methods: GET
+  methods: [GET, POST]
 
 proyecto_new:
   path: /proyecto-new

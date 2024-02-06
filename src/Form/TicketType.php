@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Ticket;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\AreaAdministrativa;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +21,14 @@ class TicketType extends AbstractType
                 'attr' => [ 'rows' => 3, 'maxlength' => 250  ],
                 'label' => 'Descripción'
             ] )
-            ->add('areaDestino',null, ['label' => 'Área De Destino'])
+            ->add('areaDestino', EntityType::class, [
+                'class' => AreaAdministrativa::class,
+                'query_builder' => function (AreaRepository $repository) {
+                    $ids = [40, 32, 25, 21, 34]; // Tus 5 IDs específicos
+                    return $repository->createQueryBuilder('a')
+                        ->where('a.id IN (:ids)')
+                        ->setParameter('ids', $ids);
+                },'label' => 'Área De Destino'])
         ;
     }
 

@@ -1859,37 +1859,37 @@ class ExpedienteController extends AbstractController
 
 			$em->flush();
 
-			foreach ($expediente->getGirosAdministatrivos() as $giro){
-/* 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
-			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
-			$mail = $user->getEmail();
-			*/
-			$email=$giro->getAreaDestino()->getEmail();
+// 			foreach ($expediente->getGirosAdministatrivos() as $giro){
+// /* 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
+// 			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
+// 			$mail = $user->getEmail();
+// 			*/
+// 			$email=$giro->getAreaDestino()->getEmail();
 
-			$email=false;
-			if ( $email ) {
-				$asunto = 'HCD Posadas - Expediente Administrativo ' . $expediente->getNumero().' '. $expediente->getLetra(). ' '. $expediente->getAno().'';
+// 			$email=false;
+// 			if ( $email ) {
+// 				$asunto = 'HCD Posadas - Expediente Administrativo ' . $expediente->getNumero().' '. $expediente->getLetra(). ' '. $expediente->getAno().'';
 	
-				$email = ( new TemplatedEmail() )
-					->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
-					->to( $mail )
-					->subject( $asunto )
-					->htmlTemplate( 'emails/plan_de_labor.html.twig' )
-					->context( [
-						'sesion' => '1'
-					] );
+// 				$email = ( new TemplatedEmail() )
+// 					->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+// 					->to( $mail )
+// 					->subject( $asunto )
+// 					->htmlTemplate( 'emails/plan_de_labor.html.twig' )
+// 					->context( [
+// 						'sesion' => '1'
+// 					] );
 	
-				try {
-					$mailer->send($email);
-					return true;
-				} catch (TransportExceptionInterface $e) {
-					// some error prevented the email sending; display an
-					// error message or try to resend the message
-					return false;
-				}
+// 				try {
+// 					$mailer->send($email);
+// 					return true;
+// 				} catch (TransportExceptionInterface $e) {
+// 					// some error prevented the email sending; display an
+// 					// error message or try to resend the message
+// 					return false;
+// 				}
 	
-			} 
-		} 
+// 			} 
+// 		} 
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Expediente creado correctamente'

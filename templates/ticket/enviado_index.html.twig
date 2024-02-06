@@ -52,7 +52,7 @@
                                 </td>
                                 <td>{{ ticket.texto }}</td>
                                 <td>{{ ticket.areaDestino }}</td>
-                                <td>{{ ticket.fecha | date('d/m/Y h:m') }}</td>
+                                <td>{{ ticket.fecha | date('d/m/Y H:i') }}</td>
                                 <td>
                                     {% if ticket.observacion == 'Cancelado' %}
                                     Cancelado

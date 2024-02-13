@@ -31,12 +31,6 @@ class ExpedienteAdministrativoSectorType extends AbstractType {
 				'attr'     => [ 'class' => 'texto_por_defecto' ]
 			] )
 
-			->add( 'fecha',
-				DateType::class,
-				array(
-					'html5'  => true,
-					'widget' => 'single_text',
-				) )
 			->add( 'anexos',
 				BootstrapCollectionType::class,
 				[

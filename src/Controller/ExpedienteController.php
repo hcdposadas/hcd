@@ -13,6 +13,7 @@ use App\Form\AsignarHojasType;
 use App\Form\AsignarNumeroType;
 use App\Form\GiroAdministrativoSectorType;
 use App\Form\GiroAdministrativoType;
+use App\Form\RechazarGiroType;
 use App\Form\ExpedienteType;
 use App\Form\ProyectoType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1535,6 +1536,9 @@ class ExpedienteController extends AbstractController
 		} else {
 
 			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
+			$giros = array_filter($giros, function($giro) {
+				return $giro->getExpediente()->getLetra() != null;
+			});
 			
 
 				$giros = $paginator->paginate(
@@ -1738,14 +1742,24 @@ class ExpedienteController extends AbstractController
 
 		$giro=$id;
 
+		$form       = $this->createForm(RechazarGiroType::class,$giro);
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+
 		if ($giro->getEstado() == 'abierto') {
 			$giro->setEstado('rechazado');
 			$em->flush();
 		}
-
+		return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
+	}
 		
 
-		return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
+		return $this->render('expediente/rejectExpedienteSector.html.twig',[
+			'giro' => $giro,
+			'form'       => $form->createView()
+		]);
 	}
 
 
@@ -1815,35 +1829,46 @@ class ExpedienteController extends AbstractController
 		$expediente->setDependencia($dependecia);
 		$expediente->setPeriodoLegislativo($periodo);
 		
-	
-
+		$mesa        = $em->getRepository(AreaAdministrativa::class)->findOneBy([
+			'nombre' => 'Departamento de Mesa de Entradas y Salidas'
+		]);
 		$form = $this->createForm(ExpedienteAdministrativoSectorType::class, $expediente);
 
 		$form->handleRequest($request);
 		$numero=0;
 		if ($form->isSubmitted() && $form->isValid()) {
-			$ultimo = $em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','periodoLegislativo'=>$periodo],['expediente' => 'DESC']);
+			$ultimo = $em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo'=>$periodo],['expediente' => 'DESC']);
 
 			if($ultimo){
 				$numero=$ultimo->getExpediente(); 
 			}
 
 			$nuevo=$numero+1;
-			$existe=$em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo,'periodoLegislativo'=>$periodo]);
+			$existe=$em->getRepository(Expediente::class)->findOneBy(['expediente'=>$nuevo,'periodoLegislativo'=>$periodo]);
 			if($existe ==  null){
-				$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['letra'=>'X','numero'=>$nuevo,'ano'=>date('Y')]);
+				$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['numero'=>$nuevo,'ano'=>date('Y')]);
 			}
 
 			while($existe != null ){ 
 				$nuevo=$nuevo+1;
-				$existe=$em->getRepository(Expediente::class)->findOneBy(['letra'=>'X','expediente'=>$nuevo]);
+				$existe=$em->getRepository(Expediente::class)->findOneBy(['expediente'=>$nuevo]);
 				if($existe ==  null){
-					$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['letra'=>'X','numero'=>$nuevo,'ano'=>date('Y')]);
+					$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['numero'=>$nuevo,'ano'=>date('Y')]);
 				}
 			}
+			$giro=new giroAdministrativo;
+
+				$date = new \DateTime();
+				$giro->setFechaGiro($date);
+				$giro->setEstado('pendiente');
+				$giro->setAreaDestino($mesa);
+				$em->persist($giro);
+				
+				$expediente->addGiroAdministrativo($giro);
+
 			$expediente->setExpediente($nuevo);
-			$expediente->setLetra('X');
-			$date = new \DateTime();
+
+			$expediente->setFecha($date);
 			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 			foreach ($expediente->getGiroAdministrativos() as $giro){
 
@@ -1852,6 +1877,7 @@ class ExpedienteController extends AbstractController
 				$giro->setEstado('pendiente');
 
 			}
+
 
 			$em->persist($expediente);
 
@@ -1920,8 +1946,8 @@ class ExpedienteController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$bloqueado->setAno(date('Y'));
-			$repetido=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['ano' => date('Y'),'numero'=>$bloqueado->getNumero(),'letra'=>$bloqueado->getLetra()]);
-			$existe=$em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo' => $periodo,'expediente'=>$bloqueado->getNumero(),'letra'=>$bloqueado->getLetra()]);
+			$repetido=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['ano' => date('Y'),'numero'=>$bloqueado->getNumero()]);
+			$existe=$em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo' => $periodo,'expediente'=>$bloqueado->getNumero()]);
 			if($existe){
 				$this->get('session')->getFlashBag()->add(
 					'warning',

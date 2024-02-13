@@ -13,9 +13,6 @@
         <div class="col-3">
         {{form_row(form.numero)}}
         </div>
-        <div class="col-2">
-        {{form_row(form.letra)}}
-        </div>
         <div class="col-2 ">
         <button class="btn btn-primary text-white" type="submit">Bloquear</button>
         </div>
@@ -30,7 +27,7 @@
                 <div class="row">
                 {% for bloqueado in bloqueados %}
                     <div class="card text-lg text-center pt-1 m-2" style="width:8%">
-                    {{bloqueado.numero}} - {{bloqueado.letra}} - {{bloqueado.ano}}  <a class="btn btn-danger mt-1 " href="{{ path('bloqueo_delete', {id: bloqueado.id}) }}"><i class="fa fa-trash"></i></a>
+                    {{bloqueado.numero}} - {{bloqueado.ano}}  <a class="btn btn-danger mt-1 " href="{{ path('bloqueo_delete', {id: bloqueado.id}) }}"><i class="fa fa-trash"></i></a>
                     </div>
                 {% endfor %}
                 </div>

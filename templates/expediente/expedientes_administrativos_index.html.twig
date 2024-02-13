@@ -72,7 +72,11 @@
                         </thead>
                         <tbody>
                         {% for expediente in expedientes %}
+                            {% if expediente.letra == null %}
+                            <tr class="" style="background-color:#DEE19F"  >
+                            {% else %}
                             <tr>
+                            {% endif %}
                                 <td>
                                     <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>

@@ -53,23 +53,24 @@
                                 <td>{{ ticket.texto }}</td>
                                 <td>{{ ticket.areaDestino }}</td>
                                 <td>{{ ticket.fecha | date('d/m/Y H:i') }}</td>
-                                <td>
-                                    {% if ticket.observacion == 'Cancelado' %}
+                                <td>{% if ticket.completo  %}
+                                    Completo
+                                                                {% elseif ticket.observacion == 'Cancelado' %}
                                     Cancelado
-                                {% elseif ticket.completo %}
-                                        Completo
-                                    {% else %}
+                                {% elseif ticket.completo is same as  (false) %}
+                                        Rechazado
+                                    {% elseif ticket.completo == null %}
                                         Pendiente
-                                    {% endif %}    
+                                    {% endif %}  
                                         </td>
-                                <td>{% if ticket.completo %}
-                                {{ ticket.observacion }}
-                                {% endif %}
+                                <td>{{ticket.observacion}}
+ 
                                 </td>
                                                                 
 
                                 <td>
-                                    {% if ticket.completo == false and ticket.observacion != 'Cancelado' %}
+                                    {% if ticket.observacion == null %}
+
                                     <a class="btn btn-default"
                                        href="{{ path('ticket_cancel', { 'id': ticket.id }) }}">
                                         <i class="fa fa-trash"></i>

@@ -98,7 +98,14 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ giro.AreaDestino }}
-                                <td>{{giro.estado | upper}}</td>
+                                <td>{% if giro.estado == 'pendiente' %}
+                                    <i class="fa-solid fa-clock"></i>
+                                    {% elseif giro.estado == 'abierto' %}
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    {% else %}
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <a class="btn btn-default"
                                        href="{{ path('expediente_administrativo_sector_show', { 'id': giro.id }) }}">

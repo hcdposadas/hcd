@@ -18,6 +18,11 @@ ticket_close:
   defaults: { _controller: App\Controller\TicketController::closeTicket }
   methods: [GET, POST]
 
+ticket_reject:
+  path: /reject/ticket/{id}
+  defaults: { _controller: App\Controller\TicketController::rejectTicket }
+  methods: [GET, POST]
+
 ticket_cancel:
   path: /cancel/ticket/{id}
   defaults: { _controller: App\Controller\TicketController::cancelTicket }

@@ -75,7 +75,6 @@ class TicketController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$ticket->setAreaOrigen($area);
-			$ticket->setCompleto(false);
 			$ticket->setFecha(new \DateTime('now'));
 			$em->persist($ticket);
 			$em->flush();
@@ -102,8 +101,9 @@ class TicketController extends AbstractController
 
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-		if ($id->getCompleto() == false){
+		if ($id->getCompleto() == null){
 		$id->setObservacion('Cancelado');
+		$id->setCompleto(false);
 		}
 			$em->flush();
 
@@ -126,13 +126,45 @@ class TicketController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			if($id->getCompleto() == false and $id->getObservacion() != 'Cancelado'){
+			if($id->getCompleto() == null ){
 			$id->setCompleto(true);
 			$em->flush();
 			}
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Ticket finalizado con exito'
+			);
+
+			return $this->redirectToRoute('tickets_recibidos');
+		}
+
+
+		return $this->render(
+			'ticket/closeTicket.html.twig',
+			[
+				'ticket' => $id,
+				'form'       => $form->createView()
+			]
+		);
+
+    }
+
+	public function rejectTicket(Request $request,Ticket $id){
+        $em = $this->getDoctrine()->getManager();
+
+
+		$form = $this->createForm(CloseTicketType::class, $id);
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			if($id->getCompleto() == null ){
+			$id->setCompleto(false);
+			$em->flush();
+			}
+			$this->get('session')->getFlashBag()->add(
+				'Warning',
+				'Ticket rechazado'
 			);
 
 			return $this->redirectToRoute('tickets_recibidos');

@@ -35,7 +35,7 @@ class Ticket
     private $areaDestino;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $completo;
 

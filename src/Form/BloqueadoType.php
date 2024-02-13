@@ -15,7 +15,7 @@ class BloqueadoType extends AbstractType
     {
         $builder
             ->add('numero')
-            ->add('letra',TextType::class,['required' => true,'attr' => array( 'class' => 'text-uppercase' )])
+
         ;
     }
 

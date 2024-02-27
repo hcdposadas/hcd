@@ -1736,7 +1736,7 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function RechazarExpedienteSector(GiroAdministrativo $id)
+	public function RechazarExpedienteSector(Request $request, GiroAdministrativo $id)
 	{
 		$em = $this->getDoctrine()->getManager();
 

@@ -62,7 +62,13 @@
                                 {% for giro in expediente.giroAdministrativos %}
                                     <tr>
                                     <td>{{giro.areaOrigen}}</td>
-                                    <td>{{giro.AreaDestino}}</td>
+                                    <td>{{giro.AreaDestino}}                                {% if giro.estado == 'pendiente' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#FFD43B" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% elseif giro.estado == 'abierto' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#c71a1a" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% endif %}-{{giro.texto}}</td>
                                     <td> 
                                     {% if  area == giro.AreaDestino.nombre or area == giro.AreaOrigen.nombre %}
                                     {% if giro.Anexo %}
@@ -83,7 +89,7 @@
 
                     <dl class="dl-horizontal">
                     {% if giro %}
-                    {% if giro.estado != 'abierto'  %}
+                    {% if giro.estado == 'abierto'  %}
                     <a class="btn btn-success" 
                        href="{{ path('expediente_administrativo_sector_giro', {id: giro.expediente.id}) }}">
                         <i class=""></i> Nuevo Giro

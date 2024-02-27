@@ -63,13 +63,7 @@
     <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-$(document).on('change', '.custom-file-input', function (event) {
-    $(this).next('.custom-file-label').html(event.target.files[0].name);
-})
-</script>
     <script>
         var submitConfirm = false;
         var buttonPressed = '';
@@ -77,7 +71,6 @@ $(document).on('change', '.custom-file-input', function (event) {
             buttonPressed = $(this).text()
         });
         $(document).ready(function () {
-            bsCustomFileInput.init()
             $('.tipo-proyecto').change(function () {
                 var tipoId = $(this).val();
 
@@ -119,6 +112,13 @@ $(document).on('change', '.custom-file-input', function (event) {
             })
         });
     </script>
+
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
   <style>
 .custom-file-input ~ .custom-file-label::after {
     content: "Seleccionar Archivo";

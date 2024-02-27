@@ -21,6 +21,7 @@ parameters:
   app.path.rrmm_perfil: "/uploads/rrmm/perfiles"
   app.path.rrmm_diagnostico: "/uploads/rrmm/diagnosticos"
   app.path.anexo_giro: "/uploads/expedientes/giros"
+  app.path.comunicados: "/uploads/comunicados"
 
 services:
   # default configuration for services in *this* file

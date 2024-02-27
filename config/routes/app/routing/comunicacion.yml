@@ -1,0 +1,28 @@
+comunicaciones_recibidas:
+  path: /recibidas
+  defaults: { _controller: App\Controller\ComunicacionController::recibidas }
+
+comunicaciones_enviadas:
+  path: /enviadas
+  defaults: { _controller: App\Controller\ComunicacionController::enviadas }
+
+comunicacion_show:
+  path: /show/{id}
+  defaults: { _controller: App\Controller\ComunicacionController::show }
+
+comunicacion_new:
+  path: /new
+  defaults:
+    { _controller: App\Controller\ComunicacionController::newComunicado }
+
+imprimir_comunicado_recibido:
+  path: /recibidas/{id}
+  defaults:
+    {
+      _controller: App\Controller\ComunicacionController::imprimirComunicadoRecibido,
+    }
+
+imprimir_comunicado:
+  path: /enviadas/{id}
+  defaults:
+    { _controller: App\Controller\ComunicacionController::imprimirComunicado }

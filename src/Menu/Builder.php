@@ -527,6 +527,38 @@ class Builder
 						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
+
+				$keySector = 'COMUNICADOS';
+				$menu->addChild(
+					$keySector,
+					array(
+						'childrenAttributes' => array(
+							'class' => 'nav nav-treeview',
+						),
+					)
+				)
+					->setUri('#')
+					->setLinkAttribute('class', 'nav-link')
+					->setExtra('icon', 'fa fa-folder-open')
+					->setAttribute('class', 'nav-item has-treeview');
+	
+					$menu[$keySector]->addChild(
+						'Enviados',
+						array(
+							'route'          => 'comunicaciones_enviadas',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
+						$menu[$keySector]->addChild(
+						'Recibidos',
+						array(
+							'route'          => 'comunicaciones_recibidas',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
+					
 				$keyTicket = 'TICKETS';
 				$menu->addChild(
 					$keyTicket,

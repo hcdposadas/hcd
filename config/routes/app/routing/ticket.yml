@@ -27,3 +27,8 @@ ticket_cancel:
   path: /cancel/ticket/{id}
   defaults: { _controller: App\Controller\TicketController::cancelTicket }
   methods: [GET, POST]
+
+ticket_accepted:
+  path: /aceptar/ticket/{id}
+  defaults: { _controller: App\Controller\TicketController::aceptarTicket }
+  methods: [GET, POST]

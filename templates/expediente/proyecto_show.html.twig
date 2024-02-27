@@ -45,7 +45,11 @@
                                     </div>
                                 </div>
                             </div>
-                        {% if expediente.expedienteInterno == null %}
+                                                     <p class="text-light-blue">Para finalizar con el expediente acerquese a mesa de entrada con el Expediente impreso.</p>
+<a class="btn btn-default" target="_blank"
+                                       href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
+                                                class="fa fa-print"></i></a>
+                        {# {% if expediente.expedienteInterno == null %}
                         <p class="text-light-blue">Para avanzar con el otro el camino del expediente, cargue el expediente con todas las firmas solicitadas.</p>
                                                             <a class="btn btn-default" target="_blank"
                                        href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
@@ -63,8 +67,8 @@
                             {{ form_row(signature_form.expedienteInternoFile) }}
                                         <input class="btn btn-primary mb-4" type="submit" value="Modificar"/>
                 {{ form_end(signature_form) }}
-                        {% endif %}
-                        {% endif %}
+                        {% endif %}#}
+                        {% endif %} 
                     {% endif %}
                     <dl class="dl-horizontal">
                         <dt>Expediente</dt>

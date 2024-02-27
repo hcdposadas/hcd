@@ -50,14 +50,32 @@ class AreaAdministrativa extends BaseClass
      */
     private $ticketsD;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comunicacion::class, mappedBy="areaOrigen")
+     */
+    private $comunicacions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Comunicacion::class, mappedBy="areaDestino")
+     */
+    private $comunicacionsR;
+
+    /**
+     * @ORM\OneToMany(targetEntity=RecibidoComunicado::class, mappedBy="area")
+     */
+    private $recibidoComunicados;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
+        $this->comunicacions = new ArrayCollection();
+        $this->comunicacionsR = new ArrayCollection();
+        $this->recibidoComunicados = new ArrayCollection();
     }
 
 	public function __toString() {
-                        		return $this->nombre;
-                        	}
+                                                                     		return $this->nombre;
+                                                                     	}
 
 
     /**
@@ -224,6 +242,96 @@ class AreaAdministrativa extends BaseClass
             // set the owning side to null (unless already changed)
             if ($ticket->getAreaOrigen() === $this) {
                 $ticket->setAreaOrigen(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comunicacion[]
+     */
+    public function getComunicacions(): Collection
+    {
+        return $this->comunicacions;
+    }
+
+    public function addComunicacion(Comunicacion $comunicacion): self
+    {
+        if (!$this->comunicacions->contains($comunicacion)) {
+            $this->comunicacions[] = $comunicacion;
+            $comunicacion->setAreaOrigen($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComunicacion(Comunicacion $comunicacion): self
+    {
+        if ($this->comunicacions->contains($comunicacion)) {
+            $this->comunicacions->removeElement($comunicacion);
+            // set the owning side to null (unless already changed)
+            if ($comunicacion->getAreaOrigen() === $this) {
+                $comunicacion->setAreaOrigen(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comunicacion[]
+     */
+    public function getComunicacionsR(): Collection
+    {
+        return $this->comunicacionsR;
+    }
+
+    public function addComunicacionsR(Comunicacion $comunicacionsR): self
+    {
+        if (!$this->comunicacionsR->contains($comunicacionsR)) {
+            $this->comunicacionsR[] = $comunicacionsR;
+            $comunicacionsR->addAreaDestino($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComunicacionsR(Comunicacion $comunicacionsR): self
+    {
+        if ($this->comunicacionsR->contains($comunicacionsR)) {
+            $this->comunicacionsR->removeElement($comunicacionsR);
+            $comunicacionsR->removeAreaDestino($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RecibidoComunicado[]
+     */
+    public function getRecibidoComunicados(): Collection
+    {
+        return $this->recibidoComunicados;
+    }
+
+    public function addRecibidoComunicado(RecibidoComunicado $recibidoComunicado): self
+    {
+        if (!$this->recibidoComunicados->contains($recibidoComunicado)) {
+            $this->recibidoComunicados[] = $recibidoComunicado;
+            $recibidoComunicado->setArea($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecibidoComunicado(RecibidoComunicado $recibidoComunicado): self
+    {
+        if ($this->recibidoComunicados->contains($recibidoComunicado)) {
+            $this->recibidoComunicados->removeElement($recibidoComunicado);
+            // set the owning side to null (unless already changed)
+            if ($recibidoComunicado->getArea() === $this) {
+                $recibidoComunicado->setArea(null);
             }
         }
 

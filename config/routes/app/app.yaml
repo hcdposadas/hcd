@@ -58,6 +58,10 @@ app_decreto:
   resource: "routing/decreto.yml"
   prefix: /decreto
 
+app_comunicacion:
+  resource: "routing/comunicacion.yml"
+  prefix: /comunicacion
+
 #app_display:
 #    path:     /display
 #    defaults: { _controller: AppBundle:Default:display }

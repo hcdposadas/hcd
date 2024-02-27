@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+   Comunicados 
+{% endblock title %}
+{% block body %}
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('comunicacion_new') }}">Nuevo Comunicado</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Comunicados Enviados</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Numero</th>
+                            <th>Tipo</th>
+                            <th>Extracto</th>
+                            <th>Fecha</th>
+                            <th>Area Destino</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for comunicado in comunicados %}
+                            <tr>
+                                <td>
+                                    <a target="_blank" href="{{ path('imprimir_comunicado', { 'id': comunicado.id }) }}">{{ comunicado.id }}</a>
+                                </td>
+                                <td>{{ comunicado.numero }} - {{ comunicado.anio }}</td>
+                                <td>{{comunicado.tipo}}</td>
+                                <td>{{comunicado.estado}}</td>
+                                <td>{{ comunicado.fecha|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    {% if comunicado.recibidoComunicados.count > 0 %}
+                                        {% for area in comunicado.recibidoComunicados %}
+                                        {{area.area.nombre}} {% if area.estado == 'RECIBIDO' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% elseif area.estado == 'ABIERTO' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% endif %} 
+                                
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-default" target="_blank"
+                                       href="{{ path('imprimir_comunicado', { 'id': comunicado.id }) }}">
+                                        <i class="fa fa-print"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+        {% if comunicados %}
+            {{ knp_pagination_render(comunicados) }}
+        {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}

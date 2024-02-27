@@ -49,6 +49,11 @@ class Ticket
      */
     private $fecha;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $abierto;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -122,6 +127,18 @@ class Ticket
     public function setFecha(\DateTimeInterface $fecha): self
     {
         $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    public function getAbierto(): ?bool
+    {
+        return $this->abierto;
+    }
+
+    public function setAbierto(bool $abierto): self
+    {
+        $this->abierto = $abierto;
 
         return $this;
     }

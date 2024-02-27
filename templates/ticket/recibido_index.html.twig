@@ -55,6 +55,13 @@
                                         Rechazado
                                     {% elseif ticket.completo == null %}
                                         Pendiente
+                                        {% if ticket.abierto == false  %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% else  %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    
+                                    {% endif %} 
+                                
                                     {% endif %}    
                                         </td>
                                 <td>
@@ -65,6 +72,8 @@
 
                                 <td>
                                     {% if ticket.observacion == null %}
+
+                                    {% if ticket.abierto == true %}
                                     <a class="btn btn-default"
                                        href="{{ path('ticket_close', { 'id': ticket.id }) }}">
                                         <i class="fa fa-check"></i>
@@ -73,6 +82,12 @@
                                        href="{{ path('ticket_reject', { 'id': ticket.id }) }}">
                                        <i class="fa fa-fw fa-trash"></i>
                                     </a>
+                                    {% else %}
+                                    <a class="btn btn-default"
+                                       href="{{ path('ticket_accepted', { 'id': ticket.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                     {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>

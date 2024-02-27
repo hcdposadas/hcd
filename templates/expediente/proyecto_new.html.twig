@@ -63,7 +63,13 @@
     <a class="btn btn-default" href="{{ path('proyectos_index') }}">Volver</a>
 {% endblock %}
 {% block javascripts %}
- <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
     <script>
         var submitConfirm = false;
         var buttonPressed = '';
@@ -113,8 +119,10 @@
             })
         });
     </script>
-            <script>
-$('input[type="file"]').change(function(e){ var array = []; for (let i = 0; i < e.target.files.length; i++) { array.push(e.target.files[i].name) } console.log(e.target.files) $('.custom-file-label').html(array.join(', ')); });
-        </script>
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
 
 {% endblock javascripts %}

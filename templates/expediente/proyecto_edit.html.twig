@@ -29,6 +29,8 @@
                                 <span>50% Completo</span>
                             </div>
                         </div>
+                         <p class="text-light-blue">Para finalizar con el expediente acerquese a mesa de entrada con el Expediente impreso.</p>
+                        <h3>Seccion en desarrollo</h3>
                         {% if expediente.expedienteInternoFile == null %}
                         <p class="text-light-blue">Para avanzar con el otro el camino del expediente, cargue el expediente con todas las firmas solicitadas.</p>
                         {{ form_start(signature_form) }}
@@ -36,6 +38,7 @@
                         {% else %}
                         <p class="text-light-blue">Para finalizar con el expediente acerquese a mesa de entrada con el codigo QR.</p>
                         {% endif %}
+
                     </div>
                 </div>
             {% endif %}
@@ -225,7 +228,7 @@
     content: "Seleccionar Archivo";
 }
   </style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <script>
 $(document).on('change', '.custom-file-input', function (event) {

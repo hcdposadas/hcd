@@ -76,6 +76,7 @@ class TicketController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			$ticket->setAreaOrigen($area);
 			$ticket->setFecha(new \DateTime('now'));
+			$ticket->setAbierto(false);
 			$em->persist($ticket);
 			$em->flush();
 
@@ -181,4 +182,14 @@ class TicketController extends AbstractController
 
     }
 
+
+	public function aceptarTicket(Ticket $id){
+        $em = $this->getDoctrine()->getManager();
+
+		$id->setAbierto(true);
+
+		$em->flush();
+
+		return $this->redirectToRoute('tickets_recibidos');
+	}
 }

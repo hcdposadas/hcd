@@ -57,3 +57,7 @@ vich_uploader:
       uri_prefix: "%app.path.anexo_giro%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/giros"
       namer: "vich_uploader.namer_uniqid"
+    comunicados:
+      uri_prefix: "%app.path.comunicados%"
+      upload_destination: "%kernel.project_dir%/public/uploads/comunicados"
+      namer: "vich_uploader.namer_uniqid"

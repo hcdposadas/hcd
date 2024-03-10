@@ -107,6 +107,16 @@ class ExpedienteAdministrativoType extends AbstractType {
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,
+				] )
+				->add( 'anexos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => AnexoExpedienteType::class,
+					'required' => false,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Anexos'
 				] );
 	}
 

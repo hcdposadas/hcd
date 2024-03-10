@@ -4,10 +4,12 @@ require_once (dirname(dirname(__DIR__)).'/PDFMerger/PDFMerger.php');
 
 use App\Entity\AreaAdministrativa;
 use App\Entity\Giro;
+use App\Entity\AnexoGiro;
 use App\Entity\PeriodoLegislativo;
 use App\Entity\ProyectoBAE;
 use App\Entity\Dependencia;
 use App\Entity\ExpedienteBloqueado;
+use App\Entity\AnexoExpediente;
 use App\Entity\TipoExpediente;
 use App\Form\AsignarHojasType;
 use App\Form\AsignarNumeroType;
@@ -1061,7 +1063,7 @@ class ExpedienteController extends AbstractController
 
 			if ($form->get('asignar')->isClicked()) {
 
-				$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($request->get('codigoReferencia'));
+				$expediente = $em->getRepository(Expediente::class)->findOneById($request->get('codigoReferencia'));
 
 
 				$numeroDeHojas = $form->getData()->getNumeroDeHojas();
@@ -1081,13 +1083,14 @@ class ExpedienteController extends AbstractController
 				);
 			}
 
-			$codigoReferencia = substr(
-				$request->get('codigoReferencia'),
-				7,
-				strlen($request->get('codigoReferencia'))
-			);
-
-			$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($codigoReferencia);
+			//$codigoReferencia = substr(
+			//	$request->get('codigoReferencia'),
+			//	7,
+			//	strlen($request->get('codigoReferencia'))
+			//);
+			$codigoReferencia=$request->get('codigoReferencia');
+			//$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($codigoReferencia);
+			$expediente = $em->getRepository(Expediente::class)->findOneById($codigoReferencia);
 			if (!$expediente) {
 				$this->get('session')->getFlashBag()->add(
 					'error',
@@ -1141,7 +1144,7 @@ class ExpedienteController extends AbstractController
 				if ($form->isSubmitted() && $form->isValid()) {
 
 
-					$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($request->get('codigoReferencia'));
+					$expediente = $em->getRepository(Expediente::class)->findOneById($request->get('codigoReferencia'));
 
 					$existeExpediente = $em->getRepository(Expediente::class)->findOneBy(
 						[
@@ -1192,13 +1195,15 @@ class ExpedienteController extends AbstractController
 				}
 			}
 
-			$codigoReferencia = substr(
-				$request->get('codigoReferencia'),
-				7,
-				strlen($request->get('codigoReferencia'))
-			);
+			//$codigoReferencia = substr(
+			//	$request->get('codigoReferencia'),
+			//	7,
+			//	strlen($request->get('codigoReferencia'))
+			//);
+
+			$codigoReferencia = $request->get('codigoReferencia');
 			
-			$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($codigoReferencia);
+			$expediente = $em->getRepository(Expediente::class)->findOneById($codigoReferencia);
 
 
 			if ($expediente->getExpediente() && $expediente->getLetra()) {
@@ -1668,6 +1673,25 @@ class ExpedienteController extends AbstractController
 
         return $response;
     }
+
+	public function imprimirAnexoSector(AnexoExpediente $id)
+    {
+        $expediente=$id->getAnexo();
+
+
+
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/anexos/' . $expediente;
+
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
+
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+
+        return $response;
+    }
+
 	
 	public function imprimirProyectoFirmado(Expediente $id)
     {
@@ -1687,14 +1711,13 @@ class ExpedienteController extends AbstractController
         return $response;
     }
 
-
-	public function imprimirAnexoSector(GiroAdministrativo $id)
+	public function imprimirAnexoGiro(AnexoGiro $id)
     {
         $anexo=$id->getAnexo();
 
 
 
-        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/giros/' . $anexo;
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/giros/anexos/' . $anexo;
 
         // Crear una BinaryFileResponse para el archivo PDF
         $response = new BinaryFileResponse($pdfPath);
@@ -2053,6 +2076,7 @@ class ExpedienteController extends AbstractController
 				'success',
 				'Expediente modificado correctamente'
 			);
+			return $this->redirectToRoute('expedientes_administrativos_index');
 		}
 
 		return $this->render(

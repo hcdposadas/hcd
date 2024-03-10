@@ -44,7 +44,34 @@
                             {% endif %}
                         </dd>
                     </dl>
-
+                    <dl class="dl-horizontal mb-2">
+                    <dt>Expediente</dt>
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Expediente
+                    </a>
+                    <dt>Anexos</dt>
+                    </dl>
+                    <dl class="dl-horizontal">
+                                            <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Archivo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for anexo in expediente.anexos %}
+                            <tr>
+                            <td>{{anexo.descripcion}}</td>
+                            <td><a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_anexo_sector', {id: anexo.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Anexo
+                    </a></td>
+                    </tr>
+                    {% endfor %}
+                        </tbody>
+                        </table>                    </dl>
                     <dl class="dl-horizontal">
                         <dt>Giros</dt>
                         <dd>
@@ -66,11 +93,13 @@
                                     <td>
                                      
                                     {% if expediente.dependencia.nombre == giro.AreaDestino.nombre or expediente.dependencia.nombre == giro.AreaOrigen.nombre %}
-                                    {% if giro.Anexo %}
+                                    {% if giro.anexoGiros %}
+                                    {% for anexo in giro.anexoGiros %}
                                                         <a class="btn btn-default" target="_blank"
-                       href="{{ path('imprimir_anexo_sector', {id: giro.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Anexo 
+                       href="{{ path('imprimir_anexo_sector', {id: anexo.id}) }}">
+                        <i class="fa fa-print"></i> {{anexo.titulo}} 
                     </a>
+                                    {% endfor %}
                                     {% endif %}
                                     {% endif %}
                                     </td>
@@ -119,10 +148,7 @@
                             <i class="fa fa-print"></i> Imprimir Carátula
                         </a>
                     {% endif %} #}
-                    <a class="btn btn-default" target="_blank"
-                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Expediente
-                    </a>
+
 {#                     {% if expediente.letra and expediente.expediente  %}
                         <a class="btn btn-default margin" target="_blank"
                            href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">

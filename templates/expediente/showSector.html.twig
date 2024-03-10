@@ -4,7 +4,7 @@
 {% endblock title %}
 {% block body %}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Expediente {{ expediente.expediente }}-{{ expediente.letra }}-
@@ -71,11 +71,13 @@
                                     {% endif %}-{{giro.texto}}</td>
                                     <td> 
                                     {% if  area == giro.AreaDestino.nombre or area == giro.AreaOrigen.nombre %}
-                                    {% if giro.Anexo %}
+                                    {% if giro.anexoGiros %}
+                                    {% for anexo in giro.anexoGiros %}
                                                         <a class="btn btn-default" target="_blank"
-                       href="{{ path('imprimir_anexo_sector', {id: giro.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Anexo 
+                       href="{{ path('imprimir_anexo_giro', {id: anexo.id}) }}">
+                        <i class="fa fa-print"></i> {{anexo.titulo}}
                     </a>
+                    {% endfor %}
                                     {% endif %}
                                     {% endif %}</td>
                                     <td>{{giro.fechaGiro | date('d/m/Y') }}</td>

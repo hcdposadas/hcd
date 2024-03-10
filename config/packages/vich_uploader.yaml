@@ -23,6 +23,10 @@ vich_uploader:
       uri_prefix: "%app.path.expedientes_anexos%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/anexos"
       namer: "vich_uploader.namer_uniqid"
+    giros_anexos:
+      uri_prefix: "%app.path.giros_anexos%"
+      upload_destination: "%kernel.project_dir%/public/uploads/giros/anexos"
+      namer: "vich_uploader.namer_uniqid"
     dictamenes_anexos:
       uri_prefix: "%app.path.dictamenes_anexos%"
       upload_destination: "%kernel.project_dir%/public/uploads/dictamenes/anexos"

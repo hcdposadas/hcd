@@ -8,6 +8,7 @@ parameters:
   app.path.expedientes_internos: "/uploads/expedientes/internos"
   app.path.expedientes_externos: "/uploads/expedientes/externos"
   app.path.expedientes_anexos: "/uploads/expedientes/anexos"
+  app.path.giros_anexos: "/uploads/giros/anexos"
   app.path.dictamenes_anexos: "/uploads/dictamenes/anexos"
   app.path.dictamenes: "/uploads/dictamenes"
   app.path.sanciones: "/uploads/sanciones"

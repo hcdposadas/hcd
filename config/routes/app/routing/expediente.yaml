@@ -108,6 +108,11 @@ imprimir_anexo_sector:
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirAnexoSector }
 
+imprimir_anexo_giro:
+  path: /anexo_giro_imprimir/{id}
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirAnexoGiro }
+
 expediente_administrativo_sector_new:
   path: /expediente_administrativo_sector_new
   defaults:

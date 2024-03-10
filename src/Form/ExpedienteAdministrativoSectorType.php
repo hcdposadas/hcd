@@ -44,7 +44,7 @@ class ExpedienteAdministrativoSectorType extends AbstractType {
 			->add( 'giroAdministrativos',
 				BootstrapCollectionType::class,
 				[
-					'entry_type'   => GiroAdministrativoSectorType::class,
+					'entry_type'   => GiroNuevoAdministrativoType::class,
 					'allow_add'    => true,
 					'allow_delete' => true,
 					'by_reference' => false,

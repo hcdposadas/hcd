@@ -18,11 +18,20 @@ class GiroAdministrativoSectorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
+            ->add('anexoGiros',
+            BootstrapCollectionType::class,
+            [
+                'entry_type'   => AnexoGiroType::class,
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label'        => 'Anexos'
+            ] )
             ->add('areaDestino',null,
             [
                 'attr' => [ 'class' => 'select2' ]
             ] )
+            ->add( 'texto' );
 
 
         ;

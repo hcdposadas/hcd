@@ -44,6 +44,27 @@
                             {% endif %}
                         </dd>
                     </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Expediente</dt>
+                        <dd>
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Expediente
+                    </a>
+                        </dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Anexos</dt>
+                        <dd>
+                        {% for anexo in expediente.anexos %}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_anexo_sector', {id: anexo.id}) }}">
+                        <i class="fa fa-print"></i> {{anexo.descripcion}}
+                    </a>
+                    {% endfor %}
+                        </dd>
+                    </dl>
 
                     <dl class="dl-horizontal">
                         <dt>Giros</dt>
@@ -144,10 +165,7 @@
                             <i class="fa fa-print"></i> Imprimir Carátula
                         </a>
                     {% endif %} #}
-                    <a class="btn btn-default" target="_blank"
-                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Expediente
-                    </a>
+
 {#                     {% if expediente.letra and expediente.expediente  %}
                         <a class="btn btn-default margin" target="_blank"
                            href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">

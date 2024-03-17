@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Ticket;
+use App\Entity\Usuario;
+use App\Entity\CargoPersona;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -86,7 +88,11 @@ class TicketController extends AbstractController
 			);
 
 				 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $ticket->getAreaDestino() ); 
-							$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
+
+
+							$user  = $em->getRepository( Usuario::class )->findByPersona($cargo->getPersona());
+							if($user){
+							
 							$mail = $user->getEmail();
 						
 				
@@ -98,7 +104,7 @@ class TicketController extends AbstractController
 									->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
 									->to( $mail )
 									->subject( $asunto )
-									->htmlTemplate( 'emails/plan_de_labor.html.twig' );
+									->htmlTemplate( 'emails/ticket.html.twig' );
 
 					
 								try {
@@ -112,6 +118,7 @@ class TicketController extends AbstractController
 								}
 					
 							} 
+						}
 						 
 
 			return $this->redirectToRoute('tickets_enviados');

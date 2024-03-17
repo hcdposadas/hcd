@@ -96,6 +96,7 @@ class TicketController extends AbstractController
 							$mail = $user->getEmail();
 						
 				
+							$email=true;
 							if ( $email ) {
 								$asunto = 'HCD Posadas - Ticket De Servicio ' . $ticket->getAreaOrigen()->getNombre() . ' - ' . $ticket->getFecha()->format('d/m/Y');
 					
@@ -106,7 +107,7 @@ class TicketController extends AbstractController
 									->htmlTemplate( 'emails/ticket.html.twig' )
 									->context( [
 										'ticket' => $ticket,
-									] );
+									] );;
 
 					
 								try {

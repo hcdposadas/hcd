@@ -25,7 +25,7 @@ class TicketType extends AbstractType
             ->add('areaDestino', EntityType::class, [
                 'class' => AreaAdministrativa::class,
                 'query_builder' => function (AreaAdministrativaRepository $repository) {
-                    $ids = [40, 32, 25, 21, 34]; // Tus 5 IDs específicos
+                    $ids = [40, 32, 20, 21, 34]; // Tus 5 IDs específicos
                     return $repository->createQueryBuilder('a')
                         ->where('a.id IN (:ids)')
                         ->setParameter('ids', $ids);

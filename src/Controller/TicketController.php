@@ -85,6 +85,35 @@ class TicketController extends AbstractController
 				'Ticket Generado con exito'
 			);
 
+				 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $ticket->getAreaDestino() ); 
+							$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
+							$mail = $user->getEmail();
+						
+				
+							$email=false;
+							if ( $email ) {
+								$asunto = 'HCD Posadas - Ticket De Servicio ' . $ticket->getAreaOrigen()->getNombre() . ' - ' . $ticket->getFecha()->format('d/m/Y');
+					
+								$email = ( new TemplatedEmail() )
+									->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+									->to( $mail )
+									->subject( $asunto )
+									->htmlTemplate( 'emails/plan_de_labor.html.twig' );
+
+					
+								try {
+									$mailer->send($email);
+									
+								} catch (TransportExceptionInterface $e) {
+									// some error prevented the email sending; display an
+									// error message or try to resend the message
+									$this->get('logger')->error($e->getMessage());
+								$this->get('logger')->error(sprintf('%s: %s', $e->getMessage(), $e->getTraceAsString()));
+								}
+					
+							} 
+						 
+
 			return $this->redirectToRoute('tickets_enviados');
 		}
 

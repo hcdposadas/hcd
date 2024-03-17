@@ -90,7 +90,7 @@ class TicketController extends AbstractController
 				 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $ticket->getAreaDestino() ); 
 
 
-							$user  = $em->getRepository( Usuario::class )->findByPersona($cargo->getPersona());
+							$user  = $em->getRepository( Usuario::class )->findOneByPersona($cargo->getPersona());
 							if($user){
 							
 							$mail = $user->getEmail();
@@ -104,7 +104,10 @@ class TicketController extends AbstractController
 									->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
 									->to( $mail )
 									->subject( $asunto )
-									->htmlTemplate( 'emails/ticket.html.twig' );
+									->htmlTemplate( 'emails/ticket.html.twig' )
+									->context( [
+										'ticket' => $ticket,
+									] );;
 
 					
 								try {

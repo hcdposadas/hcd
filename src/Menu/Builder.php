@@ -672,10 +672,10 @@ class Builder
 					);
 			}
 		}
-
-		$keyPersonal = 'DOCUMENTOS';
+		if($this->authorizationChecker->isGranted('ROLE_SECRETARIO')){
+		$keyLista = 'TICKETS';
 		$menu->addChild(
-			$keyPersonal,
+			$keyLista,
 			array(
 				'childrenAttributes' => array(
 					'class' => 'nav nav-treeview',
@@ -684,18 +684,18 @@ class Builder
 		)
 			->setUri('#')
 			->setLinkAttribute('class', 'nav-link')
-			->setExtra('icon', 'far fa-file-alt')
+			->setExtra('icon', 'fa fa-folder-open')
 			->setAttribute('class', 'nav-item has-treeview');
-		$menu[$keyPersonal]
+		$menu[$keyLista]
 			->addChild(
-				'Carta Orgánica',
+				'Lista de tickets',
 				array(
-					'route'          => 'documento_carta_organica',
+					'route'          => 'tickets_all',
 					'attributes'     => ['class' => 'nav-item'],
 					'linkAttributes' => ['class' => 'nav-link']
 				)
 			);
-
+		}
 		return $menu;
 	}
 }

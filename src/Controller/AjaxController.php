@@ -390,6 +390,48 @@ class AjaxController extends AbstractController {
 
 	}
 
+
+	public function enviarMailTicket( Request $request, MailerInterface $mailer ) {
+
+		$ticketId = $request->get( 'ticketId' );
+		$ticket   = $this->getDoctrine()->getRepository( Ticket::class )->find( $ticketId );
+
+		if ( ! $expediente ) {
+			return new JsonResponse( 'No se encontro el ticket', 404 );
+		}
+		$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $ticket->getAreaDestino() ); 
+
+
+		$user  = $em->getRepository( Usuario::class )->findOneByPersona($cargo->getPersona());
+		if($user){
+		$mail = $user->getEmail();
+
+		$asunto = 'HCD ' . $_ENV['CIUDAD_NAME'] . ' - Ticket Recibido';
+
+
+
+		$email = ( new TemplatedEmail() )
+			->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+			->to( new Address( $mail ) )
+			->subject( $asunto )
+			->embed( fopen( $img, 'r' ), $nombreAdjunto )
+			->htmlTemplate( 'emails/ticket.html.twig' )
+			->context( [
+				'ticket' => $ticket,
+			] );
+
+		try {
+			$mailer->send( $email );
+
+			return new JsonResponse( 'ok' );
+		} catch ( TransportExceptionInterface $e ) {
+			// some error prevented the email sending; display an
+			// error message or try to resend the message
+			return new JsonResponse( 'error', 500 );
+		}
+	}
+	}
+
 	public function getProyectosBAE( Request $request ) {
 		$em = $this->getDoctrine();
 

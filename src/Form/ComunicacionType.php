@@ -22,6 +22,7 @@ class ComunicacionType extends AbstractType
                 'Nota' => 'NOTA',
                 'Memorándum' => 'MEMORANDUM',
                 'Circular' => 'CIRCULAR',
+                'Informe' => 'INFORME',
             ],
             'placeholder' => 'Selecciona el tipo', // Opcional, para mostrar un placeholder
         ])
@@ -42,6 +43,16 @@ class ComunicacionType extends AbstractType
             [
                 'attr' => [ 'class' => 'select2',  'rows' => 3 ]
             ] )
+            ->add('masivo', ChoiceType::class, [
+                'label' => 'Envio masivo',
+                'mapped' => false,
+                'choices' => [
+                    'TODOS' => 'TODOS',
+                    'CONCEJALES' => 'CONCEJALES',
+                    'AREAS' => 'AREAS',
+                ],
+                'placeholder' => 'Selecciona el tipo', // Opcional, para mostrar un placeholder
+            ])
         ;
     }
 

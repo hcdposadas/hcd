@@ -1539,8 +1539,12 @@ class ExpedienteController extends AbstractController
 				10/* limit per page */
 			);
 		} else {
+			if ($this->get('security.authorization_checker')->isGranted('ROLE_SECRETARIO')) {
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 500);
+			} else {
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
 
-			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
+			}
 			$giros = array_filter($giros, function($giro) {
 				return $giro->getExpediente()->getLetra() != null;
 			});
@@ -1738,7 +1742,7 @@ class ExpedienteController extends AbstractController
 		if($area == $giro->getAreaDestino()){
 			$em = $this->getDoctrine()->getManager();
 			$rechazar= true;
-			if ($giro->getEstado() == 'pendiente') {
+			if ($giro->getEstado() == 'pendiente' or $giro->getEstado() == null) {
 				$giro->setEstado('abierto');
 			}
 			$em->flush();
@@ -2621,5 +2625,147 @@ class ExpedienteController extends AbstractController
 				'edit_form'  => $editForm->createView(),
 			)
 		);
+	}
+
+	function imprimirArchivo(Expediente $expediente){
+
+		$em = $this->getDoctrine()->getManager();
+		//$caratula=
+		$archivo=$expediente->expedienteInterno();
+
+
+
+		
+		//        return new Response($html);
+
+		$html = $this->renderView(
+			'expediente/anexo.pdf.twig',
+			[
+				'expediente' => $expediente,
+			]
+		);
+
+		$pdfMerge = new PDFMerger;
+
+		$filesystem = new Filesystem();
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+				
+
+
+			$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
+
+		$pdfMerge->addPDF($nombre);
+
+		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+
+		foreach($expediente->getGiroAdministrativos() as $giroAdministrativo){
+			//add pase
+
+		
+			$html = $this->renderView(
+				'expediente/anexoGiro.pdf.twig',
+				[
+					'expediente' => $giroAdministrativo,
+				]
+			);
+
+		$id=$giroAdministrativo->getId();
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.$id.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+		
+			$pdfMerge->addPDF($nombre);
+
+			foreach ($giroAdministrativo->getAnexoGiros() as $anexoGiros){
+				$path=$anexoGiros->getAnexo();
+
+		
+				$extension = pathinfo($path);
+		
+				$extension = strtolower($extension['extension']);
+	
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads//giros/anexos/'.$path);
+				}
+
+				
+			}
+		}
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+
+
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+
 	}
 }

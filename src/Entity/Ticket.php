@@ -54,6 +54,31 @@ class Ticket
      */
     private $abierto;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $fechaV;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $fechaC;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $confirmado;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $advertencia;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $fechaCon;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -139,6 +164,66 @@ class Ticket
     public function setAbierto(bool $abierto): self
     {
         $this->abierto = $abierto;
+
+        return $this;
+    }
+
+    public function getFechaV(): ?\DateTimeInterface
+    {
+        return $this->fechaV;
+    }
+
+    public function setFechaV(?\DateTimeInterface $fechaV): self
+    {
+        $this->fechaV = $fechaV;
+
+        return $this;
+    }
+
+    public function getFechaC(): ?\DateTimeInterface
+    {
+        return $this->fechaC;
+    }
+
+    public function setFechaC(?\DateTimeInterface $fechaC): self
+    {
+        $this->fechaC = $fechaC;
+
+        return $this;
+    }
+
+    public function getConfirmado(): ?bool
+    {
+        return $this->confirmado;
+    }
+
+    public function setConfirmado(?bool $confirmado): self
+    {
+        $this->confirmado = $confirmado;
+
+        return $this;
+    }
+
+    public function getAdvertencia(): ?string
+    {
+        return $this->advertencia;
+    }
+
+    public function setAdvertencia(?string $advertencia): self
+    {
+        $this->advertencia = $advertencia;
+
+        return $this;
+    }
+
+    public function getFechaCon(): ?\DateTimeInterface
+    {
+        return $this->fechaCon;
+    }
+
+    public function setFechaCon(?\DateTimeInterface $fechaCon): self
+    {
+        $this->fechaCon = $fechaCon;
 
         return $this;
     }

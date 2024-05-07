@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\TicketType;
 use App\Form\CloseTicketType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;  
 
 
 
@@ -38,6 +40,44 @@ class TicketController extends AbstractController
 
         return $this->render('ticket/enviado_index.html.twig', [
             'tickets' => $tickets,
+        ]);
+    }
+
+	public function todosindex(PaginatorInterface $paginator,Request $request)
+    {
+		$form = $this->createFormBuilder()
+		->add('texto', TextType::class)
+		->add('buscar', SubmitType::class, ['label' => 'Buscar'])
+		->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->get('buscar')->isClicked()) {
+
+            $tickets = $em->getRepository(Ticket::class)->findByText($form->getData()['texto']);
+				
+            $tickets = $paginator->paginate(
+            $tickets,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+            );
+        } else {
+        $em = $this->getDoctrine()->getManager();
+
+        $tickets = $em->getRepository(Ticket::class)->findAll();
+			
+        $tickets = $paginator->paginate(
+        $tickets,
+        $request->query->get('page', 1)/* page number */,
+        10/* limit per page */
+    );
+}
+
+
+
+        return $this->render('ticket/all_index.html.twig', [
+            'tickets' => $tickets,
+			'form' => $form->createView()
         ]);
     }
 
@@ -96,7 +136,7 @@ class TicketController extends AbstractController
 							$mail = $user->getEmail();
 						
 				
-							$email=true;
+							$email=false;
 							if ( $email ) {
 								$asunto = 'HCD Posadas - Ticket De Servicio ' . $ticket->getAreaOrigen()->getNombre() . ' - ' . $ticket->getFecha()->format('d/m/Y');
 					
@@ -168,6 +208,7 @@ class TicketController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			if($id->getCompleto() == null ){
 			$id->setCompleto(true);
+			$id->setFechaC(new \DateTime('now'));
 			$em->flush();
 			}
 			$this->get('session')->getFlashBag()->add(
@@ -200,6 +241,7 @@ class TicketController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			if($id->getCompleto() == null ){
 			$id->setCompleto(false);
+			$id->setFechaC(new \DateTime('now'));
 			$em->flush();
 			}
 			$this->get('session')->getFlashBag()->add(
@@ -226,9 +268,35 @@ class TicketController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
 		$id->setAbierto(true);
+		$id->setFechaV(new \DateTime());
 
 		$em->flush();
 
 		return $this->redirectToRoute('tickets_recibidos');
 	}
+
+	public function confirmarTicket(Ticket $id){
+        $em = $this->getDoctrine()->getManager();
+
+		$id->setConfirmado(true);
+		$id->setFechaCon(new \DateTime());
+
+		$em->flush();
+
+		return $this->redirectToRoute('tickets_enviados');
+	}
+
+	public function observarTicket(Ticket $id){
+        $em = $this->getDoctrine()->getManager();
+
+		$id->setConfirmado(false);
+		$id->setFechaCon(new \DateTime());
+
+		$em->flush();
+
+		return $this->redirectToRoute('tickets_enviados');
+	}
+
+
+	
 }

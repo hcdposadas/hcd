@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Comunicacion;
 use App\Entity\RecibidoComunicado;
+use App\Entity\AreaAdministrativa;
 use App\Form\ComunicacionType;
 use Symfony\Component\HttpFoundation\Request;
 use Knp\Component\Pager\PaginatorInterface;
@@ -51,6 +52,34 @@ class ComunicacionController extends AbstractController
             $comunicacion->setAreaOrigen($area);
             $numero=$em->getRepository(Comunicacion::class)->countComunicacionesByTipo($comunicacion->getTipo(), $area->getId());
             $comunicacion->setNumero($numero+1);
+            if ($form->get('masivo')->getData()=="TODOS") {
+
+                $areas = $em->getRepository(AreaAdministrativa::class)->createQueryBuilder('a')
+                ->where('a.activo = true')
+                ->getQuery()->getResult();
+                foreach ($areas as $destino) {
+                    $comunicacion->addAreaDestino($destino);
+                }
+            }
+            if ($form->get('masivo')->getData()=="CONCEJALES") {
+                $areas = $em->getRepository(AreaAdministrativa::class)->createQueryBuilder('a')
+                ->where('a.activo = true AND a.nombre like :patron')
+                ->setParameter('patron', '%Concejal%')
+                ->getQuery()->getResult();
+                foreach ($areas as $destino) {
+                    $comunicacion->addAreaDestino($destino);
+                }           
+            }
+            if ($form->get('masivo')->getData()=="AREAS") {
+                $areas = $em->getRepository(AreaAdministrativa::class)->createQueryBuilder('a')
+                ->where('a.activo = true AND a.nombre not like :patron')
+                ->setParameter('patron', '%Concejal%')
+                ->getQuery()->getResult();
+                foreach ($areas as $destino) {
+                    $comunicacion->addAreaDestino($destino);
+                }
+
+            }
             $em->persist($comunicacion);
 
             foreach ($comunicacion->getAreaDestino() as $destino){

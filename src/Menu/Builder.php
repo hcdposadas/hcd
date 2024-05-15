@@ -182,6 +182,15 @@ class Builder
 							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
+					$menu[$keyEmpresa]
+					->addChild(
+						'Giros a comisiones',
+						array(
+							'route'          => 'giros_comisiones_index',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);
 			}
 		}
 		// Decretos
@@ -266,7 +275,32 @@ class Builder
 					)
 				);
 		}
+		if ($this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')) {
 
+			$keyPersonal = 'PROYECTOS';
+			$menu->addChild(
+				$keyPersonal,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'nav nav-treeview',
+					),
+				)
+			)
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fa fa-folder-open')
+				->setAttribute('class', 'nav-item has-treeview');
+
+			$menu[$keyPersonal]
+				->addChild(
+					'Listado',
+					array(
+						'route'          => 'expedientes_legislativos_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+		}
 		if (
 			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
 			$this->authorizationChecker->isGranted('ROLE_DEFENSOR')
@@ -313,37 +347,54 @@ class Builder
 					)
 				);
 		}
-
-		if ($this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')) {
-
-			$keyPersonal = 'PROYECTOS';
-			$menu->addChild(
-				$keyPersonal,
-				array(
-					'childrenAttributes' => array(
-						'class' => 'nav nav-treeview',
-					),
-				)
-			)
-				->setUri('#')
-				->setLinkAttribute('class', 'nav-link')
-				->setExtra('icon', 'fa fa-folder-open')
-				->setAttribute('class', 'nav-item has-treeview');
-
-			$menu[$keyPersonal]
-				->addChild(
-					'Listado',
+		if (
+			$this->authorizationChecker->isGranted('ROLE_COMISION')){
+				$keyComision = 'COMISIONES';
+				$menu->addChild(
+					$keyComision,
 					array(
-						'route'          => 'expedientes_legislativos_index',
+						'childrenAttributes' => array(
+							'class' => 'nav nav-treeview',
+						),
+					)
+				)
+					->setUri('#')
+					->setLinkAttribute('class', 'nav-link')
+					->setExtra('icon', 'fa fa-folder-open')
+					->setAttribute('class', 'nav-item has-treeview');
+				$menu[$keyComision]
+					->addChild(
+						'Proyectos Comisión',
+						array(
+							'route'          => 'comision_index',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);
+				$menu[$keyComision]
+					->addChild(
+						'Otros Proyectos',
+						array(
+							'route'          => 'expedientes_legislativos_index',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);	
+				$menu[$keyComision]
+				->addChild(
+					'Mis Dictámenes',
+					array(
+						'route'          => 'comision_dictamen_index',
 						'attributes'     => ['class' => 'nav-item'],
 						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-		}
+			}
 
 		if (
 			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
 			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
+			|| $this->authorizationChecker->isGranted('ROLE_COMISION')
 		) {
 
 			$keyDictamenes = 'DICTÁMENES';
@@ -400,7 +451,9 @@ class Builder
 			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') ||
 			$this->authorizationChecker->isGranted('ROLE_DEFENSOR') ||
 			$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||
-			$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')
+			$this->authorizationChecker->isGranted('ROLE_BIBLIOTECA')|| 
+			$this->authorizationChecker->isGranted('ROLE_COMISION')
+
 		) {
 			$keyPersonal = 'SESIONES';
 			$menu->addChild(
@@ -671,6 +724,48 @@ class Builder
 						]
 					);
 			}
+		}
+
+		if($this->authorizationChecker->isGranted('ROLE_SECRETARIO')){
+		$keyLista = 'TICKETS';
+		$menu->addChild(
+			$keyLista,
+			array(
+				'childrenAttributes' => array(
+					'class' => 'nav nav-treeview',
+				),
+			)
+		)
+			->setUri('#')
+			->setLinkAttribute('class', 'nav-link')
+			->setExtra('icon', 'fa fa-folder-open')
+			->setAttribute('class', 'nav-item has-treeview');
+		$menu[$keyLista]
+			->addChild(
+				'Lista de tickets',
+				array(
+					'route'          => 'tickets_all',
+					'attributes'     => ['class' => 'nav-item'],
+					'linkAttributes' => ['class' => 'nav-link']
+				)
+			);
+$menu[$keyLista]->addChild(
+                                                'Tickets Enviados',
+                                                array(
+                                                        'route'          => 'tickets_enviados',
+                                                        'attributes'     => ['class' => 'nav-item'],
+                                                        'linkAttributes' => ['class' => 'nav-link']
+                                                )
+                                                );
+                                                $menu[$keyLista]->addChild(
+                                                'Tickets Recibidos',
+                                                array(
+                                                        'route'          => 'tickets_recibidos',
+                                                        'attributes'     => ['class' => 'nav-item'],
+                                                        'linkAttributes' => ['class' => 'nav-link']
+                                                )
+                                                );
+
 		}
 
 		$keyPersonal = 'DOCUMENTOS';

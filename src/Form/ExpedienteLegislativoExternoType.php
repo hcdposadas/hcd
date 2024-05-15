@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\BootstrapCollectionType;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ExpedienteLegislativoExternoType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
@@ -42,13 +43,22 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 			->add( 'texto',
 				CKEditorType::class,
 				[
-					'required' => true,
+					'required' => false,
 					'config'   => array(
 						'uiColor' => '#ffffff',
 //						'height'  => '600px'
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
 				] )
+				->add( 'expedienteInternoFile',
+				VichFileType::class,
+				[
+					'label'        => 'Archivo',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
+				] )
+				
 			->add( 'iniciadores',
 				BootstrapCollectionType::class,
 				[

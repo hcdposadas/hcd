@@ -34,6 +34,13 @@ class DefaultController extends AbstractController {
 		return $this->render( 'default/display.html.twig' );
 	}
 
+	/**
+	 * @Route("/pantalla2", name="app_display2")
+	 */
+	public function display2() {
+		return $this->render( 'default/display2.html.twig' );
+	}
+
 	public function cartaOrganica() {
 		$cartaOrganica = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
 			'slug' => 'carta-organica'

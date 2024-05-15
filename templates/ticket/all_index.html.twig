@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Ticket De Servicio
+{% endblock title %}
+{% block body %}
+
+    <div class="row mb-3">
+
+    </div>
+
+{#     <div class="row">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div> #}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Todos Los Ticket De Servicio</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th class="col-md-4">Ticket</th>
+                            <th>Área De Origen</th>
+                            <th>Área De Destino</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th class="col-md-2">Observación</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                         {% for ticket in tickets %}
+                            <tr>
+                                <td>
+                                    {{ ticket.id }}
+                                </td>
+                                <td>{{ ticket.texto }}</td>
+                                <td>{{ ticket.areaOrigen }}</td>
+                                <td>{{ ticket.areaDestino }}</td>
+                                <td><i class="fa  fa-arrow-right"></i>{{ ticket.fecha | date('d/m/Y H:i') }}  {% if ticket.fechaV %} <br/> <i class="fa fa-eye"></i> {{ticket.fechaV | date('d/m/Y H:i') }}{% endif %}
+                                 {% if ticket.fechaC %}
+                                 {% if ticket.completo  %} <br/>  <i class="fa fa-check"></i> 
+                                 {% else %} 
+                                 <br/> <i class="fa fa-fw fa-trash"></i>
+                                 {% endif %} 
+                                 {{ ticket.fechaC | date('d/m/Y H:i')  }}
+                                 {% endif %}</td>
+                                <td>{% if ticket.completo  %}
+                                    Completo{% if ticket.confirmado == true %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+
+                                            {% elseif ticket.confirmado is same as  (false) %}
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+
+                                            {% endif %}
+                                                                {% elseif ticket.observacion == 'Cancelado' %}
+                                    Cancelado
+                                {% elseif ticket.completo is same as  (false) %}
+                                        Rechazado
+                                    {% elseif ticket.completo == null %}
+                                        Pendiente
+                                        {% if ticket.abierto == false  %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% else  %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    
+                                    {% endif %} 
+                                    {% endif %}  
+                                        </td>
+                                <td>{{ticket.observacion}}
+ 
+                                </td>
+                                                                
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+        {% if tickets %}
+            {{ knp_pagination_render(tickets) }}
+        {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}
+
+

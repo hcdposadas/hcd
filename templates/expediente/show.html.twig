@@ -142,6 +142,16 @@
                        href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
                         <i class="fa fa-print"></i> Imprimir Proyecto
                     </a>
+                    {% if expediente.expedienteInterno %}
+                    <a class="btn btn-default mb-4" target="_blank"
+                       href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
+                    </a>
+                    {% endif %}
+                                        <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_archivo', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto Completo
+                    </a>
                     {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
                         <a class="btn btn-default margin" target="_blank"
                            href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">

@@ -1,0 +1,509 @@
+{{ form_start(form) }}
+<div class="my-custom-class-for-errors">
+    {{ form_errors(form) }}
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-right"><a href="{{ path('ver_ordenanza', { id: norma.id }) }}" target="_blank">Ver vista pública <i class="fa fa-external-link"></i></a></div>
+        <h1>Norma {{ norma }}</h1>
+        <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Análisis Normativo</h3>
+                <div class="box-tools pull-right">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_norma" data-toggle="tab" aria-expanded="true">Norma</a></li>
+                        <li class=""><a href="#tab_boletin" data-toggle="tab" aria-expanded="false">Boletín Oficial</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_norma">
+                            <h4 class="box-title">Datos de la Norma</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.rama) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.numero) }}
+                                </div>
+                            </div>
+
+                            {{ form_row(form.ramaVigenteNoConsolidada) }}
+                            {{ form_row(form.vigenteNoConsolidada) }}
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.tipoOrdenanza) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.numeroAnterior) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.fechaSancion) }}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {{ form_row(form.tipoVeto) }}
+                                        </div>
+                                        <div class="col-md-12">
+                                            {{ form_row(form.observacionesVeto) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_row(form.observacion) }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.decretoPromulgatorio) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.fechaPromulgacion) }}
+                                </div>
+                            </div>
+
+                            {{ form_row(form.tipoPromulgacion) }}
+                            {{ form_row(form.temaGeneral) }}
+                            {{ form_row(form.activo) }}
+                        </div>
+                        <div class="tab-pane" id="tab_boletin">
+                            <h4 class="box-title">Datos del Boletín Oficial</h4>
+                            {{ form_row(form.tipoBoletin) }}
+                            <div class="numero-boletin">
+                                {{ form_row(form.numeroBoletin) }}
+                                {{ form_row(form.fechaPublicacionBoletin) }}
+                            </div>
+                            <div class="boletin-oficial">
+                                {{ form_row(form.boletinOficialMunicipal) }}
+                            </div>
+                            {{ form_row(form.paginaBoletin) }}
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+
+        </div>
+
+        <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Análisis Epistemológico</h3>
+                <div class="box-tools pull-right">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ form_row(form.estado) }}
+                    </div>
+                    <div class="col-md-4">
+                        <br>
+                        {% if norma.estadoNorma %}
+                            <span class="text-muted">Modificado el {{ norma.estadoNorma.fechaActualizacion | date }} por {{ norma.estadoNorma.actualizadoPor }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-5">
+                        <br>
+                        {{ anexos }}
+                    </div>
+                </div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_textos" data-toggle="tab" aria-expanded="true">Textos</a></li>
+                        <li class=""><a href="#tab_cambios" data-toggle="tab" aria-expanded="false">Tabla de Antecedentes</a></li>
+                        <li class=""><a href="#tab_adhesiones" data-toggle="tab" aria-expanded="false">Adhesiones ({{ norma.adhesiones.count }})</a></li>
+                        <li class=""><a href="#tab_abrogaciones" data-toggle="tab" aria-expanded="false">Abrogaciones ({{ norma.abrogaciones.count }})</a></li>
+                        <li class=""><a href="#tab_caducidades" data-toggle="tab" aria-expanded="false">Caducidades ({{ norma.caducidades.count }})</a></li>
+                        <li class=""><a href="#tab_conflictos" data-toggle="tab" aria-expanded="false">Abrogaciones implícita ({{ norma.conflictosNormativos.count }})</a></li>
+                        <li class=""><a href="#tab_refundiciones" data-toggle="tab" aria-expanded="false">Refundiciones ({{ norma.refundiciones.count }})</a></li>
+                        <li class=""><a href="#tab_fundamentacion" data-toggle="tab" aria-expanded="false">Fundamentación</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_textos">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="box-title">Texto Original</h4>
+                                    {{ form_widget(form.archivoNorma) }}
+                                    <br>
+                                </div>
+                                <div class="col-md-12">
+                                    <h4 class="box-title">Anexos originales</h4>
+                                    {{ form_widget(form.anexosOriginales) }}
+                                    <br>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="box-title">Textos Consolidados</h4>
+                                    <table class="table">
+                                    {% for tc in norma.textosDefinitivos|filter(tc => tc.textoDefinitivo is not empty and not tc.consolidacion.enCurso) %}
+                                        <tr>
+                                            <td>{{ tc.consolidacion }}</td>
+                                            <td><a href="{{ path('texto_definitivo_consolidado_show_id', {'norma': norma.id , 'textoDefinitivo': tc.id}) }}" class="btn btn-sm btn-default"><i class="fa fa-fw fa-eye"></i></a></td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="2">
+                                                La norma no tiene texto consolidado en anteriores consolidaciones. <a href="{{ path('texto_definitivo_consolidado_create', {norma: norma.id}) }}" >Cargar ahora</a>
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </table>
+                                </div>
+                                <div class="col-md-12">
+                                    <h4 id="#anchorTextoDefinitivo" class="box-title">Texto Definitivo (para {{ consolidacion }})</h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {% if norma.textoDefinitivoNoConsolidado and norma.textoDefinitivoNoConsolidado.textoDefinitivo %}
+                                                <a href="{{ path('texto_definitivo_delete', {norma: norma.id }) }}" class="pull-right" onclick="return confirm('Está seguro que desea quitar el texto definitivo?\nEsta operación NO SE PUEDE DESHACER. Una vez confirmada la operación, el texto definitivo se elimina permanentemente.')"><i class="fa fa-fw fa-trash"></i>Quitar texto definitivo</a>
+                                            {% else %}
+                                                {% if norma.textoDefinitivoConsolidado %}
+                                                    <a href="{{ path('texto_definitivo_copiar', {norma: norma.id, textoDefinitivoOrigen: norma.textoDefinitivoConsolidado.id}) }}" onclick="return confirm('Está seguro que desea copiar el texto desde la {{ norma.textoDefinitivoConsolidado.consolidacion }}?')" class="pull-right"><i class="fa fa-fw fa-copy"></i>Copiar texto de {{ norma.textoDefinitivoConsolidado.consolidacion }}</a>
+                                                {% endif %}
+                                            {% endif %}
+                                            {{ form_widget(form.textoDefinitivoNoConsolidado) }}
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_cambios">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="box-title">Tabla de Antecedentes</h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {{ form_widget(form.observacionAntecedente) }}
+                                        </div>
+                                        <div class="col-md-12">
+                                            <b>Antecedentes por Artículo</b>
+                                            {{ form_widget(form.cambiosNormas) }}
+                                        </div>
+                                        <div class="col-md-12">
+                                            <b>Artículos Suprimidos</b>
+                                            {{ form_widget(form.articulosSuprimidos) }}
+                                        </div>
+                                        <div class="col-md-12">
+                                            <b>Antecedentes de los Anexos</b>
+                                            {{ form_widget(form.cambiosAnexos) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_adhesiones">
+                            <h4 class="box-title">Adhesiones a otras Normas</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.adhesiones) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_abrogaciones">
+                            <h4 class="box-title">Activa</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.abrogadas) }}
+                                </div>
+                            </div>
+                            <h4 class="box-title">Pasiva</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.abrogaciones) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_caducidades">
+                            <h4 class="box-title">Caducidades</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.caducidades) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_conflictos">
+                            <h4 class="box-title">Activa</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.conflictosConNormas) }}
+                                </div>
+                            </div>
+                            <h4 class="box-title">Pasiva</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.conflictosNormativos) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_refundiciones">
+                            <h4 class="box-title">Activa</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.refundiciones) }}
+                                </div>
+                            </div>
+                            <h4 class="box-title">Pasiva</h4>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.refundidas) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_fundamentacion">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_widget(form.fundamentacion) }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+            </div>
+        </div>
+
+        <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Anexos</h3>
+                <div class="box-tools pull-right">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+                    <div class="box-body">
+                        {{ form_row(form.anexos) }}
+                    </div>
+        </div>
+        <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Análisis Documental</h3>
+                <div class="box-tools pull-right">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ form_row(form.descriptores) }}
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_row(form.palabrasClave) }}
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_row(form.identificadores) }}
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_row(form.temas) }}
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_widget(form.beneficiarioNormas) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{# <div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Anexos</h3>
+            </div>
+
+            <div class="box-body">
+                {{ form_row(form.anexos) }}
+            </div>
+
+        </div>
+    </div>
+</div> #}
+
+<div>
+    <div class="text-muted">Creación {{ norma.fechaCreacion|date }} por {{ norma.creadoPor }}</div>
+    <div class="text-muted">Última actualización {{ norma.fechaActualizacion|date }} por {{ norma.actualizadoPor }}</div>
+</div>
+<br><br>
+
+<button onclick="window.onbeforeunload = null" class="btn btn-primary"><i class="fa fa-fw fa-save"></i> {{ button_label|default('Guardar') }}</button>
+<a class="btn btn-secondary" href="{{ path('norma_index') }}"><i class="fa fa-fw fa-chevron-left"></i> Volver a la lista</a>
+
+<div id="floating-save" style="padding: 10px 15px; box-shadow: 4px -5px 19px -8px rgb(204 204 204 / 67%); border: 2px solid #3c8dbc; border-bottom: none; border-radius: 3px; background: white; position: fixed; bottom: 0; right: 35px;">
+    <button onclick="window.onbeforeunload = null" class="btn btn-sm btn-primary pull-right"><i class="fa fa-fw fa-save"></i> {{ button_label|default('Guardar') }}</button>
+    <a class="btn btn-sm btn-secondary pull-right" href="{{ path('norma_index') }}"><i class="fa fa-fw fa-chevron-left"></i> Volver a la lista</a>
+</div>
+
+<div class="hidden">
+    {{ form_end(form) }}
+</div>
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+
+            if ($('.tipo-boletin').val() == 2) {
+                $('.numero-boletin').hide()
+                $('.boletin-oficial').show()
+            } else {
+                $('.numero-boletin').show()
+                $('.boletin-oficial').hide()
+            }
+
+            $('.tipo-boletin').change(function () {
+                if ($(this).val() == 2) {
+                    $('.numero-boletin').hide()
+                    $('.boletin-oficial').show()
+                } else {
+                    $('.numero-boletin').show()
+                    $('.boletin-oficial').hide()
+                }
+            })
+        });
+    </script>
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    <script>
+        $('.bootstrapcollection-agregar-otro-item').click(function(e) {
+            setTimeout(function () {
+                $('.select2entity:not(.select2-hidden-accessible)').select2entity()
+            }, 10)
+        })
+        $('.tipo-veto').change(function (e) {
+            if ($(this).val()) {
+                $('.observaciones-veto').parents('.form-group').show()
+            } else {
+                $('.observaciones-veto').parents('.form-group').hide()
+            }
+        })
+        $('.tipo-veto').change()
+        $('#floating-save').hide();
+
+
+        Array.prototype.equals = function (array) {
+            // if the other array is a falsy value, return
+            if (!array)
+                return false;
+
+            // compare lengths - can save a lot of time
+            if (this.length != array.length)
+                return false;
+
+            for (var i = 0, l=this.length; i < l; i++) {
+                // Check if we have nested arrays
+                if (this[i] instanceof Array && array[i] instanceof Array) {
+                    // recurse into the nested arrays
+                    if (!this[i].equals(array[i]))
+                        return false;
+                }
+                else if (this[i] != array[i]) {
+                    // Warning - two different object instances will never be equal: {x:20} != {x:20}
+                    return false;
+                }
+            }
+            return true;
+        }
+        // Hide method from for-in loops
+        Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+
+        let FORM_CHANGED = false
+        let FORM_ORIGINAL = getFormData()
+        function formChanged (e) {
+            setTimeout(function () {
+                let data = getFormData()
+
+                let changed = false
+                for (let name in data) {
+                    if (Array.isArray(data[name])) {
+                        if (!data[name].equals(FORM_ORIGINAL[name])) {
+                            changed = true
+                            break
+                        }
+                    } else {
+                        if (data[name] !== FORM_ORIGINAL[name]) {
+                            changed = true
+                            break
+                        }
+                    }
+                }
+
+                $('form[name=norma]').data('changed', changed)
+                FORM_CHANGED = changed
+
+                if (FORM_CHANGED) {
+                    $('#floating-save').slideDown();
+                } else {
+                    $('#floating-save').slideUp();
+                }
+            }, 0)
+        }
+
+        $('form[name=norma] :input').change(formChanged)
+        $('form[name=norma] :input').keyup(formChanged)
+
+        function getFormData() {
+            let data = {}
+            $('form[name=norma] :input:not(button)').each(function (i, e) {
+                let el = $(e)
+                if (el.attr('id')) {
+                    if (el.prop('type') === 'checkbox') {
+                        data[el.attr('id')] = el.prop('checked')
+                    } else if (el.prop('type') === 'textarea' && CKEDITOR.instances[el.attr('id')]) {
+                        data[el.attr('id')] = CKEDITOR.instances[el.attr('id')].getData().replace(/\n$/, '')
+                    } else {
+                        data[el.attr('id')] = el.val()
+                    }
+
+                }
+            })
+
+            return data
+        }
+
+
+
+        setTimeout(function () {
+            for (let name in CKEDITOR.instances) {
+                var instance = CKEDITOR.instances[name]
+                instance.on('key', formChanged)
+            }
+        }, 100)
+
+        window.onbeforeunload = function() {
+            if (!FORM_CHANGED) {
+                return
+            }
+            return 'HAY CAMBIOS SIN GUARDAR!\nEstá seguro que desea abandonar la página?';
+        };
+
+    </script>
+{% endblock %}

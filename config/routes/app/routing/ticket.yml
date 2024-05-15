@@ -8,6 +8,21 @@ tickets_enviados:
   defaults: { _controller: App\Controller\TicketController::enviadoindex }
   methods: GET
 
+ticket_confirmado:
+  path: /confirmar/ticket/{id}
+  defaults: { _controller: App\Controller\TicketController::confirmarTicket }
+  methods: [GET, POST]
+
+ticket_advertido:
+  path: /advertir/ticket/{id}
+  defaults: { _controller: App\Controller\TicketController::observarTicket }
+  methods: [GET, POST]
+
+tickets_all:
+  path: /tickets_all
+  defaults: { _controller: App\Controller\TicketController::todosindex }
+  methods: GET
+
 ticket_new:
   path: /new/ticket
   defaults: { _controller: App\Controller\TicketController::newTicket }

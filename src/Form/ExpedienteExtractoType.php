@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ExpedienteExtractoType extends AbstractType {
 	/**
@@ -17,7 +18,18 @@ class ExpedienteExtractoType extends AbstractType {
 				TextareaType::class,
 				[
 					'attr' => [ 'rows' => 5 ]
-				] );
+				] )
+			->add( 'expediente',
+				TextType::class,
+				[
+					'required' => false
+				] )
+			->add( 'letra',
+				TextType::class,
+				[
+					'required' => false
+				] )
+;
 	}
 
 	/**

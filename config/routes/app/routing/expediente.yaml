@@ -309,3 +309,15 @@ incorporar_expedientes_a_sesion_index:
     {
       _controller: App\Controller\ExpedienteController::incorporarProyectosASesionIndex,
     }
+
+expediente_imprimir_archivo:
+  path: /{id}/expediente_imprimir_archivo
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirArchivo }
+
+
+expediente_imprimir_giro_bae:
+  path: /{id}/expediente_imprimir_giro_bae
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirGiroComision }
+

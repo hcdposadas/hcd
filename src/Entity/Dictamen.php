@@ -102,6 +102,11 @@ class Dictamen extends BaseClass
 	private $textosDefinitivos;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $dictamen;
+
+    /**
      * @return string
      */
     public function __toString()

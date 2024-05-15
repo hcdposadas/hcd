@@ -39,16 +39,33 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for ticket in tickets %}
+                        
+
+{% set sortedTickets = tickets|sort((a, b) => b.id <=> a.id) %}
+
+{% for ticket in sortedTickets %}
                             <tr>
                                 <td>
                                     {{ ticket.id }}
                                 </td>
                                 <td>{{ ticket.texto }}</td>
                                 <td>{{ ticket.areaOrigen }}</td>
-                                <td>{{ ticket.fecha | date('d/m/Y H:i') }}</td>
+                                <td><i class="fa  fa-arrow-right"></i>{{ ticket.fecha | date('d/m/Y H:i') }}  {% if ticket.fechaV %} <br/> <i class="fa fa-eye"></i> {{ticket.fechaV | date('d/m/Y H:i') }}{% endif %}
+                                 {% if ticket.fechaC %}
+                                 {% if ticket.completo  %} <br/>  <i class="fa fa-check"></i> 
+                                 {% else %} 
+                                 <br/> <i class="fa fa-fw fa-trash"></i>
+                                 {% endif %} 
+                                 {{ ticket.fechaC | date('d/m/Y H:i')  }}
+                                 {% endif %}</td>
                                 <td> {% if ticket.completo  %}
-                                    Completo
+                                    Completo{% if ticket.confirmado == true %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+
+                                            {% elseif ticket.confirmado is same as  (false) %}
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+
+                                            {% endif %}
                                                                 {% elseif ticket.observacion == 'Cancelado' %}
                                     Cancelado
                                 {% elseif ticket.completo is same as  (false) %}

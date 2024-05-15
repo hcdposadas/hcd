@@ -1,0 +1,34 @@
+comision_index:
+  path: /
+  defaults: { _controller: App\Controller\ComisionController::index }
+  methods: GET
+
+comision_dictamen_new:
+  path: /newdictamen/{id}
+  defaults: { _controller: App\Controller\ComisionController::newdictamen }
+
+comision_dictamen_index:
+  path: /dictamenes
+  defaults: { _controller: App\Controller\ComisionController::misDictamenes }
+
+comision_show_dictamen:
+  path: /dictamen/{id}/show
+  defaults: { _controller: App\Controller\ComisionController::showDictamen }
+
+comision_show_proyecto:
+  path: /proyecto/{id}/show
+  defaults:
+    { _controller: App\Controller\ComisionController::showProyectoComision }
+
+comision_show_proyectosbae:
+  path: /proyectosbae
+  defaults:
+    { _controller: App\Controller\ComisionController::indexProyectosBae }
+
+giros_comisiones_index:
+  path: /giros
+  defaults: { _controller: App\Controller\ComisionController::indexGiros }
+
+giros_comision_imprimir:
+  path: /giros/{id}/imprimir
+  defaults: { _controller: App\Controller\ComisionController::imprimirGiros }

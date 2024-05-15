@@ -92,7 +92,7 @@
                                     <td>{{giro.AreaDestino}}</td>
                                     <td>
                                      
-                                    {% if expediente.dependencia.nombre == giro.AreaDestino.nombre or expediente.dependencia.nombre == giro.AreaOrigen.nombre %}
+                                   
                                     {% if giro.anexoGiros %}
                                     {% for anexo in giro.anexoGiros %}
                                                         <a class="btn btn-default" target="_blank"
@@ -100,7 +100,7 @@
                         <i class="fa fa-print"></i> {{anexo.titulo}} 
                     </a>
                                     {% endfor %}
-                                    {% endif %}
+                               
                                     {% endif %}
                                     </td>
                                     <td>{{giro.fechaGiro | date('d/m/Y') }}</td>

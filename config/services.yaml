@@ -22,6 +22,8 @@ parameters:
   app.path.rrmm_perfil: "/uploads/rrmm/perfiles"
   app.path.rrmm_diagnostico: "/uploads/rrmm/diagnosticos"
   app.path.anexo_giro: "/uploads/expedientes/giros"
+  app.path.anexo_legislativo: "/uploads/expedientes/legislativo"
+  app.path.anexo_secretaria: "/uploads/expedientes/secretaria"
   app.path.comunicados: "/uploads/comunicados"
 
 services:

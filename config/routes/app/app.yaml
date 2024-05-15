@@ -10,6 +10,11 @@ app_dictamenes:
   resource: "routing/dictamen.yml"
   prefix: /dictamen
 
+app_comision:
+  resource: "routing/comision.yml"
+  prefix: /comision
+
+
 app_dependencia:
   resource: "routing/dependencia.yml"
   prefix: /dependencia
@@ -65,6 +70,10 @@ app_comunicacion:
 #app_display:
 #    path:     /display
 #    defaults: { _controller: AppBundle:Default:display }
+
+#app_display2:
+#    path:     /display2
+#    defaults: { _controller: AppBundle:Default:display2 }
 
 #app_votar:
 #    path:     /votar

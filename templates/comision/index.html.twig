@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyectos Girados
+{% endblock title %}
+{% block body %}
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Giros A Comisión</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                        
+                            <th>Id</th>
+                            <th>Expediente</th>
+                            <th>Fecha</th>
+                            {% if is_granted('ROLE_LEGISLATIVO') %}
+                            <th style="width:30%">Extracto</th>
+                            {% else %}
+                            <th>Registro municipal</th>
+                            {% endif %}
+                            <th>Iniciador</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for giro in giros %}
+                            {% if giro.proyectoBae %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('expediente_show', { 'id': giro.proyectoBae.expediente.id }) }}">{{ giro.id }}</a>
+                                </td>
+                                <td>{{ giro.proyectoBae.expediente.expediente }}-{{ giro.proyectoBae.expediente.letra }}
+                                    -{% if giro.proyectoBae.expediente.periodoLegislativo %}{{ giro.proyectoBae.expediente.periodoLegislativo }}{% else %}{{ giro.proyectoBae.expediente.anio }}{% endif %}</td>
+
+                                <td>{% if giro.proyectoBae.expediente.fecha %}{{ giro.proyectoBae.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                {% if is_granted('ROLE_LEGISLATIVO') %}
+                                <td>{{ giro.proyectoBae.expediente.extracto }}</td>
+                                {% else %}
+                                <td>{{ giro.proyectoBae.expediente.registroMunicipal }}</td>
+                                {% endif %}
+                                <td>
+                                    {% if giro.proyectoBae.expediente.iniciadores.count > 0 %}
+                                        {% for iniciadorExpediente in giro.proyectoBae.expediente.iniciadores %}
+                                            {% if iniciadorExpediente.iniciador %}
+                                                {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elseif giro.proyectoBae.expediente.iniciadorParticular %}
+                                        {{ giro.proyectoBae.expediente.iniciadorParticular.nombreCompleto }}
+                                    {% elseif giro.proyectoBae.expediente.dependencia %}
+                                        {{ giro.proyectoBae.expediente.dependencia }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Expediente"
+                                       href="{{ path('comision_show_proyecto', { 'id': giro.proyectoBae.expediente.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento"
+                                       href="{{ path('expediente_timeline', {id: giro.proyectoBae.expediente.id}) }}">
+                                        <i class="fas fa-road"></i>
+                                    </a>
+                                                                        
+                                    {% if giro.cabecera %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Crear Dictamen"
+                                       href="{{ path('comision_dictamen_new', {id: giro.proyectoBae.expediente.id}) }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% endif %}
+                                    {#<a class="btn btn-default" target="_blank"#}
+                                    {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}
+                                    {#<i class="fa fa-print"></i>#}
+                                    {#</a>#}
+                                </td>
+                            </tr>
+                            {% endif %}
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(giros) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

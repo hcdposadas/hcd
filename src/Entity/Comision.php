@@ -48,6 +48,21 @@ class Comision extends BaseClass {
 	 */
 	private $abreviacion;
 
+	/**
+	 * @var
+	 *
+	 * @ORM\OneToMany(targetEntity="App\Entity\Giro", mappedBy="comisionDestino", cascade={"persist"})
+	 *
+	 */
+	private $girosDestinos;
+
+	/**
+	 * @return File|null
+	 */
+	public function getGirosDestinos()
+	{
+		return $this->girosDestinos;
+	}
 
 	public function __toString() {
 		return $this->nombre;

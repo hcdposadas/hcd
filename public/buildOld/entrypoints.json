@@ -1,0 +1,76 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/app.c101aaf5.js"
+      ],
+      "css": [
+        "/hcd/build/app.53c6bc3a.css"
+      ]
+    },
+    "admin-lte": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/0.477110a8.js",
+        "/hcd/build/2.a13a42b6.js",
+        "/hcd/build/admin-lte.7d3c461b.js"
+      ]
+    },
+    "login": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/4.2fa8c6c6.js",
+        "/hcd/build/login.08281611.js"
+      ]
+    },
+    "js/functions": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/0.477110a8.js",
+        "/hcd/build/js/functions.a1dc83cc.js"
+      ]
+    },
+    "main": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/0.477110a8.js",
+        "/hcd/build/2.a13a42b6.js",
+        "/hcd/build/main.4f308560.js"
+      ],
+      "css": [
+        "/hcd/build/main.68c223c8.css"
+      ]
+    },
+    "css/admin-lte": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/1.d83d564e.js"
+      ],
+      "css": [
+        "/hcd/build/1.91370535.css",
+        "/hcd/build/css/admin-lte.01911210.css"
+      ]
+    },
+    "css/login": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/1.d83d564e.js"
+      ],
+      "css": [
+        "/hcd/build/1.91370535.css",
+        "/hcd/build/css/login.53f6ab75.css"
+      ]
+    },
+    "css/display": {
+      "js": [
+        "/hcd/build/runtime.aa57a4fd.js",
+        "/hcd/build/1.d83d564e.js"
+      ],
+      "css": [
+        "/hcd/build/1.91370535.css",
+        "/hcd/build/css/display.5785f0af.css"
+      ]
+    }
+  }
+}

@@ -106,6 +106,7 @@ class Dictamen extends BaseClass
      */
     private $dictamen;
 
+
     /**
      * @return string
      */

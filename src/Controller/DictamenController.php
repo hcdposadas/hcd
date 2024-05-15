@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DictamenController extends AbstractController
 {
@@ -237,6 +238,21 @@ class DictamenController extends AbstractController
 
             return $this->redirectToRoute('dictamen_ver', ['id' => $dictamen->getId()]);
         }
+        
+        if($dictamen->getDictamen()){
+
+            $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/dictamenes/' . $dictamen->getDictamen();
+
+            // Crear una BinaryFileResponse para el archivo PDF
+            $response = new BinaryFileResponse($pdfPath);   
+            $titulo=$dictamen->getExpediente()->getExpediente()."-".$dictamen->getExpediente()->getLetra()."-".$dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
+            // Configurar la cabecera para forzar la descarga del archivo
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+    
+    
+            return $response;
+        }else{
 
         $header = null;
 
@@ -275,6 +291,7 @@ class DictamenController extends AbstractController
                 'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
             )
         );
+    }
     }
 
     public function asignarAExpte(Request $request)

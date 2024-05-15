@@ -60,3 +60,21 @@
 
     <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
 {% endblock body %}
+{% block javascripts %}
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
+    {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
+
+{% endblock javascripts %}

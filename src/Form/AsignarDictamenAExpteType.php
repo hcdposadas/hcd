@@ -11,6 +11,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\BootstrapCollectionType;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+
 
 class AsignarDictamenAExpteType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
@@ -44,6 +46,14 @@ class AsignarDictamenAExpteType extends AbstractType {
 				null,
 				[
 					'attr' => [ 'class' => 'select2' ]
+				] )
+			->add( 'dictamenFile',
+				VichFileType::class,
+				[
+					'label'        => 'Dictamen Firmado',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
 				] )
 			->add( 'textoDictamen',
 				CKEditorType::class,

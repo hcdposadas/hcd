@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyectos BAE
+{% endblock title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Proyectos BAE</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                        
+                            <th>Id</th>
+                            <th>Expediente</th>
+                            <th>Fecha</th>
+                            <th style="width:30%">Extracto</th>
+                            <th>Iniciador</th>
+                            <th>Firmado</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for expediente in proyectos %}
+                            <tr>
+                                <td>
+                                {{expediente.id}}
+                                </td>
+                                <td>{{ expediente.expediente.expediente }}-{{ expediente.expediente.letra }}
+                                    -{% if expediente.expediente.periodoLegislativo %}{{ expediente.expediente.periodoLegislativo }}{% else %}{{ expediente.expediente.anio }}{% endif %}</td>
+
+                                <td>
+                                {% if expediente.expediente.fecha %}{{ expediente.expediente.fecha|date('d/m/Y') }}{% endif %}
+                                </td>
+
+                                <td>
+                                {{expediente.extracto|raw}}
+                                </td>
+
+                                <td>
+                                                                    {% if expediente.expediente.iniciadores.count > 0 %}
+                                        {% for iniciadorExpediente in expediente.expediente.iniciadores %}
+                                            {% if iniciadorExpediente.iniciador %}
+                                                {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elseif expediente.iniciadorParticular %}
+                                        {{ expediente.iniciadorParticular.nombreCompleto }}
+                                    {% elseif expediente.dependencia %}
+                                        {{ expediente.dependencia }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                {% if expediente.firmado %}SI{% else %}NO{% endif %}
+                                </td>
+                                <td>
+
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(proyectos) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

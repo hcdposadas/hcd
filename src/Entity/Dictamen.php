@@ -106,6 +106,11 @@ class Dictamen extends BaseClass
      */
     private $dictamen;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $aprobadoLegislativo;
+
 
     /**
      * @return string
@@ -460,5 +465,17 @@ class Dictamen extends BaseClass
     public function getAnexos()
     {
         return $this->anexos;
+    }
+
+    public function getAprobadoLegislativo(): ?string
+    {
+        return $this->aprobadoLegislativo;
+    }
+
+    public function setAprobadoLegislativo(?string $aprobadoLegislativo): self
+    {
+        $this->aprobadoLegislativo = $aprobadoLegislativo;
+
+        return $this;
     }
 }

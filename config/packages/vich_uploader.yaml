@@ -77,3 +77,7 @@ vich_uploader:
       uri_prefix: "%app.path.firmado%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/comision/giro/"
       namer: "vich_uploader.namer_uniqid"
+    definitivo:
+      uri_prefix: "%app.path.definitivo%"
+      upload_destination: "%kernel.project_dir%/public/uploads/expedientes/definitivo/"
+      namer: "vich_uploader.namer_uniqid"

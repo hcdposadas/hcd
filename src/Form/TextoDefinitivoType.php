@@ -54,6 +54,14 @@ class TextoDefinitivoType extends AbstractType {
 					'placeholder' => 'Seleccionar',
 					'attr'        => [ 'class' => 'tipo-proyecto select2' ]
 				] )
+			->add( 'definitivoFile',
+				VichFileType::class,
+				[
+					'label'        => 'Texto Firmado',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
+				] )
 			->add( 'texto',
 				CKEditorType::class,
 				[

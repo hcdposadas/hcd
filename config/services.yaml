@@ -26,6 +26,7 @@ parameters:
   app.path.anexo_secretaria: "/uploads/expedientes/secretaria"
   app.path.comunicados: "/uploads/comunicados"
   app.path.firmado: "/uploads/expedientes/comision/giro/"
+  app.path.definitivo: "/uploads/expedientes/expedientes/definitivo/"
 
 services:
   # default configuration for services in *this* file

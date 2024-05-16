@@ -24,7 +24,8 @@
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
-                            <th style="width:30%">Extracto</th>
+                            <th>Sesión</th>
+                            <th style="width:25%">Extracto</th>
                             <th>Iniciador</th>
                             <th>Firmado</th>
                             <th>Acción</th>
@@ -42,7 +43,7 @@
                                 <td>
                                 {% if expediente.expediente.fecha %}{{ expediente.expediente.fecha|date('d/m/Y') }}{% endif %}
                                 </td>
-
+                                <td>{{expediente.boletinAsuntoEntrado.sesion.titulo}}</td>
                                 <td>
                                 {{expediente.extracto|raw}}
                                 </td>

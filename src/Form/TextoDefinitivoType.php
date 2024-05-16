@@ -57,7 +57,7 @@ class TextoDefinitivoType extends AbstractType {
 			->add( 'texto',
 				CKEditorType::class,
 				[
-					'required' => true,
+					'required' => false,
 					'config'   => array(
 						'uiColor' => '#ffffff',
 					),

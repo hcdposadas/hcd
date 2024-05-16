@@ -16,6 +16,8 @@ use App\Form\CrearDictamenComisionType;
 use App\Form\FirmaDictamenType;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
+use App\Form\FirmaBAEType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 class ComisionController extends AbstractController
@@ -245,6 +247,7 @@ class ComisionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $proyectosBae = $em->getRepository(ProyectoBae::class)->findBy(
             ['tratamientoSobretabla' => false],
+            ['id' => 'DESC']
         );
         $proyectosBae = $paginator->paginate(
             $proyectosBae,
@@ -257,7 +260,42 @@ class ComisionController extends AbstractController
         ]);
     }
 
+    public function showProyectoBae(Request $request, ProyectoBAE $proyectoBae): Response
+    {
+        $em = $this->getDoctrine()->getManager();
 
+        $expediente = $proyectoBae->getExpediente();
+    
+        $form = $this->createForm(FirmaBaeType::class, $proyectoBae);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+    
+            $this->addFlash(
+                'success',
+                'Giro firmado correctamente'
+            );
+    
+            return $this->render(
+                'comision/firmar.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'proyectobae' => $proyectoBae,
+                    'expediente' => $expediente,
+                ]
+            );
+        }
+    
+        return $this->render(
+            'comision/firmar.html.twig',
+            [
+                'form' => $form->createView(),
+                'proyectobae' => $proyectoBae,
+                'expediente' => $expediente,
+            ]
+        );
+    }
     public function imprimirGiros(Pdf $knpSnappyPdf, Request $request,ProyectoBae $id){
 		$giros=$id->getGirosOrdenados();
 		$expediente=$id->getExpediente();

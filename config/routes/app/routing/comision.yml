@@ -25,6 +25,10 @@ comision_show_proyectosbae:
   defaults:
     { _controller: App\Controller\ComisionController::indexProyectosBae }
 
+comision_show_proyectobae:
+  path: /proyectosbae/{id}/show
+  defaults: { _controller: App\Controller\ComisionController::showProyectoBae }
+
 giros_comisiones_index:
   path: /giros
   defaults: { _controller: App\Controller\ComisionController::indexGiros }

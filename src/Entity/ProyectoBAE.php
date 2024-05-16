@@ -7,12 +7,15 @@ use App\Entity\Expediente;
 use App\Entity\Giro;
 use App\Entity\Base\BaseClass;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * ProyectoBAE
  *
  * @ORM\Table(name="proyecto_b_a_e")
  * @ORM\Entity(repositoryClass="App\Repository\ProyectoBAERepository")
+ * @Vich\Uploadable
  * @UniqueEntity(
  *     fields={"expediente", "boletinAsuntoEntrado"},
  *     errorPath="expediente",
@@ -82,6 +85,50 @@ class ProyectoBAE extends BaseClass {
 	 */
 	private $tratamientoSobretabla;
 
+	/**
+     * @Vich\UploadableField(mapping="firmado", fileNameProperty="firmado")
+     * @var File
+     */
+    private $firmadoFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $firmado;
+
+
+	/**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     *
+     * @return ProyectoBAE
+     */
+    public function setFirmadoFile(File $file = null)
+    {
+        $this->firmadoFile = $file;
+
+        if ($file) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+//			$this->updatedAt = new \DateTimeImmutable();
+            $this->fechaActualizacion = new \DateTime('now');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getFirmadoFile()
+    {
+        return $this->firmadoFile;
+    }
 
 	/**
 	 * Get id
@@ -89,8 +136,8 @@ class ProyectoBAE extends BaseClass {
 	 * @return int
 	 */
 	public function getId() {
-		return $this->id;
-	}
+         		return $this->id;
+         	}
 
 	/**
 	 * Set fechaCreacion
@@ -100,10 +147,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setFechaCreacion( $fechaCreacion ) {
-		$this->fechaCreacion = $fechaCreacion;
-
-		return $this;
-	}
+         		$this->fechaCreacion = $fechaCreacion;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set fechaActualizacion
@@ -113,10 +160,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setFechaActualizacion( $fechaActualizacion ) {
-		$this->fechaActualizacion = $fechaActualizacion;
-
-		return $this;
-	}
+         		$this->fechaActualizacion = $fechaActualizacion;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set expediente
@@ -126,10 +173,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setExpediente( \App\Entity\Expediente $expediente = null ) {
-		$this->expediente = $expediente;
-
-		return $this;
-	}
+         		$this->expediente = $expediente;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get expediente
@@ -137,8 +184,8 @@ class ProyectoBAE extends BaseClass {
 	 * @return \App\Entity\Expediente
 	 */
 	public function getExpediente() {
-		return $this->expediente;
-	}
+         		return $this->expediente;
+         	}
 
 	/**
 	 * Set boletinAsuntoEntrado
@@ -148,10 +195,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setBoletinAsuntoEntrado( \App\Entity\BoletinAsuntoEntrado $boletinAsuntoEntrado = null ) {
-		$this->boletinAsuntoEntrado = $boletinAsuntoEntrado;
-
-		return $this;
-	}
+         		$this->boletinAsuntoEntrado = $boletinAsuntoEntrado;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Get boletinAsuntoEntrado
@@ -159,8 +206,8 @@ class ProyectoBAE extends BaseClass {
 	 * @return \App\Entity\BoletinAsuntoEntrado
 	 */
 	public function getBoletinAsuntoEntrado() {
-		return $this->boletinAsuntoEntrado;
-	}
+         		return $this->boletinAsuntoEntrado;
+         	}
 
 	/**
 	 * Set creadoPor
@@ -170,10 +217,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
-		$this->creadoPor = $creadoPor;
-
-		return $this;
-	}
+         		$this->creadoPor = $creadoPor;
+         
+         		return $this;
+         	}
 
 	/**
 	 * Set actualizadoPor
@@ -183,10 +230,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
-		$this->actualizadoPor = $actualizadoPor;
-
-		return $this;
-	}
+         		$this->actualizadoPor = $actualizadoPor;
+         
+         		return $this;
+         	}
 
     /**
      * Set esInformeDem
@@ -324,13 +371,33 @@ class ProyectoBAE extends BaseClass {
 	 * @return mixed
 	 */
 	public function getTratamientoSobretabla() {
-		return $this->tratamientoSobretabla;
-	}
+         		return $this->tratamientoSobretabla;
+         	}
 
 	/**
 	 * @param mixed $tratamientoSobretabla
 	 */
 	public function setTratamientoSobretabla( $tratamientoSobretabla ) {
-		$this->tratamientoSobretabla = $tratamientoSobretabla;
-	}
+         		$this->tratamientoSobretabla = $tratamientoSobretabla;
+         	}
+
+    /**
+	 * @return File|null
+	 */
+    public function getFirmado(): ?string
+    {
+        return $this->firmado;
+    }
+
+    /**
+	 * @param string $firmado
+	 *
+	 * @return ProyectoBAE
+	 */
+    public function setFirmado(?string $firmado): self
+    {
+        $this->firmado = $firmado;
+
+        return $this;
+    }
 }

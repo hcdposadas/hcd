@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Expediente {{ expediente.expediente }}-{{ expediente.letra }}-
+                        {% if expediente.periodoLegislativo %}
+                            {{ expediente.periodoLegislativo }}
+                        {% else %}
+                            {{ expediente.anio }}
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                <a class="btn btn-default" target="_blank"
+                       href="{{ path('giros_comision_imprimir', {id: proyectobae.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Giro
+                    </a>
+                                {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <input class="btn btn-primary" type="submit" value="Enviar"/>
+            {{ form_end(form) }}
+                    <dl class="dl-horizontal">
+                        <dt>Id</dt>
+                        <dd>{{ expediente.id }}</dd>
+                    </dl>
+
+                    {% if not is_granted('ROLE_SECTOR') %}
+                    <dl class="dl-horizontal">
+                        <dt>Texto definitivo</dt>
+                        <dd>{{ expediente.textoDefinitivo }}</dd>
+                    </dl>
+                    {% else %}
+                    <dl class="dl-horizontal">
+                        <dt>Texto </dt>
+                        <dd>{{ expediente.texto|raw}}</dd>
+                    </dl>
+                    {% endif %}
+                    <dl class="dl-horizontal">
+                        <dt>Extracto</dt>
+                        <dd>{{ expediente.extracto }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha</dt>
+                        <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Registro municipal</dt>
+                        <dd>{{ expediente.registroMunicipal }}</dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Activo</dt>
+                        <dd>{% if expediente.activo %}<span class="label label-success">Si</span>{% else %}<span
+                                    class="label label-danger">No</span>{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha creación</dt>
+                        <dd>{% if expediente.fechaCreacion %}{{ expediente.fechaCreacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha actualización</dt>
+                        <dd>{% if expediente.fechaActualizacion %}{{ expediente.fechaActualizacion|date('d/m/Y H:i:s') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Iniciadores</dt>
+                        <dd>
+                            {% if expediente.iniciadores.count > 0 %}
+                                {% for iniciadorExpediente in expediente.iniciadores %}
+                                    {% if iniciadorExpediente.iniciador %}
+                                        {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
+                                    {% endif %}
+                                {% endfor %}
+                            {% elseif expediente.iniciadorParticular %}
+                                {{ expediente.iniciadorParticular.nombreCompleto }}
+                            {% elseif expediente.dependencia %}
+                                {{ expediente.dependencia }}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                                            <dt>Adjuntos</dt>
+                        <dd>
+                             {% if expediente.expedientesAdjunto.count > 0 %}
+                                {% for adjuntoExpediente in expediente.expedientesAdjunto %}
+                                    {% if adjuntoExpediente.adjunto %}
+                                    <br>
+                                        {{ adjuntoExpediente.adjunto.expediente }}-{{ adjuntoExpediente.adjunto.letra }}-
+                                        {% if adjuntoExpediente.adjunto.periodoLegislativo %}
+                                            {{ adjuntoExpediente.adjunto.periodoLegislativo }}
+                                        {% else %}
+                                            {{ adjuntoExpediente.adjunto.anio }}
+                                        {% endif %}
+                                    </br>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Creado Por</dt>
+                        <dd>
+                            {{ expediente.creadoPor }}
+                        </dd>
+                    </dl>
+                    {% if not is_granted('ROLE_SECTOR') %}
+                    <dl class="dl-horizontal">
+                        <dt>Expediente Asignado Por</dt>
+                        <dd>
+                            {{ expediente.asignadoPor }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Codificación</dt>
+                        <dd>
+                            {{ expediente.hash }}
+                        </dd>
+                    </dl>
+                     <dl class="dl-horizontal">
+                        <dt>Marca Temporal</dt>
+                        <dd>
+                            {{ expediente.marcaTemporal }}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Marca Temporal Definitiva</dt>
+                        <dd>
+                            {{ expediente.marcaDefinitivo ? 'SI' : 'NO' }}
+                        </dd>
+                    </dl> 
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
+
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_proyecto', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto
+                    </a>
+                    {% if expediente.expedienteInterno %}
+                                               <a class="btn btn-default " target="_blank"
+                       href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
+                    </a>
+                    {% endif %}
+                                        <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_archivo', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto Completo
+                    </a>
+
+
+
+                </div>
+
+            </div>
+                <a class="btn btn-default" href="/hcd/comision">Volver</a>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+{% block javascripts %}
+
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
+
+{% endblock javascripts %}

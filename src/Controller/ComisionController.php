@@ -225,7 +225,7 @@ class ComisionController extends AbstractController
 
 
         $proyectosBae = $em->getRepository(ProyectoBae::class)->findBy(
-            ['tratamientoSobretabla' => false],
+            ['tratamientoSobretabla' => [null, false]],
             ['fechaCreacion' => 'DESC'],
             10
         );

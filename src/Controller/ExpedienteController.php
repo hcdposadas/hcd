@@ -2793,10 +2793,10 @@ class ExpedienteController extends AbstractController
 		if($firstProyectoBae->getFirmado()){
 			$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
 		}else{
-		$giros=$id->getGirosOrdenados();
+		$giros=$firstProyectoBae->getGirosOrdenados();
 		if ($giros) {
-		$expediente=$id->getExpediente();
-		$sesion=$id->getBoletinAsuntoEntrado()->getSesion();
+		$expediente=$firstProyectoBae->getExpediente();
+		$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
 
 		$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
 		$fecha=$sesion->getFecha();

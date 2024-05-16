@@ -300,6 +300,16 @@ class Builder
 						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
+			
+				$menu[$keyPersonal]
+				->addChild(
+					'Giros a comisiones',
+					array(
+						'route'          => 'giros_comisiones_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
 		}
 		if (
 			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||

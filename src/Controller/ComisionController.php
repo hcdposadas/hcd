@@ -225,7 +225,7 @@ class ComisionController extends AbstractController
 
 
         $proyectosBae = $em->getRepository(ProyectoBae::class)->findBy(
-            ['tratamientoSobretabla' => [null, false]],
+            ['tratamientoSobretabla' =>  false],
             ['fechaCreacion' => 'DESC'],
             10
         );
@@ -246,7 +246,7 @@ class ComisionController extends AbstractController
 
         $em = $this->getDoctrine()->getManager();
         $proyectosBae = $em->getRepository(ProyectoBae::class)->findBy(
-            ['tratamientoSobretabla' => [false]],
+            ['tratamientoSobretabla' => false],
             ['id' => 'DESC']
         );
         $proyectosBae = $paginator->paginate(

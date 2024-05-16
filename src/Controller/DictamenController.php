@@ -116,7 +116,9 @@ class DictamenController extends AbstractController
             $dictamen->getExpediente()->setBorrador(false);
             $tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBySlug('externo');
             $dictamen->getExpediente()->setTipoExpediente($tipoExpediente);
-
+            if (!$dictamen->getTextoDictamen()){
+            $dictamen->setTextoDictamen($dictamen->getExpediente()->getExtracto());
+            }
             $em->persist($dictamen);
             $em->flush();
             $this->get('session')->getFlashBag()->add(
@@ -308,6 +310,10 @@ class DictamenController extends AbstractController
             $expediente = $form->get("expediente")->getData();
             $dictamen->setExpediente($expediente);
 
+            if (!$dictamen->getTextoDictamen()){
+                $dictamen->setTextoDictamen($dictamen->getExpediente()->getExtracto());
+            }
+
             $em->persist($dictamen);
             $em->flush();
             $this->get('session')->getFlashBag()->add(
@@ -373,6 +379,10 @@ class DictamenController extends AbstractController
 			$expediente = $form->get( "dictamen" )->get("expediente")->getData();
 
 			$dictamen->setExpediente( $expediente );
+
+            if (!$dictamen->getTextoDictamen()){
+                $dictamen->setTextoDictamen($dictamen->getExpediente()->getExtracto());
+            }
 
 			$em->persist( $dictamen );
 			$em->persist( $dictamenOD );

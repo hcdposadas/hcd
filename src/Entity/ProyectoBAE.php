@@ -96,6 +96,11 @@ class ProyectoBAE extends BaseClass {
      */
     private $firmado;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $digesto;
+
 
 	/**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -136,8 +141,8 @@ class ProyectoBAE extends BaseClass {
 	 * @return int
 	 */
 	public function getId() {
-         		return $this->id;
-         	}
+                  		return $this->id;
+                  	}
 
 	/**
 	 * Set fechaCreacion
@@ -147,10 +152,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setFechaCreacion( $fechaCreacion ) {
-         		$this->fechaCreacion = $fechaCreacion;
-         
-         		return $this;
-         	}
+                  		$this->fechaCreacion = $fechaCreacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set fechaActualizacion
@@ -160,10 +165,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setFechaActualizacion( $fechaActualizacion ) {
-         		$this->fechaActualizacion = $fechaActualizacion;
-         
-         		return $this;
-         	}
+                  		$this->fechaActualizacion = $fechaActualizacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set expediente
@@ -173,10 +178,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setExpediente( \App\Entity\Expediente $expediente = null ) {
-         		$this->expediente = $expediente;
-         
-         		return $this;
-         	}
+                  		$this->expediente = $expediente;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get expediente
@@ -184,8 +189,8 @@ class ProyectoBAE extends BaseClass {
 	 * @return \App\Entity\Expediente
 	 */
 	public function getExpediente() {
-         		return $this->expediente;
-         	}
+                  		return $this->expediente;
+                  	}
 
 	/**
 	 * Set boletinAsuntoEntrado
@@ -195,10 +200,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setBoletinAsuntoEntrado( \App\Entity\BoletinAsuntoEntrado $boletinAsuntoEntrado = null ) {
-         		$this->boletinAsuntoEntrado = $boletinAsuntoEntrado;
-         
-         		return $this;
-         	}
+                  		$this->boletinAsuntoEntrado = $boletinAsuntoEntrado;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get boletinAsuntoEntrado
@@ -206,8 +211,8 @@ class ProyectoBAE extends BaseClass {
 	 * @return \App\Entity\BoletinAsuntoEntrado
 	 */
 	public function getBoletinAsuntoEntrado() {
-         		return $this->boletinAsuntoEntrado;
-         	}
+                  		return $this->boletinAsuntoEntrado;
+                  	}
 
 	/**
 	 * Set creadoPor
@@ -217,10 +222,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
-         		$this->creadoPor = $creadoPor;
-         
-         		return $this;
-         	}
+                  		$this->creadoPor = $creadoPor;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set actualizadoPor
@@ -230,10 +235,10 @@ class ProyectoBAE extends BaseClass {
 	 * @return ProyectoBAE
 	 */
 	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
-         		$this->actualizadoPor = $actualizadoPor;
-         
-         		return $this;
-         	}
+                  		$this->actualizadoPor = $actualizadoPor;
+                  
+                  		return $this;
+                  	}
 
     /**
      * Set esInformeDem
@@ -371,15 +376,15 @@ class ProyectoBAE extends BaseClass {
 	 * @return mixed
 	 */
 	public function getTratamientoSobretabla() {
-         		return $this->tratamientoSobretabla;
-         	}
+                  		return $this->tratamientoSobretabla;
+                  	}
 
 	/**
 	 * @param mixed $tratamientoSobretabla
 	 */
 	public function setTratamientoSobretabla( $tratamientoSobretabla ) {
-         		$this->tratamientoSobretabla = $tratamientoSobretabla;
-         	}
+                  		$this->tratamientoSobretabla = $tratamientoSobretabla;
+                  	}
 
     /**
 	 * @return File|null
@@ -397,6 +402,18 @@ class ProyectoBAE extends BaseClass {
     public function setFirmado(?string $firmado): self
     {
         $this->firmado = $firmado;
+
+        return $this;
+    }
+
+    public function getDigesto(): ?string
+    {
+        return $this->digesto;
+    }
+
+    public function setDigesto(?string $digesto): self
+    {
+        $this->digesto = $digesto;
 
         return $this;
     }

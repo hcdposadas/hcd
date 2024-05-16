@@ -2782,7 +2782,59 @@ class ExpedienteController extends AbstractController
 
 	}
 
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
 
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+	if($firstProyectoBae){
+		if($firstProyectoBae->getFirmado()){
+			$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+		}else{
+		$giros=$id->getGirosOrdenados();
+		if ($giros) {
+		$expediente=$id->getExpediente();
+		$sesion=$id->getBoletinAsuntoEntrado()->getSesion();
+
+		$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+		$fecha=$sesion->getFecha();
+
+
+		$html = $this->renderView(
+			'comision/giroComision.pdf.twig',
+			[
+				'expediente' => $expediente,
+                'sesion'=>$sesion,
+				'title'      => $titulo,
+                'giros'      => $giros,
+				'fecha'      => $fecha,
+                
+			]
+		);
+
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Giro'.$time.'.pdf';
+		$knpSnappyPdf->generateFromHtml(
+			$html
+			,$nombre, array(
+				'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+				'margin-top'     => "5cm",
+				'margin-bottom'  => "2cm",
+			//                    'margin-bottom' => "1cm"
+				
+			)
+		);
+		$pdfMerge->addPDF($nombre);
+	}
+	}
+}
 
 /* 		if ($expediente->getGiros()->count() > 0) {
 		

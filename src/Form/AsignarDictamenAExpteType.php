@@ -58,7 +58,7 @@ class AsignarDictamenAExpteType extends AbstractType {
 			->add( 'textoDictamen',
 				CKEditorType::class,
 				[
-					'required' => true,
+					'required' => false,
 					'config'   => array(
 						'uiColor' => '#ffffff',
 //						'height'  => '600px'

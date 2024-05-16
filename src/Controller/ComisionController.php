@@ -245,10 +245,17 @@ class ComisionController extends AbstractController
     public function indexGiros(PaginatorInterface $paginator, Request $request){
 
         $em = $this->getDoctrine()->getManager();
-        $proyectosBae = $em->getRepository(ProyectoBae::class)->findBy(
-            ['tratamientoSobretabla' => false],
-            ['id' => 'DESC']
-        );
+
+        $qb = $em->createQueryBuilder();
+
+        $qb->select('p')
+           ->from(ProyectoBae::class, 'p')
+           ->where('p.tratamientoSobretabla != :value')
+           ->setParameter('value', true)
+           ->orderBy('p.id', 'DESC');
+    
+        $proyectosBae = $qb->getQuery()->getResult();
+
         $proyectosBae = $paginator->paginate(
             $proyectosBae,
             $request->query->get('page', 1)/* page number */,

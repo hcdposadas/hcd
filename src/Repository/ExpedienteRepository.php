@@ -67,6 +67,7 @@ class ExpedienteRepository extends EntityRepository {
 		$qb
 			->orWhere( 'e.borrador = false' )
 			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			->andWhere( 'e.activo = true' )
 			->setParameter( 'tipoExpediente', $tipoExpediente );
 
 		return $qb;
@@ -290,7 +291,7 @@ class ExpedienteRepository extends EntityRepository {
 
 		$qb->join( 'e.tipoExpediente', 'te' );
 		$qb->andWhere( "te.slug = 'externo'" );
-
+		$qb->andWhere( 'e.activo = true' );
 //		$qb->join('e.iniciadores', 'iniciadores')
 //		   ->where('iniciadores is null');
 		$qb->leftJoin( 'e.dependencia', 'dependencia' )

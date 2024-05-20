@@ -33,16 +33,24 @@ class CrearDictamenComisionType extends AbstractType {
         null,
         [
             'attr' => [ 'class' => 'select2' ]
-        ] )
+        ] )/* 
     ->add( 'textoDictamen',
         CKEditorType::class,
         [
-            'required' => true,
+            'required' => false,
             'config'   => array(
                 'uiColor' => '#ffffff',
 //						'height'  => '600px'
             ),
             'attr'     => [ 'class' => 'texto_por_defecto' ]
+        ] ) */
+    ->add( 'dictamenFile',
+        VichFileType::class,
+        [
+            'label'        => 'Dictamen Firmado',
+            'required'     => false,
+            'allow_delete' => true, // optional, default is true
+            'download_uri' => true, // optional, default is true
         ] )
     ->add( 'anexos',
         BootstrapCollectionType::class,

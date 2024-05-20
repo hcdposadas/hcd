@@ -2,33 +2,32 @@
 
 namespace App\Form;
 
-use App\Entity\ProyectoBAE;
+use App\Entity\Dictamen;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
-
-class InformeDigestoType extends AbstractType
+class AsignacionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('digestoFile',
+            ->add('ramaFile',
             VichFileType::class,
             [
-                'label'        => 'Informe Firmado',
+                'label'        => 'Asignacion de rama y numero firmado',
                 'required'     => true,
                 'allow_delete' => true, // optional, default is true
                 'download_uri' => true, // optional, default is true
-            ] )
+            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ProyectoBAE::class,
+            'data_class' => Dictamen::class,
         ]);
     }
 }

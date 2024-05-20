@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Proyectos Girados
+{% endblock title %}
+{% block body %}
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dictámenes de la comisión</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                        
+                            <th>Id</th>
+                            <th>Expediente</th>
+                            <th>Fecha</th>
+                            <th>Tipo Proyecto</th>
+                            <th>Firmado</th>
+                            <th>Verificación</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for dictamen in dictamenes %}
+                            <tr>
+                                <td>
+                                    {{ dictamen.id }}
+                                </td>
+                                <td>{{ dictamen.expediente.expediente }}-{{ dictamen.expediente.letra }}
+                                    -{% if dictamen.expediente.periodoLegislativo %}{{ dictamen.expediente.periodoLegislativo }}{% else %}{{ dictamen.expediente.anio }}{% endif %}</td>
+
+                                <td>{% if dictamen.fecha %}{{ dictamen.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{{ dictamen.tipoProyecto }}</td>
+                                <td>{% if dictamen.rama %} SI {% else %} NO {% endif %}
+                                </td>
+                                <td>{% if dictamen.aprobadoLegislativo %}ACEPTADO{% elseif dictamen.aprobadoLegislativo is same as(false) %}RECHAZADO{% else %} PENDIENTE {% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"
+                                       href="{{ path('digesto_asignacion_show', { 'id': dictamen.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                                                        
+
+                                    {#<a class="btn btn-default" target="_blank"#}
+                                    {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}
+                                    {#<i class="fa fa-print"></i>#}
+                                    {#</a>#}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {# display navigation #}
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(dictamenes) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

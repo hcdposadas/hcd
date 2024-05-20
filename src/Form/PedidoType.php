@@ -9,19 +9,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 
-class InformeDigestoType extends AbstractType
+class PedidoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('digestoFile',
-            VichFileType::class,
-            [
-                'label'        => 'Informe Firmado',
-                'required'     => true,
-                'allow_delete' => true, // optional, default is true
-                'download_uri' => true, // optional, default is true
-            ] )
+        ->add( 'pedidoFile',
+        VichFileType::class,
+        [
+            'label'        => 'Pedido de informe firmado',
+            'required'     => true,
+            'allow_delete' => true, // optional, default is true
+            'download_uri' => true, // optional, default is true
+        ] )
         ;
     }
 

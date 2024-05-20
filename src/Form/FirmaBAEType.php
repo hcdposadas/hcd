@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 
-class FirmaBaeType extends AbstractType
+class FirmaBAEType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ver dictamen
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default" href="{{ path('comision_dictamen_index') }}">Volver</a>
+    <h1>Dictamen {{ dictamen.expediente }}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dictamen de {{ dictamen.tipoProyecto }}</h3>
+        </div>
+        <div class="card-body">
+
+            {{ dictamen.textoDictamen | raw }}
+
+
+
+                        {{ form_start(form) }}
+                            {{ form_row(form.ramaFile) }}
+                                        <input class="btn btn-primary mb-4" type="submit" value="Enviar"/>
+                {{ form_end(form) }}
+
+
+            <p>Verificación: {% if dictamen.aprobadoLegislativo %}ACEPTADO{% elseif dictamen.aprobadoLegislativo is same as(false) %}RECHAZADO{% else %} PENDIENTE {% endif %} </p>
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
+                <i class="fa fa-print"></i> Imprimir</a>
+        </div>
+    </div>
+
+
+    <a class="btn btn-default" href="{{ path('digesto_asignacion_index') }}">Volver</a>
+{% endblock body %}
+{% block javascripts %}
+
+  <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
+
+{% endblock javascripts %}

@@ -27,6 +27,9 @@ parameters:
   app.path.comunicados: "/uploads/comunicados"
   app.path.firmado: "/uploads/expedientes/comision/giro/"
   app.path.definitivo: "/uploads/expedientes/expedientes/definitivo/"
+  app.path.digesto: "/uploads/expedientes/digesto/"
+  app.path.pedido: "/uploads/expedientes/pedido/"
+  app.path.rama: "/uploads/expedientes/rama/"
 
 services:
   # default configuration for services in *this* file

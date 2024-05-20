@@ -191,6 +191,15 @@ class Builder
 							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
+					$menu[$keyEmpresa]
+					->addChild(
+						'Pedidos de informes',
+						array(
+							'route'          => 'pedidos_informe_index',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);
 			}
 		}
 		// Decretos
@@ -306,6 +315,36 @@ class Builder
 					'Giros a comisiones',
 					array(
 						'route'          => 'giros_comisiones_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
+				$menu[$keyPersonal]
+				->addChild(
+					'Pedidos de informes',
+					array(
+						'route'          => 'pedidos_informe_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
+				$menu[$keyPersonal]
+				->addChild(
+					'Informes del Digesto',
+					array(
+						'route'          => 'digesto_informe_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
+				$menu[$keyPersonal]
+				->addChild(
+					'Asignación de rama y num.',
+					array(
+						'route'          => 'digesto_asignacion_index',
 						'attributes'     => ['class' => 'nav-item'],
 						'linkAttributes' => ['class' => 'nav-link']
 					)

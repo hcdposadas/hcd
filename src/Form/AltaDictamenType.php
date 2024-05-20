@@ -54,6 +54,14 @@ class AltaDictamenType extends AbstractType {
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
 				] )
+			->add( 'ramaFile',
+				VichFileType::class,
+				[
+					'label'        => 'Digesto (Rama y Numero)',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
+				] )
 			->add( 'textoDictamen',
 				CKEditorType::class,
 				[

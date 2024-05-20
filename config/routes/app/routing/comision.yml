@@ -33,6 +33,33 @@ giros_comisiones_index:
   path: /giros
   defaults: { _controller: App\Controller\ComisionController::indexGiros }
 
+pedidos_informe_index:
+  path: /pedidos
+  defaults:
+    { _controller: App\Controller\ComisionController::indexPedidoInforme }
+
+digesto_informe_index:
+  path: /digestos
+  defaults:
+    { _controller: App\Controller\ComisionController::indexInformesDigesto }
+
+digesto_asignacion_index:
+  path: /asignaciones
+  defaults:
+    { _controller: App\Controller\ComisionController::indexDictamenesOrd }
+
+digesto_asignacion_show:
+  path: /asignaciones/{id}/show
+  defaults: { _controller: App\Controller\ComisionController::showAsignacion }
+
+pedido_informe_proyectobae:
+  path: /pedidos/{id}/show
+  defaults: { _controller: App\Controller\ComisionController::showPedido }
+
+digesto_informe_proyectobae:
+  path: /digestos/{id}/show
+  defaults: { _controller: App\Controller\ComisionController::showInforme }
+
 giros_comision_imprimir:
   path: /giros/{id}/imprimir
   defaults: { _controller: App\Controller\ComisionController::imprimirGiros }

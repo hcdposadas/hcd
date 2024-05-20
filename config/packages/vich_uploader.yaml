@@ -81,3 +81,15 @@ vich_uploader:
       uri_prefix: "%app.path.definitivo%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/definitivo/"
       namer: "vich_uploader.namer_uniqid"
+    digesto:
+      uri_prefix: "%app.path.digesto%"
+      upload_destination: "%kernel.project_dir%/public/uploads/expedientes/digesto/"
+      namer: "vich_uploader.namer_uniqid"
+    pedido:
+      uri_prefix: "%app.path.pedido%"
+      upload_destination: "%kernel.project_dir%/public/uploads/expedientes/pedido/"
+      namer: "vich_uploader.namer_uniqid"
+    rama:
+      uri_prefix: "%app.path.rama%"
+      upload_destination: "%kernel.project_dir%/public/uploads/expedientes/rama/"
+      namer: "vich_uploader.namer_uniqid"

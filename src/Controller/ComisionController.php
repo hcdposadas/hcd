@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\ProyectoBAE;
 use App\Entity\GirosDestino;
 use App\Entity\Comision;
+use App\Entity\TipoProyecto;
 use App\Entity\Dictamen;
 use App\Entity\Expediente;
 use App\Form\CrearDictamenType;
@@ -17,6 +18,10 @@ use App\Form\FirmaDictamenType;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use App\Form\FirmaBAEType;
+use App\Form\PedidoType;
+use App\Form\DictamenType;
+use App\Form\InformeDigestoType;
+use App\Form\AsignacionType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
@@ -270,13 +275,181 @@ class ComisionController extends AbstractController
         ]);
     }
 
+    public function indexPedidoInforme(PaginatorInterface $paginator, Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $tipoProyecto = $em->getRepository(TipoProyecto::class)->findOneBySlug('ordenanza');
+
+        $qb = $em->createQueryBuilder();
+
+        $qb->select('p')
+           ->from(ProyectoBae::class, 'p')
+           ->join('p.expediente', 'e')
+           ->where($qb->expr()->orX(
+               $qb->expr()->neq('p.tratamientoSobretabla', ':value'),
+               $qb->expr()->isNull('p.tratamientoSobretabla')
+           ))
+           ->andWhere('e.tipoProyecto = :tipoProyecto')
+           ->setParameter('value', true)
+           ->setParameter('tipoProyecto', $tipoProyecto->getId())
+           ->orderBy('p.id', 'DESC');
+    
+        $proyectosBae = $qb->getQuery()->getResult();
+
+        $proyectosBae = $paginator->paginate(
+            $proyectosBae,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
+        return $this->render('comision/indexPedidos.html.twig', [
+            'controller_name' => 'ComisionController',
+            'proyectos' => $proyectosBae
+        ]);
+
+    }
+
+    public function indexInformesDigesto(PaginatorInterface $paginator, Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+        $tipoProyecto = $em->getRepository(TipoProyecto::class)->findOneBySlug('ordenanza');
+
+        $qb = $em->createQueryBuilder();
+
+        $qb->select('p')
+           ->from(ProyectoBae::class, 'p')
+           ->join('p.expediente', 'e')
+           ->where($qb->expr()->orX(
+               $qb->expr()->neq('p.tratamientoSobretabla', ':value'),
+               $qb->expr()->isNull('p.tratamientoSobretabla')
+           ))
+           ->andWhere('e.tipoProyecto = :tipoProyecto')
+           ->setParameter('value', true)
+           ->setParameter('tipoProyecto', $tipoProyecto->getId())
+           ->orderBy('p.id', 'DESC');
+    
+        $proyectosBae = $qb->getQuery()->getResult();
+
+        $proyectosBae = $paginator->paginate(
+            $proyectosBae,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
+        return $this->render('comision/indexInformes.html.twig', [
+            'controller_name' => 'ComisionController',
+            'proyectos' => $proyectosBae
+        ]);
+    }
+
+    public function showPedido(Request $request, ProyectoBAE $proyectoBae): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $expediente = $proyectoBae->getExpediente();
+    
+        $form = $this->createForm(PedidoType::class, $proyectoBae);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+    
+            $this->addFlash(
+                'success',
+                'Pedido firmado correctamente'
+            );
+    
+            return $this->render(
+                'comision/pedido.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'proyectobae' => $proyectoBae,
+                    'expediente' => $expediente,
+                ]
+            );
+        }
+    
+        return $this->render(
+            'comision/pedido.html.twig',
+            [
+                'form' => $form->createView(),
+                'proyectobae' => $proyectoBae,
+                'expediente' => $expediente,
+            ]
+        );
+    }
+
+    public function showInforme(Request $request, ProyectoBAE $proyectoBae): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $expediente = $proyectoBae->getExpediente();
+    
+        $form = $this->createForm(InformeDigestoType::class, $proyectoBae);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+    
+            $this->addFlash(
+                'success',
+                'Informe subido correctamente'
+            );
+    
+            return $this->render(
+                'comision/digesto.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'proyectobae' => $proyectoBae,
+                    'expediente' => $expediente,
+                ]
+            );
+        }
+    
+        return $this->render(
+            'comision/digesto.html.twig',
+            [
+                'form' => $form->createView(),
+                'proyectobae' => $proyectoBae,
+                'expediente' => $expediente,
+            ]
+        );
+    }
+
+    public function showAsignacion(Request $request, Dictamen $dictamen): Response
+    {
+$em = $this->getDoctrine()->getManager();
+
+
+
+        $form = $this->createForm(AsignacionType::class, $dictamen);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->flush();
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Asiganacion guardada correctamente'
+            );
+
+            return $this->render('comision/asignacion.html.twig',
+            [
+                'form' => $form->createView(),
+                'dictamen' => $dictamen
+            ]);
+        }
+        return $this->render('comision/asignacion.html.twig',
+            [
+                'form' => $form->createView(),
+                'dictamen' => $dictamen
+            ]);
+    }
+    
     public function showProyectoBae(Request $request, ProyectoBAE $proyectoBae): Response
     {
         $em = $this->getDoctrine()->getManager();
 
         $expediente = $proyectoBae->getExpediente();
     
-        $form = $this->createForm(FirmaBaeType::class, $proyectoBae);
+        $form = $this->createForm(FirmaBAEType::class, $proyectoBae);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
@@ -345,4 +518,30 @@ class ComisionController extends AbstractController
 			)
 		);
 	}
+
+    public function indexDictamenesOrd(PaginatorInterface $paginator, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $tipoProyecto = $em->getRepository(TipoProyecto::class)->findOneBySlug('ordenanza');
+
+        $dictamenes = $em->getRepository(Dictamen::class)
+            ->createQueryBuilder('d')
+            ->where('d.tipoProyecto = :tipoProyecto')
+            ->orderBy('d.id', 'DESC')
+            ->setParameter('tipoProyecto', $tipoProyecto->getId())
+            ->getQuery()
+            ->getResult();
+
+        $dictamenes = $paginator->paginate(
+            $dictamenes,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
+
+        return $this->render('comision/indexAsignaciones.html.twig', [
+            'controller_name' => 'ComisionController',
+            'dictamenes' => $dictamenes
+        ]);
+    }
 }

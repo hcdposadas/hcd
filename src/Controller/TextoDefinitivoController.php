@@ -71,12 +71,13 @@ class TextoDefinitivoController extends AbstractController {
 		$form->remove( 'numeroDocumento' );
 		$form->remove( 'fechaDocumento' );
 		$form->remove( 'tipoTextoDefinitivo' );
-		$form->remove( 'firmantes' );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$expediente = $form->get( "dictamen" )->get( 'expediente' )->getData();
+			$dictamen=$form->get("dictamen")->getData();
 			$textoDefinitivo->getDictamen()->setExpediente( $expediente );
+			$textoDefinitivo->setTexto("");
 			$em = $this->getDoctrine()->getManager();
 			$em->persist( $textoDefinitivo );
 			$em->flush();

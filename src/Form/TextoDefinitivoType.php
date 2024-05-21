@@ -64,7 +64,7 @@ class TextoDefinitivoType extends AbstractType {
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
 				] )
-			->add( 'texto',
+/* 			->add( 'texto',
 				CKEditorType::class,
 				[
 					'required' => false,
@@ -72,8 +72,8 @@ class TextoDefinitivoType extends AbstractType {
 						'uiColor' => '#ffffff',
 					),
 					'attr'     => [ 'class' => 'texto_por_defecto' ]
-				] )
-			->add( 'firmantes',
+				] ) */
+/* 			->add( 'firmantes',
 				BootstrapCollectionType::class,
 				[
 					'entry_type'   => FirmanteTextoDefinitivoType::class,
@@ -82,7 +82,7 @@ class TextoDefinitivoType extends AbstractType {
 					'by_reference' => false,
 //					'display_history' => false,
 					'label'        => 'Firmantes'
-				] )
+				] ) */
 			->add( 'numero' )
 			->add( 'rama',
 				EntityType::class,
@@ -106,21 +106,6 @@ class TextoDefinitivoType extends AbstractType {
 					'allow_delete' => true,
 					'by_reference' => false,
 					'label'        => 'Expedientes Adjuntos'
-				] )
-			->add( 'tituloAnexo',
-				TextType::class,
-				[
-					'label'    => 'Título Anexo',
-					'required' => false
-				] )
-			->add( 'anexos',
-				BootstrapCollectionType::class,
-				[
-					'entry_type'   => AnexoTextoDefinitivoType::class,
-					'allow_add'    => true,
-					'allow_delete' => true,
-					'by_reference' => false,
-					'label'        => 'Anexos'
 				] )
 			->add( 'aprobadoEnSesion',
 				EntityType::class,

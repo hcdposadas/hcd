@@ -54,25 +54,14 @@ class AsignarDictamenAExpteType extends AbstractType {
 					'required'     => false,
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
-				] )
-			->add( 'textoDictamen',
-				CKEditorType::class,
+				] )/* 
+			->add( 'ramaFile',
+				VichFileType::class,
 				[
-					'required' => false,
-					'config'   => array(
-						'uiColor' => '#ffffff',
-//						'height'  => '600px'
-					),
-					'attr'     => [ 'class' => 'texto_por_defecto' ]
-				] )
-			->add( 'anexos',
-				BootstrapCollectionType::class,
-				[
-					'entry_type'   => AnexoDictamenType::class,
-					'allow_add'    => true,
-					'allow_delete' => true,
-					'by_reference' => false,
-					'label'        => 'Anexos'
+					'label'        => 'Digesto (Rama y Numero)',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
 				] )
 			->add( 'firmantes',
 				BootstrapCollectionType::class,
@@ -83,7 +72,7 @@ class AsignarDictamenAExpteType extends AbstractType {
 					'by_reference' => false,
 //					'display_history' => false,
 					'label'        => 'Firmantes'
-				] );
+				] ) */;
 	}
 
 	public function configureOptions( OptionsResolver $resolver ) {

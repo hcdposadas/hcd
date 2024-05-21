@@ -27,7 +27,7 @@ class TextoDefinitivoType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder
-			->add( 'dictamen', AsignarDictamenAExpteType::class )
+//			->add( 'dictamen', AsignarDictamenAExpteType::class )
 			->add( 'tipoDocumento',
 				ChoiceType::class,
 				[

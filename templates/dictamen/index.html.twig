@@ -52,6 +52,7 @@
                             <th>Id</th>
                             <th>Dictamen de</th>
                             <th>Expediente</th>
+                            <th>Verificación</th>
                             <th>Acciones</th>
                         </tr>
                         </thead>
@@ -67,6 +68,7 @@
                                 <td>
                                     {{ dictamen.expediente }}
                                 </td>
+                                <td>{% if dictamen.aprobadoLegislativo %}ACEPTADO{% elseif dictamen.aprobadoLegislativo is same as(false) %}RECHAZADO{% else %} PENDIENTE {% endif %}</td>
 
                                 <td>
                                     <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"

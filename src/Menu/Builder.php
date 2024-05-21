@@ -182,24 +182,7 @@ class Builder
 							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
-					$menu[$keyEmpresa]
-					->addChild(
-						'Giros a comisiones',
-						array(
-							'route'          => 'giros_comisiones_index',
-							'attributes'     => ['class' => 'nav-item'],
-							'linkAttributes' => ['class' => 'nav-link']
-						)
-					);
-					$menu[$keyEmpresa]
-					->addChild(
-						'Pedidos de informes',
-						array(
-							'route'          => 'pedidos_informe_index',
-							'attributes'     => ['class' => 'nav-item'],
-							'linkAttributes' => ['class' => 'nav-link']
-						)
-					);
+
 			}
 		}
 		// Decretos
@@ -329,7 +312,7 @@ class Builder
 						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
-
+				if(!$this->authorizationChecker->isGranted('ROLE_SECRETARIO')){
 				$menu[$keyPersonal]
 				->addChild(
 					'Informes del Digesto',
@@ -348,7 +331,7 @@ class Builder
 						'attributes'     => ['class' => 'nav-item'],
 						'linkAttributes' => ['class' => 'nav-link']
 					)
-				);
+				);}
 		}
 		if (
 			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
@@ -443,7 +426,8 @@ class Builder
 		if (
 			$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ||
 			$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO')
-			|| $this->authorizationChecker->isGranted('ROLE_COMISION')
+			|| $this->authorizationChecker->isGranted('ROLE_COMISION')||
+			$this->authorizationChecker->isGranted('ROLE_DIGESTO')
 		) {
 
 			$keyDictamenes = 'DICTÁMENES';
@@ -469,6 +453,41 @@ class Builder
 						'linkAttributes' => ['class' => 'nav-link']
 					)
 				);
+				if (
+					$this->authorizationChecker->isGranted('ROLE_CONCEJAL') ){
+				$menu[$keyDictamenes]
+				->addChild(
+					'Crear Dictamen a Expte Existente',
+					array(
+						'route'          => 'dictamen_asignar_a_expte',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+			}
+				if (
+					$this->authorizationChecker->isGranted('ROLE_DIGESTO')
+				) {
+			$menu[$keyDictamenes]
+				->addChild(
+					'Informes del Digesto',
+					array(
+						'route'          => 'digesto_informe_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
+			$menu[$keyDictamenes]
+				->addChild(
+					'Asignación de rama y num.',
+					array(
+						'route'          => 'digesto_asignacion_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+			}
 		}
 
 		if (

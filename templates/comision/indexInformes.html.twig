@@ -27,6 +27,7 @@
                             <th>Sesión</th>
                             <th style="width:25%">Extracto</th>
                             <th>Iniciador</th>
+                            <th>Pedido</th>
                             <th>Firmado</th>
                             <th>Acción</th>
                         </tr>
@@ -63,6 +64,9 @@
                                 </td>
                                 <td>
                                 {% if expediente.pedido %}SI{% else %}NO{% endif %}
+                                </td>
+                                                                <td>
+                                {% if expediente.digesto %}SI{% else %}NO{% endif %}
                                 </td>
                                 <td>
                                                                     <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"

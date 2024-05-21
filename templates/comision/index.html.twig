@@ -69,7 +69,8 @@
                                         <i class="fas fa-road"></i>
                                     </a>
                                                                         
-                                    {% if giro.cabecera %}
+                                    {% set cantidadGiros = giro.proyectoBae.giros|length %}
+                                    {% if cantidadGiros == 1 or giro.cabecera %}
                                         <a class="btn btn-default" data-toggle="tooltip" title="Crear Dictamen"
                                        href="{{ path('comision_dictamen_new', {id: giro.proyectoBae.expediente.id}) }}">
                                         <i class="fas fa-edit"></i>

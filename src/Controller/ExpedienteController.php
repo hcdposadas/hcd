@@ -2635,13 +2635,13 @@ class ExpedienteController extends AbstractController
 
 	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
 
+		//CARATULA
 		$em = $this->getDoctrine()->getManager();
 
 		$dataToEncode = $expediente->getCodigoReferencia();
 		if ($expediente->getBorrador()) {
 			$dataToEncode = null;
 		}
-		//$caratula=
  
 		$title      = 'Carátula';
 
@@ -2680,12 +2680,9 @@ class ExpedienteController extends AbstractController
 			);
 				
 
-
-			//$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
-
 		$pdfMerge->addPDF($nombre); 
 
-
+		//PROYECTO SIN FIRMAR
 			if(!$expediente->getExpedienteInterno()){
 		$header = null;
 		if (!$expediente->getBorrador()) {
@@ -2770,6 +2767,8 @@ class ExpedienteController extends AbstractController
 
 		} 
 	} else {
+
+		//PROYECTO FIRMADO
 		$path=$expediente->getExpedienteInterno();
 
 		$extension = pathinfo($path);
@@ -2790,9 +2789,12 @@ class ExpedienteController extends AbstractController
     );
 
 	if($firstProyectoBae){
+		//
 		if($firstProyectoBae->getFirmado()){
+			//GIRO FIRMADO
 			$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
 		}else{
+			//GIRO SIN FIRMAR
 		$giros=$firstProyectoBae->getGirosOrdenados();
 		if ($giros) {
 		$expediente=$firstProyectoBae->getExpediente();
@@ -2834,8 +2836,35 @@ class ExpedienteController extends AbstractController
 		$pdfMerge->addPDF($nombre);
 	}
 	}
+		if($firstProyectoBae->getPedido()){
+		//PEDIDO FIRMADO
+		$pdfMerge->addPDF('uploads/expedientes/comision/pedidos/'.$firstProyectoBae->getPedido());
+
+		} 
+		if($firstProyectoBae->getDigesto()){
+		//DIGESTO FIRMADO
+		$pdfMerge->addPDF('uploads/expedientes/comision/digesto/'.$firstProyectoBae->getDigesto());
+		}
+
+	
+		if($firstProyectoBae->getDictamen()){
+		//DICTAMEN FIRMADO
+		$pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$firstProyectoBae->getDictamen()->getDictamen());
+		}
+
+
+		if($firstProyectoBae->getDictamen()){
+			//RAMA FIRMADO
+			if($firstProyectoBae->getDictamen()->getRama()){
+				$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$firstProyectoBae->getDictamen()->getRama());
+			}
+		}
+
 
 	}
+
+	
+	
 
 		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 

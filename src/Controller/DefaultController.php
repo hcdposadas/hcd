@@ -54,6 +54,19 @@ class DefaultController extends AbstractController {
 
 	}
 
+	public function reglamento() {
+		$cartaOrganica = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+			'slug' => 'reglamento-interno'
+		] );
+
+		return $this->render( 'default/index_embed.html.twig',
+			[
+				'titulo'    => 'Reglamento Interno',
+				'documento' => $cartaOrganica
+			] );
+
+	}
+
 	/**
 	 * @Route("/pantallota", name="app_display_g")
 	 */

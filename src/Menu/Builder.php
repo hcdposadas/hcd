@@ -858,6 +858,16 @@ $menu[$keyLista]->addChild(
 					'linkAttributes' => ['class' => 'nav-link']
 				)
 			);
+		$menu[$keyPersonal]
+			->addChild(
+				'Reglamento Interno',
+				array(
+					'route'          => 'documento_reglamento_interno',
+					'attributes'     => ['class' => 'nav-item'],
+					'linkAttributes' => ['class' => 'nav-link']
+				)
+			);
+		
 
 		return $menu;
 	}

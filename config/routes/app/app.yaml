@@ -14,7 +14,6 @@ app_comision:
   resource: "routing/comision.yml"
   prefix: /comision
 
-
 app_dependencia:
   resource: "routing/dependencia.yml"
   prefix: /dependencia
@@ -50,6 +49,10 @@ app_concejal:
 documento_carta_organica:
   path: /documento_carta_organica
   defaults: { _controller: App\Controller\DefaultController::cartaOrganica }
+
+documento_reglamento_interno:
+  path: /documento_reglamento_interno
+  defaults: { _controller: App\Controller\DefaultController::reglamento }
 
 get_concejales_admin:
   path: /concejales

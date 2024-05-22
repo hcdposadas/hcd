@@ -33,9 +33,18 @@
 
         </div>
         <div class="card-footer">
-            {% if not is_granted('ROLE_SECRETARIO') %}
+            {% if not is_granted('ROLE_SECRETARIO') and is_granted('ROLE_LEGISLATIVO') %}
+                                <a class="btn btn-danger" 
+                       href="{{ path('dictamen_rechazar', {'id': dictamen.id}) }}">
+                        <i class=""></i> Rechazar 
+                    </a>
+                    <a class="btn btn-success" 
+                       href="{{ path('dictamen_aprobar', {'id': dictamen.id}) }}">
+                        <i class=""></i> Aprobar
+                    </a>
             <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
                 <i class="fa fa-edit"></i> Editar</a>
+
             {% endif %}
             <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
                 <i class="fa fa-print"></i> 

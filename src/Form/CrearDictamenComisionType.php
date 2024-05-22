@@ -53,25 +53,7 @@ class CrearDictamenComisionType extends AbstractType {
             'allow_delete' => true, // optional, default is true
             'download_uri' => true, // optional, default is true
         ] )
-    ->add( 'anexos',
-        BootstrapCollectionType::class,
-        [
-            'entry_type'   => AnexoDictamenType::class,
-            'allow_add'    => true,
-            'allow_delete' => true,
-            'by_reference' => false,
-            'label'        => 'Anexos'
-        ] )
-    ->add( 'firmantes',
-        BootstrapCollectionType::class,
-        [
-            'entry_type'   => FirmanteDictamenType::class,
-            'allow_add'    => true,
-            'allow_delete' => true,
-            'by_reference' => false,
-//					'display_history' => false,
-            'label'        => 'Firmantes'
-        ] );
+;
 }
 
 	public function configureOptions( OptionsResolver $resolver ) {

@@ -101,6 +101,34 @@ class DictamenController extends AbstractController
             ]);
     }
 
+    public function aprobarDictamen(Request $request, $id){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $dictamen = $em->getRepository(Dictamen::class)->find($id);
+
+        $dictamen->setAprobadoLegislativo(true);
+    
+        $em->flush();
+
+
+        return $this->redirectToRoute('dictamen_index');
+    }
+
+    public function rechazarDictamen(Request $request, $id){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $dictamen = $em->getRepository(Dictamen::class)->find($id);
+
+        $dictamen->setAprobadoLegislativo(false);
+    
+        $em->flush();
+
+
+        return $this->redirectToRoute('dictamen_index');
+    }
+
     public function altaDictamenAnterior(Request $request)
     {
 

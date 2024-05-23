@@ -94,7 +94,11 @@
                 </div>
             </div>
 
-
+                {% if edit %}
+                <div class="col-md-4">
+                    {{ form_row(form.activo) }}
+                </div>
+                {% endif %}
             <input class="btn btn-primary" id="btn-guardar" type="submit" value="Guardar"/>
             <div class="d-none">
                 {{ form_end(form) }}

@@ -42,6 +42,7 @@
                 <div class="col-md-4">
                     {{ form_row(form.tipoExpediente) }}
                 </div>
+
                 {% endif %}
 
             </div>
@@ -107,6 +108,12 @@
                     {#{{ form_widget(form) }}#}
                 {#</div>#}
             {#</div>#}
+                {% if edit %}
+
+                <div class="col-md-4">
+                    {{ form_row(form.activo) }}
+                </div>
+                {% endif %}
             <input class="btn btn-primary" type="submit" value="Guardar"/>
             <div class="d-none">
                 {{ form_end(form) }}

@@ -77,7 +77,8 @@ class ExpedienteAdministrativoExternoType extends AbstractType {
 				SubmitType::class,
 				array(
 					'attr' => array( 'class' => 'btn btn-primary' ),
-				) );
+				) )
+			->add('activo');
 	}
 
 	public function configureOptions( OptionsResolver $resolver ) {

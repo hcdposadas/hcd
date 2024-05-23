@@ -117,7 +117,8 @@ class ExpedienteAdministrativoType extends AbstractType {
 					'allow_delete' => true,
 					'by_reference' => false,
 					'label'        => 'Anexos'
-				] );
+				] )
+				->add('activo');
 	}
 
 	/**

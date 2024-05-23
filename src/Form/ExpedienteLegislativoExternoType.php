@@ -114,6 +114,7 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					'label' => 'Es Proyecto DEM',
 					'required' => false
 				] )
+			->add('activo')
 			->add( 'guardar',
 				SubmitType::class,
 				array(

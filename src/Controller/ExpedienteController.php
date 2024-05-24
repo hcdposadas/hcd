@@ -1715,7 +1715,7 @@ class ExpedienteController extends AbstractController
 		$giros = $id->getExpediente()->getGiroAdministrativos();
 
 		$iniciador=false;
-		if($area->getNombre() == $id->getDependencia()){
+		if($area->getNombre() == $id->getExpediente()->getDependencia()){
 			$iniciador=true;
 		} 
         $areaGiros = false;
@@ -1768,7 +1768,7 @@ class ExpedienteController extends AbstractController
 		$giros = $id->getGiro()->getExpediente()->getGiroAdministrativos();
 
 		$iniciador=false;
-		if($area->getNombre() == $id->getDependencia()){
+		if($area->getNombre() == $id->getGiro()->getExpediente()->getDependencia()){
 			$iniciador=true;
 		} 
 

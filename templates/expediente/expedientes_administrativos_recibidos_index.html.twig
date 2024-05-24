@@ -28,7 +28,7 @@
                         <tr>
                             <th>Id</th>
                             <th>Expediente</th>
-                            <th>Fecha</th>
+                            <th>Fecha Giro</th>
                             <th>Extracto</th>
                             <th>Iniciador</th>
                             <th>Área De Origen</th>
@@ -44,7 +44,7 @@
                                 </td>
                                 <td>{{ giro.expediente.expediente }}-{{ giro.expediente.letra }}
                                     -{% if giro.expediente.periodoLegislativo %}{{ giro.expediente.periodoLegislativo }}{% else %}{{ giro.expediente.anio }}{% endif %}</td>
-                                <td>{% if giro.expediente.fecha %}{{ giro.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{% if giro.fechaGiro %}{{ giro.fechaGiro|date('d/m/Y') }}{% endif %}</td>
                                 <td>{{giro.expediente.extracto}}</td>
                                 <td>
                                     {% if giro.expediente.iniciadores.count > 0 %}

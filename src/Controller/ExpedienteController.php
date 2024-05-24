@@ -2847,18 +2847,18 @@ class ExpedienteController extends AbstractController
 		}
 
 	
-		if($firstProyectoBae->getDictamen()){
-		//DICTAMEN FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$firstProyectoBae->getDictamen()->getDictamen());
-		}
+		// if($firstProyectoBae->getDictamen()){
+		// //DICTAMEN FIRMADO
+		// $pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$firstProyectoBae->getDictamen()->getDictamen());
+		// }
 
 
-		if($firstProyectoBae->getDictamen()){
+/* 		if($firstProyectoBae->getDictamen()){
 			//RAMA FIRMADO
 			if($firstProyectoBae->getDictamen()->getRama()){
 				$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$firstProyectoBae->getDictamen()->getRama());
 			}
-		}
+		} */
 
 
 	}

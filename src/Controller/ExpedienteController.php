@@ -7,6 +7,7 @@ use App\Entity\Giro;
 use App\Entity\AnexoGiro;
 use App\Entity\PeriodoLegislativo;
 use App\Entity\ProyectoBAE;
+use App\Entity\Dictamen;
 use App\Entity\Dependencia;
 use App\Entity\ExpedienteBloqueado;
 use App\Entity\AnexoExpediente;
@@ -1672,24 +1673,60 @@ class ExpedienteController extends AbstractController
 
 
 
-        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+		$iniciador=false;
+		if($area->getNombre() == $id->getDependencia()){
+			$iniciador=true;
+		}
+        $giros = $id->getGiroAdministrativos();
 
-        // Crear una BinaryFileResponse para el archivo PDF
-        $response = new BinaryFileResponse($pdfPath);
 
-        // Configurar la cabecera para forzar la descarga del archivo
-        $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+        $areaGiros = false;
+        foreach ($giros as $giro) {
+            if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
+                $areaGiros = true;
+                break;
+            }
+        }
 
-        return $response;
+
+		if($areaGiros || $iniciador) {
+			$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
+
+			// Crear una BinaryFileResponse para el archivo PDF
+			$response = new BinaryFileResponse($pdfPath);
+	
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+	
+			return $response;
+		}
+
+
     }
 
 	public function imprimirAnexoSector(AnexoExpediente $id)
     {
         $expediente=$id->getAnexo();
 
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
+		$giros = $id->getExpediente()->getGiroAdministrativos();
 
+		$iniciador=false;
+		if($area->getNombre() == $id->getDependencia()){
+			$iniciador=true;
+		} 
+        $areaGiros = false;
+        foreach ($giros as $giro) {
+            if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
+                $areaGiros = true;
+                break;
+            }
+        }
+
+		if($areaGiros || $iniciador) {
         $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/anexos/' . $expediente;
 
         // Crear una BinaryFileResponse para el archivo PDF
@@ -1700,6 +1737,7 @@ class ExpedienteController extends AbstractController
         $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
 
         return $response;
+		}
     }
 
 	
@@ -1725,8 +1763,24 @@ class ExpedienteController extends AbstractController
     {
         $anexo=$id->getAnexo();
 
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
+		$giros = $id->getGiro()->getExpediente()->getGiroAdministrativos();
 
+		$iniciador=false;
+		if($area->getNombre() == $id->getDependencia()){
+			$iniciador=true;
+		} 
+
+        $areaGiros = false;
+        foreach ($giros as $giro) {
+            if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
+                $areaGiros = true;
+                break;
+            }
+        }
+
+		if($areaGiros || $iniciador) {
         $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/giros/anexos/' . $anexo;
 
         // Crear una BinaryFileResponse para el archivo PDF
@@ -1737,14 +1791,15 @@ class ExpedienteController extends AbstractController
         $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
 
         return $response;
+		}
     }
 
 	public function showExpedienteRecibido(GiroAdministrativo $id)
 	{
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-		$ruta='expedientes_administrativos_sector_enviados';
 		$giro=$id;
-		$rechazar= false;
+		$expediente=$giro->getExpediente();
+
 		if($area == $giro->getAreaDestino()){
 			$em = $this->getDoctrine()->getManager();
 			$rechazar= true;
@@ -1753,20 +1808,35 @@ class ExpedienteController extends AbstractController
 			}
 			$em->flush();
 			$ruta= 'expedientes_administrativos_sector_recibidos';
+			return $this->render(
+				'expediente/showSector.html.twig',
+				[	'rechazar' => $rechazar,
+				'area'=> $area->getNombre(),
+					'giro' => $giro,
+					'ruta' => $ruta,
+					'expediente' => $expediente,
+				]
+			);
+		}elseif ($area == $giro->getAreaOrigen()) {
+			$rechazar= false;
+			$ruta='expedientes_administrativos_sector_enviados';
+			return $this->render(
+				'expediente/showSector.html.twig',
+				[	'rechazar' => $rechazar,
+				'area'=> $area->getNombre(),
+					'giro' => $giro,
+					'ruta' => $ruta,
+					'expediente' => $expediente,
+				]
+			);
 		}
 
-		
-		$expediente=$giro->getExpediente();
 
-		return $this->render(
-			'expediente/showSector.html.twig',
-			[	'rechazar' => $rechazar,
-			'area'=> $area->getNombre(),
-				'giro' => $giro,
-				'ruta' => $ruta,
-				'expediente' => $expediente,
-			]
-		);
+		
+		
+		return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
+
+		
 	}
 
 	public function RechazarExpedienteSector(Request $request, GiroAdministrativo $id)
@@ -2632,6 +2702,7 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
+	
 
 	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
 
@@ -2846,6 +2917,7 @@ class ExpedienteController extends AbstractController
 		$pdfMerge->addPDF('uploads/expedientes/comision/digesto/'.$firstProyectoBae->getDigesto());
 		}
 
+<<<<<<< Updated upstream
 	
 		// if($firstProyectoBae->getDictamen()){
 		// //DICTAMEN FIRMADO
@@ -2854,9 +2926,29 @@ class ExpedienteController extends AbstractController
 
 
 /* 		if($firstProyectoBae->getDictamen()){
+=======
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$firstDictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
+		if($firstDictamen){
+		//DICTAMEN FIRMADO
+		if($firstDictamen->getDictamen()){
+			$pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$firstDictamen->getDictamen());
+
+		}
+		}
+
+
+		if($firstDictamen){
+>>>>>>> Stashed changes
 			//RAMA FIRMADO
-			if($firstProyectoBae->getDictamen()->getRama()){
-				$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$firstProyectoBae->getDictamen()->getRama());
+			if($firstDictamen->getRama()){
+				$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$firstDictamen->getRama());
 			}
 		} */
 

@@ -2754,7 +2754,7 @@ class ExpedienteController extends AbstractController
 		$pdfMerge->addPDF($nombre); 
 
 		//PROYECTO SIN FIRMAR
-			if(!$expediente->getExpedienteInterno()){
+	if(!$expediente->getExpedienteInterno()){
 		$header = null;
 		if (!$expediente->getBorrador()) {
 			$header = $this->renderView(
@@ -2917,17 +2917,8 @@ class ExpedienteController extends AbstractController
 		$pdfMerge->addPDF('uploads/expedientes/comision/digesto/'.$firstProyectoBae->getDigesto());
 		}
 
-<<<<<<< Updated upstream
-	
-		// if($firstProyectoBae->getDictamen()){
-		// //DICTAMEN FIRMADO
-		// $pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$firstProyectoBae->getDictamen()->getDictamen());
-		// }
 
-
-/* 		if($firstProyectoBae->getDictamen()){
-=======
-		$DictamenRepository = $em->getRepository(Dictamen::class);
+/* 		$DictamenRepository = $em->getRepository(Dictamen::class);
 
 
 		$firstDictamen = $DictamenRepository->findOneBy(
@@ -2945,12 +2936,12 @@ class ExpedienteController extends AbstractController
 
 
 		if($firstDictamen){
->>>>>>> Stashed changes
+
 			//RAMA FIRMADO
 			if($firstDictamen->getRama()){
 				$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$firstDictamen->getRama());
 			}
-		} */
+		}  */
 
 
 	}

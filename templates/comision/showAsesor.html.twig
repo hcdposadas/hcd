@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes Administrativos
+{% endblock title %}
+{% block body %}
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('expediente_administrativo_sector_new') }}">Nuevo Expediente</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Expedientes Administrativos </h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Expediente</th>
+                            <th>Fecha</th>
+                            <th>Extracto</th>
+                            <th>Area Origen</th>
+                            <th>Area Destino</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for giro in giros %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('show_asesor', { 'id': giro.id }) }}">{{ giro.id }}</a>
+                                </td>
+                                <td>{{ giro.expediente.expediente }}-{{ giro.expediente.letra }}
+                                    -{% if giro.expediente.periodoLegislativo %}{{ giro.expediente.periodoLegislativo }}{% else %}{{ giro.expediente.anio }}{% endif %}</td>
+                                <td>{% if giro.expediente.fecha %}{{ giro.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{{giro.expediente.extracto}}</td>
+                                <td>{{ giro.areaOrigen }}                                     
+                                </td>
+                                <td>{{ giro.AreaDestino }}
+                                {% if giro.estado == 'pendiente' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#FFD43B" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% elseif giro.estado == 'abierto' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#c71a1a" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-default"
+                                       href="{{ path('show_asesor', { 'id': giro.id }) }}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-default"
+                                       href="{{ path('expediente_timeline', {id: giro.expediente.id}) }}">
+                                        <i class="fa fa-road"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# display navigation #}
+    <div class="col-md-12 text-center">
+        <div class="navigation">
+        {% if giros %}
+            {{ knp_pagination_render(giros) }}
+        {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}

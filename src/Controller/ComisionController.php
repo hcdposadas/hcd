@@ -12,6 +12,8 @@ use App\Entity\Comision;
 use App\Entity\TipoProyecto;
 use App\Entity\Dictamen;
 use App\Entity\Expediente;
+use App\Entity\AreaAdministrativa;
+use App\Entity\GiroAdministrativo;
 use App\Form\CrearDictamenType;
 use App\Form\CrearDictamenComisionType;
 use App\Form\FirmaDictamenType;
@@ -544,4 +546,61 @@ $em = $this->getDoctrine()->getManager();
             'dictamenes' => $dictamenes
         ]);
     }
+
+
+    public function expedientesAsesores(PaginatorInterface $paginator, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $areaAdministrativa = $em->getRepository(AreaAdministrativa::class)->find(37);
+        $areaAdministrativa2 = $em->getRepository(AreaAdministrativa::class)->find(44);
+
+
+        $qb = $em->createQueryBuilder();
+        $qb->select('g')
+           ->from(GiroAdministrativo::class, 'g')
+           ->where($qb->expr()->orX(
+               $qb->expr()->eq('g.areaOrigen', ':areaAdministrativa'),
+               $qb->expr()->eq('g.areaDestino', ':areaAdministrativa')
+           ));
+        $qb->orWhere($qb->expr()->orX(
+            $qb->expr()->eq('g.areaOrigen', ':areaAdministrativa2'),
+            $qb->expr()->eq('g.areaDestino', ':areaAdministrativa2')
+        ));
+        $qb->setParameter('areaAdministrativa', $areaAdministrativa);
+        $qb->setParameter('areaAdministrativa2', $areaAdministrativa2);
+        $qb->orderBy('g.id', 'DESC');
+        $giros = $qb->getQuery()->getResult();
+
+        $giros = $paginator->paginate(
+            $giros,
+            $request->query->get('page', 1)/* page number */,
+            10/* limit per page */
+        );
+
+        return $this->render('comision/showAsesor.html.twig', [
+            'giros' => $giros
+        ]);
+
+    }
+
+    public function showAsesor(GiroAdministrativo $id)
+	{
+		$giro=$id;
+		$expediente=$giro->getExpediente();
+
+
+			$em = $this->getDoctrine()->getManager();
+			$rechazar= true;
+			if ($giro->getEstado() == 'pendiente' or $giro->getEstado() == null) {
+				$giro->setEstado('abierto');
+			}
+			$em->flush();
+			return $this->render(
+				'comision/showGiroAsesor.html.twig',
+				[	'giro' => $giro,
+					'expediente' => $expediente,
+				]
+			);
+        }
 }

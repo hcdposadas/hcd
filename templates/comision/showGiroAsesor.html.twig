@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Expedientes
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Expediente {{ expediente.expediente }}-{{ expediente.letra }}-
+                        {% if expediente.periodoLegislativo %}
+                            {{ expediente.periodoLegislativo }}
+                        {% else %}
+                            {{ expediente.anio }}
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <dl class="dl-horizontal">
+                        <dt>Id</dt>
+                        <dd>{{ expediente.id }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Extracto</dt>
+                        <dd>{{ expediente.extracto }}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Fecha</dt>
+                        <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Iniciador</dt>
+                        <dd>
+                            {% if expediente.iniciadores.count > 0 %}
+                                {% for iniciadorExpediente in expediente.iniciadores %}
+                                    {% if iniciadorExpediente.iniciador %}
+                                        {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
+                                    {% endif %}
+                                {% endfor %}
+                            {% elseif expediente.iniciadorParticular %}
+                                {{ expediente.iniciadorParticular.nombreCompleto }}
+                            {% elseif expediente.dependencia %}
+                                {{ expediente.dependencia }}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Expediente</dt>
+                        <dd>
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_expediente_sector', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Expediente
+                    </a>
+                        </dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Anexos</dt>
+                        <dd>
+                        {% for anexo in expediente.anexos %}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_anexo_sector', {id: anexo.id}) }}">
+                        <i class="fa fa-print"></i> {{anexo.descripcion}}
+                    </a>
+                    {% endfor %}
+                        </dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Giros</dt>
+                        <dd>
+                        <table class="table table-bordered table-striped data-table">
+                        <thead>
+                        <tr>
+                            <th>Área Órigen</th>
+                            <th>Área Destino</th>
+                            <th>Anexo</th>
+                            <th>Fecha</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% if expediente.giroAdministrativos.count > 0 %}
+                                {% for giro in expediente.giroAdministrativos %}
+                                    <tr>
+                                    <td>{{giro.areaOrigen}}</td>
+                                    <td>{{giro.AreaDestino}}                                {% if giro.estado == 'pendiente' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#FFD43B" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% elseif giro.estado == 'abierto' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#c71a1a" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                                    {% endif %}-{{giro.texto}}</td>
+                                    <td> 
+                                    {% if giro.anexoGiros %}
+                                    {% for anexo in giro.anexoGiros %}
+                                                        <a class="btn btn-default" target="_blank"
+                       href="{{ path('imprimir_anexo_giro', {id: anexo.id}) }}">
+                        <i class="fa fa-print"></i> {{anexo.titulo}}
+                    </a>
+                    {% endfor %}
+                                    {% endif %}</td>
+                                    <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                        </table>
+                        </dd>
+                    </dl>
+
+                </div>
+
+
+            </div>
+
+                <a class="btn btn-default" href="{{ path('giros_asesor') }}">Volver</a>
+        </div>
+    </div>
+
+
+
+{% endblock %}

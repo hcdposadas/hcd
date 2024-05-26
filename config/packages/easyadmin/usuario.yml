@@ -36,7 +36,8 @@ easy_admin:
                       "ROLE_RRHH_ADMIN": "ROLE_RRHH_ADMIN",
                       "ROLE_SECTOR":"ROLE_SECTOR",
                       "ROLE_COMISION": "ROLE_COMISION",
-                      "ROLE_DIGESTO": "ROLE_DIGESTO"                      
+                      "ROLE_DIGESTO": "ROLE_DIGESTO",
+                      "ROLE_ASESOR": "ROLE_ASESOR"                      
                     }
                 }
             }

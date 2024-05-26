@@ -867,7 +867,33 @@ $menu[$keyLista]->addChild(
 					'linkAttributes' => ['class' => 'nav-link']
 				)
 			);
-		
+
+			if($this->authorizationChecker->isGranted('ROLE_ASESOR')){
+
+			$keyAsesor = 'EXPEDIENTES';
+			$menu->addChild(
+				$keyAsesor,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'nav nav-treeview',
+					),
+				)
+			)
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'far fa-file-alt')
+				->setAttribute('class', 'nav-item has-treeview');
+				$menu[$keyAsesor]
+			->addChild(
+				'Expedientes Administrativos',
+				array(
+					'route'          => 'giros_asesor',
+					'attributes'     => ['class' => 'nav-item'],
+					'linkAttributes' => ['class' => 'nav-link']
+				)
+			);
+			}
+
 
 		return $menu;
 	}

@@ -63,3 +63,12 @@ digesto_informe_proyectobae:
 giros_comision_imprimir:
   path: /giros/{id}/imprimir
   defaults: { _controller: App\Controller\ComisionController::imprimirGiros }
+
+giros_asesor:
+  path: /giros/asesor
+  defaults:
+    { _controller: App\Controller\ComisionController::expedientesAsesores }
+
+show_asesor:
+  path: /giros/asesor/{id}/show
+  defaults: { _controller: App\Controller\ComisionController::showAsesor }

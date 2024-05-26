@@ -121,6 +121,17 @@ class TextoDefinitivo extends BaseClass {
      */
     private $archivo;
 
+	/**
+     * @Vich\UploadableField(mapping="paseDem", fileNameProperty="pase")
+     * @var File
+     */
+    private $paseFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $pase;
+
 
 		/**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -161,18 +172,18 @@ class TextoDefinitivo extends BaseClass {
 	 * @return int
 	 */
 	public function getId() {
-         		return $this->id;
-         	}
+                  		return $this->id;
+                  	}
 
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-         		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
-         		$this->expedientesAdjuntos = new ArrayCollection();
-         		$this->firmantes           = new ArrayCollection();
-         	}
+                  		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
+                  		$this->expedientesAdjuntos = new ArrayCollection();
+                  		$this->firmantes           = new ArrayCollection();
+                  	}
 
 	/**
 	 * Set texto
@@ -182,10 +193,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setTexto( $texto ) {
-         		$this->texto = $texto;
-         
-         		return $this;
-         	}
+                  		$this->texto = $texto;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get texto
@@ -193,8 +204,8 @@ class TextoDefinitivo extends BaseClass {
 	 * @return string
 	 */
 	public function getTexto() {
-         		return $this->texto;
-         	}
+                  		return $this->texto;
+                  	}
 
 	/**
 	 * Set numero
@@ -204,10 +215,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setNumero( $numero ) {
-         		$this->numero = $numero;
-         
-         		return $this;
-         	}
+                  		$this->numero = $numero;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get numero
@@ -215,8 +226,8 @@ class TextoDefinitivo extends BaseClass {
 	 * @return string
 	 */
 	public function getNumero() {
-         		return $this->numero;
-         	}
+                  		return $this->numero;
+                  	}
 
 	/**
 	 * Set fechaCreacion
@@ -226,10 +237,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setFechaCreacion( $fechaCreacion ) {
-         		$this->fechaCreacion = $fechaCreacion;
-         
-         		return $this;
-         	}
+                  		$this->fechaCreacion = $fechaCreacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set fechaActualizacion
@@ -239,10 +250,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setFechaActualizacion( $fechaActualizacion ) {
-         		$this->fechaActualizacion = $fechaActualizacion;
-         
-         		return $this;
-         	}
+                  		$this->fechaActualizacion = $fechaActualizacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Add anexo
@@ -252,12 +263,12 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function addAnexo( \App\Entity\AnexoTextoDefinitivo $anexo ) {
-         		$anexo->setTextoDefinitivo( $this );
-         
-         		$this->anexos->add( $anexo );
-         
-         		return $this;
-         	}
+                  		$anexo->setTextoDefinitivo( $this );
+                  
+                  		$this->anexos->add( $anexo );
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove anexo
@@ -265,8 +276,8 @@ class TextoDefinitivo extends BaseClass {
 	 * @param \App\Entity\AnexoTextoDefinitivo $anexo
 	 */
 	public function removeAnexo( \App\Entity\AnexoTextoDefinitivo $anexo ) {
-         		$this->anexos->removeElement( $anexo );
-         	}
+                  		$this->anexos->removeElement( $anexo );
+                  	}
 
 	/**
 	 * Get anexos
@@ -274,8 +285,8 @@ class TextoDefinitivo extends BaseClass {
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getAnexos() {
-         		return $this->anexos;
-         	}
+                  		return $this->anexos;
+                  	}
 
 	/**
 	 * Set dictamen
@@ -285,10 +296,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setDictamen( \App\Entity\Dictamen $dictamen = null ) {
-         		$this->dictamen = $dictamen;
-         
-         		return $this;
-         	}
+                  		$this->dictamen = $dictamen;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get dictamen
@@ -296,8 +307,8 @@ class TextoDefinitivo extends BaseClass {
 	 * @return \App\Entity\Dictamen
 	 */
 	public function getDictamen() {
-         		return $this->dictamen;
-         	}
+                  		return $this->dictamen;
+                  	}
 
 	/**
 	 * Set rama
@@ -307,10 +318,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setRama( \App\Entity\Rama $rama = null ) {
-         		$this->rama = $rama;
-         
-         		return $this;
-         	}
+                  		$this->rama = $rama;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get rama
@@ -318,8 +329,8 @@ class TextoDefinitivo extends BaseClass {
 	 * @return \App\Entity\Rama
 	 */
 	public function getRama() {
-         		return $this->rama;
-         	}
+                  		return $this->rama;
+                  	}
 
 	/**
 	 * Set creadoPor
@@ -329,10 +340,10 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setCreadoPor( \App\Entity\Usuario $creadoPor = null ) {
-         		$this->creadoPor = $creadoPor;
-         
-         		return $this;
-         	}
+                  		$this->creadoPor = $creadoPor;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set actualizadoPor
@@ -342,126 +353,126 @@ class TextoDefinitivo extends BaseClass {
 	 * @return TextoDefinitivo
 	 */
 	public function setActualizadoPor( \App\Entity\Usuario $actualizadoPor = null ) {
-         		$this->actualizadoPor = $actualizadoPor;
-         
-         		return $this;
-         	}
+                  		$this->actualizadoPor = $actualizadoPor;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * @return Collection|TextoDefinitivoExpedienteAdjunto[]
 	 */
 	public function getExpedientesAdjuntos(): Collection {
-         		return $this->expedientesAdjuntos;
-         	}
+                  		return $this->expedientesAdjuntos;
+                  	}
 
 	public function addExpedientesAdjunto( TextoDefinitivoExpedienteAdjunto $expedientesAdjunto ): self {
-         		if ( ! $this->expedientesAdjuntos->contains( $expedientesAdjunto ) ) {
-         			$this->expedientesAdjuntos[] = $expedientesAdjunto;
-         			$expedientesAdjunto->setTextoDefinitivo( $this );
-         		}
-         
-         		return $this;
-         	}
+                  		if ( ! $this->expedientesAdjuntos->contains( $expedientesAdjunto ) ) {
+                  			$this->expedientesAdjuntos[] = $expedientesAdjunto;
+                  			$expedientesAdjunto->setTextoDefinitivo( $this );
+                  		}
+                  
+                  		return $this;
+                  	}
 
 	public function removeExpedientesAdjunto( TextoDefinitivoExpedienteAdjunto $expedientesAdjunto ): self {
-         		if ( $this->expedientesAdjuntos->contains( $expedientesAdjunto ) ) {
-         			$this->expedientesAdjuntos->removeElement( $expedientesAdjunto );
-         			// set the owning side to null (unless already changed)
-         			if ( $expedientesAdjunto->getTextoDefinitivo() === $this ) {
-         				$expedientesAdjunto->setTextoDefinitivo( null );
-         			}
-         		}
-         
-         		return $this;
-         	}
+                  		if ( $this->expedientesAdjuntos->contains( $expedientesAdjunto ) ) {
+                  			$this->expedientesAdjuntos->removeElement( $expedientesAdjunto );
+                  			// set the owning side to null (unless already changed)
+                  			if ( $expedientesAdjunto->getTextoDefinitivo() === $this ) {
+                  				$expedientesAdjunto->setTextoDefinitivo( null );
+                  			}
+                  		}
+                  
+                  		return $this;
+                  	}
 
 	public function getAprobadoEnSesion(): ?Sesion {
-         		return $this->aprobadoEnSesion;
-         	}
+                  		return $this->aprobadoEnSesion;
+                  	}
 
 	public function setAprobadoEnSesion( ?Sesion $aprobadoEnSesion ): self {
-         		$this->aprobadoEnSesion = $aprobadoEnSesion;
-         
-         		return $this;
-         	}
+                  		$this->aprobadoEnSesion = $aprobadoEnSesion;
+                  
+                  		return $this;
+                  	}
 
 	public function getTituloAnexo(): ?string {
-         		return $this->tituloAnexo;
-         	}
+                  		return $this->tituloAnexo;
+                  	}
 
 	public function setTituloAnexo( ?string $tituloAnexo ): self {
-         		$this->tituloAnexo = $tituloAnexo;
-         
-         		return $this;
-         	}
+                  		$this->tituloAnexo = $tituloAnexo;
+                  
+                  		return $this;
+                  	}
 
 	public function getTipoDocumento(): ?string {
-         		return $this->tipoDocumento;
-         	}
+                  		return $this->tipoDocumento;
+                  	}
 
 	public function setTipoDocumento( ?string $tipoDocumento ): self {
-         		$this->tipoDocumento = $tipoDocumento;
-         
-         		return $this;
-         	}
+                  		$this->tipoDocumento = $tipoDocumento;
+                  
+                  		return $this;
+                  	}
 
 	public function getNumeroDocumento(): ?string {
-         		return $this->numeroDocumento;
-         	}
+                  		return $this->numeroDocumento;
+                  	}
 
 	public function setNumeroDocumento( ?string $numeroDocumento ): self {
-         		$this->numeroDocumento = $numeroDocumento;
-         
-         		return $this;
-         	}
+                  		$this->numeroDocumento = $numeroDocumento;
+                  
+                  		return $this;
+                  	}
 
 	public function getFechaDocumento(): ?\DateTimeInterface {
-         		return $this->fechaDocumento;
-         	}
+                  		return $this->fechaDocumento;
+                  	}
 
 	public function setFechaDocumento( ?\DateTimeInterface $fechaDocumento ): self {
-         		$this->fechaDocumento = $fechaDocumento;
-         
-         		return $this;
-         	}
+                  		$this->fechaDocumento = $fechaDocumento;
+                  
+                  		return $this;
+                  	}
 
 	public function getTipoTextoDefinitivo(): ?TipoProyecto {
-         		return $this->tipoTextoDefinitivo;
-         	}
+                  		return $this->tipoTextoDefinitivo;
+                  	}
 
 	public function setTipoTextoDefinitivo( ?TipoProyecto $tipoTextoDefinitivo ): self {
-         		$this->tipoTextoDefinitivo = $tipoTextoDefinitivo;
-         
-         		return $this;
-         	}
+                  		$this->tipoTextoDefinitivo = $tipoTextoDefinitivo;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * @return Collection|FirmanteTextoDefinitivo[]
 	 */
 	public function getFirmantes(): Collection {
-         		return $this->firmantes;
-         	}
+                  		return $this->firmantes;
+                  	}
 
 	public function addFirmante( FirmanteTextoDefinitivo $firmante ): self {
-         		if ( ! $this->firmantes->contains( $firmante ) ) {
-         			$this->firmantes[] = $firmante;
-         			$firmante->setTextoDefinitivo( $this );
-         		}
-         
-         		return $this;
-         	}
+                  		if ( ! $this->firmantes->contains( $firmante ) ) {
+                  			$this->firmantes[] = $firmante;
+                  			$firmante->setTextoDefinitivo( $this );
+                  		}
+                  
+                  		return $this;
+                  	}
 
 	public function removeFirmante( FirmanteTextoDefinitivo $firmante ): self {
-         		if ( $this->firmantes->contains( $firmante ) ) {
-         			$this->firmantes->removeElement( $firmante );
-         			// set the owning side to null (unless already changed)
-         			if ( $firmante->getTextoDefinitivo() === $this ) {
-         				$firmante->setTextoDefinitivo( null );
-         			}
-         		}
-         
-         		return $this;
-         	}
+                  		if ( $this->firmantes->contains( $firmante ) ) {
+                  			$this->firmantes->removeElement( $firmante );
+                  			// set the owning side to null (unless already changed)
+                  			if ( $firmante->getTextoDefinitivo() === $this ) {
+                  				$firmante->setTextoDefinitivo( null );
+                  			}
+                  		}
+                  
+                  		return $this;
+                  	}
 
     public function getArchivo(): ?string
     {
@@ -471,6 +482,18 @@ class TextoDefinitivo extends BaseClass {
     public function setArchivo(?string $archivo): self
     {
         $this->archivo = $archivo;
+
+        return $this;
+    }
+
+    public function getPase(): ?string
+    {
+        return $this->pase;
+    }
+
+    public function setPase(?string $pase): self
+    {
+        $this->pase = $pase;
 
         return $this;
     }

@@ -30,6 +30,7 @@ parameters:
   app.path.digesto: "/uploads/expedientes/digesto/"
   app.path.pedido: "/uploads/expedientes/pedido/"
   app.path.rama: "/uploads/expedientes/rama/"
+  app.path.paseDem: "/uploads/expedientes/pasedem/"
 
 services:
   # default configuration for services in *this* file

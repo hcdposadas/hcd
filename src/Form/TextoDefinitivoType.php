@@ -64,6 +64,14 @@ class TextoDefinitivoType extends AbstractType {
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
 				] )
+			->add( 'paseFile',
+				VichFileType::class,
+				[
+					'label'        => 'Pase Firmado',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
+				] )
 /* 			->add( 'texto',
 				CKEditorType::class,
 				[

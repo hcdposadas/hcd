@@ -73,7 +73,7 @@
                         {% for expediente in expedientes %}
                             <tr>
                                 <td>
-                                    <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
+                                    <a href="{{ path('expediente_sector_show', { 'id': expediente.id }) }}">{{ expediente.id }}</a>
                                 </td>
                                 <td>{{ expediente.expediente }}-{{ expediente.letra }}
                                     -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>

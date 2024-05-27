@@ -8,6 +8,7 @@ use App\Entity\Cargo;
 use App\Entity\ProyectoBAE;
 use App\Entity\Sesion;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use App\Entity\Usuario;
@@ -309,6 +310,11 @@ class Expediente extends BaseClass
 	 */
 	private $expedienteExternoFile;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Proveido::class, mappedBy="expediente")
+     */
+    private $proveidos;
+
 	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
 	 * of 'UploadedFile' is injected into this setter to trigger the  update. If this
@@ -321,25 +327,25 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExpedienteExternoFile(File $file = null)
-	{
-		$this->expedienteExternoFile = $file;
-
-		if ($file) {
-			// It is required that at least one field changes if you are using doctrine
-			// otherwise the event listeners won't be called and the file is lost
-			//			$this->updatedAt = new \DateTimeImmutable();
-		}
-
-		return $this;
-	}
+                  	{
+                  		$this->expedienteExternoFile = $file;
+                  
+                  		if ($file) {
+                  			// It is required that at least one field changes if you are using doctrine
+                  			// otherwise the event listeners won't be called and the file is lost
+                  			//			$this->updatedAt = new \DateTimeImmutable();
+                  		}
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * @return File|null
 	 */
 	public function getExpedienteExternoFile()
-	{
-		return $this->expedienteExternoFile;
-	}
+                  	{
+                  		return $this->expedienteExternoFile;
+                  	}
 
 	/**
 	 * @param string $expedienteExterno
@@ -347,19 +353,19 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExpedienteExterno($expedienteExterno)
-	{
-		$this->expedienteExterno = $expedienteExterno;
-
-		return $this;
-	}
+                  	{
+                  		$this->expedienteExterno = $expedienteExterno;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * @return string|null
 	 */
 	public function getExpedienteExterno()
-	{
-		return $this->expedienteExterno;
-	}
+                  	{
+                  		return $this->expedienteExterno;
+                  	}
 
 	/**
 	 * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -373,25 +379,25 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExpedienteInternoFile(File $file = null)
-	{
-		$this->expedienteInternoFile = $file;
-
-		if ($file) {
-			// It is required that at least one field changes if you are using doctrine
-			// otherwise the event listeners won't be called and the file is lost
-			$this->fechaActualizacion = new \DateTime('now');
-		}
-
-		return $this;
-	}
+                  	{
+                  		$this->expedienteInternoFile = $file;
+                  
+                  		if ($file) {
+                  			// It is required that at least one field changes if you are using doctrine
+                  			// otherwise the event listeners won't be called and the file is lost
+                  			$this->fechaActualizacion = new \DateTime('now');
+                  		}
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * @return File|null
 	 */
 	public function getExpedienteInternoFile()
-	{
-		return $this->expedienteInternoFile;
-	}
+                  	{
+                  		return $this->expedienteInternoFile;
+                  	}
 
 	/**
 	 * @param string $expedienteInterno
@@ -399,46 +405,47 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExpedienteInterno($expedienteInterno)
-	{
-		$this->expedienteInterno = $expedienteInterno;
-
-		return $this;
-	}
+                  	{
+                  		$this->expedienteInterno = $expedienteInterno;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * @return string|null
 	 */
 	public function getExpedienteInterno()
-	{
-		return $this->expedienteInterno;
-	}
+                  	{
+                  		return $this->expedienteInterno;
+                  	}
 
 	/**
 	 * @return string
 	 */
 	public function __toString()
-	{
-		if ($this->getPeriodoLegislativo()) {
-
-			$anio = $this->anio ? $this->anio : $this->getPeriodoLegislativo()->getAnio();
-		} else {
-			$anio = $this->anio ? $this->anio : '';
-		}
-
-		return $this->expediente . '-' . strtoupper($this->letra) . '-' . $anio;
-	}
+                  	{
+                  		if ($this->getPeriodoLegislativo()) {
+                  
+                  			$anio = $this->anio ? $this->anio : $this->getPeriodoLegislativo()->getAnio();
+                  		} else {
+                  			$anio = $this->anio ? $this->anio : '';
+                  		}
+                  
+                  		return $this->expediente . '-' . strtoupper($this->letra) . '-' . $anio;
+                  	}
 
 	/**
 	 * Constructor
 	 */
 	public function __construct()
-	{
-		$this->iniciadores         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->expedientesAdjunto  = new \Doctrine\Common\Collections\ArrayCollection();
-	}
+                  	{
+                  		$this->iniciadores         = new \Doctrine\Common\Collections\ArrayCollection();
+                  		$this->giroAdministrativos = new \Doctrine\Common\Collections\ArrayCollection();
+                  		$this->giros               = new \Doctrine\Common\Collections\ArrayCollection();
+                  		$this->anexos              = new \Doctrine\Common\Collections\ArrayCollection();
+                  		$this->expedientesAdjunto  = new \Doctrine\Common\Collections\ArrayCollection();
+                    $this->proveidos = new ArrayCollection();
+                  	}
 
 	/**
 	 * Get id
@@ -446,9 +453,9 @@ class Expediente extends BaseClass
 	 * @return integer
 	 */
 	public function getId()
-	{
-		return $this->id;
-	}
+                  	{
+                  		return $this->id;
+                  	}
 
 	/**
 	 * Set textoDefinitivo
@@ -458,11 +465,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setTextoDefinitivo($textoDefinitivo)
-	{
-		$this->textoDefinitivo = $textoDefinitivo;
-
-		return $this;
-	}
+                  	{
+                  		$this->textoDefinitivo = $textoDefinitivo;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get textoDefinitivo
@@ -470,9 +477,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getTextoDefinitivo()
-	{
-		return $this->textoDefinitivo;
-	}
+                  	{
+                  		return $this->textoDefinitivo;
+                  	}
 
 	/**
 	 * Set extracto
@@ -482,11 +489,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExtracto($extracto)
-	{
-		$this->extracto = $extracto;
-
-		return $this;
-	}
+                  	{
+                  		$this->extracto = $extracto;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get extracto
@@ -494,9 +501,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getExtracto()
-	{
-		return $this->extracto;
-	}
+                  	{
+                  		return $this->extracto;
+                  	}
 
 	/**
 	 * Set expediente
@@ -506,11 +513,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExpediente($expediente)
-	{
-		$this->expediente = $expediente;
-
-		return $this;
-	}
+                  	{
+                  		$this->expediente = $expediente;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get expediente
@@ -518,9 +525,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getExpediente()
-	{
-		return $this->expediente;
-	}
+                  	{
+                  		return $this->expediente;
+                  	}
 
 	/**
 	 * Set anio
@@ -530,11 +537,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setAnio($anio)
-	{
-		$this->anio = $anio;
-
-		return $this;
-	}
+                  	{
+                  		$this->anio = $anio;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get anio
@@ -542,9 +549,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getAnio()
-	{
-		return $this->anio;
-	}
+                  	{
+                  		return $this->anio;
+                  	}
 
 	/**
 	 * Set letra
@@ -554,11 +561,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setLetra($letra)
-	{
-		$this->letra = $letra;
-
-		return $this;
-	}
+                  	{
+                  		$this->letra = $letra;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get letra
@@ -566,9 +573,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getLetra()
-	{
-		return $this->letra;
-	}
+                  	{
+                  		return $this->letra;
+                  	}
 
 	/**
 	 * Set fecha
@@ -578,11 +585,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setFecha($fecha)
-	{
-		$this->fecha = $fecha;
-
-		return $this;
-	}
+                  	{
+                  		$this->fecha = $fecha;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get fecha
@@ -590,9 +597,9 @@ class Expediente extends BaseClass
 	 * @return \DateTime
 	 */
 	public function getFecha()
-	{
-		return $this->fecha;
-	}
+                  	{
+                  		return $this->fecha;
+                  	}
 
 	/**
 	 * Set registroMunicipal
@@ -602,11 +609,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setRegistroMunicipal($registroMunicipal)
-	{
-		$this->registroMunicipal = $registroMunicipal;
-
-		return $this;
-	}
+                  	{
+                  		$this->registroMunicipal = $registroMunicipal;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get registroMunicipal
@@ -614,9 +621,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getRegistroMunicipal()
-	{
-		return $this->registroMunicipal;
-	}
+                  	{
+                  		return $this->registroMunicipal;
+                  	}
 
 	/**
 	 * Set sesionNumero
@@ -626,11 +633,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setSesionNumero($sesionNumero)
-	{
-		$this->sesionNumero = $sesionNumero;
-
-		return $this;
-	}
+                  	{
+                  		$this->sesionNumero = $sesionNumero;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get sesionNumero
@@ -638,9 +645,9 @@ class Expediente extends BaseClass
 	 * @return integer
 	 */
 	public function getSesionNumero()
-	{
-		return $this->sesionNumero;
-	}
+                  	{
+                  		return $this->sesionNumero;
+                  	}
 
 	/**
 	 * Set sesionAnio
@@ -650,11 +657,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setSesionAnio($sesionAnio)
-	{
-		$this->sesionAnio = $sesionAnio;
-
-		return $this;
-	}
+                  	{
+                  		$this->sesionAnio = $sesionAnio;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get sesionAnio
@@ -662,9 +669,9 @@ class Expediente extends BaseClass
 	 * @return integer
 	 */
 	public function getSesionAnio()
-	{
-		return $this->sesionAnio;
-	}
+                  	{
+                  		return $this->sesionAnio;
+                  	}
 
 	/**
 	 * Set fechaCreacion
@@ -674,11 +681,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setFechaCreacion($fechaCreacion)
-	{
-		$this->fechaCreacion = $fechaCreacion;
-
-		return $this;
-	}
+                  	{
+                  		$this->fechaCreacion = $fechaCreacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set fechaActualizacion
@@ -688,11 +695,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setFechaActualizacion($fechaActualizacion)
-	{
-		$this->fechaActualizacion = $fechaActualizacion;
-
-		return $this;
-	}
+                  	{
+                  		$this->fechaActualizacion = $fechaActualizacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set tipoExpediente
@@ -702,11 +709,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setTipoExpediente(\App\Entity\TipoExpediente $tipoExpediente = null)
-	{
-		$this->tipoExpediente = $tipoExpediente;
-
-		return $this;
-	}
+                  	{
+                  		$this->tipoExpediente = $tipoExpediente;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get tipoExpediente
@@ -714,9 +721,9 @@ class Expediente extends BaseClass
 	 * @return \App\Entity\TipoExpediente
 	 */
 	public function getTipoExpediente()
-	{
-		return $this->tipoExpediente;
-	}
+                  	{
+                  		return $this->tipoExpediente;
+                  	}
 
 	/**
 	 * Add iniciadore
@@ -726,14 +733,14 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function addIniciadore(\App\Entity\IniciadorExpediente $iniciadore)
-	{
-
-		$iniciadore->setExpediente($this);
-
-		$this->iniciadores->add($iniciadore);
-
-		return $this;
-	}
+                  	{
+                  
+                  		$iniciadore->setExpediente($this);
+                  
+                  		$this->iniciadores->add($iniciadore);
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove iniciadore
@@ -741,9 +748,9 @@ class Expediente extends BaseClass
 	 * @param \App\Entity\IniciadorExpediente $iniciadore
 	 */
 	public function removeIniciadore(\App\Entity\IniciadorExpediente $iniciadore)
-	{
-		$this->iniciadores->removeElement($iniciadore);
-	}
+                  	{
+                  		$this->iniciadores->removeElement($iniciadore);
+                  	}
 
 	/**
 	 * Get iniciadores
@@ -751,9 +758,9 @@ class Expediente extends BaseClass
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getIniciadores()
-	{
-		return $this->iniciadores;
-	}
+                  	{
+                  		return $this->iniciadores;
+                  	}
 
 	/**
 	 * Set iniciadorParticular
@@ -763,11 +770,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setIniciadorParticular(\App\Entity\Persona $iniciadorParticular = null)
-	{
-		$this->iniciadorParticular = $iniciadorParticular;
-
-		return $this;
-	}
+                  	{
+                  		$this->iniciadorParticular = $iniciadorParticular;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get iniciadorParticular
@@ -775,9 +782,9 @@ class Expediente extends BaseClass
 	 * @return \App\Entity\Persona
 	 */
 	public function getIniciadorParticular()
-	{
-		return $this->iniciadorParticular;
-	}
+                  	{
+                  		return $this->iniciadorParticular;
+                  	}
 
 	/**
 	 * Set dependencia
@@ -787,11 +794,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setDependencia(\App\Entity\Dependencia $dependencia = null)
-	{
-		$this->dependencia = $dependencia;
-
-		return $this;
-	}
+                  	{
+                  		$this->dependencia = $dependencia;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get dependencia
@@ -799,9 +806,9 @@ class Expediente extends BaseClass
 	 * @return \App\Entity\Dependencia
 	 */
 	public function getDependencia()
-	{
-		return $this->dependencia;
-	}
+                  	{
+                  		return $this->dependencia;
+                  	}
 
 	/**
 	 * Add giroAdministrativo
@@ -811,14 +818,14 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function addGiroAdministrativo(\App\Entity\GiroAdministrativo $giroAdministrativo)
-	{
-
-		$giroAdministrativo->setExpediente($this);
-
-		$this->giroAdministrativos->add($giroAdministrativo);
-
-		return $this;
-	}
+                  	{
+                  
+                  		$giroAdministrativo->setExpediente($this);
+                  
+                  		$this->giroAdministrativos->add($giroAdministrativo);
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove giroAdministrativo
@@ -826,9 +833,9 @@ class Expediente extends BaseClass
 	 * @param \App\Entity\GiroAdministrativo $giroAdministrativo
 	 */
 	public function removeGiroAdministrativo(\App\Entity\GiroAdministrativo $giroAdministrativo)
-	{
-		$this->giroAdministrativos->removeElement($giroAdministrativo);
-	}
+                  	{
+                  		$this->giroAdministrativos->removeElement($giroAdministrativo);
+                  	}
 
 	/**
 	 * Get giroAdministrativos
@@ -836,9 +843,9 @@ class Expediente extends BaseClass
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getGiroAdministrativos()
-	{
-		return $this->giroAdministrativos;
-	}
+                  	{
+                  		return $this->giroAdministrativos;
+                  	}
 
 	/**
 	 * Add giro
@@ -848,17 +855,17 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function addGiro(\App\Entity\Giro $giro)
-	{
-		//		$this->giros[] = $giro;
-		//
-		//		return $this;
-
-		$giro->setExpediente($this);
-
-		$this->giros->add($giro);
-
-		return $this;
-	}
+                  	{
+                  		//		$this->giros[] = $giro;
+                  		//
+                  		//		return $this;
+                  
+                  		$giro->setExpediente($this);
+                  
+                  		$this->giros->add($giro);
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove giro
@@ -866,9 +873,9 @@ class Expediente extends BaseClass
 	 * @param \App\Entity\Giro $giro
 	 */
 	public function removeGiro(\App\Entity\Giro $giro)
-	{
-		$this->giros->removeElement($giro);
-	}
+                  	{
+                  		$this->giros->removeElement($giro);
+                  	}
 
 	/**
 	 * Get giros
@@ -876,42 +883,42 @@ class Expediente extends BaseClass
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getGiros()
-	{
-		return $this->giros;
-	}
+                  	{
+                  		return $this->giros;
+                  	}
 
 	public function getGirosOrdenados(Sesion $sesion = null)
-	{
-		$giros = new ArrayCollection();
-		if (!$sesion) {
-			$giros = $this->getGiros();
-		} else {
-			/** @var BoletinAsuntoEntrado $bae */
-			$bae         = $sesion->getBae()->first();
-			$proyectoBAE = $bae->getProyectos()->filter(function (ProyectoBAE $proyectoBAE) {
-				return $proyectoBAE->getExpediente()->getId() == $this->getId();
-			});
-			if ($proyectoBAE->count()) {
-				/** @var ProyectoBAE $proyectoBAE */
-				$proyectoBAE = $proyectoBAE->first();
-				$giros       = $proyectoBAE->getGiros();
-			}
-		}
-
-		$iterator = $giros->getIterator();
-
-		$iterator->uasort(function (Giro $a, Giro $b) {
-			if ($a->getCabecera()) {
-				return -1;
-			} elseif ($b->getCabecera()) {
-				return 1;
-			} else {
-				return ($a->getOrden() < $b->getOrden()) ? -1 : 1;
-			}
-		});
-
-		return new ArrayCollection(iterator_to_array($iterator));
-	}
+                  	{
+                  		$giros = new ArrayCollection();
+                  		if (!$sesion) {
+                  			$giros = $this->getGiros();
+                  		} else {
+                  			/** @var BoletinAsuntoEntrado $bae */
+                  			$bae         = $sesion->getBae()->first();
+                  			$proyectoBAE = $bae->getProyectos()->filter(function (ProyectoBAE $proyectoBAE) {
+                  				return $proyectoBAE->getExpediente()->getId() == $this->getId();
+                  			});
+                  			if ($proyectoBAE->count()) {
+                  				/** @var ProyectoBAE $proyectoBAE */
+                  				$proyectoBAE = $proyectoBAE->first();
+                  				$giros       = $proyectoBAE->getGiros();
+                  			}
+                  		}
+                  
+                  		$iterator = $giros->getIterator();
+                  
+                  		$iterator->uasort(function (Giro $a, Giro $b) {
+                  			if ($a->getCabecera()) {
+                  				return -1;
+                  			} elseif ($b->getCabecera()) {
+                  				return 1;
+                  			} else {
+                  				return ($a->getOrden() < $b->getOrden()) ? -1 : 1;
+                  			}
+                  		});
+                  
+                  		return new ArrayCollection(iterator_to_array($iterator));
+                  	}
 
 	/**
 	 * Set creadoPor
@@ -921,11 +928,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setCreadoPor(\App\Entity\Usuario $creadoPor = null)
-	{
-		$this->creadoPor = $creadoPor;
-
-		return $this;
-	}
+                  	{
+                  		$this->creadoPor = $creadoPor;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set actualizadoPor
@@ -935,11 +942,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setActualizadoPor(\App\Entity\Usuario $actualizadoPor = null)
-	{
-		$this->actualizadoPor = $actualizadoPor;
-
-		return $this;
-	}
+                  	{
+                  		$this->actualizadoPor = $actualizadoPor;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Set numeroNota
@@ -949,11 +956,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setNumeroNota($numeroNota)
-	{
-		$this->numeroNota = $numeroNota;
-
-		return $this;
-	}
+                  	{
+                  		$this->numeroNota = $numeroNota;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get numeroNota
@@ -961,9 +968,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getNumeroNota()
-	{
-		return $this->numeroNota;
-	}
+                  	{
+                  		return $this->numeroNota;
+                  	}
 
 	/**
 	 * Set tipoProyecto
@@ -973,11 +980,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setTipoProyecto(\App\Entity\TipoProyecto $tipoProyecto = null)
-	{
-		$this->tipoProyecto = $tipoProyecto;
-
-		return $this;
-	}
+                  	{
+                  		$this->tipoProyecto = $tipoProyecto;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get tipoProyecto
@@ -985,9 +992,9 @@ class Expediente extends BaseClass
 	 * @return \App\Entity\TipoProyecto
 	 */
 	public function getTipoProyecto()
-	{
-		return $this->tipoProyecto;
-	}
+                  	{
+                  		return $this->tipoProyecto;
+                  	}
 
 	/**
 	 * Set texto
@@ -997,11 +1004,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setTexto($texto)
-	{
-		$this->texto = $texto;
-
-		return $this;
-	}
+                  	{
+                  		$this->texto = $texto;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get texto
@@ -1009,9 +1016,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getTexto()
-	{
-		return $this->texto;
-	}
+                  	{
+                  		return $this->texto;
+                  	}
 
 	/**
 	 * Set borrador
@@ -1021,11 +1028,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setBorrador($borrador)
-	{
-		$this->borrador = $borrador;
-
-		return $this;
-	}
+                  	{
+                  		$this->borrador = $borrador;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get borrador
@@ -1033,9 +1040,9 @@ class Expediente extends BaseClass
 	 * @return boolean
 	 */
 	public function getBorrador()
-	{
-		return $this->borrador;
-	}
+                  	{
+                  		return $this->borrador;
+                  	}
 
 	/**
 	 * Set periodoLegislativo
@@ -1045,11 +1052,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setPeriodoLegislativo(\App\Entity\PeriodoLegislativo $periodoLegislativo = null)
-	{
-		$this->periodoLegislativo = $periodoLegislativo;
-
-		return $this;
-	}
+                  	{
+                  		$this->periodoLegislativo = $periodoLegislativo;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get periodoLegislativo
@@ -1057,9 +1064,9 @@ class Expediente extends BaseClass
 	 * @return \App\Entity\PeriodoLegislativo
 	 */
 	public function getPeriodoLegislativo()
-	{
-		return $this->periodoLegislativo;
-	}
+                  	{
+                  		return $this->periodoLegislativo;
+                  	}
 
 	/**
 	 * Set codigoReferencia
@@ -1069,11 +1076,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setCodigoReferencia($codigoReferencia)
-	{
-		$this->codigoReferencia = $codigoReferencia;
-
-		return $this;
-	}
+                  	{
+                  		$this->codigoReferencia = $codigoReferencia;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get codigoReferencia
@@ -1081,9 +1088,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getCodigoReferencia()
-	{
-		return $this->codigoReferencia;
-	}
+                  	{
+                  		return $this->codigoReferencia;
+                  	}
 
 	/**
 	 * Set numeroDeHojas
@@ -1093,11 +1100,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setNumeroDeHojas($numeroDeHojas)
-	{
-		$this->numeroDeHojas = $numeroDeHojas;
-
-		return $this;
-	}
+                  	{
+                  		$this->numeroDeHojas = $numeroDeHojas;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get numeroDeHojas
@@ -1105,9 +1112,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getNumeroDeHojas()
-	{
-		return $this->numeroDeHojas;
-	}
+                  	{
+                  		return $this->numeroDeHojas;
+                  	}
 
 	/**
 	 * Set hash
@@ -1117,11 +1124,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setHash($hash)
-	{
-		$this->hash = $hash;
-
-		return $this;
-	}
+                  	{
+                  		$this->hash = $hash;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get hash
@@ -1129,9 +1136,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getHash()
-	{
-		return $this->hash;
-	}
+                  	{
+                  		return $this->hash;
+                  	}
 
 	/**
 	 * Get marcaTemporal
@@ -1139,9 +1146,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getMarcaTemporal()
-	{
-		return $this->marcaTemporal;
-	}
+                  	{
+                  		return $this->marcaTemporal;
+                  	}
 
 	/**
 	 * Set marcaTemporal
@@ -1151,11 +1158,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setMarcaTemporal($marcaTemporal)
-	{
-		$this->marcaTemporal = $marcaTemporal;
-
-		return $this;
-	}
+                  	{
+                  		$this->marcaTemporal = $marcaTemporal;
+                  
+                  		return $this;
+                  	}
 
 
 
@@ -1167,11 +1174,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExtractoTemario($extractoTemario)
-	{
-		$this->extractoTemario = $extractoTemario;
-
-		return $this;
-	}
+                  	{
+                  		$this->extractoTemario = $extractoTemario;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get extractoTemario
@@ -1179,9 +1186,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getExtractoTemario()
-	{
-		return $this->extractoTemario;
-	}
+                  	{
+                  		return $this->extractoTemario;
+                  	}
 
 	/**
 	 * Set extractoDictamen
@@ -1191,11 +1198,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setExtractoDictamen($extractoDictamen)
-	{
-		$this->extractoDictamen = $extractoDictamen;
-
-		return $this;
-	}
+                  	{
+                  		$this->extractoDictamen = $extractoDictamen;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get extractoDictamen
@@ -1203,9 +1210,9 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getExtractoDictamen()
-	{
-		return $this->extractoDictamen;
-	}
+                  	{
+                  		return $this->extractoDictamen;
+                  	}
 
 	/**
 	 * Add anexo
@@ -1215,14 +1222,14 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function addAnexo(\App\Entity\AnexoExpediente $anexo)
-	{
-
-		$anexo->setExpediente($this);
-
-		$this->anexos->add($anexo);
-
-		return $this;
-	}
+                  	{
+                  
+                  		$anexo->setExpediente($this);
+                  
+                  		$this->anexos->add($anexo);
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove anexo
@@ -1230,9 +1237,9 @@ class Expediente extends BaseClass
 	 * @param \App\Entity\AnexoExpediente $anexo
 	 */
 	public function removeAnexo(\App\Entity\AnexoExpediente $anexo)
-	{
-		$this->anexos->removeElement($anexo);
-	}
+                  	{
+                  		$this->anexos->removeElement($anexo);
+                  	}
 
 	/**
 	 * Get anexos
@@ -1240,9 +1247,9 @@ class Expediente extends BaseClass
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getAnexos()
-	{
-		return $this->anexos;
-	}
+                  	{
+                  		return $this->anexos;
+                  	}
 
 	/**
 	 * Set fechaPresentacion
@@ -1252,11 +1259,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setFechaPresentacion($fechaPresentacion)
-	{
-		$this->fechaPresentacion = $fechaPresentacion;
-
-		return $this;
-	}
+                  	{
+                  		$this->fechaPresentacion = $fechaPresentacion;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get fechaPresentacion
@@ -1264,46 +1271,46 @@ class Expediente extends BaseClass
 	 * @return \DateTime
 	 */
 	public function getFechaPresentacion()
-	{
-		return $this->fechaPresentacion;
-	}
+                  	{
+                  		return $this->fechaPresentacion;
+                  	}
 
 	/**
 	 * @return bool
 	 */
 	public function esProyectoDeConcejal()
-	{
-		return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
-			return $ie->getAutor()
-				&& ($ie->getIniciador()->getCargoPersona()->getCargo()->getId() == $_ENV['CARGO_CONCEJAL'] ||
-					$ie->getIniciador()->getCargoPersona()->getCargo()->getId() == $_ENV['CARGO_PRESIDENTE']);
-		});
-	}
+                  	{
+                  		return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
+                  			return $ie->getAutor()
+                  				&& ($ie->getIniciador()->getCargoPersona()->getCargo()->getId() == $_ENV['CARGO_CONCEJAL'] ||
+                  					$ie->getIniciador()->getCargoPersona()->getCargo()->getId() == $_ENV['CARGO_PRESIDENTE']);
+                  		});
+                  	}
 
 	/**
 	 * @return bool
 	 */
 	public function esProyectoDeDEM()
-	{
-		//		return $this->getLetra() == 'M' && (strpos($this->getExpediente(), 'RM') === 0);
-		return (strpos($this->getExpediente(), 'RM') === 0) || $this->getProyectoDem();
-		//		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
-		//			return $ie->getAutor()
-		//			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
-		//			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
-		//		} );
-	}
+                  	{
+                  		//		return $this->getLetra() == 'M' && (strpos($this->getExpediente(), 'RM') === 0);
+                  		return (strpos($this->getExpediente(), 'RM') === 0) || $this->getProyectoDem();
+                  		//		return $this->getIniciadores()->exists( function ( $i, IniciadorExpediente $ie ) {
+                  		//			return $ie->getAutor()
+                  		//			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()
+                  		//			       && $ie->getIniciador()->getCargoPersona()->getAreaAdministrativa()->getId() == AreaAdministrativa::AREA_ADMINISTRATIVA_DEM;
+                  		//		} );
+                  	}
 
 	/**
 	 * @return bool
 	 */
 	public function esProyectoDeDefensor()
-	{
-		return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
-			return $ie->getAutor()
-				&& $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == $_ENV['CARGO_DEFENSOR'];
-		});
-	}
+                  	{
+                  		return $this->getIniciadores()->exists(function ($i, IniciadorExpediente $ie) {
+                  			return $ie->getAutor()
+                  				&& $ie->getIniciador()->getCargoPersona()->getCargo()->getId() == $_ENV['CARGO_DEFENSOR'];
+                  		});
+                  	}
 
 	/**
 	 * Add dictamene
@@ -1313,11 +1320,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function addDictamene(\App\Entity\Dictamen $dictamene)
-	{
-		$this->dictamenes[] = $dictamene;
-
-		return $this;
-	}
+                  	{
+                  		$this->dictamenes[] = $dictamene;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove dictamene
@@ -1325,9 +1332,9 @@ class Expediente extends BaseClass
 	 * @param \App\Entity\Dictamen $dictamene
 	 */
 	public function removeDictamene(\App\Entity\Dictamen $dictamene)
-	{
-		$this->dictamenes->removeElement($dictamene);
-	}
+                  	{
+                  		$this->dictamenes->removeElement($dictamene);
+                  	}
 
 	/**
 	 * Get dictamenes
@@ -1335,9 +1342,9 @@ class Expediente extends BaseClass
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getDictamenes()
-	{
-		return $this->dictamenes;
-	}
+                  	{
+                  		return $this->dictamenes;
+                  	}
 
 	/**
 	 * Set nota
@@ -1347,11 +1354,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setNota($nota)
-	{
-		$this->nota = $nota;
-
-		return $this;
-	}
+                  	{
+                  		$this->nota = $nota;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get marcaDefinitivo
@@ -1359,9 +1366,9 @@ class Expediente extends BaseClass
 	 * @return boolean
 	 */
 	public function getMarcaDefinitivo()
-	{
-		return $this->marcaDefinitivo;
-	}
+                  	{
+                  		return $this->marcaDefinitivo;
+                  	}
 
 	/**
 	 * Set 
@@ -1371,11 +1378,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setMarcaDefinitivo($marcaDefinitivo)
-	{
-		$this->marcaDefinitivo = $marcaDefinitivo;
-
-		return $this;
-	}
+                  	{
+                  		$this->marcaDefinitivo = $marcaDefinitivo;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get nota
@@ -1383,9 +1390,9 @@ class Expediente extends BaseClass
 	 * @return boolean
 	 */
 	public function getNota()
-	{
-		return $this->nota;
-	}
+                  	{
+                  		return $this->nota;
+                  	}
 
 	/**
 	 * Set asignadoPor
@@ -1395,11 +1402,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setAsignadoPor(\App\Entity\Usuario $asignadoPor = null)
-	{
-		$this->asignadoPor = $asignadoPor;
-
-		return $this;
-	}
+                  	{
+                  		$this->asignadoPor = $asignadoPor;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get asignadoPor
@@ -1407,9 +1414,9 @@ class Expediente extends BaseClass
 	 * @return \App\Entity\Usuario
 	 */
 	public function getAsignadoPor()
-	{
-		return $this->asignadoPor;
-	}
+                  	{
+                  		return $this->asignadoPor;
+                  	}
 
 	/**
 	 * @param Sesion|null $sesion
@@ -1417,39 +1424,39 @@ class Expediente extends BaseClass
 	 * @return string
 	 */
 	public function getTextoDelGiro(Sesion $sesion = null)
-	{
-		$giros = $this->getGirosOrdenados($sesion)->filter(function (Giro $giro) {
-			return $giro->getComisionDestino() != null;
-		})->map(function (Giro $giro) {
-			return '<strong title="' . $giro->getComisionDestino()->getNombre() . '">' . $giro->getComisionDestino()->getAbreviacion() . '</strong>';
-		});
-
-		if (count($giros) > 1) {
-			$textoDelGiro = 'A las Comisiones de ';
-		} else {
-			$textoDelGiro = 'A la Comisión de ';
-		}
-
-
-		if (count($giros) == 1) {
-			$textoDelGiro .= $giros[0];
-		} else {
-			$count = count($giros);
-			$pos   = 0;
-			foreach ($giros as $i => $giro) {
-				if ($pos == $count - 1) {
-					$textoDelGiro .= ' y de ';
-				} elseif ($pos != 0) {
-					$textoDelGiro .= '; ';
-				}
-
-				$textoDelGiro .= $giro;
-				$pos++;
-			}
-		}
-
-		return $textoDelGiro;
-	}
+                  	{
+                  		$giros = $this->getGirosOrdenados($sesion)->filter(function (Giro $giro) {
+                  			return $giro->getComisionDestino() != null;
+                  		})->map(function (Giro $giro) {
+                  			return '<strong title="' . $giro->getComisionDestino()->getNombre() . '">' . $giro->getComisionDestino()->getAbreviacion() . '</strong>';
+                  		});
+                  
+                  		if (count($giros) > 1) {
+                  			$textoDelGiro = 'A las Comisiones de ';
+                  		} else {
+                  			$textoDelGiro = 'A la Comisión de ';
+                  		}
+                  
+                  
+                  		if (count($giros) == 1) {
+                  			$textoDelGiro .= $giros[0];
+                  		} else {
+                  			$count = count($giros);
+                  			$pos   = 0;
+                  			foreach ($giros as $i => $giro) {
+                  				if ($pos == $count - 1) {
+                  					$textoDelGiro .= ' y de ';
+                  				} elseif ($pos != 0) {
+                  					$textoDelGiro .= '; ';
+                  				}
+                  
+                  				$textoDelGiro .= $giro;
+                  				$pos++;
+                  			}
+                  		}
+                  
+                  		return $textoDelGiro;
+                  	}
 
 	/**
 	 * Add expedientesAdjunto
@@ -1459,13 +1466,13 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function addExpedientesAdjunto(\App\Entity\ExpedienteAdjunto $expedientesAdjunto)
-	{
-		$expedientesAdjunto->setExpediente($this);
-
-		$this->expedientesAdjunto->add($expedientesAdjunto);
-
-		return $this;
-	}
+                  	{
+                  		$expedientesAdjunto->setExpediente($this);
+                  
+                  		$this->expedientesAdjunto->add($expedientesAdjunto);
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Remove expedientesAdjunto
@@ -1473,9 +1480,9 @@ class Expediente extends BaseClass
 	 * @param \App\Entity\ExpedienteAdjunto $expedientesAdjunto
 	 */
 	public function removeExpedientesAdjunto(\App\Entity\ExpedienteAdjunto $expedientesAdjunto)
-	{
-		$this->expedientesAdjunto->removeElement($expedientesAdjunto);
-	}
+                  	{
+                  		$this->expedientesAdjunto->removeElement($expedientesAdjunto);
+                  	}
 
 	/**
 	 * Get expedientesAdjunto
@@ -1483,9 +1490,9 @@ class Expediente extends BaseClass
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function getExpedientesAdjunto()
-	{
-		return $this->expedientesAdjunto;
-	}
+                  	{
+                  		return $this->expedientesAdjunto;
+                  	}
 
 	/**
 	 * Set proyectoDem
@@ -1495,11 +1502,11 @@ class Expediente extends BaseClass
 	 * @return Expediente
 	 */
 	public function setProyectoDem($proyectoDem)
-	{
-		$this->proyectoDem = $proyectoDem;
-
-		return $this;
-	}
+                  	{
+                  		$this->proyectoDem = $proyectoDem;
+                  
+                  		return $this;
+                  	}
 
 	/**
 	 * Get proyectoDem
@@ -1507,7 +1514,38 @@ class Expediente extends BaseClass
 	 * @return boolean
 	 */
 	public function getProyectoDem()
-	{
-		return $this->proyectoDem;
-	}
+                  	{
+                  		return $this->proyectoDem;
+                  	}
+
+    /**
+     * @return Collection|Proveido[]
+     */
+    public function getProveidos(): Collection
+    {
+        return $this->proveidos;
+    }
+
+    public function addProveido(Proveido $proveido): self
+    {
+        if (!$this->proveidos->contains($proveido)) {
+            $this->proveidos[] = $proveido;
+            $proveido->setExpediente($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProveido(Proveido $proveido): self
+    {
+        if ($this->proveidos->contains($proveido)) {
+            $this->proveidos->removeElement($proveido);
+            // set the owning side to null (unless already changed)
+            if ($proveido->getExpediente() === $this) {
+                $proveido->setExpediente(null);
+            }
+        }
+
+        return $this;
+    }
 }

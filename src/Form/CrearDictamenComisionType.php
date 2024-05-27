@@ -11,6 +11,7 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use App\Form\ProveidoType;
 
 class CrearDictamenComisionType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
@@ -53,6 +54,17 @@ class CrearDictamenComisionType extends AbstractType {
             'allow_delete' => true, // optional, default is true
             'download_uri' => true, // optional, default is true
         ] )
+
+	->add( 'proveidos',
+            BootstrapCollectionType::class,
+            [
+                'entry_type'   => ProveidoType::class,
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'mapped'      => false,
+                'label'        => 'Proveidos'
+            ] )
 ;
 }
 

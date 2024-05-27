@@ -31,6 +31,9 @@ parameters:
   app.path.pedido: "/uploads/expedientes/pedido/"
   app.path.rama: "/uploads/expedientes/rama/"
   app.path.paseDem: "/uploads/expedientes/pasedem/"
+  app.path.caratula_proveido: "/uploads/expedientes/proveido/caratula/"
+  app.path.proveido: "/uploads/expedientes/proveido/"
+  app.path.proveido_cierre: "/uploads/expedientes/proveido/cierre/"
 
 services:
   # default configuration for services in *this* file

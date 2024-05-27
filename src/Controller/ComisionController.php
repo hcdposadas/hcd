@@ -114,6 +114,19 @@ class ComisionController extends AbstractController
 
             $dictamen->setPresidenteComision($esPresidenteComision);
 
+
+            $proveidos = $form->get('proveidos')->getData();
+
+            foreach ($proveidos as $proveido) {
+                $proveido->setExpediente($expediente);
+
+
+                $em->persist($proveido);
+                
+
+            }
+            
+
             $em->persist($dictamen);
             $em->flush();
             $this->get('session')->getFlashBag()->add(

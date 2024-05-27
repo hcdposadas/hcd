@@ -89,6 +89,11 @@ class Giro extends BaseClass {
     private $proyectoBae;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $visto;
+
+    /**
      * Get id
      *
      * @return integer
@@ -368,5 +373,17 @@ class Giro extends BaseClass {
     public function getProyectoBae()
     {
         return $this->proyectoBae;
+    }
+
+    public function getVisto(): ?bool
+    {
+        return $this->visto;
+    }
+
+    public function setVisto(?bool $visto): self
+    {
+        $this->visto = $visto;
+
+        return $this;
     }
 }

@@ -213,9 +213,11 @@ class ComisionController extends AbstractController
             ]);
     }
 
-    public function showProyectoComision(Request $request,Expediente $expediente)
+    public function showProyectoComision(Request $request,Giro $giro)
 	{
-		$em = $this->getDoctrine()->getManager();
+        $giro->setVisto(true);
+		$expediente = $giro->getProyectoBae()->getExpediente();
+
 
 		return $this->render(
 			'comision/showProyecto.html.twig',

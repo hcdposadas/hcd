@@ -65,8 +65,13 @@
                 </div>
                 <div class="card-footer">
                     <a class="btn btn-default" target="_blank"
-                       href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}"><i
+                       href="{{ path('texto_definitivo_imprimir', {'id': textoDefinitivo.id }) }}">Imprimir Texto <i
                                 class="fa fa-print"></i></a>
+                    {% if textoDefinitivo.pase %}
+                    <a class="btn btn-default" target="_blank"
+                       href="{{ path('texto_definitivo_pase', {'id': textoDefinitivo.id }) }}">Imprimir Pase <i
+                                class="fa fa-print"></i></a>
+                    {% endif %}
                     {% if is_granted('ROLE_LEGISLATIVO') %}
                         {% if textoDefinitivo.dictamen %}
                             <a class="btn btn-default pull-right"

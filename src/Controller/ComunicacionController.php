@@ -167,6 +167,11 @@ class ComunicacionController extends AbstractController
 
 		$em = $this->getDoctrine()->getManager();
 
+        $area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+
+        $recibidos = $em->getRepository(RecibidoComunicado::class)->findBy(['area'=>$area,'id'=>$id]);
+        $response = null;
+        if($recibidos[0]->getArea() == $area){
 
         $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/comunicados/' . $comunicado;
 
@@ -181,6 +186,7 @@ class ComunicacionController extends AbstractController
 
         $em->flush();
 
+        }
 
         return $response;
     }

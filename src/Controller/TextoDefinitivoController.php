@@ -12,7 +12,7 @@ use App\Entity\TipoProyecto;
 use App\Form\Filter\TextoDefinitivoFilterType;
 use App\Form\TextoDefinitivoType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -122,7 +122,7 @@ class TextoDefinitivoController extends AbstractController {
 
 		$editForm = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 //		$editForm->get('dictamen')->get('expediente')->setData($textoDefinitivo->getDictamen()->getExpediente());
-		$editForm->get( 'dictamen' )->remove( 'expediente' );
+		//$editForm->get( 'dictamen' )->remove( 'expediente' );
 		$editForm->remove( 'tipoDocumento' );
 		$editForm->remove( 'numeroDocumento' );
 		$editForm->remove( 'fechaDocumento' );
@@ -213,6 +213,10 @@ class TextoDefinitivoController extends AbstractController {
 		$textoDefinitivo->setDictamen( $dictamen );
 		$form = $this->createForm( TextoDefinitivoType::class, $textoDefinitivo );
 		$form->remove( 'dictamen' );
+		$form->remove('tipoDocumento');
+		$form->remove('numeroDocumento');
+		$form->remove('fechaDocumento');
+
 
 		if ( $dictamen->getTipoProyecto()->getId() !== TipoProyecto::TIPO_ORDENANZA ) {
 			$form->remove( 'rama' );
@@ -221,15 +225,7 @@ class TextoDefinitivoController extends AbstractController {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-
-			if ( ! $textoDefinitivo->getTexto() ) {
-				$this->get( 'session' )->getFlashBag()->add(
-					'warning',
-					'El texto no puede estar vacío'
-				);
-
-				return $this->redirectToRoute( 'texto_definitivo_asignar', [ 'dictamen' => $dictamen->getId() ] );
-			}
+			$textoDefinitivo->setTexto("");
 
 
 			$em->persist( $textoDefinitivo );
@@ -285,31 +281,59 @@ class TextoDefinitivoController extends AbstractController {
 
 		$footer = $this->renderView( 'default/pie_pagina.pdf.twig' );
 
+		if($textoDefinitivo->getArchivo()){
+			$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/definitivo/' . $textoDefinitivo->getArchivo();
+
+			// Crear una BinaryFileResponse para el archivo PDF
+			$response = new BinaryFileResponse($pdfPath);
+	
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+			return $response;
+		}else{
+			return new Response(
+				$knpSnappyPdf->getOutputFromHtml( $html,
+					[
+						'page-size'      => 'Legal',
+	//					'page-width'     => '220mm',
+	//					'page-height'     => '340mm',
+	//					'margin-left'    => "3cm",
+	//					'margin-right'   => "3cm",
+						'margin-top'     => "5cm",
+						'margin-bottom'  => "2cm",
+						'header-html'    => $header,
+						'header-spacing' => 5,
+						'footer-spacing' => 5,
+						'footer-html'    => $footer,
+	//                    'margin-bottom' => "1cm"
+					]
+				)
+				, 200, [
+					'Content-Type'        => 'application/pdf',
+					'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+				]
+			);
+	
+		}
 //        return new Response($html);
 
-		return new Response(
-			$knpSnappyPdf->getOutputFromHtml( $html,
-				[
-					'page-size'      => 'Legal',
-//					'page-width'     => '220mm',
-//					'page-height'     => '340mm',
-//					'margin-left'    => "3cm",
-//					'margin-right'   => "3cm",
-					'margin-top'     => "5cm",
-					'margin-bottom'  => "2cm",
-					'header-html'    => $header,
-					'header-spacing' => 5,
-					'footer-spacing' => 5,
-					'footer-html'    => $footer,
-//                    'margin-bottom' => "1cm"
-				]
-			)
-			, 200, [
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			]
-		);
+		
+	}
 
+		/**
+	 * @Route("/{id}/imprimirpase", name="texto_definitivo_pase")
+	 */
+	public function imprimirPase(TextoDefinitivo $textoDefinitivo ){
+		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pasedem/' . $textoDefinitivo->getPase();
+
+		// Crear una BinaryFileResponse para el archivo PDF
+		$response = new BinaryFileResponse($pdfPath);
+
+		// Configurar la cabecera para forzar la descarga del archivo
+		$response->headers->set('Content-Type', 'application/pdf');
+		$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+		return $response;
 	}
 
 	/**
@@ -395,5 +419,88 @@ class TextoDefinitivoController extends AbstractController {
 				'textoDefinitivo' => $textoDefinitivo,
 				'edit_form'       => $editForm->createView()
 			) );
+	}
+	/**
+	 * @Route("/{id}/imprimir", name="texto_imprimir")
+	 */
+	public function imprimirArchivoTexto(KnpSnappyPdf $knpSnappyPdf, TextoDefinitivo $textoDefinitivo) {
+		$dictamen = $textoDefinitivo->getDictamen();
+		$expediente=$dictamen->getExpediente();
+
+		//CARATULA
+
+		$title      = 'Carátula';
+
+		$html = $this->renderView(
+			'expediente/caratula.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+		$pdfMerge = new PDFMerger;
+		$filesystem = new Filesystem();
+		$tmp=sys_get_temp_dir();
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+
+		$filesystem->remove('filePDF.pdf');
+
+		$nombre=$tmp.'/Caratula'.$time.'.pdf';
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-spacing' => 4,
+					'footer-spacing' => 5,				
+				)
+			);
+				
+		$pdfMerge->addPDF($nombre); 
+
+		//Proyecto
+		$pdfMerge->addPDF('uploads/expedientes/internos/'.$expediente->getExpedienteInterno(), 'all');
+
+		//giro
+		$em = $this->getDoctrine()->getManager();
+
+		$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+
+		$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+		$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+
+		if($firstProyectoBae){
+			//
+			if($firstProyectoBae->getFirmado()){
+				//GIRO FIRMADO
+				$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+			}
+
+			if($firstProyectoBae->getPedido()){
+				//PEDIDO FIRMADO
+				$pdfMerge->addPDF('uploads/expedientes/comision/pedidos/'.$firstProyectoBae->getPedido());
+			} 
+			if($firstProyectoBae->getDigesto()){
+				//DIGESTO FIRMADO
+				$pdfMerge->addPDF('uploads/expedientes/comision/digesto/'.$firstProyectoBae->getDigesto());
+			}
+		}
+
+		$pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$dictamen->getDictamen());
+
+		if($dictamen->getRama()){
+			$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$dictamen->getRama());
+		}
+
+		
+
+		$pdfMerge->addPDF('/uploads/expedientes/pasedem/'.$dictamen->getRama());
+
 	}
 }

@@ -439,6 +439,7 @@ $em = $this->getDoctrine()->getManager();
 
 
         $form = $this->createForm(AsignacionType::class, $dictamen);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
             $em->flush();

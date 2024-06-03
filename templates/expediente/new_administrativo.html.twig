@@ -43,7 +43,9 @@
                     {{ form_row(form.tipoExpediente) }}
                 </div>
 
+
                 {% endif %}
+
 
             </div>
             {#TODO debe ser un textarea por ahora#}
@@ -114,6 +116,9 @@
                     {{ form_row(form.activo) }}
                 </div>
                 {% endif %}
+                                                <div class="col-md-4">
+                    {{ form_row(form.isDecreto) }}
+                </div>
             <input class="btn btn-primary" type="submit" value="Guardar"/>
             <div class="d-none">
                 {{ form_end(form) }}
@@ -205,4 +210,17 @@
 
         });
     </script>
+    <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
 {% endblock javascripts %}

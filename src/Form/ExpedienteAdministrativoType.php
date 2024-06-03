@@ -118,7 +118,10 @@ class ExpedienteAdministrativoType extends AbstractType {
 					'by_reference' => false,
 					'label'        => 'Anexos'
 				] )
-				->add('activo');
+				->add('activo')
+				->add('isDecreto',null,[
+					'label' => 'Es Decreto',
+				]);
 	}
 
 	/**

@@ -14,6 +14,7 @@ use App\Entity\Dictamen;
 use App\Entity\Expediente;
 use App\Entity\AreaAdministrativa;
 use App\Entity\GiroAdministrativo;
+use App\Entity\Giro;
 use App\Form\CrearDictamenType;
 use App\Form\CrearDictamenComisionType;
 use App\Form\FirmaDictamenType;

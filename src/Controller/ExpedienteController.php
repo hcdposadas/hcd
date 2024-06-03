@@ -2705,9 +2705,20 @@ class ExpedienteController extends AbstractController
 	
 
 	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+		$decreto=$expediente->getIsDecreto();
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$firstDictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
 
 		//CARATULA
-		$em = $this->getDoctrine()->getManager();
+
 
 		$dataToEncode = $expediente->getCodigoReferencia();
 		if ($expediente->getBorrador()) {
@@ -2850,6 +2861,66 @@ class ExpedienteController extends AbstractController
 			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
 		}
 
+				if($decreto){
+			 		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+			}
+
+		} 
+
+				$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+
+
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+
+
+		}
+
+
+		foreach ($expediente->getProveidos() as $proveido){
+
+			$caratula=$proveido->getCaratula();
+			if($caratula){
+				$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
+			}
+
+			$archivo=$proveido->getArchivo();
+			if($archivo){
+				$pdfMerge->addPDF('uploads/expedientes/proveido/'.$archivo);
+			}
+		
+			$cierre=$proveido->getCierre();
+			if($cierre){
+				$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
+			}
+
+		} 
+		
 	}
 
 	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
@@ -2909,39 +2980,31 @@ class ExpedienteController extends AbstractController
 	}
 		if($firstProyectoBae->getPedido()){
 		//PEDIDO FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/comision/pedidos/'.$firstProyectoBae->getPedido());
+		$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
 
 		} 
 		if($firstProyectoBae->getDigesto()){
 		//DIGESTO FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/comision/digesto/'.$firstProyectoBae->getDigesto());
+		$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
 		}
 
-
-/* 		$DictamenRepository = $em->getRepository(Dictamen::class);
-
-
-		$firstDictamen = $DictamenRepository->findOneBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'DESC']
-		);
 
 		if($firstDictamen){
 		//DICTAMEN FIRMADO
 		if($firstDictamen->getDictamen()){
-			$pdfMerge->addPDF('uploads/expedientes/comision/dictamen/'.$firstDictamen->getDictamen());
+			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());
+
+
 
 		}
+
+					//RAMA FIRMADO
+					if($firstDictamen->getRama()){
+						$pdfMerge->addPDF('uploads/expedientes/rama/'.$firstDictamen->getRama());
+					}
 		}
 
 
-		if($firstDictamen){
-
-			//RAMA FIRMADO
-			if($firstDictamen->getRama()){
-				$pdfMerge->addPDF('uploads/expedientes/comision/ramas/'.$firstDictamen->getRama());
-			}
-		}  */
 
 
 	}
@@ -2990,4 +3053,5 @@ class ExpedienteController extends AbstractController
 			]
 		);
 	}
+
 }

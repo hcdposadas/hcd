@@ -3002,9 +3002,24 @@ class ExpedienteController extends AbstractController
 					if($firstDictamen->getRama()){
 						$pdfMerge->addPDF('uploads/expedientes/rama/'.$firstDictamen->getRama());
 					}
+
+					
 		}
 
+		$textoDefinitivo=$expediente->getTextoDefinitivo();
+		
 
+		if($textoDefinitivo){
+			//TEXTO DEFINITIVO FIRMADO
+			if($textoDefinitivo->getArchivo()){
+				$pdfMerge->addPDF('uploads/expedientes/textoDefinitivo/'.$textoDefinitivo->getArchivo());
+
+			}	
+			if($textoDefinitivo->getPase()){
+				$pdfMerge->addPDF('uploads/expedientes/textoDefinitivo/pase/'.$textoDefinitivo->getPase());
+			}
+
+		}
 
 
 	}
@@ -3031,7 +3046,7 @@ class ExpedienteController extends AbstractController
 		200,
 		array(
 			'Content-Type'        => 'application/pdf',
-			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
 		));
 
 	}
@@ -3052,6 +3067,239 @@ class ExpedienteController extends AbstractController
 				'fecha'      => $fecha,
 			]
 		);
+	}
+
+	public function imprimirProyectoNumero(Pdf $knpSnappyPdf, $id, Request $request)
+	{
+		$em         = $this->getDoctrine()->getManager();
+		$expediente = $em->getRepository(Expediente::class)->find($id);
+
+
+
+		$dataToEncode = $expediente->getCodigoReferencia();
+		if ($expediente->getBorrador()) {
+			$dataToEncode = null;
+		}
+
+		$title = 'Proyecto';
+
+		if (!$expediente->getPeriodoLegislativo()) {
+			$this->get('session')->getFlashBag()->add(
+				'error',
+				'El expediente no tiene periodo legislativo asignado'
+			);
+
+			return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+		}
+
+		$header = null;
+		if (!$expediente->getBorrador()) {
+			$header = $this->renderView(
+				'default/membrete.pdf.twig',
+				[
+					"periodo"      => $expediente->getPeriodoLegislativo(),
+					'dataToEncode' => $dataToEncode
+				]
+			);
+		}
+
+		$footer = $this->renderView('default/pie_pagina.pdf.twig');
+
+
+		$array=array(
+			'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+			//                    'margin-bottom' => "1cm"
+		);
+
+		$html = $this->renderView(
+			'expediente/proyectoNum.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+		//        return new Response($html);
+		$pdfMerge = new PDFMerger;
+
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+		
+
+		$pdfMerge->addPDF($nombre);
+		
+
+		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+
+
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+	
+	}
+
+	function imprimirArchivoAdministrativo(Pdf $knpSnappyPdf,Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+		//CARATULA
+
+		$dataToEncode = $expediente->getCodigoReferencia();
+		if ($expediente->getBorrador()) {
+			$dataToEncode = null;
+		}
+ 
+		$title      = 'Carátula';
+
+		$html = $this->renderView(
+			'expediente/caratula.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+		$pdfMerge = new PDFMerger;
+
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/Caratula'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+				
+
+		$pdfMerge->addPDF($nombre); 
+
+		//PROYECTO FIRMADO
+		$path=$expediente->getExpedienteInterno();
+
+		$extension = pathinfo($path);
+	
+		$extension = strtolower($extension['extension']);
+
+		if ($extension == 'pdf'){
+			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
+		}
+
+		$giros=$expediente->getGiroAdministrativos();
+
+		foreach ($giros as $giro){
+			$path=$giro->getGiro();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/giros/'.$path);
+			}
+		}
+	
+	
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+
+
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+
 	}
 
 }

@@ -273,11 +273,17 @@ class ComisionController extends AbstractController
 
         $qb->select('p')
            ->from(ProyectoBae::class, 'p')
-           ->where($qb->expr()->orX(
-               $qb->expr()->neq('p.tratamientoSobretabla', ':value'),
-               $qb->expr()->isNull('p.tratamientoSobretabla')
-           ))
-           ->setParameter('value', true)
+           ->where($qb->expr()->andX(
+            $qb->expr()->orX(
+                $qb->expr()->isNull('p.tratamientoSobretabla'),
+                $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+            ),
+            $qb->expr()->orX(
+                $qb->expr()->isNull('p.esInformeDem'),
+                $qb->expr()->eq('p.esInformeDem', ':false')
+            )
+        ))
+        ->setParameter('false', false)
            ->orderBy('p.id', 'DESC');
     
         $proyectosBae = $qb->getQuery()->getResult();
@@ -304,12 +310,18 @@ class ComisionController extends AbstractController
         $qb->select('p')
            ->from(ProyectoBae::class, 'p')
            ->join('p.expediente', 'e')
-           ->where($qb->expr()->orX(
-               $qb->expr()->neq('p.tratamientoSobretabla', ':value'),
-               $qb->expr()->isNull('p.tratamientoSobretabla')
+           ->where($qb->expr()->andX(
+               $qb->expr()->orX(
+                   $qb->expr()->isNull('p.tratamientoSobretabla'),
+                   $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+               ),
+                $qb->expr()->orX(
+                   $qb->expr()->isNull('p.esInformeDem'),
+                   $qb->expr()->eq('p.esInformeDem', ':false')
+               ) 
            ))
+           ->setParameter('false', false)
            ->andWhere('e.tipoProyecto = :tipoProyecto')
-           ->setParameter('value', true)
            ->setParameter('tipoProyecto', $tipoProyecto->getId())
            ->orderBy('p.id', 'DESC');
     
@@ -337,10 +349,17 @@ class ComisionController extends AbstractController
         $qb->select('p')
            ->from(ProyectoBae::class, 'p')
            ->join('p.expediente', 'e')
-           ->where($qb->expr()->orX(
-               $qb->expr()->neq('p.tratamientoSobretabla', ':value'),
-               $qb->expr()->isNull('p.tratamientoSobretabla')
-           ))
+           ->where($qb->expr()->andX(
+            $qb->expr()->orX(
+                $qb->expr()->isNull('p.tratamientoSobretabla'),
+                $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+            ),
+            $qb->expr()->orX(
+                $qb->expr()->isNull('p.esInformeDem'),
+                $qb->expr()->eq('p.esInformeDem', ':false')
+            )
+        ))
+        ->setParameter('false', false)
            ->andWhere('e.tipoProyecto = :tipoProyecto')
            ->setParameter('value', true)
            ->setParameter('tipoProyecto', $tipoProyecto->getId())

@@ -187,6 +187,11 @@ expediente_imprimir_proyecto:
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirProyecto }
 
+expediente_imprimir_proyecto_numero:
+  path: /expediente_imprimir_proyecto_numero/{id}
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirProyectoNumero }
+
 expediente_imprimir_proyecto_block:
   path: /expediente_imprimir_proyecto_block/{hash}
   defaults:
@@ -315,9 +320,7 @@ expediente_imprimir_archivo:
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirArchivo }
 
-
 expediente_imprimir_giro_bae:
   path: /{id}/expediente_imprimir_giro_bae
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirGiroComision }
-

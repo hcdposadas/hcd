@@ -42,17 +42,8 @@
                 </div>
                 {% endif %}
 
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.expedienteInternoFile) }}
-                </div>
             </div>
-            <div class="row">
-                <div class="col-md-8">
-                    {{ form_row(form.anexos) }}
-                </div>
-            </div>
-            </div>
+
             <div class="row">
                 <div class="col-md-6">
                     <div>
@@ -72,6 +63,17 @@
                     <button type="button" class="btn btn-default btn-add-persona">
                         <i class="fa fa-plus"></i> Agregar Persona
                     </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.expedienteInternoFile) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    {{ form_row(form.anexos) }}
                 </div>
             </div>
             <div class="row">
@@ -182,4 +184,17 @@
 
         });
     </script>
+     <style>
+.custom-file-input ~ .custom-file-label::after {
+    content: "Seleccionar Archivo";
+}
+  </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).on('change', '.custom-file-input', function (event) {
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+})
+</script>
 {% endblock javascripts %}

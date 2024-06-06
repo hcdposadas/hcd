@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\BootstrapCollectionType;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+
 
 class ExpedienteAdministrativoExternoType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
@@ -48,6 +50,25 @@ class ExpedienteAdministrativoExternoType extends AbstractType {
 					'required'     => false,
 					'placeholder'  => 'Por Nombre'
 
+				] )
+				->add( 'expedienteInternoFile',
+				VichFileType::class,
+				[
+					'label'        => 'Archivo',
+					'required'     => false,
+					'allow_delete' => true, // optional, default is true
+					'download_uri' => true, // optional, default is true
+				] )
+
+				->add( 'anexos',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => AnexoExpedienteType::class,
+					'required' => false,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Anexos'
 				] )
 			->add( 'iniciadorParticular',
 				Select2EntityType::class,

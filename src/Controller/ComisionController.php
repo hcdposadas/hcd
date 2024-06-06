@@ -361,7 +361,6 @@ class ComisionController extends AbstractController
         ))
         ->setParameter('false', false)
            ->andWhere('e.tipoProyecto = :tipoProyecto')
-           ->setParameter('value', true)
            ->setParameter('tipoProyecto', $tipoProyecto->getId())
            ->orderBy('p.id', 'DESC');
     

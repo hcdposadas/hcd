@@ -2861,7 +2861,7 @@ class ExpedienteController extends AbstractController
 			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
 		}
 
-				if($decreto){
+				if($decreto || $expediente->getTipoExpediente()->getId()==1){
 			 		foreach ($expediente->getAnexos() as $anexo){
 
 			$path=$anexo->getAnexo();

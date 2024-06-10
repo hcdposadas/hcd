@@ -2865,7 +2865,9 @@ class ExpedienteController extends AbstractController
 			 		foreach ($expediente->getAnexos() as $anexo){
 
 			$path=$anexo->getAnexo();
-		
+
+			if($path){
+
 			$extension = pathinfo($path);
 	
 			$extension = strtolower($extension['extension']);
@@ -2874,7 +2876,74 @@ class ExpedienteController extends AbstractController
 				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 			}
 
+		}
+
 		} 
+
+		foreach ($expediente->getGiroAdministrativos() as $anexo){
+
+
+		$title = 'Giro';
+
+		$html = $this->renderView(
+			'expediente/giroSector.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'giro'       => $anexo,
+				'title'      => $title,
+			]
+		);
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Giro'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+										'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+
+			$pdfMerge->addPDF($nombre);
+
+			$path=$anexo->getAnexo();
+		
+			if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+				}
+			}
+
+
+			foreach ($anexo->getAnexoGiros() as $anexoGiro){
+
+				$path=$anexoGiro->getAnexo();
+		
+				if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+				}
+
+			}
+
+			} 
+
+
+		}
 
 				$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 

@@ -2883,7 +2883,35 @@ class ExpedienteController extends AbstractController
 		foreach ($expediente->getGiroAdministrativos() as $anexo){
 
 
-		$title = 'Giro';
+		
+
+			$path=$anexo->getAnexo();
+		
+			if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+				}
+			}
+
+
+			foreach ($anexo->getAnexoGiros() as $anexoGiro){
+
+				$path=$anexoGiro->getAnexo();
+		
+				if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/giros/anexos/'.$path);
+				}
+
+			}
+
+			} 
+
+			$title = 'Giro';
 
 		$html = $this->renderView(
 			'expediente/giroSector.pdf.twig',
@@ -2915,33 +2943,6 @@ class ExpedienteController extends AbstractController
 			);
 
 			$pdfMerge->addPDF($nombre);
-
-			$path=$anexo->getAnexo();
-		
-			if($path){
-				$extension = pathinfo($path);
-				$extension = strtolower($extension['extension']);
-				if ($extension == 'pdf'){
-					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
-				}
-			}
-
-
-			foreach ($anexo->getAnexoGiros() as $anexoGiro){
-
-				$path=$anexoGiro->getAnexo();
-		
-				if($path){
-				$extension = pathinfo($path);
-				$extension = strtolower($extension['extension']);
-				if ($extension == 'pdf'){
-					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
-				}
-
-			}
-
-			} 
-
 
 		}
 

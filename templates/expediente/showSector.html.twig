@@ -126,6 +126,7 @@
                     </a>
                     {% endif %}
                     {% endif %}
+
                     </dl>
                     {% if not is_granted('ROLE_SECTOR') %}
                     <dl class="dl-horizontal">
@@ -170,7 +171,10 @@
                             <i class="fa fa-print"></i> Imprimir Etiqueta
                         </a>
                     {% endif %} #}
-
+                                        <a class="btn btn-default" target="_blank"
+                       href="{{ path('expediente_imprimir_archivo', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Expediente Completo
+                    </a>
 
                 </div>
 

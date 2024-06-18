@@ -158,13 +158,44 @@
                         <i class="fa fa-print"></i> Imprimir Legislativo
                     </a>
                     {% endif %}
-                    {% if expediente.letra and expediente.expediente and is_granted('ROLE_MESA_ENTRADA') %}
-                        <a class="btn btn-default margin" target="_blank"
-                           href="{{ path('expediente_imprimir_etiqueta', {id: expediente.id}) }}">
-                            <i class="fa fa-print"></i> Imprimir Etiqueta
-                        </a>
-                    {% endif %}
 
+                    <hr>
+                    {% if is_granted('ROLE_MESA_ENTRADA') or is_granted('ROLE_LEGISLATIVO') %}
+                    {% if expediente.expedienteInterno %}
+                    <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
+                    </a>
+                    {% endif %}
+                                        <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_giro_bae_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Giro Firmado
+                    </a>
+                    <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_pedido_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Pedido de Informe
+                    </a>
+                    <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_informe_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Informe Digesto
+                    </a>
+                    <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_dictamen_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Dictamen Firmado
+                    </a>
+                    <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_rama_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Asignación Rama 
+                    </a>
+                                        <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_texto_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Texto Definitivo 
+                    </a>
+                                        <a class="btn btn-default mb-2" target="_blank"
+                       href="{{ path('expediente_imprimir_pase_firmado', {id: expediente.id}) }}">
+                        <i class="fa fa-print"></i> Imprimir Pase DEM 
+                    </a>
+                    {% endif %}
 
                 </div>
 

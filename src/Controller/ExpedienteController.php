@@ -5,6 +5,7 @@ require_once (dirname(dirname(__DIR__)).'/PDFMerger/PDFMerger.php');
 use App\Entity\AreaAdministrativa;
 use App\Entity\Giro;
 use App\Entity\AnexoGiro;
+use App\Entity\TextoDefinitivo;
 use App\Entity\PeriodoLegislativo;
 use App\Entity\ProyectoBAE;
 use App\Entity\Dictamen;
@@ -2761,8 +2762,12 @@ class ExpedienteController extends AbstractController
 				)
 			);
 				
+		$esRM = strpos($expediente->getExpediente(), 'RM') !== false;
 
-		$pdfMerge->addPDF($nombre); 
+		if(!$esRM){
+			$pdfMerge->addPDF($nombre); 
+
+		}
 
 		//PROYECTO SIN FIRMAR
 	if(!$expediente->getExpedienteInterno()){
@@ -3076,17 +3081,22 @@ class ExpedienteController extends AbstractController
 					
 		}
 
-		$textoDefinitivo=$expediente->getTextoDefinitivo();
-		
+		$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+			['dictamen' => $firstDictamen->getId()],
+			['id' => 'DESC']
+		);		
 
 		if($textoDefinitivo){
 			//TEXTO DEFINITIVO FIRMADO
 			if($textoDefinitivo->getArchivo()){
-				$pdfMerge->addPDF('uploads/expedientes/textoDefinitivo/'.$textoDefinitivo->getArchivo());
+				$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
 
 			}	
 			if($textoDefinitivo->getPase()){
-				$pdfMerge->addPDF('uploads/expedientes/textoDefinitivo/pase/'.$textoDefinitivo->getPase());
+				$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
 			}
 
 		}
@@ -3137,6 +3147,212 @@ class ExpedienteController extends AbstractController
 				'fecha'      => $fecha,
 			]
 		);
+	}
+
+	public function imprimirGiroComisionFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') .'/public/uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado();
+
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo=$firstProyectoBae->getExpediente()->getExpediente()."-".$firstProyectoBae->getExpediente()->getLetra()."-".$firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
+
+	}
+
+	public function imprimirDictamenFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$dictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
+
+	
+
+		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/dictamenes/' . $dictamen->getDictamen();
+		// Crear una BinaryFileResponse para el archivo PDF
+		$response = new BinaryFileResponse($pdfPath);   
+		$titulo=$dictamen->getExpediente()->getExpediente()."-".$dictamen->getExpediente()->getLetra()."-".$dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
+		// Configurar la cabecera para forzar la descarga del archivo
+		$response->headers->set('Content-Type', 'application/pdf');
+		$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+
+
+		return $response;
+	
+	}
+
+	public function imprimirRamaFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$dictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
+
+	
+
+		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/rama/' . $dictamen->getRama();
+		// Crear una BinaryFileResponse para el archivo PDF
+		$response = new BinaryFileResponse($pdfPath);   
+		$titulo=$dictamen->getExpediente()->getExpediente()."-".$dictamen->getExpediente()->getLetra()."-".$dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
+		// Configurar la cabecera para forzar la descarga del archivo
+		$response->headers->set('Content-Type', 'application/pdf');
+		$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+
+
+		return $response;
+	
+	}
+
+	public function imprimirPedidoFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pedido/'.$firstProyectoBae->getPedido();
+
+
+		$response = new BinaryFileResponse($pdfPath);   
+		$titulo=$firstProyectoBae->getExpediente()->getExpediente()."-".$firstProyectoBae->getExpediente()->getLetra()."-".$firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
+		// Configurar la cabecera para forzar la descarga del archivo
+		$response->headers->set('Content-Type', 'application/pdf');
+		$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+
+
+		return $response;
+
+	}
+
+	public function imprimirInformeFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto();
+
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo=$firstProyectoBae->getExpediente()->getExpediente()."-".$firstProyectoBae->getExpediente()->getLetra()."-".$firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
+
+	}
+
+	public function imprimirTextoFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$dictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
+		$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+			['dictamen' => $dictamen->getId()],
+			['id' => 'DESC']
+		);		
+
+
+
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo();
+
+
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo="Texto Definitivo";
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
+
+	}
+
+	public function imprimirPaseFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$dictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
+		$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+			['dictamen' => $dictamen->getId()],
+			['id' => 'DESC']
+		);		
+
+
+
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pasedem/'.$textoDefinitivo->getPase();
+
+
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo="Texto Definitivo";
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
+
 	}
 
 	public function imprimirProyectoNumero(Pdf $knpSnappyPdf, $id, Request $request)

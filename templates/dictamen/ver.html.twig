@@ -25,7 +25,8 @@
                 </div>
                 </p>
             {% endif %}
-
+            <h4>Fecha de creación: {{ dictamen.fechaCreacion|date('d/m/Y H:i') }}</h4>
+            
             <h4>Firmantes</h4>
             {% for firmante in dictamen.firmantes | sort %}
                 {{ firmante.iniciador | title}}<br>

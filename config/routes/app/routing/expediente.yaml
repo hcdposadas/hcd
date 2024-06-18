@@ -324,3 +324,42 @@ expediente_imprimir_giro_bae:
   path: /{id}/expediente_imprimir_giro_bae
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirGiroComision }
+
+expediente_imprimir_giro_bae_firmado:
+  path: /{id}/expediente_imprimir_giro_bae_firmado
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::imprimirGiroComisionFirmado,
+    }
+
+expediente_imprimir_dictamen_firmado:
+  path: /{id}/expediente_imprimir_dictamen_firmado
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::imprimirDictamenFirmado,
+    }
+
+expediente_imprimir_pedido_firmado:
+  path: /{id}/expediente_imprimir_pedido_firmado
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirPedidoFirmado }
+
+expediente_imprimir_informe_firmado:
+  path: /{id}/expediente_imprimir_informe_firmado
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirInformeFirmado }
+
+expediente_imprimir_texto_firmado:
+  path: /{id}/expediente_imprimir_texto_firmado
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirTextoFirmado }
+
+expediente_imprimir_pase_firmado:
+  path: /{id}/expediente_imprimir_pase_firmado
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirPaseFirmado }
+
+expediente_imprimir_rama_firmado:
+  path: /{id}/expediente_imprimir_rama_firmado
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirRamaFirmado }

@@ -3077,29 +3077,30 @@ class ExpedienteController extends AbstractController
 					if($firstDictamen->getRama()){
 						$pdfMerge->addPDF('uploads/expedientes/rama/'.$firstDictamen->getRama());
 					}
+					$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
 
+
+					$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+						['dictamen' => $firstDictamen->getId()],
+						['id' => 'DESC']
+					);	
+					if($textoDefinitivo){
+						//TEXTO DEFINITIVO FIRMADO
+						if($textoDefinitivo->getArchivo()){
+							$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
+			
+						}	
+						if($textoDefinitivo->getPase()){
+							$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
+						}
+			
+					}
 					
 		}
 
-		$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+	
 
 
-		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
-			['dictamen' => $firstDictamen->getId()],
-			['id' => 'DESC']
-		);		
-
-		if($textoDefinitivo){
-			//TEXTO DEFINITIVO FIRMADO
-			if($textoDefinitivo->getArchivo()){
-				$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
-
-			}	
-			if($textoDefinitivo->getPase()){
-				$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
-			}
-
-		}
 
 
 	}

@@ -14,14 +14,14 @@ class ProveidoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('caratulaFile',
+/*             ->add('caratulaFile',
             VichFileType::class,
             [
                 'label'        => 'Caratula',
                 'required'     => false,
                 'allow_delete' => true, // optional, default is true
                 'download_uri' => true, // optional, default is true
-            ] )
+            ] ) */
             ->add('archivoFile',
             VichFileType::class,
             [
@@ -30,14 +30,14 @@ class ProveidoType extends AbstractType
                 'allow_delete' => true, // optional, default is true
                 'download_uri' => true, // optional, default is true
             ] )
-            ->add('cierreFile',
+/*             ->add('cierreFile',
             VichFileType::class,
             [
                 'label'        => 'Cierre ',
                 'required'     => false,
                 'allow_delete' => true, // optional, default is true
                 'download_uri' => true, // optional, default is true
-            ] )
+            ] ) */
         ;
     }
 

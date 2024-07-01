@@ -2977,26 +2977,28 @@ class ExpedienteController extends AbstractController
 		}
 
 
-		foreach ($expediente->getProveidos() as $proveido){
-
-			$caratula=$proveido->getCaratula();
-			if($caratula){
-				$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
-			}
-
-			$archivo=$proveido->getArchivo();
-			if($archivo){
-				$pdfMerge->addPDF('uploads/expedientes/proveido/'.$archivo);
-			}
-		
-			$cierre=$proveido->getCierre();
-			if($cierre){
-				$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
-			}
-
-		} 
 		
 	}
+
+
+	foreach ($expediente->getProveidos() as $proveido){
+
+/*		$caratula=$proveido->getCaratula();
+ 		if($caratula){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
+		} */
+
+		$archivo=$proveido->getArchivo();
+		if($archivo){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/'.$archivo);
+		}
+	
+/* 		$cierre=$proveido->getCierre();
+		if($cierre){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
+		} */
+
+	} 
 
 	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
 

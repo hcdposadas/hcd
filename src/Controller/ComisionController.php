@@ -273,16 +273,13 @@ class ComisionController extends AbstractController
 
         $qb->select('p')
            ->from(ProyectoBae::class, 'p')
-           ->where($qb->expr()->andX(
+           ->where(
             $qb->expr()->orX(
                 $qb->expr()->isNull('p.tratamientoSobretabla'),
                 $qb->expr()->eq('p.tratamientoSobretabla', ':false')
-            ),
-            $qb->expr()->orX(
-                $qb->expr()->isNull('p.esInformeDem'),
-                $qb->expr()->eq('p.esInformeDem', ':false')
             )
-        ))
+            
+        )
         ->setParameter('false', false)
            ->orderBy('p.id', 'DESC');
     

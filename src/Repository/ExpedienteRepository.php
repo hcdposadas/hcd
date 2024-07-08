@@ -87,9 +87,9 @@ class ExpedienteRepository extends EntityRepository {
 	public function getQbBuscar( $data, $tipoExpediente = null,$dependencia=null ) {
 //		$qb = $this->getQbExpedientesMesaEntrada();
 		$qb = $this->getQbAll();
-		if ( isset( $data['dependencia'] ) ) {
+		if ( isset( $dependencia ) ) {
 			$qb->andWhere( 'e.dependencia = :dependencia' )
-			   ->setParameter( 'dependencia', $data['dependencia'] );
+			   ->setParameter( 'dependencia', $dependencia );
 		}
 		if ( isset( $data['tipoExpediente'] ) ) {
 			$qb->andWhere( 'e.tipoExpediente = :tipoExpediente' )

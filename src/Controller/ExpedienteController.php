@@ -1537,12 +1537,12 @@ class ExpedienteController extends AbstractController
 
 		if ($filterType->get('buscar')->isClicked()) {
 
-			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
+			$giros = $em->getRepository(GiroAdministrativo::class)->getQbBuscarOrigen(
 				$filterType->getData(),
-				$tipoExpediente,$dependencia
+				$area
 			);
-			$expedientes = $paginator->paginate(
-				$expedientes,
+			$giros = $paginator->paginate(
+				$giros,
 				$request->query->get('page', 1)/* page number */,
 				10/* limit per page */
 			);
@@ -1601,6 +1601,7 @@ class ExpedienteController extends AbstractController
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
 
+
 		$filterType = $this->createForm(
 			ExpedienteFilterType::class,
 			null,
@@ -1613,12 +1614,12 @@ class ExpedienteController extends AbstractController
 
 		if ($filterType->get('buscar')->isClicked()) {
 
-			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
+			$giros = $em->getRepository(GiroAdministrativo::class)->getQbBuscarDestino(
 				$filterType->getData(),
-				$tipoExpediente,$dependencia
+				$area
 			);
-			$expedientes = $paginator->paginate(
-				$expedientes,
+			$giros = $paginator->paginate(
+				$giros,
 				$request->query->get('page', 1)/* page number */,
 				10/* limit per page */
 			);

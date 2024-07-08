@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    {#<div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="card collapsed-card">
                 <div class="card-header">
@@ -24,19 +24,13 @@
                 {{ form_start(filter_type) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ form_row(filter_type.tipoExpediente) }}
-                            {{ form_row(filter_type.textoDefinitivo) }}
-                            {{ form_row(filter_type.extracto) }}
                             {{ form_row(filter_type.expediente) }}
                             {{ form_row(filter_type.anio) }}
-                            {{ form_row(filter_type.texto) }}
+                            {{ form_row(filter_type.extracto) }}
                         </div>
                         <div class="col-md-6">
                             {{ form_row(filter_type.letra) }}
                             {{ form_row(filter_type.fecha) }}
-                            {{ form_row(filter_type.registroMunicipal) }}
-                            {{ form_row(filter_type.iniciador) }}
-                            {{ form_row(filter_type.iniciadorParticular) }}
                         </div>
                     </div>
                 </div>
@@ -49,7 +43,7 @@
                 </div>
             </div>
         </div>
-    </div>#}
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -64,7 +58,7 @@
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
-                            <th>Registro municipal</th>
+                            <th>Extracto</th>
                             <th>Área de destino (Estado) </th>
                             <th>Acción</th>
                         </tr>
@@ -78,7 +72,7 @@
                                 <td>{{ expediente.expediente }}-{{ expediente.letra }}
                                     -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
-                                <td>{{ expediente.registroMunicipal }}</td>
+                                <td>{{ expediente.extracto }}</td>
                                 <td>
                                         {% for giro in expediente.giroAdministrativos %}
                                             {% if giro.areaOrigen %}

@@ -13,6 +13,7 @@ Proyectos BAE
         <thead>
             <tr>
                 <th>Id</th>
+                <th style=" width:10%">Expediente</th>
                 <th>DEM</th>
                 <th>Extracto</th>
                 <th>Fecha</th>
@@ -23,6 +24,7 @@ Proyectos BAE
         {% for proyectoBAE in proyectoBAEs %}
             <tr>
                 <td><a href="{{ path('proyectobae_show', { 'id': proyectoBAE.id }) }}">{{ proyectoBAE.id }}</a></td>
+                <td>{{proyectoBAE.expediente.expediente}} - {{proyectoBAE.expediente.letra}} - {{proyectoBAE.expediente.periodoLegislativo.anio}}</td>
                 <td>{% if proyectoBAE.esInformeDem %}Si{% else %}No{% endif %}</td>
                 <td>{{ proyectoBAE.extracto | raw }}</td>
                 <td>{% if proyectoBAE.fechaCreacion %}{{ proyectoBAE.fechaCreacion|date('d/m/Y ') }}{% endif %}</td>

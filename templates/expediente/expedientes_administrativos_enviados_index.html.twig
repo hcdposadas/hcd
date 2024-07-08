@@ -12,7 +12,36 @@
 
     <div class="row">
         <div class="col-md-12">
-
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                {{ form_start(filter_type) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.expediente) }}
+                            {{ form_row(filter_type.anio) }}
+                            {{ form_row(filter_type.extracto) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.letra) }}
+                            {{ form_row(filter_type.fecha) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="d-none">
+                    {{ form_end(filter_type) }}
+                </div>
+            </div>
         </div>
     </div>
 

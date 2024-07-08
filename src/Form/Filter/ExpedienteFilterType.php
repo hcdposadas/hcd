@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\Type\JqueryAutocompleteType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ExpedienteFilterType extends AbstractType {
 	/**
@@ -64,7 +65,16 @@ class ExpedienteFilterType extends AbstractType {
 				ResetType::class,
 				array(
 					'attr' => [ 'class' => 'btn btn-default reset' ],
-				) );
+				) )
+			->add('areaDestino',TextType::class,[
+				'label' => 'Area Destino',
+				'required' => false
+		
+			])
+			->add('areaOrigen',TextType::class,[
+				'label' => 'Area Origen',
+				'required' => false
+			])	;
 	}
 
 	/**

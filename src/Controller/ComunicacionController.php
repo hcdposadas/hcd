@@ -72,8 +72,9 @@ class ComunicacionController extends AbstractController
             }
             if ($form->get('masivo')->getData()=="AREAS") {
                 $areas = $em->getRepository(AreaAdministrativa::class)->createQueryBuilder('a')
-                ->where('a.activo = true AND a.nombre not like :patron')
+                ->where('a.activo = true AND a.nombre not like :patron AND a.id != :id')
                 ->setParameter('patron', '%Concejal%')
+                ->setParameter('id', 67)
                 ->getQuery()->getResult();
                 foreach ($areas as $destino) {
                     $comunicacion->addAreaDestino($destino);

@@ -19,7 +19,7 @@ class GiroAdministrativoRepository extends \Doctrine\ORM\EntityRepository
                 if ( $data['extracto'] ) {
                     $q = $data['extracto'];
                     //			todo ver acentos
-                    $qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
+                    $qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:extracto)' )
                        ->setParameter( 'extracto', "%$q%" );
                 }
                 if ( $data['letra'] ) {
@@ -93,7 +93,7 @@ class GiroAdministrativoRepository extends \Doctrine\ORM\EntityRepository
                         if ( $data['extracto'] ) {
                             $q = $data['extracto'];
                             //			todo ver acentos
-                            $qb->andWhere( 'UPPER(e.extracto) LIKE UPPER(:extracto)' )
+                            $qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:extracto)' )
                                ->setParameter( 'extracto', "%$q%" );
                         }
                         if ( $data['letra'] ) {

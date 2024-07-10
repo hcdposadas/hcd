@@ -4,12 +4,15 @@ vich_uploader:
     expedientes_internos:
       uri_prefix: "%app.path.expedientes_internos%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/internos"
+      namer: "vich_uploader.namer_uniqid"
     expedientes_externos:
       uri_prefix: "%app.path.expedientes_externos%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/externos"
+      namer: "vich_uploader.namer_uniqid"
     dictamen:
       uri_prefix: "%app.path.dictamenes%"
       upload_destination: "%kernel.project_dir%/public/uploads/dictamenes"
+      namer: "vich_uploader.namer_uniqid"
     sanciones:
       uri_prefix: "%app.path.sanciones%"
       upload_destination: "%kernel.project_dir%/public/uploads/sanciones"

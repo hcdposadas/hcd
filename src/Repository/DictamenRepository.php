@@ -19,17 +19,34 @@ class DictamenRepository extends \Doctrine\ORM\EntityRepository
 
     }
 
-    public function getQbBuscar($data)
+    public function getQbBuscar($data,$estado)
     {
         $qb = $this->getQbAll();
-
+        $qb->join('d.expediente', 'expediente');
         if (isset($data['expediente'])) {
             $q = $data['expediente'];
-            $qb->join('d.expediente', 'expediente');
+
             $qb->andWhere('UPPER(expediente.expediente) LIKE UPPER(:expediente)')
                 ->setParameter('expediente', "%$q%");
         }
+        if ($estado===true) {
+            $qb->andWhere('d.aprobadoLegislativo = :estado')
+                ->setParameter('estado', 1);
+        }
+        if ($estado===false) {
 
+            $qb ->andWhere(
+
+                    $qb->expr()->neq('d.aprobadoLegislativo', ':estado')
+                
+            )
+                ->setParameter('estado', 1);
+                
+        }
+        if ($estado===null) {
+            $qb->andWhere('d.aprobadoLegislativo IS NULL');
+        }
         return $qb;
-    }
 }
+    }
+    

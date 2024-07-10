@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class DictamenFilterType extends AbstractType {
 	/**
@@ -14,6 +15,18 @@ class DictamenFilterType extends AbstractType {
 	 */
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
 		$builder->add( 'expediente' )
+		->add('estado', ChoiceType::class, [
+			'label' => 'Estado',
+			'mapped' => false,
+			'required' => true,
+			'choices' => [
+				'TODOS' => 'TODOS',
+				'APROBADOS' => true,
+				'PENDIENTES' => null,
+				'RECHAZADOS' => false,
+			],
+			'data' => 'TODOS',
+		])
 		        ->add( 'buscar',
 			        SubmitType::class,
 			        array(

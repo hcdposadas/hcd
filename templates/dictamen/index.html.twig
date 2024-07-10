@@ -16,11 +16,14 @@
                 </div>
                 {{ form_start(filter_type) }}
                 <div class="card-body">
-                    <div class="col-md-6">
-                        {{ form_row(filter_type.expediente) }}
-
+                    <div  class="row">
+                        <div class="col-md-6">
+                            {{ form_row(filter_type.expediente) }}
+                        </div>
+                        <div class="col-md-2">
+                            {{ form_row(filter_type.estado) }}
+                        </div>
                     </div>
-
                 </div>
                 <div class="card-footer">
                     {{ form_widget(filter_type.buscar) }}

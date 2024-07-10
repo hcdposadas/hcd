@@ -37,8 +37,8 @@ class DictamenController extends AbstractController
 
 
         if ($filterType->get('buscar')->isClicked()) {
+            $dictamenes = $em->getRepository(Dictamen::class)->getQbBuscar($filterType->getData(),$filterType->get('estado')->getData());
 
-            $dictamenes = $em->getRepository(Dictamen::class)->getQbBuscar($filterType->getData());
         } else {
 
             $dictamenes = $em->getRepository(Dictamen::class)->getQbAll();

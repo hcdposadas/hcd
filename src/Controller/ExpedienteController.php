@@ -2885,9 +2885,9 @@ class ExpedienteController extends AbstractController
 		}
 
 		} 
-
+		$contador=0;
 		foreach ($expediente->getGiroAdministrativos() as $anexo){
-
+			$contador=$contador+1;
 
 		
 
@@ -2929,7 +2929,7 @@ class ExpedienteController extends AbstractController
 		);
 		$date = new \DateTime();
 		$time=$date->getTimeStamp();
-		$nombre=$tmp.'/Giro'.$time.$path.'.pdf';
+		$nombre=$tmp.'/Giro'.$time.$contador.'.pdf';
 
 		$knpSnappyPdf->generateFromHtml(
 				$html

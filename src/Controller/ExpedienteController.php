@@ -2902,7 +2902,7 @@ class ExpedienteController extends AbstractController
 			}
 
 
-			foreach ($anexo->getAnexoGiros() as $anexoGiro){
+			foreach ($anexo->getAnexoGiros() as $anexoGiro){ 
 
 				$path=$anexoGiro->getAnexo();
 		
@@ -2929,7 +2929,7 @@ class ExpedienteController extends AbstractController
 		);
 		$date = new \DateTime();
 		$time=$date->getTimeStamp();
-		$nombre=$tmp.'/Giro'.$time.'.pdf';
+		$nombre=$tmp.'/Giro'.$time.$path.'.pdf';
 
 		$knpSnappyPdf->generateFromHtml(
 				$html

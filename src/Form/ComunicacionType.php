@@ -52,6 +52,7 @@ class ComunicacionType extends AbstractType
                     'TODOS' => 'TODOS',
                     'CONCEJALES' => 'CONCEJALES',
                     'AREAS' => 'AREAS',
+                    'COMISIONES' => 'COMISIONES'
                 ],
                 'placeholder' => 'Selecciona el tipo', // Opcional, para mostrar un placeholder
             ])

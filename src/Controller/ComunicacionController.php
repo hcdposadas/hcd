@@ -55,7 +55,8 @@ class ComunicacionController extends AbstractController
             if ($form->get('masivo')->getData()=="TODOS") {
 
                 $areas = $em->getRepository(AreaAdministrativa::class)->createQueryBuilder('a')
-                ->where('a.activo = true')
+                ->where('a.activo = true AND a.id != :id')
+                ->setParameter('id', 67)                
                 ->getQuery()->getResult();
                 foreach ($areas as $destino) {
                     $comunicacion->addAreaDestino($destino);
@@ -80,6 +81,16 @@ class ComunicacionController extends AbstractController
                     $comunicacion->addAreaDestino($destino);
                 }
 
+            }
+            if ($form->get('masivo')->getData()=="COMISIONES") {
+                $ids = [63,60,57,62,55,58,64,61,56,52,59];
+                $areas = $em->getRepository(AreaAdministrativa::class)->createQueryBuilder('a')
+                ->where('a.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()->getResult();
+                foreach ($areas as $destino) {
+                    $comunicacion->addAreaDestino($destino);
+                }           
             }
             $em->persist($comunicacion);
 

@@ -1906,7 +1906,7 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function nuevoExpedienteAdministrativoSector(Request $request)
+	public function nuevoExpedienteAdministrativoSector(Request $request, TimeStampManager $TimeStamp )
 	{
 
 		$em             = $this->getDoctrine()->getManager();
@@ -1982,7 +1982,7 @@ class ExpedienteController extends AbstractController
 				$giro->setEstado('pendiente');
 
 			}
-
+			$TimeStamp->stamp($expediente);
 
 			$em->persist($expediente);
 

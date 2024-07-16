@@ -66,7 +66,7 @@
                     {#{{ form_widget(form) }}#}
                 {#</div>#}
             {#</div>#}
-            <input class="btn btn-primary" type="submit" value="Enviar"/>
+            <input  id="submit-button" class="btn btn-primary" type="submit" value="Enviar"/>
             <div class="d-none">
                 {{ form_end(form) }}
             </div>
@@ -91,7 +91,13 @@ $(document).on('change', '.custom-file-input', function (event) {
     $(this).next('.custom-file-label').html(event.target.files[0].name);
 })
 </script>
-
+    <script>
+        document.getElementById('submit-button').addEventListener('click', function() {
+            this.disabled = true;
+            this.value = 'Enviando...'; // Cambia el texto del botón si lo deseas
+            this.form.submit();
+        });
+    </script>
 
     <script>
 

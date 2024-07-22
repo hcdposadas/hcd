@@ -3153,8 +3153,8 @@ class ExpedienteController extends AbstractController
 		}
 
 
-		foreach ($giro->getAnexo()->getAnexoGiros() as $anexoGiro){ 
-
+		foreach ($giro->getAnexoGiros() as $anexoGiro){ 
+			if($anexoGiro){
 			$path=$anexoGiro->getAnexo();
 	
 			if($path){
@@ -3165,9 +3165,17 @@ class ExpedienteController extends AbstractController
 				array_push($url,'uploads/giros/anexos/'.$path);
 			}
 
-		}
-
+			}
+			}
 		} 
+
+		return $this->render(
+			'default/descargar.html.twig',
+			[
+				'urls' => $url
+			]
+		);
+
 
 	}
 

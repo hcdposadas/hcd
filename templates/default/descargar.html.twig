@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar documentación  PDFs</title>
+        <style>
+        .navbar-custom-menu .admin-hcd {
+            align-items: center;
+            /*color: var(--text-color-light);*/
+            cursor: pointer;
+            display: flex;
+        }
+    </style>
+</head>
+<body style="background-color: #f7f7f7;">
+		<div class="navbar-custom-menu">
+        <div card="card" style="background-color: #f7f7f7;">
+        <h2 style="text-align: center;">Descargar documentaci&oacute;n PDF</h2>
+
+<p style="text-align: center; max-width: 700px; line-height: 1.5em; margin: 0 auto;">
+Los siguientes archivos PDF están firmados digitalmente para garantizar su autenticidad e integridad.
+
+<br>
+
+Para verificar las firmas digitales, puedes usar:
+
+Adobe Acrobat Reader o
+Foxit Reader.
+</p>
+        </div>
+        </div>
+        <hr style="width: 70%; margin: 1em auto">
+        {% for file in urls %}
+            <div style="display: flex; justify-content: center;">
+                <iframe src="{{ absolute_url(asset(file))  }}" width="600" height="400" style="border: none;"></iframe>
+            </div>
+        {% endfor %}
+		
+</body>
+</html>

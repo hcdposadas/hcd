@@ -51,7 +51,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Expediente controller.
@@ -3132,6 +3132,450 @@ class ExpedienteController extends AbstractController
 			'Content-Type'        => 'application/pdf',
 			'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
 		));
+
+	}
+
+	function imprimirArchivoGirosV(Pdf $knpSnappyPdf,GiroAdministrativo $giro){
+		
+
+		$url=[];
+
+
+		$path=$giro->getAnexo();
+		
+		if($path){
+			$extension = pathinfo($path);
+			$extension = strtolower($extension['extension']);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+				array_push($url, 'uploads/expedientes/anexos/'.$path);
+			}
+		}
+
+
+		foreach ($anexo->getAnexoGiros() as $anexoGiro){ 
+
+			$path=$anexoGiro->getAnexo();
+	
+			if($path){
+			$extension = pathinfo($path);
+			$extension = strtolower($extension['extension']);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/giros/anexos/'.$path);
+				array_push($url,'uploads/giros/anexos/'.$path);
+			}
+
+		}
+
+		} 
+
+	}
+
+	function imprimirArchivoFirmasV(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
+
+
+
+		$url=[];
+		$em = $this->getDoctrine()->getManager();
+		$decreto=$expediente->getIsDecreto();
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$firstDictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
+		);
+
+
+		//CARATULA
+
+
+		$dataToEncode = $expediente->getCodigoReferencia();
+		if ($expediente->getBorrador()) {
+			$dataToEncode = null;
+		}
+ 
+		$title      = 'Carátula';
+
+		$html = $this->renderView(
+			'expediente/caratula.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+		$pdfMerge = new PDFMerger;
+
+		$filesystem = new Filesystem();
+		$filesystem->remove('filePDF.pdf');
+		$date = new \DateTime();
+		$tmp=sys_get_temp_dir();
+		
+
+		//PROYECTO SIN FIRMAR
+	if(!$expediente->getExpedienteInterno()){
+		$header = null;
+		if (!$expediente->getBorrador()) {
+			$header = $this->renderView(
+				'default/membrete.pdf.twig',
+				[
+					"periodo"      => $expediente->getPeriodoLegislativo(),
+					'dataToEncode' => $dataToEncode
+				]
+			);
+		}
+
+		$array=array(
+			'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+			//                    'margin-bottom' => "1cm"
+		);
+
+		//        return new Response($html);
+		$title = 'Proyecto';
+
+
+		$html = $this->renderView(
+			'expediente/proyecto.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Firmado'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+				
+
+
+			//$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
+
+		$pdfMerge->addPDF($nombre);
+
+ 		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+
+			}
+
+		} 
+	} else {
+
+		//PROYECTO FIRMADO
+		$path=$expediente->getExpedienteInterno();
+
+		$extension = pathinfo($path);
+	
+		$extension = strtolower($extension['extension']);
+
+		if ($extension == 'pdf'){
+			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
+			array_push($url, 'uploads/expedientes/internos/'.$path);
+		}
+
+
+				if($decreto || $expediente->getTipoExpediente()->getId()==1){
+			 		foreach ($expediente->getAnexos() as $anexo){
+
+			$path=$anexo->getAnexo();
+
+			if($path){
+
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+				array_push($url, 'uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+		} 
+		$contador=0;
+		foreach ($expediente->getGiroAdministrativos() as $anexo){
+			$contador=$contador+1;
+
+		
+
+			$path=$anexo->getAnexo();
+		
+			if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+					array_push($url, 'uploads/expedientes/anexos/'.$path);
+				}
+			}
+
+
+			foreach ($anexo->getAnexoGiros() as $anexoGiro){ 
+
+				$path=$anexoGiro->getAnexo();
+		
+				if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/giros/anexos/'.$path);
+					array_push($url,'uploads/giros/anexos/'.$path);
+				}
+
+			}
+
+			} 
+
+			$title = 'Giro';
+
+		$html = $this->renderView(
+			'expediente/giroSector.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'giro'       => $anexo,
+				'title'      => $title,
+			]
+		);
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Giro'.$time.$contador.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+										'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+
+			$pdfMerge->addPDF($nombre);
+
+		}
+
+
+
+
+
+		return $this->render(
+			'default/descargar.html.twig',
+			[
+				'urls' => $url
+			]
+		);
+
+		}
+
+
+		
+	}
+
+
+	foreach ($expediente->getProveidos() as $proveido){
+
+/*		$caratula=$proveido->getCaratula();
+ 		if($caratula){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
+		} */
+
+		$archivo=$proveido->getArchivo();
+		if($archivo){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/'.$archivo);
+		}
+	
+/* 		$cierre=$proveido->getCierre();
+		if($cierre){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
+		} */
+
+	} 
+
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+	if($firstProyectoBae){
+		//
+		if($firstProyectoBae->getFirmado()){
+			//GIRO FIRMADO
+			$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+		}else{
+			//GIRO SIN FIRMAR
+		$giros=$firstProyectoBae->getGirosOrdenados();
+		if ($giros) {
+		$expediente=$firstProyectoBae->getExpediente();
+		$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+
+		$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+		$fecha=$sesion->getFecha();
+
+
+		$html = $this->renderView(
+			'comision/giroComision.pdf.twig',
+			[
+				'expediente' => $expediente,
+                'sesion'=>$sesion,
+				'title'      => $titulo,
+                'giros'      => $giros,
+				'fecha'      => $fecha,
+                
+			]
+		);
+
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Giro'.$time.'.pdf';
+		$knpSnappyPdf->generateFromHtml(
+			$html
+			,$nombre, array(
+				'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+				'margin-top'     => "5cm",
+				'margin-bottom'  => "2cm",
+			//                    'margin-bottom' => "1cm"
+				
+			)
+		);
+		$pdfMerge->addPDF($nombre);
+	}
+	}
+		if($firstProyectoBae->getPedido()){
+		//PEDIDO FIRMADO
+		$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
+
+		} 
+		if($firstProyectoBae->getDigesto()){
+		//DIGESTO FIRMADO
+		$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
+		}
+
+
+		if($firstDictamen){
+		//DICTAMEN FIRMADO
+		if($firstDictamen->getDictamen()){
+			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());
+
+
+
+		}
+
+					//RAMA FIRMADO
+					if($firstDictamen->getRama()){
+						$pdfMerge->addPDF('uploads/expedientes/rama/'.$firstDictamen->getRama());
+					}
+					$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+					$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+						['dictamen' => $firstDictamen->getId()],
+						['id' => 'DESC']
+					);	
+					if($textoDefinitivo){
+						//TEXTO DEFINITIVO FIRMADO
+						if($textoDefinitivo->getArchivo()){
+							$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
+			
+						}	
+						if($textoDefinitivo->getPase()){
+							$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
+						}
+			
+					}
+					
+		}
+
+	
+
+
+
+
+	}
+
+	
+	
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+
+		$htmls = '<html><head><title>Descargar PDFs</title></head><body>';
+        foreach ($url as $file) {
+            $urls = $this->generateUrl('base_url', [], UrlGeneratorInterface::ABSOLUTE_URL) . $file;
+            $htmls .= '<iframe src="' . $urls . '" style="display:none;"></iframe>';
+        }
+        $htmls .= '</body></html>';
+
+        return new Response(null); 
+/* 		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
+		)); */
 
 	}
 

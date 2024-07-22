@@ -76,6 +76,7 @@
                             <th>Área Destino</th>
                             <th>Anexo</th>
                             <th>Fecha</th>
+                            <th>QR Verif.</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -100,6 +101,8 @@
                     {% endfor %}
                                     {% endif %}</td>
                                     <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
+                                    <td>        {% if giro.anexoGiros.count > 0 %}            <a class="btn btn-default" download="{{ giro.id }}.png"
+                           href="{{ qr_code_data_uri(absolute_url(path('giro_imprimir_resumen_firmado_v',{id: giro.id})), { writer: 'png' , logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}">Descargar</a>{% endif %} </td>
                                     </tr>
                                 {% endfor %}
                             {% endif %}
@@ -175,6 +178,9 @@
                        href="{{ path('expediente_imprimir_archivo', {id: expediente.id}) }}">
                         <i class="fa fa-print"></i> Imprimir Expediente Completo
                     </a>
+                                        <a class="btn btn-default" download="{{ expediente.id }}.png"
+                           href="{{ qr_code_data_uri(absolute_url(path('expediente_imprimir_resumen_firmado',{id: expediente.id})), { writer: 'png' , logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}"><i
+                                    class="fa fa-download"></i> QR verificación</a>
 
                 </div>
 

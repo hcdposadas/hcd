@@ -363,3 +363,15 @@ expediente_imprimir_rama_firmado:
   path: /{id}/expediente_imprimir_rama_firmado
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirRamaFirmado }
+
+expediente_imprimir_resumen_firmado:
+  path: /{id}/expediente_imprimir_firmado_v
+  defaults:
+    { _controller: App\Controller\ExpedienteController::imprimirArchivoFirmasV }
+
+giro_imprimir_resumen_firmado_v:
+  path: /{id}/giro_imprimir_resumen_firmado_v
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::imprimirArchivoGirosFirmadoV,
+    }

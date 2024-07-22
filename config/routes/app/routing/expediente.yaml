@@ -372,6 +372,4 @@ expediente_imprimir_resumen_firmado:
 giro_imprimir_resumen_firmado_v:
   path: /{id}/giro_imprimir_resumen_firmado_v
   defaults:
-    {
-      _controller: App\Controller\ExpedienteController::imprimirArchivoGirosFirmadoV,
-    }
+    { _controller: App\Controller\ExpedienteController::imprimirArchivoGirosV }

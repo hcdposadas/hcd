@@ -82,6 +82,7 @@
                             <th>Área Destino</th>
                             <th>Anexo</th>
                             <th>Fecha</th>
+                            <th>QR Verif.</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -104,6 +105,9 @@
                                     {% endif %}
                                     </td>
                                     <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
+                                    <td>        {% if giro.anexoGiros.count > 0 %}            <a class="btn btn-default" download="{{ giro.id }}.png"
+                           href="{{ qr_code_data_uri('https://sistema.hcdposadas.gob.ar/hcd/mesa-entrada/expediente/' ~ giro.id ~ 'giro_imprimir_resumen_firmado_v', { writer: 'png' , logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}">Descargar</a>{% endif %} 
+                                    {% endif %}</td>
                                     </tr>
                                 {% endfor %}
                             {% endif %}

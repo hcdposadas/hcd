@@ -3147,7 +3147,6 @@ class ExpedienteController extends AbstractController
 			$extension = pathinfo($path);
 			$extension = strtolower($extension['extension']);
 			if ($extension == 'pdf'){
-				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 				array_push($url, 'uploads/expedientes/anexos/'.$path);
 			}
 		}
@@ -3161,7 +3160,6 @@ class ExpedienteController extends AbstractController
 			$extension = pathinfo($path);
 			$extension = strtolower($extension['extension']);
 			if ($extension == 'pdf'){
-				$pdfMerge->addPDF('uploads/giros/anexos/'.$path);
 				array_push($url,'uploads/giros/anexos/'.$path);
 			}
 

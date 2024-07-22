@@ -3153,7 +3153,7 @@ class ExpedienteController extends AbstractController
 		}
 
 
-		foreach ($anexo->getAnexoGiros() as $anexoGiro){ 
+		foreach ($giro->getAnexo()->getAnexoGiros() as $anexoGiro){ 
 
 			$path=$anexoGiro->getAnexo();
 	

@@ -145,7 +145,7 @@
                         <i class="fa fa-print"></i> Imprimir Expediente Completo
                     </a>
                     <a class="btn btn-default" download="{{ expediente.id }}.png"
-                           href="{{ qr_code_data_uri(absolute_url(path('expediente_imprimir_resumen_firmado',{id: expediente.id})), { writer: 'png' , logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}"><i
+                           href="{{ qr_code_data_uri('https://sistema.hcdposadas.gob.ar/hcd/mesa-entrada/expediente/' ~ expediente.id ~ '/expediente_imprimir_firmado_v', { writer: 'png' , logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}"><i
                                     class="fa fa-download"></i> QR verificación</a>
                     {#<a class="btn btn-primary" href="{{ path('expediente_edit', { 'id': expediente.id }) }}">Editar</a>#}
 {#                     {% if expediente.letra and expediente.expediente  %}

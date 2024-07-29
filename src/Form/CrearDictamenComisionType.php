@@ -65,6 +65,16 @@ class CrearDictamenComisionType extends AbstractType {
                 'mapped'      => false,
                 'label'        => 'Proveidos'
             ] )
+    ->add( 'expedientesAdjunto',
+            BootstrapCollectionType::class,
+            [
+                'entry_type'   => ExpedienteAdjuntoType::class,
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'required'     => false,
+                'mapped'       => false
+            ] )
 ;
 }
 

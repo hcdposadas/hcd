@@ -115,6 +115,12 @@ class ComisionController extends AbstractController
 
             $dictamen->setPresidenteComision($esPresidenteComision);
 
+            $adjuntos= $form->get("expedientesAdjunto")->getData();
+
+            foreach ($adjuntos as $adjunto){
+
+                $expediente->addExpedientesAdjunto($adjunto);
+            }
 
             $proveidos = $form->get('proveidos')->getData();
 

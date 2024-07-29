@@ -333,9 +333,18 @@ class DictamenController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $em = $this->getDoctrine()->getManager();
 
             $expediente = $form->get("expediente")->getData();
+
+            $adjuntos= $form->get("expedientesAdjunto")->getData();
+
+            foreach ($adjuntos as $adjunto){
+
+                $expediente->addExpedientesAdjunto($adjunto);
+            }
+
             $dictamen->setExpediente($expediente);
 
             if (!$dictamen->getTextoDictamen()){

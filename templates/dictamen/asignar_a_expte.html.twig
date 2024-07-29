@@ -20,6 +20,11 @@
                     {{ form_row(form.expediente) }}
                 </div>
             </div>
+                        <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.expedientesAdjunto) }}
+                </div>
+            </div>
 
             <h4>Dictamen</h4>
 
@@ -34,6 +39,8 @@
                     {{ form_row(form.tipoProyecto) }}
                 </div>
             </div>
+
+
             {{ form_widget(form) }}
             <input class="btn btn-primary" type="submit" value="Crear"/>
             {{ form_end(form) }}
@@ -50,9 +57,9 @@
 }
   </style>
 
-    {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <script>
 $(document).on('change', '.custom-file-input', function (event) {

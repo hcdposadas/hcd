@@ -4,6 +4,7 @@ namespace App\Form;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use App\Form\FirmanteDictamenType;
+use App\Form\ExpedienteAdjuntoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -54,6 +55,8 @@ class AltaDictamenType extends AbstractType {
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
 				] )
+
+
 /* 			->add( 'firmantes',
 				BootstrapCollectionType::class,
 				[

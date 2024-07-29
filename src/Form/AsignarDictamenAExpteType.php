@@ -54,7 +54,18 @@ class AsignarDictamenAExpteType extends AbstractType {
 					'required'     => false,
 					'allow_delete' => true, // optional, default is true
 					'download_uri' => true, // optional, default is true
-				] )/* 
+				] )
+			->add( 'expedientesAdjunto',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => ExpedienteAdjuntoType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'required'     => false,
+					'mapped'       => false
+				] )
+				/* 
 			->add( 'ramaFile',
 				VichFileType::class,
 				[

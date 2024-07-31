@@ -3101,7 +3101,20 @@ class ExpedienteController extends AbstractController
 					
 		}
 
+		foreach ($expediente->getInformeDems() as $anexo){
+			if($anexo){
+
+			$path=$anexo->getArchivo();
+		
+			$extension = pathinfo($path);
 	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/dem/'.$path);
+			}
+		}
+		}  
 
 
 
@@ -3132,6 +3145,51 @@ class ExpedienteController extends AbstractController
 			'Content-Type'        => 'application/pdf',
 			'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
 		));
+
+	}
+
+	function generarQRVerificación(Pdf $knpSnappyPdf,$url){
+		
+
+
+		//        return new Response($html);
+		$title = 'Proyecto';
+
+
+		$html = $this->renderView(
+			'default/qr.pdf.twig',
+			[
+
+			]
+		);
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/QR'.$time.'.pdf';
+		return new Response(
+		$knpSnappyPdf->getOutputFromHtml(
+				$html
+				, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+				),
+			200,
+			array(
+				'Content-Type'        => 'application/pdf',
+				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+			)
+		);
+
 
 	}
 

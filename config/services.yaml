@@ -34,6 +34,7 @@ parameters:
   app.path.caratula_proveido: "/uploads/expedientes/proveido/caratula/"
   app.path.proveido: "/uploads/expedientes/proveido/"
   app.path.proveido_cierre: "/uploads/expedientes/proveido/cierre/"
+  app.path.expedientes_dem: "/uploads/expedientes/dem"
 
 services:
   # default configuration for services in *this* file

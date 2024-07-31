@@ -112,3 +112,7 @@ vich_uploader:
       uri_prefix: "%app.path.proveido_cierre%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/proveido/cierre/"
       namer: "vich_uploader.namer_uniqid"
+    expedientes_dem:
+      uri_prefix: "%app.path.expedientes_dem%"
+      upload_destination: "%kernel.project_dir%/public/uploads/expedientes/dem"
+      namer: "vich_uploader.namer_uniqid"

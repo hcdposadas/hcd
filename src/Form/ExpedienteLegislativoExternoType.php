@@ -108,6 +108,15 @@ class ExpedienteLegislativoExternoType extends AbstractType {
 					'allow_delete' => true,
 					'by_reference' => false,
 				] )
+				->add( 'informeDems',
+				BootstrapCollectionType::class,
+				[
+					'entry_type'   => InformeDemType::class,
+					'allow_add'    => true,
+					'allow_delete' => true,
+					'by_reference' => false,
+					'label'        => 'Informes Dem'
+				] )
 			->add( 'proyectoDem',
 				CheckboxType::class,
 				[

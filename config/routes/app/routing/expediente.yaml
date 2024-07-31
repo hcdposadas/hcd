@@ -373,3 +373,8 @@ giro_imprimir_resumen_firmado_v:
   path: /{id}/giro_imprimir_resumen_firmado_v
   defaults:
     { _controller: App\Controller\ExpedienteController::imprimirArchivoGirosV }
+
+imprimir_qr_verificacion:
+  path: /{url}/imprimir_qr_verificacion
+  defaults:
+    { _controller: App\Controller\ExpedienteController::generarQRVerificación }

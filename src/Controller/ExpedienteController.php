@@ -531,6 +531,8 @@ class ExpedienteController extends AbstractController
 		$signatureForm->handleRequest($request);
 
 		if ($signatureForm->isSubmitted() && $signatureForm->isValid()) {
+
+			$expediente->setFechaPresentacion(new \DateTime());
 		
 			$em->flush();
 

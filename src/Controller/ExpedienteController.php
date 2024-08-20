@@ -1933,6 +1933,7 @@ class ExpedienteController extends AbstractController
 			$em->persist($dependecia);
 			$em->flush();
 		}
+		$expediente->setFechaPresentacion(new \DateTime());
 		$expediente->setDependencia($dependecia);
 		$expediente->setPeriodoLegislativo($periodo);
 		
@@ -2123,6 +2124,7 @@ class ExpedienteController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
+			$$expediente->setFechaPresentacion(new \DateTime());
 			$em->persist($expediente);
 			$em->flush();
 
@@ -2443,6 +2445,7 @@ class ExpedienteController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$expediente->setBorrador(false);
+			$expediente->setFechaPresentacion(new \DateTime());
 			$em->persist($expediente);
 			$em->flush();
 

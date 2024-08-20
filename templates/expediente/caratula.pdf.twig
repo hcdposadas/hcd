@@ -85,7 +85,7 @@
             <td class="td-text-right">FECHA:</td>
             <td class="td-text-left"><strong>
                     {% if expediente.fechaPresentacion %}
-                        {{ expediente.fechaPresentacion | date('d/m/Y') }}
+                        {{ expediente.fecha | date('d/m/Y') }}
                     {% else %}
                         {{ expediente.fecha | date('d/m/Y') }}
                     {% endif %}

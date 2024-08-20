@@ -72,6 +72,7 @@
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
+                            <th>Fec. Pres.</th>
                             {% if is_granted('ROLE_LEGISLATIVO') %}
                             <th style="width:30%">Extracto</th>
                             {% else %}
@@ -95,6 +96,8 @@
                                     -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
 
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                <td>{% if expediente.fechaPresentacion %}{{ expediente.fechaPresentacion|date('d/m/Y') }}{% endif %}</td>
+
                                 {% if is_granted('ROLE_LEGISLATIVO') %}
                                 <td>{{ expediente.extracto }}</td>
                                 {% else %}

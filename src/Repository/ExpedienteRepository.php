@@ -68,6 +68,7 @@ class ExpedienteRepository extends EntityRepository {
 			->orWhere( 'e.borrador = false' )
 			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
 			->andWhere( 'e.activo = true' )
+			->orderBy( 'e.fechaPresentacion', 'DESC' )
 			->setParameter( 'tipoExpediente', $tipoExpediente );
 
 		return $qb;
@@ -77,6 +78,8 @@ class ExpedienteRepository extends EntityRepository {
 		$qb = $this->getQbAll();
 		$qb
 			->andWhere( 'e.tipoExpediente = :tipoExpediente' )
+			->andWhere( 'e.activo = true' )
+			->orderBy( 'e.fechaPresentacion', 'DESC' )
 			->setParameter( 'tipoExpediente', $tipoExpediente );
 
 		$qb = $this->getQbExpedientesMesaEntrada( $qb );

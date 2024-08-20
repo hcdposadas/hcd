@@ -2269,7 +2269,7 @@ class ExpedienteController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 
 			$expediente->setBorrador(false);
-
+			$expediente->setFechaPresentacion(new \DateTime());
 			$em->persist($expediente);
 			$em->flush();
 

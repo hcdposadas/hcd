@@ -10,6 +10,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\TicketType;
+use App\Form\Filter\TicketFilterType;
 use App\Form\CloseTicketType;
 
 
@@ -49,7 +50,20 @@ class TicketController extends AbstractController
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
         $tickets = $em->getRepository(Ticket::class)->findByAreaDestino($area,['id' => 'DESC']);
-			
+		
+		$form = $this->createForm(TicketFilterType::class,			null,
+		[
+			'method' => 'GET'
+		]);
+	
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$data=$form->getData();
+
+			$tickets = $em->getRepository(Ticket::class)->getQbBuscar($area,$data->getAreaOrigen(),$data->getFecha(),$data->getTexto());
+		}
+
         $tickets = $paginator->paginate(
         $tickets,
         $request->query->get('page', 1)/* page number */,
@@ -59,6 +73,7 @@ class TicketController extends AbstractController
 
         return $this->render('ticket/recibido_index.html.twig', [
             'tickets' => $tickets,
+			'filter_type' => $form->createView(),
         ]);
     }
 

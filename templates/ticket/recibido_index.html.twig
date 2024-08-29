@@ -4,7 +4,7 @@
 {% endblock title %}
 {% block body %}
 
-{#     <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="card collapsed-card">
                 <div class="card-header">
@@ -14,10 +14,29 @@
                         </button>
                     </div>
                 </div>
-
+                <div class="card-body">
+                {{ form_start(filter_type) }}
+                <div class="row">
+                        <div style="width:60%">
+                            {{ form_row(filter_type.texto) }}</div>
+                            <div style="width:100%">
+                            {{ form_row(filter_type.areaOrigen) }}
+                            </div>
+                            <div class="col-md-2">           
+                            {{ form_row(filter_type.fecha) }}
+                            </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+                    {{ form_widget(filter_type.limpiar) }}
+                </div>
+                <div class="d-none">
+                    {{ form_end(filter_type) }}
+                </div>
             </div>
         </div>
-    </div> #}
+    </div> 
 
     <div class="row">
         <div class="col-md-12">
@@ -125,3 +144,6 @@
     </div>
 {% endblock %}
 
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock javascripts %}

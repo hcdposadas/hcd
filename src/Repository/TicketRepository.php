@@ -47,4 +47,39 @@ class TicketRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getQbAll() {
+		$qb = $this->createQueryBuilder( 'e' );
+
+		$qb->orderBy( 'e.id', 'DESC' );
+
+
+//		TODO sacar si no encuentran expedientes
+
+		return $qb;
+	}
+
+    public function getQbBuscar( $destino, $origen=null, $fecha , $texto ) {
+                $qb = $this->getQbAll();
+
+                if ( isset( $origen ) ) {
+                    $qb->andWhere( 'e.areaOrigen = :origen' )
+                       ->setParameter( 'origen', $origen );
+                }
+                if ( isset( $destino ) ) {
+                    $qb->andWhere( 'e.areaDestino = :destino' )
+                       ->setParameter( 'destino', $destino );
+                }
+                if ( isset( $fecha ) ) {
+                    $qb->andWhere( 'e.fecha = :fecha' )
+                       ->setParameter( 'fecha', $fecha );
+                }
+                if ( isset( $texto ) ) {
+                    $qb->andWhere( 'UPPER(e.texto) like :texto' )
+                       ->setParameter( 'texto', '%'.strtoupper($texto).'%' );
+                }
+
+        return $qb;
+    }
+
 }

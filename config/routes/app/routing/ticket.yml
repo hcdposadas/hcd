@@ -1,7 +1,7 @@
 tickets_recibidos:
   path: /tickets_recibidos
   defaults: { _controller: App\Controller\TicketController::recibidoindex }
-  methods: GET
+  methods: [GET, POST]
 
 tickets_enviados:
   path: /tickets_enviados

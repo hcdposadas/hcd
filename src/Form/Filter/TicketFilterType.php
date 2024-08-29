@@ -1,21 +1,47 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Filter;
 
 use App\Entity\Ticket;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class TicketFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('texto')
-            ->add('fecha')
-            ->add('areaOrigen')
+            ->add('texto', null,            [
+                'required' => false,
+            ])
+            ->add('fecha',
+            DateType::class,
+            array(
+                'widget' => 'single_text',
+                'html5'  => true,
+                'required' => false,
+                'empty_data' => '',
+                'by_reference' => true,
+
+            ) )
+            ->add('areaOrigen', null,            [
+                'attr' => [ 'class' => 'select2',  'rows' => 4 ],'required' => false,
+            ] )
             ->add('areaDestino')
+            ->add( 'buscar',
+            SubmitType::class,
+            array(
+                'attr' => [ 'class' => 'btn btn-primary' ],
+            ) )
+        ->add( 'limpiar',
+            ResetType::class,
+            array(
+                'attr' => [ 'class' => 'btn btn-default reset' ],
+            ) )
         ;
     }
 

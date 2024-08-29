@@ -169,7 +169,7 @@ class ExpedienteRepository extends EntityRepository {
 		}
 
 		if ( ( $data['fecha'] ) ) {
-			$qb->andWhere( 'e.fecha = :fecha' );
+			$qb->andWhere( 'e.fechaPresentacion = :fecha' );
 			$qb->setParameter( 'fecha', $data['fecha'] );
 		}
 

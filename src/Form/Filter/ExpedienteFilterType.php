@@ -74,7 +74,12 @@ class ExpedienteFilterType extends AbstractType {
 			->add('areaOrigen',TextType::class,[
 				'label' => 'Area Origen',
 				'required' => false
-			])	;
+			])	
+			->add('fechaPresentacion',				DateType::class,
+			array(
+				'widget' => 'single_text',
+				'html5'  => true
+			) );
 	}
 
 	/**

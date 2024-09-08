@@ -11,6 +11,9 @@ use App\Form\ComunicacionType;
 use Symfony\Component\HttpFoundation\Request;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
+use App\Form\Filter\ComunicadoFilterType;
+
 
 
 
@@ -130,6 +133,20 @@ class ComunicacionController extends AbstractController
 
         $comunicaciones = $em->getRepository(Comunicacion::class)->findBy(['areaOrigen'=>$area],['id'=>'DESC']);
 
+
+        $form = $this->createForm(ComunicadoFilterType::class,			null,
+		[
+			'method' => 'GET'
+		]);
+	
+		$form->handleRequest($request);
+
+		if ($form->get( 'buscar' )->isClicked()) {
+			$data=$form->getData();
+
+			$comunicaciones = $em->getRepository(Comunicacion::class)->getQbBuscar($data->getAreaDestino(),$area,$data->getFecha(),$data->getEstado());
+		}
+
         $comunicaciones = $paginator->paginate(
             $comunicaciones,
             $request->query->get('page', 1)/* page number */,
@@ -141,7 +158,8 @@ class ComunicacionController extends AbstractController
 			'comunicacion/enviadas.html.twig',
 			array(
 				'comunicados' => $comunicaciones,
-				
+                'filter_type' => $form->createView()
+
 			)
 		);
 
@@ -155,6 +173,19 @@ class ComunicacionController extends AbstractController
 
         $recibidos = $em->getRepository(RecibidoComunicado::class)->findBy(['area'=>$area],['id'=>'DESC']);
 
+        $form = $this->createForm(ComunicadoFilterType::class,			null,
+		[
+			'method' => 'GET'
+		]);
+	
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$data=$form->getData();
+
+			$recibidos = $em->getRepository(Comunicacion::class)->getQbBuscar($area,$data->getAreaOrigen(),$data->getFecha(),$data->getEstado());
+		}
+
         $recibidos = $paginator->paginate(
             $recibidos,
             $request->query->get('page', 1)/* page number */,
@@ -166,7 +197,7 @@ class ComunicacionController extends AbstractController
 			'comunicacion/recibidas.html.twig',
 			array(
 				'recibidos' => $recibidos,
-				
+				'filter_type'=>$form->createView(),
 			)
 		);
 

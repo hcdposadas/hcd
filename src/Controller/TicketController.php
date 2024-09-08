@@ -28,7 +28,21 @@ class TicketController extends AbstractController
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
         $tickets = $em->getRepository(Ticket::class)->findByAreaOrigen($area,['id'=>'Desc']);
-			
+		
+				
+		$form = $this->createForm(TicketFilterType::class,			null,
+		[
+			'method' => 'GET'
+		]);
+	
+		$form->handleRequest($request);
+
+		if ($form->get( 'buscar' )->isClicked()) {
+			$data=$form->getData();
+
+			$tickets = $em->getRepository(Ticket::class)->getQbBuscar($data->getAreaDestino(),$area,$data->getFecha(),$data->getTexto());
+		}
+
         $tickets = $paginator->paginate(
         $tickets,
         $request->query->get('page', 1)/* page number */,
@@ -39,6 +53,8 @@ class TicketController extends AbstractController
 
         return $this->render('ticket/enviado_index.html.twig', [
             'tickets' => $tickets,
+			'filter_type' => $form->createView(),
+
         ]);
     }
 

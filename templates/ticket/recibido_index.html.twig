@@ -17,10 +17,13 @@
                 <div class="card-body">
                 {{ form_start(filter_type) }}
                 <div class="row">
-                        <div style="width:60%">
+                        <div style="width:40%">
                             {{ form_row(filter_type.texto) }}</div>
                             <div style="width:100%">
-                            {{ form_row(filter_type.areaOrigen) }}
+                            <b>Área de Origen</b>
+                            </div>
+                            <div style="width:100%">
+                            {{ form_widget(filter_type.areaOrigen) }}
                             </div>
                             <div class="col-md-2">           
                             {{ form_row(filter_type.fecha) }}
@@ -29,7 +32,7 @@
                 </div>
                 <div class="card-footer">
                     {{ form_widget(filter_type.buscar) }}
-                    {{ form_widget(filter_type.limpiar) }}
+<button type="submit" name="reset" class="btn btn-default">Limpiar</button>
                 </div>
                 <div class="d-none">
                     {{ form_end(filter_type) }}

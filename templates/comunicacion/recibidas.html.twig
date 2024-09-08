@@ -12,8 +12,43 @@
 
     <div class="row">
         <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                {{ form_start(filter_type) }}
+                <div class="row">
+                        <div style="width:60%">
+                            {{ form_row(filter_type.estado) }}</div>
+   <div style="width:100%">
+                            <b>Área de Destino</b>
+                            </div>
+                            <div style="width:100%">
+                            {{ form_widget(filter_type.areaOrigen) }}
+                            </div>
+                            <div class="col-md-2">           
+                            {{ form_row(filter_type.fecha) }}
+                            </div>
+{#                             <div class="col-md-2">           
+                            {{ form_row(filter_type.tipo) }}
+                            </div> #}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+<button type="submit" name="reset" class="btn btn-default">Limpiar</button>
+                </div>
+                <div class="d-none">
+                    {{ form_end(filter_type) }}
+                </div>
+            </div>
         </div>
-    </div>
+    </div> 
 
     <div class="row">
         <div class="col-md-12">

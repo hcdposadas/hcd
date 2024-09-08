@@ -169,10 +169,17 @@ class ExpedienteRepository extends EntityRepository {
 		}
 
 		if ( ( $data['fecha'] ) ) {
-			$qb->andWhere( 'e.fechaPresentacion = :fecha' );
+			$qb->andWhere( 'e.fecha = :fecha' );
 			$qb->setParameter( 'fecha', $data['fecha'] );
 		}
-
+		if (isset($data['fechaPresentacion'])) {
+			$inicioDia = (clone $data['fechaPresentacion'])->setTime(0, 0, 0);
+			$finDia = (clone $data['fechaPresentacion'])->setTime(23, 59, 59);
+		
+			$qb->andWhere('e.fechaPresentacion BETWEEN :inicio AND :fin');
+			$qb->setParameter('inicio', $inicioDia);
+			$qb->setParameter('fin', $finDia);
+		}
 		if ( $data['tipoProyecto'] ) {
 
 			$q = $data['tipoProyecto'];

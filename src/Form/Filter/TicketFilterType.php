@@ -6,10 +6,11 @@ use App\Entity\Ticket;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Doctrine\ORM\EntityRepository;
 class TicketFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -29,9 +30,19 @@ class TicketFilterType extends AbstractType
 
             ) )
             ->add('areaOrigen', null,            [
-                'attr' => [ 'class' => 'select2',  'rows' => 4 ],'required' => false,
+                'attr' => [ 'class' => 'select2',  'rows' => 12 , 'style' => 'width: 30%;'],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('ao')
+                    ->orderBy('ao.nombre', 'ASC');
+                }
             ] )
-            ->add('areaDestino')
+            ->add('areaDestino', null,            [
+                'attr' => [ 'class' => 'select2',  'rows' => 12,'style' => 'width: 30%;' ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('ao')
+                    ->orderBy('ao.nombre', 'ASC');
+                }
+            ])
             ->add( 'buscar',
             SubmitType::class,
             array(

@@ -10,7 +10,7 @@
         </div>
     </div>
 
-{#     <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="card collapsed-card">
                 <div class="card-header">
@@ -20,10 +20,32 @@
                         </button>
                     </div>
                 </div>
-
+                <div class="card-body">
+                {{ form_start(filter_type) }}
+                <div class="row">
+                        <div style="width:60%">
+                            {{ form_row(filter_type.texto) }}</div>
+                            <div style="width:100%">
+                            <b>Área de Destino</b>
+                            </div>
+                            <div style="width:100%">
+                            {{ form_widget(filter_type.areaDestino) }}
+                            </div>
+                            <div class="col-md-2">           
+                            {{ form_row(filter_type.fecha) }}
+                            </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ form_widget(filter_type.buscar) }}
+<button type="submit" name="reset" class="btn btn-default">Limpiar</button>
+                </div>
+                <div class="d-none">
+                    {{ form_end(filter_type) }}
+                </div>
             </div>
         </div>
-    </div> #}
+    </div> 
 
     <div class="row">
         <div class="col-md-12">

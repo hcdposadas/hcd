@@ -131,7 +131,6 @@ class ComunicacionController extends AbstractController
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
-        $comunicaciones = $em->getRepository(Comunicacion::class)->findBy(['areaOrigen'=>$area],['id'=>'DESC']);
 
 
         $form = $this->createForm(ComunicadoFilterType::class,			null,
@@ -145,7 +144,11 @@ class ComunicacionController extends AbstractController
 			$data=$form->getData();
 
 			$comunicaciones = $em->getRepository(Comunicacion::class)->getQbBuscar($data->getAreaDestino(),$area,$data->getFecha(),$data->getEstado());
-		}
+
+		}else {
+            $comunicaciones = $em->getRepository(Comunicacion::class)->findBy(['areaOrigen'=>$area],['id'=>'DESC']);
+
+        }
 
         $comunicaciones = $paginator->paginate(
             $comunicaciones,
@@ -180,10 +183,11 @@ class ComunicacionController extends AbstractController
 	
 		$form->handleRequest($request);
 
-		if ($form->isSubmitted() && $form->isValid()) {
+		if ($form->get( 'buscar' )->isClicked()) {
 			$data=$form->getData();
 
-			$recibidos = $em->getRepository(Comunicacion::class)->getQbBuscar($area,$data->getAreaOrigen(),$data->getFecha(),$data->getEstado());
+			$recibidos = $em->getRepository(RecibidoComunicado::class)->getQbBuscar($area,$data->getAreaOrigen(),$data->getFecha(),$data->getEstado());
+
 		}
 
         $recibidos = $paginator->paginate(

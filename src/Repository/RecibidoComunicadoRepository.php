@@ -47,4 +47,44 @@ class RecibidoComunicadoRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getQbAll() {
+		$qb = $this->createQueryBuilder( 'e' );
+
+		$qb->orderBy( 'e.id', 'DESC' );
+
+
+//		TODO sacar si no encuentran expedientes
+
+		return $qb;
+	}
+
+    public function getQbBuscar( $destino, $origen, $fecha , $texto ) {
+        $qb = $this->getQbAll();
+        $qb->join('e.comunicacion', 'c');
+        if ( isset( $origen ) ) {
+            $qb->andWhere( 'c.areaOrigen = :origen' )
+               ->setParameter( 'origen', $origen );
+        }
+        if ( isset( $destino ) ) {
+            
+               
+            $qb->andWhere('e.area = :destino')
+               ->setParameter( 'destino', $destino );
+        }
+        if ( isset( $fecha ) ) {
+            $inicioDia = (clone $fecha)->setTime(0, 0, 0);
+            $finDia = (clone $fecha)->setTime(23, 59, 59);
+        
+            $qb->andWhere('c.fecha BETWEEN :inicio AND :fin');
+            $qb->setParameter('inicio', $inicioDia);
+            $qb->setParameter('fin', $finDia);
+        }
+        if ( isset( $texto ) ) {
+            $qb->andWhere( 'UPPER(c.estado) like :estado' )
+               ->setParameter( 'estado', '%'.strtoupper($texto).'%' );
+        }
+
+return $qb;
+}
 }

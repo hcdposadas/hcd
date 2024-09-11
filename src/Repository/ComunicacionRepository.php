@@ -30,24 +30,41 @@ class ComunicacionRepository extends ServiceEntityRepository
                     ->getQuery()->getSingleScalarResult();
     }
 
-    public function getQbBuscar( $destino, $origen=null, $fecha , $texto ) {
-        $qb = $this->getQbAll();
+    public function getQbAll() {
+		$qb = $this->createQueryBuilder( 'e' );
 
+		$qb->orderBy( 'e.id', 'DESC' );
+
+
+//		TODO sacar si no encuentran expedientes
+
+		return $qb;
+	}
+
+    public function getQbBuscar( $destino, $origen, $fecha , $texto ) {
+        $qb = $this->getQbAll();
+        $qb->join('e.areaDestino', 'd');
         if ( isset( $origen ) ) {
             $qb->andWhere( 'e.areaOrigen = :origen' )
                ->setParameter( 'origen', $origen );
         }
-        if ( isset( $destino ) ) {
-            $qb->andWhere( 'e.areaDestino = :destino' )
+        if ( isset( $destino[0] ) ) {
+            
+               
+            $qb->andWhere('d.id = :destino')
                ->setParameter( 'destino', $destino );
         }
         if ( isset( $fecha ) ) {
-            $qb->andWhere( 'e.fecha = :fecha' )
-               ->setParameter( 'fecha', $fecha );
+            $inicioDia = (clone $fecha)->setTime(0, 0, 0);
+            $finDia = (clone $fecha)->setTime(23, 59, 59);
+        
+            $qb->andWhere('e.fecha BETWEEN :inicio AND :fin');
+            $qb->setParameter('inicio', $inicioDia);
+            $qb->setParameter('fin', $finDia);
         }
         if ( isset( $texto ) ) {
             $qb->andWhere( 'UPPER(e.estado) like :estado' )
-               ->setParameter( 'texto', '%'.strtoupper($texto).'%' );
+               ->setParameter( 'estado', '%'.strtoupper($texto).'%' );
         }
 
 return $qb;

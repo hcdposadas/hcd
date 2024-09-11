@@ -17,29 +17,37 @@ class ComunicadoFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numero')
+            ->add('numero',null,            [
+                'required' => false,
+            ])
             ->add('fecha',				DateType::class,
 			array(
 				'widget' => 'single_text',
 				'html5'  => true,
-                'required' => false
+                'required' => false,
+                'empty_data' => '',
+                'by_reference' => true,
 			) )
-            ->add('tipo')
+            ->add('tipo',null,            [
+                'required' => false,
+            ])
             ->add('areaOrigen',null,
             ['attr' => [ 'class' => 'select2',  'rows' => 12 , 'style' => 'width: 30%;' ],
+            'required' => false,                'empty_data' => null,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('ao')
                 ->orderBy('ao.nombre', 'ASC');
             }])
             ->add('areaDestino',null,
             ['attr' => [ 'class' => 'select2',  'rows' => 12 , 'style' => 'width: 30%;' ],
+            'required' => false,                'empty_data' => null,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('ao')
                 ->orderBy('ao.nombre', 'ASC');
             }])
             ->add('estado',TextType::class,[
 				'label' => 'Extracto',
-				'required' => false
+				'required' => false,'empty_data' => null,
 			])
             ->add( 'buscar',
             SubmitType::class,

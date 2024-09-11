@@ -31,6 +31,8 @@ class TicketFilterType extends AbstractType
             ) )
             ->add('areaOrigen', null,            [
                 'attr' => [ 'class' => 'select2',  'rows' => 12 , 'style' => 'width: 30%;'],
+                'required' => false
+                ,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('ao')
                     ->orderBy('ao.nombre', 'ASC');
@@ -38,6 +40,8 @@ class TicketFilterType extends AbstractType
             ] )
             ->add('areaDestino', null,            [
                 'attr' => [ 'class' => 'select2',  'rows' => 12,'style' => 'width: 30%;' ],
+                'required' => false
+,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('ao')
                     ->orderBy('ao.nombre', 'ASC');

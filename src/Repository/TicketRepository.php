@@ -71,10 +71,10 @@ class TicketRepository extends ServiceEntityRepository
                        ->setParameter( 'destino', $destino );
                 }
                 if ( isset( $fecha ) ) {
-                    $inicioDia = (clone $data['fechaPresentacion'])->setTime(0, 0, 0);
-                    $finDia = (clone $data['fechaPresentacion'])->setTime(23, 59, 59);
+                    $inicioDia = (clone $fecha)->setTime(0, 0, 0);
+                    $finDia = (clone $fecha)->setTime(23, 59, 59);
                 
-                    $qb->andWhere('e.fechaPresentacion BETWEEN :inicio AND :fin');
+                    $qb->andWhere('e.fecha BETWEEN :inicio AND :fin');
                     $qb->setParameter('inicio', $inicioDia);
                     $qb->setParameter('fin', $finDia);
                 }

@@ -23,6 +23,7 @@ import ConsultarExpediente from './components/ConsultarExpediente'
 import ConsultarSesiones from './components/ConsultarSesiones'
 import PanelDisplay from './components/PanelDisplay'
 import PanelDisplay2 from './components/PanelDisplay2'
+import PanelDisplay3 from './components/PanelDisplay3'
 import QuorumButton from './components/QuorumButton'
 import VistaBae from './components/VistaBae'
 import VistaOd from './components/VistaOd'
@@ -39,6 +40,7 @@ Vue.component('consultar-expediente', ConsultarExpediente)
 Vue.component('consultar-sesiones', ConsultarSesiones)
 Vue.component('panel-display', PanelDisplay)
 Vue.component('panel-display2', PanelDisplay2)
+Vue.component('panel-display3', PanelDisplay3)
 Vue.component('panel-display-g', PanelDisplayG)
 Vue.component('quorum-button', QuorumButton)
 Vue.component('mostrar-presentes-button', MostrarPresentesButton)

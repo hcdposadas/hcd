@@ -37,20 +37,20 @@
   width: 54px;
   height: 54px;
   border-radius: 50%; /* Hace que el elemento tenga forma de círculo */
-  background-color: grey; /* Color verde */
+  background-color: green; /* Color verde */
 }
 .circulo-rojo {
   width: 54px;
   height: 54px;
   border-radius: 50%; /* Hace que el elemento tenga forma de círculo */
-  background-color: red; /* Color verde */
+  background-color: green; /* Color verde */
 }
 .circulo-vacio {
   width: 56px;
   height: 56px;
   border-radius: 50%; /* Hace que el elemento tenga forma de círculo */
   border: 2px solid black;
-  background-color: transparent; /* No tiene background */
+  background-color: green; /* No tiene background */
 }
 </style>
 
@@ -63,22 +63,18 @@
             <div class="row panel-presentes-asistencia">
               <div class="col-lg-6 text-center">
                 <h2>Presentes</h2>
-                <h1>{{ quorum.presentes }}</h1>
+                <h1>14</h1>
               </div>
               <div class="col-lg-6 text-center">
                 <h2>Ausentes</h2>
-                <h1>{{ quorum.ausentes }}</h1>
+                <h1>0</h1>
               </div>
             </div>
             <div class="row">
               <div class="col-12">
-                <div
-                  class="alert text-center"
-                  :class="[quorum.hayQuorum ? 'alert-success' : 'alert-danger']"
-                >
+                <div class="alert text-center alert-success">
                   <h1>
-                    <span v-if="quorum.hayQuorum">Hay Quórum</span>
-                    <span v-else>No Hay Quórum</span>
+                    <span>Hay Quórum</span>
                   </h1>
                 </div>
               </div>
@@ -90,22 +86,20 @@
           <h1 class="panel-votacion-sesion">
             {{ sesion }}
           </h1>
-          <h2 style="font-size: 5em; padding: 20px; font-weight: bold;">
-            {{ mocion }}
-          </h2>
+
           <div style="font-size: 3em;">{{ textoMocion }} {{ tipoMayoria }}</div>
           <hr />
           <!--<div style="text-align: center; font-size: 3em; width: 50%; float: left">-->
           <div class="row">
             <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
               <h3>Presentes</h3>
-              <h2>{{ quorum.presentes }}</h2>
+              <h2>14</h2>
             </div>
 
             <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
               <!--<div style="text-align: center; font-size: 3em; width: 50%; float: right">-->
               <h3>Ausentes</h3>
-              <h2>{{ quorum.ausentes }}</h2>
+              <h2>0</h2>
             </div>
           </div>
           <div class="row">
@@ -118,20 +112,13 @@
         </div>
         <div v-if="panel === 'resultados'" class="row text-center m-t-5">
           <div class="col-lg-12">
-            <h1>{{ mocion.toUpperCase() }}</h1>
+            <h1>MOCIÓN</h1>
 
             <div class="row">
               <div class="col-12">
-                <div
-                  class="alert text-center"
-                  :class="[
-                    resultados.aprobado ? 'alert-success' : 'alert-danger',
-                  ]"
-                >
+                <div class="alert text-center alert-success">
                   <h1>
-                    <span>{{
-                      resultados.aprobado ? "APROBADO" : "NO APROBADO"
-                    }}</span>
+                    <span>APROBADO</span>
                   </h1>
                 </div>
               </div>
@@ -146,11 +133,34 @@
 
                   <div class="row">
                     <div class="col-12">
-                      <span
-                        class="texto-resultado-concejal bold text-uppercase mr-1"
-                        v-for="concejal in resultados.votaronPositivo"
-                        >{{ concejal }}.-</span
-                      >
+<span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Zurakouski/Flores -   </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Ferreira/Irala -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Mamani/Zarza  -  </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Vargas/Amarilla -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Battochi/Gamarra - </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Kofal/Ríos  -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Niz/Suenaga  -  </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">     Lescar/Mendieta -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Cardozo/Da Silva -   </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Colombo/Chemes -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        fernandez/Sanabria -   </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Miceli/Lopez -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        De Lima/Zarza -   </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Gonzalez/Leiva -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Díaz/Almada -   </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Cattivelli/Gimenez -
+    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
+        Mendez/Sanabria -   </span>
+    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Gomes/Skromeda 
+    </span>
                     </div>
                   </div>
                   <h1 class="texto-resultado">
@@ -161,8 +171,7 @@
                       <span
                         class="texto-resultado-concejal bold text-uppercase"
                         v-for="concejal in resultados.votaronNegativo"
-                        >{{ concejal }}.-</span
-                      >
+                      ></span>
                     </div>
                   </div>
 
@@ -174,8 +183,7 @@
                       <span
                         class="texto-resultado-concejal bold text-uppercase"
                         v-for="concejal in resultados.seAbstuvieron"
-                        >{{ concejal }}.-</span
-                      >
+                      ></span>
                     </div>
                   </div>
                 </div>
@@ -363,17 +371,31 @@
                     style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
-                      <span v-if="resultados.votaronPositivo.includes('GOMEZ DE OLIVEIRA')">
+                      <span
+                        v-if="
+                          resultados.votaronPositivo.includes(
+                            'GOMEZ DE OLIVEIRA'
+                          )
+                        "
+                      >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('GOMEZ DE OLIVEIRA')"
+                          v-if="
+                            resultados.votaronNegativo.includes(
+                              'GOMEZ DE OLIVEIRA'
+                            )
+                          "
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('GOMEZ DE OLIVEIRA')"
+                            v-if="
+                              resultados.seAbstuvieron.includes(
+                                'GOMEZ DE OLIVEIRA'
+                              )
+                            "
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>
@@ -544,9 +566,8 @@
                 <div
                   style="width:100px; height:100px; background-color:green; display:inline-block; border-radius:0%;"
                 >
-                  <span
-                    style="color:#fff; font-size:60px; line-height:100px;"
-                    >{{ resultados.afirmativos }}</span
+                  <span style="color:#fff; font-size:60px; line-height:100px;"
+                    >14</span
                   >
                 </div>
               </div>
@@ -555,9 +576,8 @@
                 <div
                   style="width:100px; height:100px; background-color:red; display:inline-block; border-radius:0%;"
                 >
-                  <span
-                    style="color:#fff; font-size:60px; line-height:100px;"
-                    >{{ resultados.negativos }}</span
+                  <span style="color:#fff; font-size:60px; line-height:100px;"
+                    >0</span
                   >
                 </div>
               </div>
@@ -566,9 +586,8 @@
                 <div
                   style="width:100px; height:100px; background-color:grey; display:inline-block; border-radius:0%;"
                 >
-                  <span
-                    style="color:#fff; font-size:60px; line-height:100px;"
-                    >{{ resultados.abstenciones }}</span
+                  <span style="color:#fff; font-size:60px; line-height:100px;"
+                    >0</span
                   >
                 </div>
               </div>

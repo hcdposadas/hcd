@@ -1552,7 +1552,7 @@ class ExpedienteController extends AbstractController
 			if ($this->get('security.authorization_checker')->isGranted('ROLE_SECRETARIO')) {
 				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 500);
 			} else {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 500);
 
 			}
 			$giros = array_filter($giros, function($giro) {

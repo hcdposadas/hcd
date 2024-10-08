@@ -1550,9 +1550,9 @@ class ExpedienteController extends AbstractController
 			);
 		} else {
 			if ($this->get('security.authorization_checker')->isGranted('ROLE_SECRETARIO')) {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 500);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 300);
 			} else {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 300);
 
 			}
 			$giros = array_filter($giros, function($giro) {
@@ -3077,13 +3077,14 @@ class ExpedienteController extends AbstractController
 		if($Dictamenes){
 			$firstDictamen = $Dictamenes[0];
 			foreach ($expediente->getExpedientesAdjunto() as $adjunto){
-				if(!$adjunto->getExpedienteInterno()){
+				if($adjunto->getAdjunto){
+				if($adjunto->getAdjunto()->getExpedienteInterno()){
 					$header = null;
-					if (!$adjunto->getBorrador()) {
+					if (!$adjunto->getAdjunto()->getBorrador()) {
 						$header = $this->renderView(
 							'default/membrete.pdf.twig',
 							[
-								"periodo"      => $adjunto->getPeriodoLegislativo(),
+								"periodo"      => $adjunto->getAdjunto()->getPeriodoLegislativo(),
 								'dataToEncode' => $dataToEncode
 							]
 						);
@@ -3112,7 +3113,7 @@ class ExpedienteController extends AbstractController
 					$html = $this->renderView(
 						'expediente/proyecto.pdf.twig',
 						[
-							'expediente' => $adjunto,
+							'expediente' => $adjunto->getAdjunto(),
 							'title'      => $title,
 						]
 					);
@@ -3147,7 +3148,7 @@ class ExpedienteController extends AbstractController
 			
 					$pdfMerge->addPDF($nombre);
 			
-					 foreach ($adjunto->getAnexos() as $anexo){
+					 foreach ($adjunto->getAdjunto()->getAnexos() as $anexo){
 			
 						$path=$anexo->getAnexo();
 					
@@ -3163,7 +3164,7 @@ class ExpedienteController extends AbstractController
 				} else {
 			
 					//PROYECTO FIRMADO
-					$path=$adjunto->getExpedienteInterno();
+					$path=$adjunto->getAdjunto()->getExpedienteInterno();
 			
 					$extension = pathinfo($path);
 				
@@ -3175,6 +3176,7 @@ class ExpedienteController extends AbstractController
 					
 				}
 			}
+		}
 		//DICTAMEN FIRMADO
 		if($firstDictamen->getDictamen()){
 			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());

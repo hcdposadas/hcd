@@ -74,11 +74,7 @@
                             <th>Expediente</th>
                             <th>Fecha</th>
                             <th>Fec. Pres.</th>
-                            {% if is_granted('ROLE_LEGISLATIVO') %}
                             <th style="width:30%">Extracto</th>
-                            {% else %}
-                            <th>Registro municipal</th>
-                            {% endif %}
                             <th>Iniciador</th>
                             <th>Acción</th>
                         </tr>
@@ -98,12 +94,7 @@
 
                                 <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                 <td>{% if expediente.fechaPresentacion %}{{ expediente.fechaPresentacion|date('d/m/Y') }}{% endif %}</td>
-
-                                {% if is_granted('ROLE_LEGISLATIVO') %}
                                 <td>{{ expediente.extracto }}</td>
-                                {% else %}
-                                <td>{{ expediente.registroMunicipal }}</td>
-                                {% endif %}
                                 <td>
                                     {% if expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in expediente.iniciadores %}

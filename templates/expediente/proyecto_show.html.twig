@@ -71,6 +71,12 @@
                         {% endif %} 
                     {% endif %}
                     <dl class="dl-horizontal">
+
+                        <dt>Expediente</dt>
+			<dd>{{ expediente.id }}</dd>
+		</dl>
+                    <dl class="dl-horizontal">
+
                         <dt>Expediente</dt>
                         <dd>{{ expediente.expediente }}-{{ expediente.letra }}
                             -{% if expediente.anio %}{{ expediente.anio }}{% else %}{{ expediente.periodoLegislativo.anio }}{% endif %}</dd>

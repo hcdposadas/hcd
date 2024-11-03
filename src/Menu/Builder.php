@@ -106,15 +106,15 @@ class Builder
 							'linkAttributes' => ['class' => 'nav-link']
 						)
 					);
-				$menu[$keyEmpresa]
-					->addChild(
-						'Bloquear Nº Expte',
-						array(
-							'route'          => 'expedientes_bloqueados',
-							'attributes'     => ['class' => 'nav-item'],
-							'linkAttributes' => ['class' => 'nav-link']
-						)
-					);
+				//$menu[$keyEmpresa]
+				//	->addChild(
+				//		'Bloquear Nº Expte',
+				//		array(
+				//			'route'          => 'expedientes_bloqueados',
+				//			'attributes'     => ['class' => 'nav-item'],
+				//			'linkAttributes' => ['class' => 'nav-link']
+				//		)
+				//	);
 			}
 			if (
 				$this->authorizationChecker->isGranted('ROLE_MESA_ENTRADA') ||

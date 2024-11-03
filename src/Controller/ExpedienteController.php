@@ -1141,7 +1141,7 @@ class ExpedienteController extends AbstractController
 				if ($form->isSubmitted() && $form->isValid()) {
 
 
-					$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($request->get('codigoReferencia'));
+					$expediente = $em->getRepository(Expediente::class)->findOneById($request->get('codigoReferencia'));
 
 					$existeExpediente = $em->getRepository(Expediente::class)->findOneBy(
 						[
@@ -1192,13 +1192,9 @@ class ExpedienteController extends AbstractController
 				}
 			}
 
-			$codigoReferencia = substr(
-				$request->get('codigoReferencia'),
-				7,
-				strlen($request->get('codigoReferencia'))
-			);
+			$codigoReferencia = $request->get('codigoReferencia');
 			
-			$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($codigoReferencia);
+$expediente = $em->getRepository(Expediente::class)->findOneById($codigoReferencia);
 
 
 			if ($expediente->getExpediente() && $expediente->getLetra()) {
@@ -2177,7 +2173,8 @@ class ExpedienteController extends AbstractController
 			'expediente/new_legislativo_externo.html.twig',
 			[
 				'form'       => $form->createView(),
-				'expediente' => $expediente
+				'expediente' => $expediente,
+				'edit' => false
 			]
 		);
 	}

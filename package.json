@@ -3,7 +3,7 @@
         "@symfony/webpack-encore": "^0.29.0",
         "core-js": "^3.0.0",
         "dotenv-webpack": "^1.8.0",
-        "node-sass": "^4.14.1",
+        "node-sass": "^7.0.0",
         "regenerator-runtime": "^0.13.2",
         "sass-loader": "^7.3.1",
         "vue": "^2.6.11",

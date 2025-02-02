@@ -74,6 +74,60 @@ class DefaultController extends AbstractController {
 
 	}
 
+	public function manual() {
+		                  $doc1 = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+                        'slug' => 'manual'
+                ] );
+                $doc2 = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+                        'slug' => 'manualdec'
+                ] );
+
+
+
+                return $this->render( 'default/index_embed2.html.twig',
+                        [
+                                'titulo'    => ['Manual','Resolución'],
+                                'documento' => [$doc1->getDocumento(),$doc2->getDocumento()]
+                        ] );
+
+	}
+
+        public function manuallegis() {
+                                                  $doc1 = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+                        'slug' => 'manuallegis'
+                ] );
+                $doc2 = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+                        'slug' => 'manuallegisdec'
+                ] );
+
+
+
+                return $this->render( 'default/index_embed2.html.twig',
+                        [
+                                'titulo'    => ['Manual','Resolución'],
+                                'documento' => [$doc1->getDocumento(),$doc2->getDocumento()]
+                        ] );
+
+        }
+
+
+	public function organigrama() {
+		                                                  $doc1 = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+                        'slug' => 'organigrama1'
+                ] );
+                $doc2 = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+                        'slug' => 'organigrama2'
+                ] );
+
+
+		return $this->render( 'default/index_embed2.html.twig',
+			[
+				'titulo'    => ['Organigrama Nivel Direcciones','Organigrama Integral'],
+				'documento' => [$doc1->getDocumento(),$doc2->getDocumento()]
+			] );
+
+	}
+
 	/**
 	 * @Route("/pantallota", name="app_display_g")
 	 */

@@ -109,7 +109,7 @@
                                        href="{{ path('expediente_administrativo_sector_show', { 'id': giro.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if not is_granted('ROLE_SECTOR') %}
+                                    {% if not is_granted('ROLE_SECTOR') or is_granted('ROLE_MESA_ENTRADA') %}
                                     
                                     <a class="btn btn-default"
                                        href="{{ path('expediente_administrativo_editar', { 'id': giro.expediente.id }) }}">
@@ -125,7 +125,7 @@
                                         <i class="fa fa-map-signs"></i>
                                         <i class="fa fa-book"></i>
                                     </a>
-                                    {% if not is_granted('ROLE_SECTOR') %}
+                                    {% if not is_granted('ROLE_SECTOR') or is_granted('ROLE_MESA_ENTRADA') %}
                                     <a class="btn btn-default" data-toggle="tooltip" title="Nuevo Giro Administrativo"
                                        href="{{ path('expediente_nuevo_giro_administrativo', { 'id': giro.expediente.id }) }}">
                                         <i class="fa fa-map-signs"></i>

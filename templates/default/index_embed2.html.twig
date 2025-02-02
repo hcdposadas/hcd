@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+    <button id="btnDoc1" class="btn btn-primary">{{titulo[0]}}</button>
+    <button id="btnDoc2" class="btn btn-secondary">{{titulo[1]}}</button>
+    <div class="embed-responsive embed-responsive-16by9" style="margin-top:15px">
+        <embed id="documentViewer" class="embed-responsive-item" src="">
+    </div>
+
+    <script>
+        // Documentos disponibles (inyectados desde el backend)
+        const documento = {{ documento|json_encode|raw }};
+        const basePath = 'http://138.117.79.232/hcd/uploads/documentos/';
+	console.log(documento);
+        // Elementos HTML
+        const viewer = document.getElementById('documentViewer');
+        const btnDoc1 = document.getElementById('btnDoc1');
+        const btnDoc2 = document.getElementById('btnDoc2');
+
+        viewer.setAttribute('src', basePath + documento[0]);
+
+
+        // Cambiar el documento al hacer clic en un botón
+        btnDoc1.addEventListener('click', () => viewer.setAttribute('src',basePath + documento[0]));
+        btnDoc2.addEventListener('click', () => viewer.setAttribute('src',basePath + documento[1]));
+    </script>
+{% endblock %}
+

@@ -353,7 +353,8 @@ class TextoDefinitivoController extends AbstractController {
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
 			$em = $this->getDoctrine()->getManager();
-			$em->persist( $textoDefinitivo );
+$textoDefinitivo->setTexto("");		
+	$em->persist( $textoDefinitivo );
 			$em->flush();
 
 			$this->get( 'session' )->getFlashBag()->add(

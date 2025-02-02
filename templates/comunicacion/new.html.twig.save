@@ -6,12 +6,11 @@ Comunicados
 <div class="card p-4" >
 {{ form_start(form) }}
 <div style="width:20%"> {{ form_row(form.tipo) }}</div>
-<div style="width:50%"> {{ form_row(form.estado) }}</div>
+<div style="width:50%"> {{ form_row(form.estado) }} </div>
+(Max. 250 caracteres)
 <div style="width:50%"> {{ form_row(form.archivoFile) }}</div>
 <div style="width:50%"> {{ form_row(form.areaDestino) }}</div>
-
-<div style="width:50%; {% if 'ROLE_EXTERNO' in app.user.roles %}display:none;{% endif %}"> {{ form_row(form.masivo) }}</div>
-
+<div style="width:50%"> {{ form_row(form.masivo) }}</div>
 <input class="btn btn-primary" type="submit" value="Enviar"/>
 </div>
 {{ form_end(form)}}

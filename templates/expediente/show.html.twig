@@ -21,7 +21,7 @@
                         <dd>{{ expediente.id }}</dd>
                     </dl>
 
-                    {% if not is_granted('ROLE_SECTOR') %}
+                    {% if not is_granted('ROLE_SECTOR') or is_granted('ROLE_MESA_ENTRADA') %}
                     <dl class="dl-horizontal">
                         <dt>Texto definitivo</dt>
                         <dd>{{ expediente.textoDefinitivo }}</dd>
@@ -99,7 +99,7 @@
                             {{ expediente.creadoPor }}
                         </dd>
                     </dl>
-                    {% if not is_granted('ROLE_SECTOR') %}
+                    {% if not is_granted('ROLE_SECTOR') or is_granted('ROLE_MESA_ENTRADA') %}
                     <dl class="dl-horizontal">
                         <dt>Expediente Asignado Por</dt>
                         <dd>
@@ -200,7 +200,7 @@
                 </div>
 
             </div>
-            {% if not is_granted('ROLE_SECTOR') %}
+            {% if not is_granted('ROLE_SECTOR') or is_granted('ROLE_MESA_ENTRADA') %}
             {% if referer is defined %}
                 <a class="btn btn-default" href="{{ referer }}">Volver</a>
         {% else %}

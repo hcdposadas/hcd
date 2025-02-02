@@ -87,30 +87,31 @@
                         </thead>
                         <tbody>
                             {% if expediente.giroAdministrativos.count > 0 %}
-                                {% for giro in expediente.giroAdministrativos %}
-                                    <tr>
-                                    <td>{{giro.areaOrigen}}</td>
-                                    <td>{{giro.AreaDestino}}</td>
-                                    <td>
-                                     
-                                   
-                                    {% if giro.anexoGiros %}
-                                    {% for anexo in giro.anexoGiros %}
-                                                        <a class="btn btn-default" target="_blank"
-                       href="{{ path('imprimir_anexo_sector', {id: anexo.id}) }}">
-                        <i class="fa fa-print"></i> {{anexo.titulo}} 
+    {% for giro in expediente.giroAdministrativos %}
+        <tr>
+            <td>{{ giro.areaOrigen }}</td>
+            <td>{{ giro.AreaDestino }}</td>
+            <td>
+                {% if giro.anexoGiros %}
+                    {% for anexo in giro.anexoGiros %}
+                        <a class="btn btn-default" target="_blank" href="{{ path('imprimir_anexo_sector', {id: anexo.id}) }}">
+                            <i class="fa fa-print"></i> {{ anexo.titulo }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td>{{ giro.fechaGiro | date('d/m/Y') }}</td>
+            <td>
+                {% if giro.anexoGiros.count > 0 %}
+                    <a class="btn btn-default" download="{{ giro.id }}.png"
+                       href="{{ qr_code_data_uri('https://sistema.hcdposadas.gob.ar/mesa-entrada/expediente/' ~ giro.id ~ 'giro_imprimir_resumen_firmado_v', { writer: 'png', logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png', logo_width: 50 }) }}">
+                        Descargar
                     </a>
-                                    {% endfor %}
-                               
-                                    {% endif %}
-                                    </td>
-                                    <td>{{giro.fechaGiro | date('d/m/Y') }}</td>
-                                    <td>        {% if giro.anexoGiros.count > 0 %}            <a class="btn btn-default" download="{{ giro.id }}.png"
-                           href="{{ qr_code_data_uri('https://sistema.hcdposadas.gob.ar/mesa-entrada/expediente/' ~ giro.id ~ 'giro_imprimir_resumen_firmado_v', { writer: 'png' , logo_path: kernelProjectDir ~ '/public/uploads/sis_images/apple-touch-icon.png' , logo_width: 50 }) }}">Descargar</a>{% endif %} 
-                                    {% endif %}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %}
                         </tbody>
                         </table>
                         </dd>

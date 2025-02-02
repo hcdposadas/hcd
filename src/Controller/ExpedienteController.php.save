@@ -1550,9 +1550,9 @@ class ExpedienteController extends AbstractController
 			);
 		} else {
 			if ($this->get('security.authorization_checker')->isGranted('ROLE_SECRETARIO')) {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 300);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 500);
 			} else {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 300);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC']);
 
 			}
 			$giros = array_filter($giros, function($giro) {
@@ -3077,14 +3077,13 @@ class ExpedienteController extends AbstractController
 		if($Dictamenes){
 			$firstDictamen = $Dictamenes[0];
 			foreach ($expediente->getExpedientesAdjunto() as $adjunto){
-				if($adjunto->getAdjunto){
-				if($adjunto->getAdjunto()->getExpedienteInterno()){
+				if(){
 					$header = null;
-					if (!$adjunto->getAdjunto()->getBorrador()) {
+					if (!$adjunto->getBorrador()) {
 						$header = $this->renderView(
 							'default/membrete.pdf.twig',
 							[
-								"periodo"      => $adjunto->getAdjunto()->getPeriodoLegislativo(),
+								"periodo"      => $adjunto->getPeriodoLegislativo(),
 								'dataToEncode' => $dataToEncode
 							]
 						);
@@ -3113,7 +3112,7 @@ class ExpedienteController extends AbstractController
 					$html = $this->renderView(
 						'expediente/proyecto.pdf.twig',
 						[
-							'expediente' => $adjunto->getAdjunto(),
+							'expediente' => $adjunto,
 							'title'      => $title,
 						]
 					);
@@ -3148,7 +3147,7 @@ class ExpedienteController extends AbstractController
 			
 					$pdfMerge->addPDF($nombre);
 			
-					 foreach ($adjunto->getAdjunto()->getAnexos() as $anexo){
+					 foreach ($adjunto->getAnexos() as $anexo){
 			
 						$path=$anexo->getAnexo();
 					
@@ -3164,7 +3163,7 @@ class ExpedienteController extends AbstractController
 				} else {
 			
 					//PROYECTO FIRMADO
-					$path=$adjunto->getAdjunto()->getExpedienteInterno();
+					$path=$adjunto->getExpedienteInterno();
 			
 					$extension = pathinfo($path);
 				
@@ -3176,7 +3175,6 @@ class ExpedienteController extends AbstractController
 					
 				}
 			}
-		}
 		//DICTAMEN FIRMADO
 		if($firstDictamen->getDictamen()){
 			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());
@@ -3287,8 +3285,7 @@ class ExpedienteController extends AbstractController
 		if (count($Dictamenes) > 1) {
 		$secondDictamen = $Dictamenes[1];
 		if($secondDictamen->getDictamen()){
-						
-			$pdfMerge->addPDF('uploads/dictamenes/'.$secondDictamen->getDictamen());
+			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());
 
 
 
@@ -3312,7 +3309,6 @@ class ExpedienteController extends AbstractController
 						}
 			
 					}
-		
 
 		}
 

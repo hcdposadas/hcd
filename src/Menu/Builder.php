@@ -430,7 +430,7 @@ class Builder
 			$this->authorizationChecker->isGranted('ROLE_DIGESTO')
 		) {
 
-			$keyDictamenes = 'DICTÁMENES';
+			$keyDictamenes = 'DICTÁMENES';
 			$menu->addChild(
 				$keyDictamenes,
 				array(
@@ -609,46 +609,47 @@ class Builder
 		}
 
 		if ($this->authorizationChecker->isGranted('ROLE_SECTOR')) {
-			$keySector = 'EXPEDIENTES';
-			$menu->addChild(
-				$keySector,
-				array(
-					'childrenAttributes' => array(
-						'class' => 'nav nav-treeview',
-					),
+			if (!$this->authorizationChecker->isGranted('ROLE_EXTERNO')) {
+				$keySector = 'EXPEDIENTES';
+				$menu->addChild(
+					$keySector,
+					array(
+						'childrenAttributes' => array(
+							'class' => 'nav nav-treeview',
+						),
+					)
 				)
-			)
-				->setUri('#')
-				->setLinkAttribute('class', 'nav-link')
-				->setExtra('icon', 'fa fa-folder-open')
-				->setAttribute('class', 'nav-item has-treeview');
+					->setUri('#')
+					->setLinkAttribute('class', 'nav-link')
+					->setExtra('icon', 'fa fa-folder-open')
+					->setAttribute('class', 'nav-item has-treeview');
 
-			$menu[$keySector]
-				->addChild(
-					'Mis Expedientes',
-					array(
-						'route'          => 'expedientes_administrativos_sector_index',
-						'attributes'     => ['class' => 'nav-item'],
-						'linkAttributes' => ['class' => 'nav-link']
-					)
+				$menu[$keySector]
+					->addChild(
+						'Mis Expedientes',
+						array(
+							'route'          => 'expedientes_administrativos_sector_index',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
+						$menu[$keySector]	->addChild(
+						'Giros Enviados',
+						array(
+							'route'          => 'expedientes_administrativos_sector_enviados',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
+						$menu[$keySector]->addChild(
+						'Giros Recibidos',
+						array(
+							'route'          => 'expedientes_administrativos_sector_recibidos',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
 					);
-				$menu[$keySector]	->addChild(
-					'Giros Enviados',
-					array(
-						'route'          => 'expedientes_administrativos_sector_enviados',
-						'attributes'     => ['class' => 'nav-item'],
-						'linkAttributes' => ['class' => 'nav-link']
-					)
-					);
-					$menu[$keySector]->addChild(
-					'Giros Recibidos',
-					array(
-						'route'          => 'expedientes_administrativos_sector_recibidos',
-						'attributes'     => ['class' => 'nav-item'],
-						'linkAttributes' => ['class' => 'nav-link']
-					)
-				);
-
+				}
 				$keySector = 'COMUNICADOS';
 				$menu->addChild(
 					$keySector,
@@ -680,35 +681,37 @@ class Builder
 						)
 						);
 					
-				$keyTicket = 'TICKETS';
-				$menu->addChild(
-					$keyTicket,
-					array(
-						'childrenAttributes' => array(
-							'class' => 'nav nav-treeview',
-						),
-					)
+				if (!$this->authorizationChecker->isGranted('ROLE_EXTERNO')) {
+					$keyTicket = 'TICKETS';
+					$menu->addChild(
+						$keyTicket,
+						array(
+							'childrenAttributes' => array(
+								'class' => 'nav nav-treeview',
+							),
+						)
 					)
 					->setUri('#')
 					->setLinkAttribute('class', 'nav-link')
 					->setExtra('icon', 'fa fa-folder-open')
 					->setAttribute('class', 'nav-item has-treeview');
-					$menu[$keyTicket]	->addChild(
+					$menu[$keyTicket]->addChild(
 						'Tickets Enviados',
 						array(
 							'route'          => 'tickets_enviados',
 							'attributes'     => ['class' => 'nav-item'],
 							'linkAttributes' => ['class' => 'nav-link']
 						)
-						);
-						$menu[$keyTicket]->addChild(
+					);
+					$menu[$keyTicket]->addChild(
 						'Tickets Recibidos',
 						array(
 							'route'          => 'tickets_recibidos',
 							'attributes'     => ['class' => 'nav-item'],
 							'linkAttributes' => ['class' => 'nav-link']
 						)
-						);
+					);
+				}
 		}
 
 		if ($this->authorizationChecker->isGranted('ROLE_ADMINISTRACION')) {
@@ -836,7 +839,49 @@ $menu[$keyLista]->addChild(
 
 		}
 
-		$keyPersonal = 'DOCUMENTOS';
+
+
+$keyManual = 'MANUALES';
+$menu->addChild(
+	$keyManual,
+	array(
+		'childrenAttributes' => array(
+			'class' => 'nav nav-treeview hidden',
+		),
+	)
+)
+	->setUri('#')
+	->setLinkAttribute('class', 'nav-link')
+	->setExtra('icon', 'far fa-file-alt')
+	->setAttribute('class', 'nav-item has-treeview');
+
+$menu[$keyManual]->addChild(
+	'Misiones y Funciones',
+	array(
+		'route' => 'documento_manual',
+		'attributes' => ['class' => 'nav-item'],
+		'linkAttributes' => ['class' => 'nav-link']
+	)
+);
+$menu[$keyManual]->addChild(
+	'Técnica Legislativa',
+	array(
+		'route' => 'documento_manual_legis',
+		'attributes' => ['class' => 'nav-item'],
+		'linkAttributes' => ['class' => 'nav-link']
+	)
+);
+$menu[$keyManual]
+	->addChild(
+		'Organigrama',
+		array(
+			'route' => 'documento_organigrama',
+			'attributes' => ['class' => 'nav-item'],
+			'linkAttributes' => ['class' => 'nav-link']
+		)
+	);
+
+		$keyPersonal = 'NORMATIVA';
 		$menu->addChild(
 			$keyPersonal,
 			array(

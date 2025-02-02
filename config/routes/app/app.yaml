@@ -54,6 +54,19 @@ documento_reglamento_interno:
   path: /documento_reglamento_interno
   defaults: { _controller: App\Controller\DefaultController::reglamento }
 
+documento_manual:
+  path: /documento_manual
+  defaults: { _controller: App\Controller\DefaultController::manual }
+
+documento_organigrama:
+  path: /documento_organigrama
+  defaults: { _controller: App\Controller\DefaultController:organigrama }
+
+documento_manual_legis:
+  path: /documento_manual_legis
+  defaults: { _controller: App\Controller\DefaultController::manuallegis }
+
+
 get_concejales_admin:
   path: /concejales
   defaults: { _controller: App\Controller\AjaxController::getConcejales }

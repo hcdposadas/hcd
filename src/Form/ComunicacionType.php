@@ -30,7 +30,7 @@ class ComunicacionType extends AbstractType
             ->add( 'estado',
             TextareaType::class,
             [   'label' =>'Extracto',
-                'attr' => [ 'rows' => 3 ]
+                'attr' => [ 'rows' => 3,'maxlength' => 250 ]
             ] )
             ->add( 'archivoFile',
             VichFileType::class,

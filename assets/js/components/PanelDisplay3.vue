@@ -1,11 +1,22 @@
 <style scoped lang="scss">
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
 .panel-presentes-asistencia h1 {
-  font-size: 15em;
+  font-size: 10em;
   margin-top: 3%;
+   font-family: "Poppins", sans-serif;
+
 }
 
 .panel-presentes-asistencia h2 {
-  font-size: 7em;
+  font-size: 5em;
+  font-family: "Poppins", sans-serif;
+
 }
 
 .texto-resultado-concejal {
@@ -52,6 +63,41 @@
   border: 2px solid black;
   background-color: green; /* No tiene background */
 }
+
+.presentes {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 2.5em;
+  border-radius: 5%; /* Hace que el elemento tenga forma de círculo */
+  font-weight: bold;
+  color: white;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
+  background-color: #65c98a; /* No tiene background */
+  display: inline-block;
+  font-family: "Poppins", sans-serif;
+
+}
+.ausentes {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 2.5em;
+  border-radius: 5%; /* Hace que el elemento tenga forma de círculo */
+  font-weight: bold;
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  background-color: #c96565; /* No tiene background */
+  display: inline-block;
+}
 </style>
 
 <template>
@@ -72,11 +118,65 @@
             </div>
             <div class="row">
               <div class="col-12">
-                <div class="alert text-center alert-success">
+                <div
+                  class="alert text-center"
+                  :class="[quorum.hayQuorum ? 'alert-success' : 'alert-success']"
+                >
                   <h1>
-                    <span>Hay Quórum</span>
+                    <span >Hay Quórum</span>
+
                   </h1>
                 </div>
+              </div>
+            </div>
+<div class="row">
+              <div class="col-6">
+                <span  class="presentes">
+                  ALMIRON
+                </span>
+                <span  class="presentes">
+                  ARGAÑARAZ
+                </span>
+                <span  class="presentes">
+                  CARDOZO
+                </span>
+                <span  class="presentes">
+                  DIB
+                </span>
+                <span  class="presentes">
+                  GOMEZ DE OLIVEIRA
+                </span>
+                <span  class="presentes">
+                  JIMENEZ
+                </span>
+                <span  class="presentes">
+                  KOCH
+                </span>
+                <span  class="presentes">
+                  MARTINEZ
+                </span>
+                <span  class="presentes">
+                  MAZAL
+                </span>
+                <span  class="presentes">
+                  ROMERO
+                </span>
+                <span  class="presentes">
+                  SALOM
+                </span>
+                <span  class="presentes">
+                  SCROMEDA
+                </span>
+                <span  class="presentes">
+                  TRAID
+                </span>
+                <span  class="presentes">
+                  VELAZQUEZ
+                </span>
+              </div>
+
+              <div class="col-6">
+               
               </div>
             </div>
           </div>
@@ -84,9 +184,11 @@
 
         <div v-if="panel === 'votacion'" class="text-center">
           <h1 class="panel-votacion-sesion">
-            {{ sesion }}
+            SESION
           </h1>
-
+          <h2 style="font-size: 5em; padding: 20px; font-weight: bold;">
+            MOCIÓN
+          </h2>
           <div style="font-size: 3em;">{{ textoMocion }} {{ tipoMayoria }}</div>
           <hr />
           <!--<div style="text-align: center; font-size: 3em; width: 50%; float: left">-->
@@ -116,9 +218,16 @@
 
             <div class="row">
               <div class="col-12">
-                <div class="alert text-center alert-success">
+                <div
+                  class="alert text-center"
+                  :class="[
+                    resultados.aprobado ? 'alert-success' : 'alert-success',
+                  ]"
+                >
                   <h1>
-                    <span>APROBADO</span>
+                    <span>{{
+                      resultados.aprobado ? "APROBADO" : "APROBADO"
+                    }}</span>
                   </h1>
                 </div>
               </div>
@@ -133,34 +242,11 @@
 
                   <div class="row">
                     <div class="col-12">
-<span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Zurakouski/Flores -   </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Ferreira/Irala -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Mamani/Zarza  -  </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Vargas/Amarilla -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Battochi/Gamarra - </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Kofal/Ríos  -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Niz/Suenaga  -  </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">     Lescar/Mendieta -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Cardozo/Da Silva -   </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Colombo/Chemes -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        fernandez/Sanabria -   </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Miceli/Lopez -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        De Lima/Zarza -   </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Gonzalez/Leiva -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Díaz/Almada -   </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Cattivelli/Gimenez -
-    </span>    <span class="texto-resultado-concejal bold text-uppercase mr-1">
-        Mendez/Sanabria -   </span>
-    <span class="texto-resultado-concejal bold text-uppercase mr-1">        Gomes/Skromeda 
-    </span>
+                      <span
+                        class="texto-resultado-concejal bold text-uppercase mr-1"
+                        
+                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - JIMENEZ - KOCH - MARTINEZ - MAZAL - ROMERO - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span
+                      >                      
                     </div>
                   </div>
                   <h1 class="texto-resultado">
@@ -168,10 +254,7 @@
                   </h1>
                   <div class="row">
                     <div class="col-12">
-                      <span
-                        class="texto-resultado-concejal bold text-uppercase"
-                        v-for="concejal in resultados.votaronNegativo"
-                      ></span>
+
                     </div>
                   </div>
 
@@ -180,10 +263,7 @@
                   </h1>
                   <div class="row">
                     <div class="col-12">
-                      <span
-                        class="texto-resultado-concejal bold text-uppercase"
-                        v-for="concejal in resultados.seAbstuvieron"
-                      ></span>
+
                     </div>
                   </div>
                 </div>
@@ -371,31 +451,17 @@
                     style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
-                      <span
-                        v-if="
-                          resultados.votaronPositivo.includes(
-                            'GOMEZ DE OLIVEIRA'
-                          )
-                        "
-                      >
+                      <span v-if="resultados.votaronPositivo.includes('GOMEZ DE OLIVEIRA')">
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="
-                            resultados.votaronNegativo.includes(
-                              'GOMEZ DE OLIVEIRA'
-                            )
-                          "
+                          v-if="resultados.votaronNegativo.includes('GOMEZ DE OLIVEIRA')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="
-                              resultados.seAbstuvieron.includes(
-                                'GOMEZ DE OLIVEIRA'
-                              )
-                            "
+                            v-if="resultados.seAbstuvieron.includes('GOMEZ DE OLIVEIRA')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>
@@ -566,7 +632,8 @@
                 <div
                   style="width:100px; height:100px; background-color:green; display:inline-block; border-radius:0%;"
                 >
-                  <span style="color:#fff; font-size:60px; line-height:100px;"
+                  <span
+                    style="color:#fff; font-size:60px; line-height:100px;"
                     >14</span
                   >
                 </div>
@@ -576,7 +643,8 @@
                 <div
                   style="width:100px; height:100px; background-color:red; display:inline-block; border-radius:0%;"
                 >
-                  <span style="color:#fff; font-size:60px; line-height:100px;"
+                  <span
+                    style="color:#fff; font-size:60px; line-height:100px;"
                     >0</span
                   >
                 </div>
@@ -586,7 +654,8 @@
                 <div
                   style="width:100px; height:100px; background-color:grey; display:inline-block; border-radius:0%;"
                 >
-                  <span style="color:#fff; font-size:60px; line-height:100px;"
+                  <span
+                    style="color:#fff; font-size:60px; line-height:100px;"
                     >0</span
                   >
                 </div>
@@ -613,6 +682,7 @@ export default {
         presentes: null,
         ausentes: null,
         hayQuorum: null,
+        lista: [],
       },
       mocion: null,
       display: null,
@@ -648,7 +718,7 @@ export default {
             this.quorum.presentes = msg.data.quorum;
             this.quorum.ausentes = msg.data.ausentes;
             this.quorum.hayQuorum = msg.data.hayQuorum;
-
+            this.quorum.lista = msg.data.presentes;
             break;
           case "votacion.finalizada":
             this.panel = "presentes";

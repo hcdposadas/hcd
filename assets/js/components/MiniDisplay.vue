@@ -121,31 +121,31 @@
         </template>
         <template v-if="panel === 'resultados'">
             <div class="col-lg-12">
-                <div class="row texto-mocion">MOCIÓN</div>
+                <div class="row texto-mocion">{{ mocion }}</div>
 
                 <div class="col-lg-12 panel-resultado-aprobado-no-aprobado text-center"
-                     :class="[resultados.aprobado ? 'si-quorum' : 'si-quorum']">
-                    {{ resultados.aprobado ? 'Aprobado' : 'Aprobado' }}
+                     :class="[resultados.aprobado ? 'si-quorum' : 'no-quorum']">
+                    {{ resultados.aprobado ? 'Aprobado' : 'No Aprobado' }}
                 </div>
                 <!--<hr>-->
                 <div class="row">
-                    <div class="texto-resultado">Afirmativos: 14
+                    <div class="texto-resultado">Afirmativos: {{ resultados.afirmativos }}
                     </div>
                     <div class="center">
                   <span class="texto-resultado bold text-uppercase"
-                       >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - JIMENEZ - KOCH - MARTINEZ - MAZAL - ROMERO - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span>
-                    </div>
-
-                    <div class="texto-resultado">Negativos:}</div>
-                    <div class="center">
-                  <span class="texto-resultado bold text-uppercase"
-                        v-for="concejal in resultados.votaronNegativo"></span>
+                        v-for="concejal in resultados.votaronPositivo">{{ concejal }}.-</span>
                     </div>
 
-                    <div class="texto-resultado">Abstenciones: </div>
+                    <div class="texto-resultado">Negativos: {{ resultados.negativos }}</div>
                     <div class="center">
                   <span class="texto-resultado bold text-uppercase"
-                        v-for="concejal in resultados.seAbstuvieron"></span>
+                        v-for="concejal in resultados.votaronNegativo">{{ concejal }}.-</span>
+                    </div>
+
+                    <div class="texto-resultado">Abstenciones: {{ resultados.abstenciones }}</div>
+                    <div class="center">
+                  <span class="texto-resultado bold text-uppercase"
+                        v-for="concejal in resultados.seAbstuvieron">{{ concejal }}.-</span>
                     </div>
                 </div>
             </div>
@@ -241,4 +241,3 @@
         }
     };
 </script>
-

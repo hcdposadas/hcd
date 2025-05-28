@@ -40,6 +40,14 @@ class ComisionController extends AbstractController
         if (!$comision) {
             
         }
+	$peso = $comision->getPeso();
+	
+	if ($peso){
+	$habilitado = $this->getUser()->getId() == $peso;
+	}else{
+	$habilitado = true;
+	}
+	
 
         $giros = $comision->getGirosDestinos()->toArray();
         usort($giros, function($a, $b) {
@@ -58,7 +66,8 @@ class ComisionController extends AbstractController
 
         return $this->render('comision/index.html.twig', [
             'controller_name' => 'ComisionController',
-            'giros' => $giros
+            'giros' => $giros,
+	    'habilitado' => $habilitado,
         ]);
     }
 

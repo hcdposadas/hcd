@@ -58,6 +58,11 @@ class TicketController extends AbstractController
         ]);
     }
 
+	public function agenda(Request $request)
+	{
+		return $this->render('ticket/agenda.html.twig');
+	}
+
 	public function recibidoindex(PaginatorInterface $paginator, Request $request)
     {
 

@@ -47,3 +47,8 @@ ticket_accepted:
   path: /aceptar/ticket/{id}
   defaults: { _controller: App\Controller\TicketController::aceptarTicket }
   methods: [GET, POST]
+
+agenda:
+  path: /agenda
+  defaults: { _controller: App\Controller\TicketController::agenda }
+  methods: [GET, POST]

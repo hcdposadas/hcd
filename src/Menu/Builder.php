@@ -836,6 +836,14 @@ $menu[$keyLista]->addChild(
                                                         'linkAttributes' => ['class' => 'nav-link']
                                                 )
                                                 );
+                                                $menu[$keyLista]->addChild(
+						'Agenda',
+						array(
+						'route'          => 'agenda',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+						)
+						);
 
 		}
 

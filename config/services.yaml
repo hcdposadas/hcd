@@ -74,3 +74,6 @@ services:
       - "%env(REDIS_HOST)%"
       - "%env(REDIS_PORT)%"
       - "%env(REDIS_SCHEME)%"
+  App\EventSubscriber\NoCacheSubscriber:
+     tags:
+       - { name: kernel.event_subscriber }

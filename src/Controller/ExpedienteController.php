@@ -52,6 +52,51 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Entity\Carrera;
+use App\Entity\CarreraMateria;
+use App\Entity\Comision;
+use App\Entity\DictamenComision;
+use App\Entity\ExpedienteExterno;
+use App\Entity\ExpedienteAdjunto;
+use App\Entity\GiroComision;
+use App\Entity\Iniciador;
+use App\Entity\IniciadorParticular;
+use App\Entity\Mocion;
+use App\Entity\Nota;
+use App\Entity\TipoGiro;
+use App\Entity\TipoProyecto;
+use App\Entity\Persona;
+use App\Entity\DiaLaboral;
+use App\Form\CaratulaType;
+use App\Form\DictamenComisionType;
+use App\Form\DictamenType;
+use App\Form\ExpedienteAdjuntoType;
+use App\Form\ExpedienteAdministrativoFilterType;
+use App\Form\ExpedienteEditarExtractoType;
+use App\Form\FormularioProyectoType;
+use App\Form\FormularioProyectoCompletoType;
+use App\Form\GiroComisionType;
+use App\Form\IniciadorParticularType;
+use App\Form\IniciadorType;
+use App\Form\ProyectoDictamenType;
+use App\Repository\ComisionRepository;
+use App\Repository\DictamenComisionRepository;
+use App\Repository\DictamenRepository;
+use App\Repository\ExpedienteAdjuntoRepository;
+use App\Repository\ExpedienteRepository;
+use App\Repository\GiroAdministrativoRepository;
+use App\Repository\GiroComisionRepository;
+use App\Repository\IniciadorRepository;
+use App\Repository\IncorporarExpedienteASesionRepository;
+use App\Service\LoggerService;
+use App\Service\UploaderHelper;
+use Doctrine\ORM\EntityManagerInterface;
+use Gedmo\Loggable\Entity\LogEntry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Expediente controller.
@@ -454,6 +499,16 @@ class ExpedienteController extends AbstractController
 				}
 			}
 		}
+		
+		// Verificar si se solicitó exportar a Excel
+		if ($request->query->get('export') === 'excel') {
+			// Limitar a 500 registros para evitar problemas de rendimiento
+			$expedientes->setMaxResults(500);
+			
+			// Obtener resultados para Excel sin paginación
+			$expedientesParaExcel = $expedientes->getQuery()->getResult();
+			return $this->generarExcelExpedientes($expedientesParaExcel);
+		}
 
 		$expedientes = $paginator->paginate(
 			$expedientes,
@@ -468,6 +523,103 @@ class ExpedienteController extends AbstractController
 				'filter_type' => $filterType->createView()
 			]
 		);
+	}
+
+	/**
+	 * Acción pública para exportar expedientes legislativos a Excel
+	 * (Esta acción ahora no se usa directamente, pero mantenemos la ruta por compatibilidad)
+	 * 
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function exportarExpedientesLegislativosExcelAction(Request $request)
+	{
+		// Redirigir a la página principal con parámetro de exportación
+		return $this->redirectToRoute('expedientes_legislativos_index', ['export' => 'excel']);
+	}
+	
+	/**
+	 * Genera un archivo Excel con los expedientes proporcionados
+	 * 
+	 * @param array $expedientes
+	 * @return Response
+	 */
+	private function generarExcelExpedientes($expedientes)
+	{
+		$totalRegistros = count($expedientes);
+		$limitado = ($totalRegistros >= 500) ? '-limitado' : '';
+		
+		// Crear nuevo objeto Spreadsheet
+		$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		
+		// Establecer encabezados
+		$sheet->setCellValue('A1', 'ID');
+		$sheet->setCellValue('B1', 'Expediente');
+		$sheet->setCellValue('C1', 'Fecha');
+		$sheet->setCellValue('D1', 'Fecha Presentación');
+		$sheet->setCellValue('E1', 'Extracto');
+		$sheet->setCellValue('F1', 'Iniciador');
+		
+		// Estilo para encabezados
+		$sheet->getStyle('A1:F1')->getFont()->setBold(true);
+		
+		// Llenar datos
+		$row = 2;
+		foreach ($expedientes as $expediente) {
+			// Construir el valor del iniciador
+			$iniciadorValue = '';
+			if ($expediente->getIniciadores()->count() > 0) {
+				foreach ($expediente->getIniciadores() as $iniciadorExpediente) {
+					if ($iniciadorExpediente->getIniciador()) {
+						$iniciadorValue .= $iniciadorExpediente->getIniciador()->getCargoPersona() . ' - ';
+					}
+				}
+			} elseif ($expediente->getIniciadorParticular()) {
+				$iniciadorValue = $expediente->getIniciadorParticular()->getNombreCompleto();
+			} elseif ($expediente->getDependencia()) {
+				$iniciadorValue = $expediente->getDependencia()->__toString();
+			}
+			
+			$sheet->setCellValue('A' . $row, $expediente->getId());
+			$sheet->setCellValue('B' . $row, $expediente->getExpediente() . '-' . $expediente->getLetra() . '-' . 
+				($expediente->getPeriodoLegislativo() ? $expediente->getPeriodoLegislativo() : $expediente->getAnio()));
+			$sheet->setCellValue('C' . $row, $expediente->getFecha() ? $expediente->getFecha()->format('d/m/Y') : '');
+			$sheet->setCellValue('D' . $row, $expediente->getFechaPresentacion() ? $expediente->getFechaPresentacion()->format('d/m/Y') : '');
+			$sheet->setCellValue('E' . $row, $expediente->getExtracto());
+			$sheet->setCellValue('F' . $row, $iniciadorValue);
+			
+			$row++;
+		}
+		
+		// Agregar información sobre el límite si corresponde
+		if ($limitado) {
+			$sheet->setCellValue('A' . ($row + 1), 'NOTA: Se ha limitado la exportación a 500 registros para optimizar el rendimiento.');
+			$sheet->getStyle('A' . ($row + 1))->getFont()->setBold(true);
+			$sheet->mergeCells('A' . ($row + 1) . ':F' . ($row + 1));
+		}
+		
+		// Autoajustar anchos de columna
+		foreach (range('A', 'F') as $col) {
+			$sheet->getColumnDimension($col)->setAutoSize(true);
+		}
+		
+		// Generar un nombre de archivo único
+		$filename = 'expedientes_legislativos_' . $totalRegistros . '_registros' . $limitado . '_' . date('Y-m-d_H-i-s') . '.xlsx';
+		
+		// Crear el writer y guardar a un archivo temporal
+		$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+		$tempFile = tempnam(sys_get_temp_dir(), 'excel_');
+		$writer->save($tempFile);
+		
+		// Retornar el archivo como respuesta
+		$response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($tempFile);
+		$disposition = \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+		$response->setContentDisposition($disposition, $filename);
+		$response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		$response->deleteFileAfterSend(true);
+		
+		return $response;
 	}
 
 	public function proyectosIndex(PaginatorInterface $paginator, Request $request)
@@ -3139,8 +3291,8 @@ class ExpedienteController extends AbstractController
 								'footer-html'    => $footer,
 							//                    'margin-bottom' => "1cm"
 								
-							)
-						);
+								)
+							);
 							
 			
 			

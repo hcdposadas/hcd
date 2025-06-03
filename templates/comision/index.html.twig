@@ -3,8 +3,37 @@
     Proyectos Girados
 {% endblock title %}
 {% block body %}
-
-
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtrar por Expediente</h3>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{{ path('comision_index') }}" class="form-inline">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="numero" class="mr-2">Número:</label>
+                            <input type="number" class="form-control" id="numero" name="numero" value="{{ numero }}">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="letra" class="mr-2">Letra:</label>
+                            <input type="text" class="form-control" id="letra" name="letra" value="{{ letra }}">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="anio" class="mr-2">Año:</label>
+                            <input type="number" class="form-control" id="anio" name="anio" value="{{ anio }}">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="fecha" class="mr-2">Fecha:</label>
+                            <input type="date" class="form-control" id="fecha" name="fecha" value="{{ fecha }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
+                        <a href="{{ path('comision_index') }}" class="btn btn-secondary mb-2 ml-2">Limpiar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">

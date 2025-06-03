@@ -143,9 +143,9 @@ class GiroAdministrativo extends BaseClass {
                         		return $this->anexo;
                         	}
 
-	public function __toString(): ?string {
-                                 		return "";
-                                 	}
+	public function __toString(): string {
+		return "";
+	}
 
 
 	/**

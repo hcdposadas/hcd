@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar No Conformidad{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Editar No Conformidad</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.area) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.empleado) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.origen) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.categoria) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form_row(form.requisito) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.estado) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.responsable_calidad) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.imagenFile) }}
+                            {% if no_conformidad.imagen %}
+                                <div class="mt-2">
+                                    <a href="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" target="_blank">
+                                        <img src="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" alt="Imagen actual" class="img-fluid" style="max-width: 200px;">
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.documentoFile) }}
+                            {% if no_conformidad.documento %}
+                                <div class="mt-2">
+                                    <a href="{{ vich_uploader_asset(no_conformidad, 'documentoFile') }}" target="_blank" class="btn btn-info btn-sm">
+                                        <i class="fa fa-file-pdf"></i> Ver documento actual
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary">Guardar cambios</button>
+                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-default">Volver al listado</a>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
+{% endblock %} 

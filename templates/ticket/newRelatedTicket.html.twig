@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-    Tickets
+    Crear Ticket Relacionado
 {% endblock title %}
 {% block body %}
     {# modal add persona #}
@@ -8,12 +8,22 @@
     {% include 'default/modal_add_dependencia.html.twig' %}
     {# modal add persona #}
 
-    <h1> Ticket De Servicio</h1>
+    <h1>Crear Ticket Relacionado</h1>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Nuevo Ticket</h3>
+            <h3 class="card-title">Nuevo Ticket Relacionado con #{{ ticketPadre.id }}</h3>
         </div>
         <div class="card-body">
+            <div class="alert alert-info">
+                <strong>Ticket padre:</strong> #{{ ticketPadre.id }} - {{ ticketPadre.texto }}
+                <br>
+                <strong>Área origen:</strong> {{ ticketPadre.areaOrigen }}
+                <br>
+                <strong>Área destino:</strong> {{ ticketPadre.areaDestino }}
+                <br>
+                <strong>Fecha:</strong> {{ ticketPadre.fecha|date('d/m/Y H:i') }}
+            </div>
+
             {{ form_start(form) }}
             <div class="row">
                 <div class="col-md-8">
@@ -28,12 +38,16 @@
             <div class="row">
                 <div class="col-md-6">
                     {{ form_row(form.adjuntoFile) }}
-                    <small class="form-text text-muted">Formatos permitidos: PDF, DOC, DOCX, JPG, PNG, Tamaño máximo: 5MB.</small>
+                    <small class="form-text text-muted">Formatos permitidos: PDF, DOC, DOCX, JPG, PNG. Tamaño máximo: 5MB.</small>
                 </div>
             </div>
             
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <input class="btn btn-primary" type="submit" value="Crear Ticket Relacionado"/>
+                    <a href="{{ path('tickets_enviados') }}" class="btn btn-secondary">Cancelar</a>
+                </div>
             </div>
-            <input class="btn btn-primary col-md-3 mb-3 ml-3" type="submit" value="Crear"/>
             {{ form_end(form) }}
         </div>
 {% endblock %}
@@ -53,4 +67,4 @@ $(document).on('change', '.custom-file-input', function (event) {
     content: "Seleccionar Archivo";
 }
 </style>
-{% endblock %}
+{% endblock %} 

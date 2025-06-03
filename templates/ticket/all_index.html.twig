@@ -48,7 +48,26 @@
                                 <td>
                                     {{ ticket.id }}
                                 </td>
-                                <td>{{ ticket.texto }}</td>
+                                <td>{{ ticket.texto }}
+                                {% if ticket.adjuntoNombre %}
+                                    <br><a href="{{ vich_uploader_asset(ticket, 'adjuntoFile') }}" target="_blank" class="text-primary">
+                                        <i class="fa fa-paperclip"></i> Ver adjunto
+                                    </a>
+                                {% endif %}
+                                {% if ticket.ticketPadre %}
+                                    <br><span class="text-info">
+                                        <i class="fa fa-link"></i> Relacionado con: Ticket #{{ ticket.ticketPadre.id }}
+                                    </span>
+                                {% endif %}
+                                {% if ticket.ticketsRelacionados.count > 0 %}
+                                    <br><span class="text-primary">
+                                        <i class="fa fa-sitemap"></i> Tickets relacionados:
+                                        {% for ticketRelacionado in ticket.ticketsRelacionados %}
+                                            <a href="#ticket-{{ ticketRelacionado.id }}" class="badge badge-info">{{ ticketRelacionado.id }}</a>
+                                        {% endfor %}
+                                    </span>
+                                {% endif %}
+                                </td>
                                 <td>{{ ticket.areaOrigen }}</td>
                                 <td>{{ ticket.areaDestino }}</td>
                                 <td><i class="fa  fa-arrow-right"></i>{{ ticket.fecha | date('d/m/Y H:i') }}  {% if ticket.fechaV %} <br/> <i class="fa fa-eye"></i> {{ticket.fechaV | date('d/m/Y H:i') }}{% endif %}

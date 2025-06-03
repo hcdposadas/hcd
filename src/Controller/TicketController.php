@@ -12,6 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\TicketType;
 use App\Form\Filter\TicketFilterType;
 use App\Form\CloseTicketType;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\TemplatedEmail;
 
 
 
@@ -27,7 +31,7 @@ class TicketController extends AbstractController
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
-        $tickets = $em->getRepository(Ticket::class)->findByAreaOrigen($area,['id'=>'Desc']);
+        $tickets = $em->getRepository(Ticket::class)->findByAreaOrigenWithRelated($area,['id'=>'Desc']);
 		
 				
 		$form = $this->createForm(TicketFilterType::class,			null,
@@ -70,7 +74,7 @@ class TicketController extends AbstractController
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
-        $tickets = $em->getRepository(Ticket::class)->findByAreaDestino($area,['id' => 'DESC']);
+        $tickets = $em->getRepository(Ticket::class)->findByAreaDestinoWithRelated($area,['id' => 'DESC']);
 		
 		$form = $this->createForm(TicketFilterType::class,			null,
 		[
@@ -104,9 +108,9 @@ class TicketController extends AbstractController
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
-        $ticket= new Ticket();
+        $ticket = new Ticket();
 
-
+		// Crear el formulario
 		$form = $this->createForm(TicketType::class, $ticket);
 
 		$form->handleRequest($request);
@@ -118,56 +122,15 @@ class TicketController extends AbstractController
 			$em->persist($ticket);
 			$em->flush();
 
-			$this->get('session')->getFlashBag()->add(
-				'success',
-				'Ticket Generado con exito'
-			);
-
-				 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $ticket->getAreaDestino() ); 
-
-
-							$user  = $em->getRepository( Usuario::class )->findOneByPersona($cargo->getPersona());
-							if($user){
-							
-							$mail = $user->getEmail();
-						
-				
-							$email=false;
-							if ( $email ) {
-								$asunto = 'HCD Posadas - Ticket De Servicio ' . $ticket->getAreaOrigen()->getNombre() . ' - ' . $ticket->getFecha()->format('d/m/Y');
-					
-								$email = ( new TemplatedEmail() )
-									->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
-									->to( $mail )
-									->subject( $asunto )
-									->htmlTemplate( 'emails/ticket.html.twig' )
-									->context( [
-										'ticket' => $ticket,
-									] );;
-
-					
-								try {
-									$mailer->send($email);
-									
-								} catch (TransportExceptionInterface $e) {
-									// some error prevented the email sending; display an
-									// error message or try to resend the message
-									$this->get('logger')->error($e->getMessage());
-								$this->get('logger')->error(sprintf('%s: %s', $e->getMessage(), $e->getTraceAsString()));
-								}
-					
-							} 
-						}
-						 
+			$this->addFlash('success', 'Ticket generado con éxito');
 
 			return $this->redirectToRoute('tickets_enviados');
 		}
 
-
 		return $this->render(
 			'ticket/newTicket.html.twig',
 			[
-				'form'       => $form->createView()
+				'form' => $form->createView()
 			]
 		);
 	}
@@ -311,6 +274,90 @@ class TicketController extends AbstractController
 		$em->flush();
 
 		return $this->redirectToRoute('tickets_enviados');
+	}
+
+	public function createRelatedTicket(Request $request, Ticket $ticket)
+	{
+		$em = $this->getDoctrine()->getManager();
+
+		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
+		
+		// Verificar que el ticket a relacionar tiene como destino el área del usuario actual
+		if ($ticket->getAreaDestino()->getId() !== $area->getId()) {
+			$this->addFlash('error', 'Solo puede relacionar tickets recibidos por su área');
+			return $this->redirectToRoute('tickets_enviados');
+		}
+
+		$nuevoTicket = new Ticket();
+		$nuevoTicket->setTicketPadre($ticket);
+		
+		// Crear el formulario
+		$form = $this->createForm(TicketType::class, $nuevoTicket);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$nuevoTicket->setAreaOrigen($area);
+			$nuevoTicket->setFecha(new \DateTime('now'));
+			$nuevoTicket->setAbierto(false);
+			$em->persist($nuevoTicket);
+			$em->flush();
+
+			$this->addFlash('success', 'Ticket relacionado generado con éxito');
+
+			return $this->redirectToRoute('tickets_enviados');
+		}
+
+		return $this->render(
+			'ticket/newRelatedTicket.html.twig',
+			[
+				'form' => $form->createView(),
+				'ticketPadre' => $ticket
+			]
+		);
+	}
+
+	/**
+	 * Muestra el seguimiento completo de un ticket, desde el original hasta el último relacionado
+	 */
+	public function seguimientoTicket(Request $request, Ticket $ticket)
+	{
+		$em = $this->getDoctrine()->getManager();
+		
+		// Encontrar el ticket raíz (el primero de la cadena)
+		$ticketRaiz = $ticket;
+		while ($ticketRaiz->getTicketPadre() !== null) {
+			$ticketRaiz = $ticketRaiz->getTicketPadre();
+		}
+		
+		// Cargar toda la cadena de tickets relacionados
+		$cadenaTickets = $this->cargarCadenaTickets($ticketRaiz);
+		
+		return $this->render('ticket/seguimiento.html.twig', [
+			'ticketInicial' => $ticket,
+			'ticketRaiz' => $ticketRaiz,
+			'cadenaTickets' => $cadenaTickets
+		]);
+	}
+	
+	/**
+	 * Carga recursivamente toda la cadena de tickets relacionados
+	 */
+	private function cargarCadenaTickets($ticket)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$resultado = [];
+		
+		// Primero agregar el ticket actual
+		$resultado[] = $ticket;
+		
+		// Luego buscar y agregar todos sus hijos
+		$hijos = $em->getRepository(Ticket::class)->findBy(['ticketPadre' => $ticket], ['id' => 'ASC']);
+		
+		foreach ($hijos as $hijo) {
+			$resultado = array_merge($resultado, $this->cargarCadenaTickets($hijo));
+		}
+		
+		return $resultado;
 	}
 
 }

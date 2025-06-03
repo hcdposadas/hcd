@@ -162,6 +162,13 @@ expedientes_legislativos_index:
       _controller: App\Controller\ExpedienteController::expedientesLegislativosIndex,
     }
 
+expedientes_legislativos_excel:
+  path: /expedientes_legislativos_excel
+  defaults:
+    {
+      _controller: App\Controller\ExpedienteController::exportarExpedientesLegislativosExcelAction,
+    }
+
 proyectos_index:
   path: /proyectos
   defaults: { _controller: App\Controller\ExpedienteController::proyectosIndex }

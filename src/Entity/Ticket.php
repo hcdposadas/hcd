@@ -4,9 +4,14 @@ namespace App\Entity;
 
 use App\Repository\TicketRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass=TicketRepository::class)
+ * @Vich\Uploadable
  */
 class Ticket
 {
@@ -78,6 +83,48 @@ class Ticket
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $fechaCon;
+
+    /**
+     * @Vich\UploadableField(mapping="ticket_adjunto", fileNameProperty="adjuntoNombre")
+     */
+    private $adjuntoFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $adjuntoNombre;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Ticket::class, inversedBy="ticketsRelacionados")
+     */
+    private $ticketPadre;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Ticket::class, mappedBy="ticketPadre")
+     */
+    private $ticketsRelacionados;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TicketRelacionado::class, mappedBy="ticketOrigen", cascade={"persist", "remove"})
+     */
+    private $ticketsOrigenRelacionados;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TicketRelacionado::class, mappedBy="ticketDestino", cascade={"persist", "remove"})
+     */
+    private $ticketsDestinoRelacionados;
+
+    public function __construct()
+    {
+        $this->ticketsRelacionados = new ArrayCollection();
+        $this->ticketsOrigenRelacionados = new ArrayCollection();
+        $this->ticketsDestinoRelacionados = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -226,5 +273,179 @@ class Ticket
         $this->fechaCon = $fechaCon;
 
         return $this;
+    }
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $adjuntoFile
+     */
+    public function setAdjuntoFile(?File $adjuntoFile = null): void
+    {
+        $this->adjuntoFile = $adjuntoFile;
+
+        if (null !== $adjuntoFile) {
+            $this->updatedAt = new \DateTime();
+        }
+    }
+
+    public function getAdjuntoFile(): ?File
+    {
+        return $this->adjuntoFile;
+    }
+
+    public function setAdjuntoNombre(?string $adjuntoNombre): self
+    {
+        $this->adjuntoNombre = $adjuntoNombre;
+
+        return $this;
+    }
+
+    public function getAdjuntoNombre(): ?string
+    {
+        return $this->adjuntoNombre;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getTicketPadre(): ?self
+    {
+        return $this->ticketPadre;
+    }
+
+    public function setTicketPadre(?self $ticketPadre): self
+    {
+        $this->ticketPadre = $ticketPadre;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getTicketsRelacionados(): Collection
+    {
+        return $this->ticketsRelacionados;
+    }
+
+    public function addTicketRelacionado(self $ticketRelacionado): self
+    {
+        if (!$this->ticketsRelacionados->contains($ticketRelacionado)) {
+            $this->ticketsRelacionados[] = $ticketRelacionado;
+            $ticketRelacionado->setTicketPadre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketRelacionado(self $ticketRelacionado): self
+    {
+        if ($this->ticketsRelacionados->contains($ticketRelacionado)) {
+            $this->ticketsRelacionados->removeElement($ticketRelacionado);
+            // set the owning side to null (unless already changed)
+            if ($ticketRelacionado->getTicketPadre() === $this) {
+                $ticketRelacionado->setTicketPadre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TicketRelacionado[]
+     */
+    public function getTicketsOrigenRelacionados(): Collection
+    {
+        return $this->ticketsOrigenRelacionados;
+    }
+
+    public function addTicketOrigenRelacionado(TicketRelacionado $ticketRelacionado): self
+    {
+        if (!$this->ticketsOrigenRelacionados->contains($ticketRelacionado)) {
+            $this->ticketsOrigenRelacionados[] = $ticketRelacionado;
+            $ticketRelacionado->setTicketOrigen($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketOrigenRelacionado(TicketRelacionado $ticketRelacionado): self
+    {
+        if ($this->ticketsOrigenRelacionados->contains($ticketRelacionado)) {
+            $this->ticketsOrigenRelacionados->removeElement($ticketRelacionado);
+            // set the owning side to null (unless already changed)
+            if ($ticketRelacionado->getTicketOrigen() === $this) {
+                $ticketRelacionado->setTicketOrigen(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TicketRelacionado[]
+     */
+    public function getTicketsDestinoRelacionados(): Collection
+    {
+        return $this->ticketsDestinoRelacionados;
+    }
+
+    public function addTicketDestinoRelacionado(TicketRelacionado $ticketRelacionado): self
+    {
+        if (!$this->ticketsDestinoRelacionados->contains($ticketRelacionado)) {
+            $this->ticketsDestinoRelacionados[] = $ticketRelacionado;
+            $ticketRelacionado->setTicketDestino($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketDestinoRelacionado(TicketRelacionado $ticketRelacionado): self
+    {
+        if ($this->ticketsDestinoRelacionados->contains($ticketRelacionado)) {
+            $this->ticketsDestinoRelacionados->removeElement($ticketRelacionado);
+            // set the owning side to null (unless already changed)
+            if ($ticketRelacionado->getTicketDestino() === $this) {
+                $ticketRelacionado->setTicketDestino(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Obtiene todos los tickets relacionados (origen y destino)
+     * 
+     * @return array
+     */
+    public function getAllTicketsRelacionados(): array
+    {
+        $tickets = [];
+        
+        foreach ($this->ticketsOrigenRelacionados as $relacion) {
+            $tickets[] = [
+                'relacion' => $relacion,
+                'ticket' => $relacion->getTicketDestino(),
+                'tipo' => 'origen'
+            ];
+        }
+        
+        foreach ($this->ticketsDestinoRelacionados as $relacion) {
+            $tickets[] = [
+                'relacion' => $relacion,
+                'ticket' => $relacion->getTicketOrigen(),
+                'tipo' => 'destino'
+            ];
+        }
+        
+        return $tickets;
     }
 }

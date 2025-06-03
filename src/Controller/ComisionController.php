@@ -36,7 +36,6 @@ class ComisionController extends AbstractController
     public function index(PaginatorInterface $paginator, Request $request)
     {
         $comision = $this->getUser()->getPersona()->getCargoPersona()->first()->getComision();
-
         if (!$comision) {
             
         }
@@ -48,26 +47,61 @@ class ComisionController extends AbstractController
 	$habilitado = true;
 	}
 	
-
         $giros = $comision->getGirosDestinos()->toArray();
         usort($giros, function($a, $b) {
             return $b->getId() - $a->getId();
         });
-
         $giros = array_filter($giros, function($giro) {
             return  $giro->getProyectoBae();
         });
 
+        // Filtros
+        $numero = $request->query->get('numero');
+        $letra = $request->query->get('letra');
+        $anio = $request->query->get('anio');
+        $fecha = $request->query->get('fecha');
+
+        if ($numero || $letra || $anio || $fecha) {
+            $giros = array_filter($giros, function($giro) use ($numero, $letra, $anio, $fecha) {
+                $proyectoBae = $giro->getProyectoBae();
+                if (!$proyectoBae) return false;
+
+                $expediente = $proyectoBae->getExpediente();
+                if (!$expediente) return false;
+
+                $match = true;
+                if ($numero) {
+                    $match = $match && $expediente->getExpediente() == $numero;
+                }
+                if ($letra) {
+                    $match = $match && $expediente->getLetra() == $letra;
+                }
+                if ($anio) {
+                    $periodoLegislativo = $expediente->getPeriodoLegislativo();
+                    $match = $match && ($periodoLegislativo ? $periodoLegislativo->getAnio() == $anio : $expediente->getAnio() == $anio);
+                }
+                if ($fecha) {
+                    $fechaExpediente = $expediente->getFecha() ? $expediente->getFecha()->format('Y-m-d') : null;
+                    $match = $match && $fechaExpediente == $fecha;
+                }
+                return $match;
+            });
+        }
+
         $giros = $paginator->paginate(
             $giros,
-            $request->query->get('page', 1)/* page number */,
-            10/* limit per page */
+            $request->query->get('page', 1),
+            10
         );
 
         return $this->render('comision/index.html.twig', [
             'controller_name' => 'ComisionController',
             'giros' => $giros,
-	    'habilitado' => $habilitado,
+	        'habilitado' => $habilitado,
+            'numero' => $numero,
+            'letra' => $letra,
+            'anio' => $anio,
+            'fecha' => $fecha
         ]);
     }
 

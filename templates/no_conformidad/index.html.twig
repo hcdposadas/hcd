@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}No Conformidades{% endblock %}
+
+{% block body %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('no_conformidad_new') }}">Nueva No Conformidad</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Listado de No Conformidades</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Área</th>
+                                    <th>Empleado</th>
+                                    <th>Origen</th>
+                                    <th>Categoría</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for no_conformidad in no_conformidades %}
+                                <tr>
+                                    <td>{{ no_conformidad.id }}</td>
+                                    <td>{{ no_conformidad.area }}</td>
+                                    <td>{{ no_conformidad.empleado }}</td>
+                                    <td>{{ no_conformidad.origen }}</td>
+                                    <td>{{ no_conformidad.categoria }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ 
+                                            no_conformidad.estado == 'Nuevo' ? 'danger' : 
+                                            (no_conformidad.estado == 'Revisado' ? 'warning' : 
+                                            (no_conformidad.estado == 'Tratado' ? 'warning' : 
+                                            (no_conformidad.estado == 'Verificado' ? 'info' : 
+                                            (no_conformidad.estado == 'Efectivo' ? 'success' : 'secondary')))) }}">
+                                            {{ no_conformidad.estado }}
+                                        </span>
+                                    </td>
+                                    <td>{{ no_conformidad.fecha ? no_conformidad.fecha|date('d/m/Y H:i') : '' }}</td>
+                                    <td>
+                                        <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-info btn-sm">
+                                            <i class="fa fa-eye"></i> Ver
+                                        </a>
+                                        <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-edit"></i> Editar
+                                        </a>
+                                        <form method="post" action="{{ path('no_conformidad_delete', {'id': no_conformidad.id}) }}" style="display: inline-block" onsubmit="return confirm('¿Está seguro que desea eliminar esta no conformidad?');">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ no_conformidad.id) }}">
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="8">No se encontraron registros</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        {{ knp_pagination_render(no_conformidades) }}
+    </div>
+{% endblock %} 

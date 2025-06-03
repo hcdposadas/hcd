@@ -8,6 +8,11 @@ tickets_enviados:
   defaults: { _controller: App\Controller\TicketController::enviadoindex }
   methods: GET
 
+ticket_seguimiento:
+  path: /ticket/{ticket}/seguimiento
+  defaults: { _controller: App\Controller\TicketController::seguimientoTicket }
+  methods: [GET]
+
 ticket_confirmado:
   path: /confirmar/ticket/{id}
   defaults: { _controller: App\Controller\TicketController::confirmarTicket }
@@ -26,6 +31,11 @@ tickets_all:
 ticket_new:
   path: /new/ticket
   defaults: { _controller: App\Controller\TicketController::newTicket }
+  methods: [GET, POST]
+
+ticket_new_related:
+  path: /new/related-ticket/{ticket}
+  defaults: { _controller: App\Controller\TicketController::createRelatedTicket }
   methods: [GET, POST]
 
 ticket_close:

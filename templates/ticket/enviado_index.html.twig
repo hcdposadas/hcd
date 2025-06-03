@@ -1,8 +1,92 @@
 {% extends 'base.html.twig' %}
+
+{% macro mostrarTicketsRelacionados(tickets, nivel) %}
+    {% import _self as macros %}
+    {% if tickets and tickets|length > 0 %}
+        <ul class="list-unstyled ml-{{ nivel * 3 }}">
+            {% for ticketRelacionado in tickets %}
+                <li>
+                    <a href="#" class="badge badge-info" data-toggle="modal" data-target="#ticketModal-{{ ticketRelacionado.id }}">
+                        #{{ ticketRelacionado.id }} - {{ ticketRelacionado.texto|length > 30 ? ticketRelacionado.texto|slice(0, 30) ~ '...' : ticketRelacionado.texto }}
+                    </a>
+                    
+                    <!-- Modal para mostrar el ticket -->
+                    <div class="modal fade" id="ticketModal-{{ ticketRelacionado.id }}" tabindex="-1" role="dialog" aria-labelledby="ticketModalLabel-{{ ticketRelacionado.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="ticketModalLabel-{{ ticketRelacionado.id }}">Ticket #{{ ticketRelacionado.id }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <dl class="row">
+                                        <dt class="col-sm-3">Descripción:</dt>
+                                        <dd class="col-sm-9">{{ ticketRelacionado.texto }}</dd>
+                                        
+                                        <dt class="col-sm-3">Área Origen:</dt>
+                                        <dd class="col-sm-9">{{ ticketRelacionado.areaOrigen }}</dd>
+                                        
+                                        <dt class="col-sm-3">Área Destino:</dt>
+                                        <dd class="col-sm-9">{{ ticketRelacionado.areaDestino }}</dd>
+                                        
+                                        <dt class="col-sm-3">Fecha:</dt>
+                                        <dd class="col-sm-9">{{ ticketRelacionado.fecha | date('d/m/Y H:i') }}</dd>
+                                        
+                                        <dt class="col-sm-3">Estado:</dt>
+                                        <dd class="col-sm-9">
+                                            {% if ticketRelacionado.completo %}
+                                                Completo
+                                            {% elseif ticketRelacionado.observacion == 'Cancelado' %}
+                                                Cancelado
+                                            {% elseif ticketRelacionado.completo is same as(false) %}
+                                                Rechazado
+                                            {% else %}
+                                                Pendiente
+                                            {% endif %}
+                                        </dd>
+                                        
+                                        {% if ticketRelacionado.observacion %}
+                                        <dt class="col-sm-3">Observación:</dt>
+                                        <dd class="col-sm-9">{{ ticketRelacionado.observacion }}</dd>
+                                        {% endif %}
+                                        
+                                        {% if ticketRelacionado.adjuntoNombre %}
+                                        <dt class="col-sm-3">Adjunto:</dt>
+                                        <dd class="col-sm-9">
+                                            <a href="{{ vich_uploader_asset(ticketRelacionado, 'adjuntoFile') }}" target="_blank" class="btn btn-sm btn-info">
+                                                <i class="fa fa-paperclip"></i> Ver adjunto
+                                            </a>
+                                        </dd>
+                                        {% endif %}
+                                    </dl>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="{{ path('ticket_seguimiento', {'ticket': ticketRelacionado.id}) }}" class="btn btn-primary">
+                                        <i class="fa fa-sitemap"></i> Ver seguimiento completo
+                                    </a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if ticketRelacionado.ticketsRelacionados and ticketRelacionado.ticketsRelacionados|length > 0 %}
+                        {{ macros.mostrarTicketsRelacionados(ticketRelacionado.ticketsRelacionados, nivel + 1) }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
 {% block title %}
     Ticket De Servicio
 {% endblock title %}
+
 {% block body %}
+    {% import _self as macros %}
 
     <div class="row mb-3">
         <div class="col-md-12">
@@ -72,7 +156,97 @@
                                 <td>
                                     {{ ticket.id }}
                                 </td>
-                                <td>{{ ticket.texto }}</td>
+                                <td>{{ ticket.texto }}
+                                {% if ticket.adjuntoNombre %}
+                                    <br><a href="{{ vich_uploader_asset(ticket, 'adjuntoFile') }}" target="_blank" class="text-primary">
+                                        <i class="fa fa-paperclip"></i> Ver adjunto
+                                    </a>
+                                {% endif %}
+                                {% if ticket.ticketPadre %}
+                                    <br><span class="text-info">
+                                        <i class="fa fa-link"></i> Relacionado con: 
+                                        <a href="#" class="badge badge-primary" data-toggle="modal" data-target="#ticketRelacionadoModal-{{ ticket.ticketPadre.id }}">
+                                            Ticket #{{ ticket.ticketPadre.id }}
+                                        </a>
+                                    </span>
+                                    
+                                    <!-- Modal para mostrar el ticket relacionado -->
+                                    <div class="modal fade" id="ticketRelacionadoModal-{{ ticket.ticketPadre.id }}" tabindex="-1" role="dialog" aria-labelledby="ticketRelacionadoModalLabel-{{ ticket.ticketPadre.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ticketRelacionadoModalLabel-{{ ticket.ticketPadre.id }}">Ticket Relacionado #{{ ticket.ticketPadre.id }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <dl class="row">
+                                                        <dt class="col-sm-3">Descripción:</dt>
+                                                        <dd class="col-sm-9">{{ ticket.ticketPadre.texto }}</dd>
+                                                        
+                                                        <dt class="col-sm-3">Área Origen:</dt>
+                                                        <dd class="col-sm-9">{{ ticket.ticketPadre.areaOrigen }}</dd>
+                                                        
+                                                        <dt class="col-sm-3">Área Destino:</dt>
+                                                        <dd class="col-sm-9">{{ ticket.ticketPadre.areaDestino }}</dd>
+                                                        
+                                                        <dt class="col-sm-3">Fecha:</dt>
+                                                        <dd class="col-sm-9">{{ ticket.ticketPadre.fecha | date('d/m/Y H:i') }}</dd>
+                                                        
+                                                        <dt class="col-sm-3">Estado:</dt>
+                                                        <dd class="col-sm-9">
+                                                            {% if ticket.ticketPadre.completo %}
+                                                                Completo
+                                                            {% elseif ticket.ticketPadre.observacion == 'Cancelado' %}
+                                                                Cancelado
+                                                            {% elseif ticket.ticketPadre.completo is same as(false) %}
+                                                                Rechazado
+                                                            {% else %}
+                                                                Pendiente
+                                                            {% endif %}
+                                                        </dd>
+                                                        
+                                                        {% if ticket.ticketPadre.observacion %}
+                                                        <dt class="col-sm-3">Observación:</dt>
+                                                        <dd class="col-sm-9">{{ ticket.ticketPadre.observacion }}</dd>
+                                                        {% endif %}
+                                                        
+                                                        {% if ticket.ticketPadre.adjuntoNombre %}
+                                                        <dt class="col-sm-3">Adjunto:</dt>
+                                                        <dd class="col-sm-9">
+                                                            <a href="{{ vich_uploader_asset(ticket.ticketPadre, 'adjuntoFile') }}" target="_blank" class="btn btn-sm btn-info">
+                                                                <i class="fa fa-paperclip"></i> Ver adjunto
+                                                            </a>
+                                                        </dd>
+                                                        {% endif %}
+                                                    </dl>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href="{{ path('ticket_seguimiento', {'ticket': ticket.ticketPadre.id}) }}" class="btn btn-primary">
+                                                        <i class="fa fa-sitemap"></i> Ver seguimiento completo
+                                                    </a>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if ticket.ticketsRelacionados.count > 0 %}
+                                    <br><span class="text-primary">
+                                        <i class="fa fa-sitemap"></i> Tickets relacionados:
+                                    </span>
+                                    {{ macros.mostrarTicketsRelacionados(ticket.ticketsRelacionados, 1) }}
+                                {% endif %}
+                                
+                                {% if ticket.ticketsRelacionados.count > 0 or ticket.ticketPadre %}
+                                    <br>
+                                    <a href="{{ path('ticket_seguimiento', {'ticket': ticket.id}) }}" class="btn btn-sm btn-primary mt-2">
+                                        <i class="fa fa-sitemap"></i> Ver seguimiento completo
+                                    </a>
+                                {% endif %}
+                                </td>
                                 <td>{{ ticket.areaDestino }}</td>
                                 <td><i class="fa fa-fw fa-arrow-right"></i>{{ ticket.fecha | date('d/m/Y H:i') }}  {% if ticket.fechaV %} <br/> <i class="fa fa-eye"></i> {{ticket.fechaV | date('d/m/Y H:i') }}{% endif %}
                                  {% if ticket.fechaC %}

@@ -1,6 +1,12 @@
 vich_uploader:
   db_driver: orm
+  metadata:
+    auto_detection: true
   mappings:
+    ticket_adjunto:
+      uri_prefix: "%app.path.ticket_adjunto%"
+      upload_destination: "%kernel.project_dir%/public/uploads/tickets/adjuntos"
+      namer: "vich_uploader.namer_uniqid"
     expedientes_internos:
       uri_prefix: "%app.path.expedientes_internos%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/internos"
@@ -116,3 +122,15 @@ vich_uploader:
       uri_prefix: "%app.path.expedientes_dem%"
       upload_destination: "%kernel.project_dir%/public/uploads/expedientes/dem"
       namer: "vich_uploader.namer_uniqid"
+    no_conformidad_images:
+      uri_prefix: /uploads/no_conformidad/images
+      upload_destination: '%kernel.project_dir%/public/uploads/no_conformidad/images'
+      namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+      delete_on_update: true
+      delete_on_remove: true
+    no_conformidad_docs:
+      uri_prefix: /uploads/no_conformidad/docs
+      upload_destination: '%kernel.project_dir%/public/uploads/no_conformidad/docs'
+      namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+      delete_on_update: true
+      delete_on_remove: true

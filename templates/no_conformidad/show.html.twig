@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalles de No Conformidad{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Detalles de No Conformidad</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Área:</dt>
+                                <dd>{{ no_conformidad.area }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Empleado:</dt>
+                                <dd>{{ no_conformidad.empleado }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Origen:</dt>
+                                <dd>{{ no_conformidad.origen }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Categoría:</dt>
+                                <dd>{{ no_conformidad.categoria }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <dl class="dl-horizontal">
+                                <dt>Requisito:</dt>
+                                <dd>{{ no_conformidad.requisito }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Fecha:</dt>
+                                <dd>{{ no_conformidad.fecha ? no_conformidad.fecha|date('d/m/Y H:i') : '' }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Estado:</dt>
+                                <dd>
+                                    <span class="badge badge-{{ 
+                                        no_conformidad.estado == 'Nuevo' ? 'danger' : 
+                                        (no_conformidad.estado == 'Revisado' ? 'warning' : 
+                                        (no_conformidad.estado == 'Tratado' ? 'warning' : 
+                                        (no_conformidad.estado == 'Verificado' ? 'info' : 
+                                        (no_conformidad.estado == 'Efectivo' ? 'success' : 'secondary')))) }}">
+                                        {{ no_conformidad.estado }}
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    {% if no_conformidad.responsableCalidad %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Responsable de Calidad:</dt>
+                                <dd>{{ no_conformidad.responsableCalidad }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if no_conformidad.imagen %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Imagen:</dt>
+                                <dd>
+                                    <a href="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" target="_blank">
+                                        <img src="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" alt="Imagen" class="img-fluid" style="max-width: 300px;">
+                                    </a>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if no_conformidad.documento %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="dl-horizontal">
+                                <dt>Documento:</dt>
+                                <dd>
+                                    <a href="{{ vich_uploader_asset(no_conformidad, 'documentoFile') }}" target="_blank" class="btn btn-info btn-sm">
+                                        <i class="fa fa-file-pdf"></i> Ver documento
+                                    </a>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning">
+                                <i class="fa fa-edit"></i> Editar
+                            </a>
+                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-default">Volver al listado</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

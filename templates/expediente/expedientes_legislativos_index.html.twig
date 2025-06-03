@@ -50,6 +50,9 @@
                 <div class="card-footer">
                     {{ form_widget(filter_type.buscar) }}
                     {{ form_widget(filter_type.limpiar) }}
+                    <a href="{{ path('expedientes_legislativos_index', app.request.query.all|merge({'export': 'excel'})) }}" class="btn btn-success">
+                        <i class="far fa-file-excel"></i> Exportar a Excel
+                    </a>
                     <div class="d-none">
                         {{ form_end(filter_type) }}
                     </div>

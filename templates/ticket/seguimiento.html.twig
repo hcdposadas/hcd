@@ -1,0 +1,234 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <a href="javascript:history.back()" class="btn btn-secondary">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Seguimiento Completo de Ticket #{{ ticketInicial.id }}</h3>
+            </div>
+            <div class="card-body">
+                {% if ticketRaiz.id != ticketInicial.id %}
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> Este ticket es parte de una cadena que comienza con el Ticket #{{ ticketRaiz.id }}
+                </div>
+                {% endif %}
+                
+                <div class="timeline">
+                    {% for ticket in cadenaTickets %}
+                        <div class="time-label">
+                            <span class="bg-{{ ticket.id == ticketInicial.id ? 'success' : 'primary' }}">
+                                {{ ticket.fecha|date('d/m/Y') }}
+                            </span>
+                        </div>
+                        
+                        <div>
+                            <i class="fas fa-ticket-alt {{ ticket.id == ticketInicial.id ? 'bg-success' : 'bg-primary' }}"></i>
+                            <div class="timeline-item">
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> {{ ticket.fecha|date('H:i') }}
+                                </span>
+                                <h3 class="timeline-header">
+                                    <strong>Ticket #{{ ticket.id }}</strong> 
+                                    {% if ticket.ticketPadre %}
+                                        <span class="text-muted">
+                                            <i class="fa fa-link"></i> relacionado con #{{ ticket.ticketPadre.id }}
+                                        </span>
+                                    {% endif %}
+                                </h3>
+                                
+                                <div class="timeline-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p>{{ ticket.texto }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <dl class="row">
+                                                <dt class="col-sm-4">Origen:</dt>
+                                                <dd class="col-sm-8">{{ ticket.areaOrigen }}</dd>
+                                                
+                                                <dt class="col-sm-4">Destino:</dt>
+                                                <dd class="col-sm-8">{{ ticket.areaDestino }}</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="row">
+                                                <dt class="col-sm-4">Estado:</dt>
+                                                <dd class="col-sm-8">
+                                                    {% if ticket.completo is same as(true) %}
+                                                        <span class="badge badge-success">Completo</span>
+                                                    {% elseif ticket.observacion == 'Cancelado' %}
+                                                        <span class="badge badge-danger">Cancelado</span>
+                                                    {% elseif ticket.completo is same as(false) %}
+                                                        <span class="badge badge-warning">Rechazado</span>
+                                                    {% else %}
+                                                        <span class="badge badge-info">Pendiente</span>
+                                                        {% if ticket.abierto %}
+                                                            <span class="badge badge-secondary">Abierto</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </dd>
+                                                
+                                                {% if ticket.observacion %}
+                                                <dt class="col-sm-4">Observación:</dt>
+                                                <dd class="col-sm-8">{{ ticket.observacion }}</dd>
+                                                {% endif %}
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if ticket.adjuntoNombre %}
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <a href="{{ vich_uploader_asset(ticket, 'adjuntoFile') }}" target="_blank" class="btn btn-sm btn-info">
+                                                <i class="fa fa-paperclip"></i> Ver adjunto
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="timeline-footer">
+                                    {% if ticket.fechaV %}
+                                    <span class="text-muted"><i class="fa fa-eye"></i> Visto: {{ ticket.fechaV|date('d/m/Y H:i') }}</span>
+                                    {% endif %}
+                                    
+                                    {% if ticket.fechaC %}
+                                    <span class="text-muted ml-3">
+                                        {% if ticket.completo %}
+                                        <i class="fa fa-check"></i>
+                                        {% else %}
+                                        <i class="fa fa-times"></i>
+                                        {% endif %}
+                                        Finalizado: {{ ticket.fechaC|date('d/m/Y H:i') }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    <div>
+                        <i class="fas fa-clock bg-gray"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.timeline {
+    position: relative;
+    margin: 0 0 30px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #ddd;
+    left: 31px;
+    margin: 0;
+    border-radius: 2px;
+}
+
+.timeline > div {
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+
+.time-label {
+    margin-bottom: 5px;
+}
+
+.time-label > span {
+    font-weight: 600;
+    padding: 5px;
+    display: inline-block;
+    background-color: #fff;
+    border-radius: 4px;
+    color: white;
+}
+
+.timeline-item {
+    box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 3px rgba(0,0,0,.2);
+    border-radius: 0.25rem;
+    padding: 0;
+    position: relative;
+    background-color: #fff;
+    margin-left: 60px;
+    margin-right: 15px;
+}
+
+.timeline-item > .time {
+    color: #999;
+    float: right;
+    padding: 10px;
+    font-size: 12px;
+}
+
+.timeline-item > .timeline-header {
+    margin: 0;
+    color: #555;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.1;
+}
+
+.timeline-item > .timeline-body {
+    padding: 10px;
+}
+
+.timeline-item > .timeline-footer {
+    padding: 10px;
+    background-color: rgba(0,0,0,.05);
+}
+
+.timeline > div > i {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    line-height: 30px;
+    position: absolute;
+    color: #fff;
+    background-color: #6c757d;
+    border-radius: 50%;
+    text-align: center;
+    left: 18px;
+    top: 0;
+}
+
+.bg-success {
+    background-color: #28a745!important;
+}
+.bg-primary {
+    background-color: #007bff!important;
+}
+.bg-gray {
+    background-color: #adb5bd!important;
+}
+</style>
+{% endblock %} 

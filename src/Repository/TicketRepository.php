@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Ticket|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +18,92 @@ class TicketRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Ticket::class);
+    }
+
+    /**
+     * @return Ticket[] Returns an array of Ticket objects with related tickets loaded recursively
+     */
+    public function findByAreaOrigenWithRelated($areaOrigen, $orderBy = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.areaOrigen = :areaOrigen')
+            ->setParameter('areaOrigen', $areaOrigen);
+            
+        // Aplicar ordenamiento si se proporciona
+        if ($orderBy) {
+            foreach ($orderBy as $field => $order) {
+                $qb->orderBy('t.' . $field, $order);
+            }
+        }
+        
+        $tickets = $qb->getQuery()->getResult();
+        
+        // Cargar los tickets relacionados recursivamente
+        foreach ($tickets as $ticket) {
+            $this->loadRelatedTicketsRecursively($ticket);
+        }
+        
+        return $tickets;
+    }
+
+    /**
+     * @return Ticket[] Returns an array of Ticket objects with related tickets loaded recursively
+     */
+    public function findByAreaDestinoWithRelated($areaDestino, $orderBy = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.areaDestino = :areaDestino')
+            ->setParameter('areaDestino', $areaDestino);
+            
+        // Aplicar ordenamiento si se proporciona
+        if ($orderBy) {
+            foreach ($orderBy as $field => $order) {
+                $qb->orderBy('t.' . $field, $order);
+            }
+        }
+        
+        $tickets = $qb->getQuery()->getResult();
+        
+        // Cargar los tickets relacionados recursivamente
+        foreach ($tickets as $ticket) {
+            $this->loadRelatedTicketsRecursively($ticket);
+        }
+        
+        return $tickets;
+    }
+
+    /**
+     * Carga recursivamente todos los tickets relacionados (hijos, nietos, etc.)
+     */
+    private function loadRelatedTicketsRecursively($ticket, $depth = 0, $maxDepth = 5)
+    {
+        // Evitar bucles infinitos y limitar la profundidad
+        if ($depth >= $maxDepth) {
+            return;
+        }
+        
+        // Cargar tickets relacionados (hijos)
+        if (!$ticket->getTicketsRelacionados()->isEmpty()) {
+            $related = $this->createQueryBuilder('t')
+                ->andWhere('t.ticketPadre = :padre')
+                ->setParameter('padre', $ticket)
+                ->getQuery()
+                ->getResult();
+                
+            foreach ($related as $child) {
+                // Cargar recursivamente los hijos de este ticket
+                $this->loadRelatedTicketsRecursively($child, $depth + 1, $maxDepth);
+            }
+        }
+        
+        // Cargar ticket padre si existe
+        if ($ticket->getTicketPadre()) {
+            $padre = $this->find($ticket->getTicketPadre()->getId());
+            if ($padre) {
+                // No cargamos recursivamente hacia arriba para evitar bucles
+                // Solo queremos asegurarnos de que el padre esté cargado
+            }
+        }
     }
 
     // /**

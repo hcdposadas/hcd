@@ -100,12 +100,12 @@ class Ticket
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(mappedBy: 'ticketPadre', targetEntity: Ticket::class)]
+     * @ORM\OneToMany(targetEntity=Ticket::class, mappedBy="ticketPadre")
      */
     private Collection $ticketsRelacionados;
 
     /**
-     * @ORM\ManyToOne(inversedBy: 'ticketsRelacionados')]
+     * @ORM\ManyToOne(targetEntity=Ticket::class, inversedBy="ticketsRelacionados")
      */
     private ?Ticket $ticketPadre = null;
 

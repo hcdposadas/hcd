@@ -2864,35 +2864,45 @@ class ExpedienteController extends AbstractController
 	
 
 	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
+		error_log("=== INICIO imprimirArchivo - Expediente ID: " . $expediente->getId() . " ===");
+		
 		$em = $this->getDoctrine()->getManager();
 		$decreto=$expediente->getIsDecreto();
+		error_log("Decreto: " . ($decreto ? 'true' : 'false'));
 
 		$DictamenRepository = $em->getRepository(Dictamen::class);
-
 
 		$Dictamenes = $DictamenRepository->findBy(
 			['expediente' => $expediente->getId()],
 			['id' => 'ASC']
 		);
+		error_log("Dictamenes encontrados: " . count($Dictamenes));
 
 
 		//CARATULA
-
+		error_log("--- Generando carátula ---");
 
 		$dataToEncode = $expediente->getCodigoReferencia();
 		if ($expediente->getBorrador()) {
 			$dataToEncode = null;
 		}
+		error_log("DataToEncode: " . ($dataToEncode ?? 'null'));
  
 		$title      = 'Carátula';
 
-		$html = $this->renderView(
-			'expediente/caratula.pdf.twig',
-			[
-				'expediente' => $expediente,
-				'title'      => $title,
-			]
-		);
+		try {
+			$html = $this->renderView(
+				'expediente/caratula.pdf.twig',
+				[
+					'expediente' => $expediente,
+					'title'      => $title,
+				]
+			);
+			error_log("HTML de carátula generado correctamente");
+		} catch (\Exception $e) {
+			error_log("Error generando HTML de carátula: " . $e->getMessage());
+			throw $e;
+		}
 
 		$pdfMerge = new PDFMerger;
 
@@ -2902,33 +2912,47 @@ class ExpedienteController extends AbstractController
 		$time=$date->getTimeStamp();
 		$tmp=sys_get_temp_dir();
 		$nombre=$tmp.'/Caratula'.$time.'.pdf';
+		error_log("Archivo temporal carátula: " . $nombre);
 
-		$knpSnappyPdf->generateFromHtml(
-				$html
-				,$nombre, array(
-					'page-size'      => 'Legal',
-				//					'page-width'     => '220mm',
-				//					'page-height'     => '340mm',
-				//					'margin-left'    => "3cm",
-				//					'margin-right'   => "3cm",
-					'margin-top'     => "5cm",
-					'margin-bottom'  => "2cm",
-					'header-spacing' => 4,
-					'footer-spacing' => 5,
-				//                    'margin-bottom' => "1cm"
-					
-				)
-			);
+		try {
+			$knpSnappyPdf->generateFromHtml(
+					$html
+					,$nombre, array(
+						'page-size'      => 'Legal',
+					//					'page-width'     => '220mm',
+					//					'page-height'     => '340mm',
+					//					'margin-left'    => "3cm",
+					//					'margin-right'   => "3cm",
+						'margin-top'     => "5cm",
+						'margin-bottom'  => "2cm",
+						'header-spacing' => 4,
+						'footer-spacing' => 5,
+					//                    'margin-bottom' => "1cm"
+						
+					)
+				);
+			error_log("PDF de carátula generado correctamente: " . $nombre);
+		} catch (\Exception $e) {
+			error_log("Error generando PDF de carátula: " . $e->getMessage());
+			throw $e;
+		}
 				
 		$esRM = strpos($expediente->getExpediente(), 'RM') !== false;
+		error_log("Es RM: " . ($esRM ? 'true' : 'false'));
 
 		if(!$esRM){
 			$pdfMerge->addPDF($nombre); 
-
+			error_log("Carátula agregada al PDF merge");
+		} else {
+			error_log("No se agrega carátula (es RM)");
 		}
 
 		//PROYECTO SIN FIRMAR
+		error_log("--- Verificando tipo de proyecto ---");
+		error_log("ExpedienteInterno: " . ($expediente->getExpedienteInterno() ?? 'null'));
+		
 	if(!$expediente->getExpedienteInterno()){
+		error_log("Procesando proyecto SIN FIRMAR");
 		$header = null;
 		if (!$expediente->getBorrador()) {
 			$header = $this->renderView(
@@ -2959,14 +2983,19 @@ class ExpedienteController extends AbstractController
 		//        return new Response($html);
 		$title = 'Proyecto';
 
-
-		$html = $this->renderView(
-			'expediente/proyecto.pdf.twig',
-			[
-				'expediente' => $expediente,
-				'title'      => $title,
-			]
-		);
+		try {
+			$html = $this->renderView(
+				'expediente/proyecto.pdf.twig',
+				[
+					'expediente' => $expediente,
+					'title'      => $title,
+				]
+			);
+			error_log("HTML de proyecto sin firmar generado correctamente");
+		} catch (\Exception $e) {
+			error_log("Error generando HTML de proyecto sin firmar: " . $e->getMessage());
+			throw $e;
+		}
 
 
 		$date = new \DateTime();
@@ -3012,9 +3041,11 @@ class ExpedienteController extends AbstractController
 
 		} 
 	} else {
+		error_log("Procesando proyecto FIRMADO");
 
 		//PROYECTO FIRMADO
 		$path=$expediente->getExpedienteInterno();
+		error_log("Ruta expediente interno: " . ($path ?? 'null'));
 
 		$extension = pathinfo($path);
 	
@@ -3165,68 +3196,83 @@ class ExpedienteController extends AbstractController
         ['expediente' => $expediente->getId()],
         ['id' => 'ASC']
     );
-	
+	error_log("--- Procesando ProyectosBae ---");
+	error_log("ProyectosBae encontrados: " . count($ProyectosBae));
 
 	if($ProyectosBae){
 		$firstProyectoBae = $ProyectosBae[0];
-		if($firstProyectoBae->getFirmado()){
-			//GIRO FIRMADO
-			$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
-		}else{
-			//GIRO SIN FIRMAR
-		$giros=$firstProyectoBae->getGirosOrdenados();
-		if ($giros) {
-		$expediente=$firstProyectoBae->getExpediente();
-		$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+		error_log("Primer ProyectoBae ID: " . $firstProyectoBae->getId());
+		error_log("Es informe DEM: " . ($firstProyectoBae->getEsInformeDem() ? 'true' : 'false'));
+		
+		// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
+		if (!$firstProyectoBae->getEsInformeDem()) {
+			error_log("Procesando archivos de giro/pedido/digesto (NO es informe DEM)");
+			if($firstProyectoBae->getFirmado()){
+				//GIRO FIRMADO
+				error_log("Agregando giro firmado: " . $firstProyectoBae->getFirmado());
+				$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+			}else{
+				//GIRO SIN FIRMAR
+				error_log("Procesando giro SIN FIRMAR");
+			$giros=$firstProyectoBae->getGirosOrdenados();
+			if ($giros) {
+			$expediente=$firstProyectoBae->getExpediente();
+			$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
 
-		$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
-		$fecha=$sesion->getFecha();
+			$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+			$fecha=$sesion->getFecha();
 
 
-		$html = $this->renderView(
-			'comision/giroComision.pdf.twig',
-			[
-				'expediente' => $expediente,
-                'sesion'=>$sesion,
-				'title'      => $titulo,
-                'giros'      => $giros,
-				'fecha'      => $fecha,
-                
-			]
-		);
+			$html = $this->renderView(
+				'comision/giroComision.pdf.twig',
+				[
+					'expediente' => $expediente,
+	                'sesion'=>$sesion,
+					'title'      => $titulo,
+	                'giros'      => $giros,
+					'fecha'      => $fecha,
+	                
+				]
+			);
 
-		$date = new \DateTime();
-		$time=$date->getTimeStamp();
-		$nombre=$tmp.'/Giro'.$time.'.pdf';
-		$knpSnappyPdf->generateFromHtml(
-			$html
-			,$nombre, array(
-				'page-size'      => 'Legal',
-			//					'page-width'     => '220mm',
-			//					'page-height'     => '340mm',
-			//					'margin-left'    => "3cm",
-			//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-			//                    'margin-bottom' => "1cm"
-				
-			)
-		);
-		$pdfMerge->addPDF($nombre);
+			$date = new \DateTime();
+			$time=$date->getTimeStamp();
+			$nombre=$tmp.'/Giro'.$time.'.pdf';
+			$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+			$pdfMerge->addPDF($nombre);
+			}
+			}
+			if($firstProyectoBae->getPedido()){
+			//PEDIDO FIRMADO
+			error_log("Agregando pedido firmado: " . $firstProyectoBae->getPedido());
+			$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
+
+			} 
+			if($firstProyectoBae->getDigesto()){
+			//DIGESTO FIRMADO
+			error_log("Agregando digesto firmado: " . $firstProyectoBae->getDigesto());
+			$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
+			}
+		} else {
+			error_log("NO se procesan giro/pedido/digesto (ES informe DEM)");
 		}
-		}
-		if($firstProyectoBae->getPedido()){
-		//PEDIDO FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
 
-		} 
-		if($firstProyectoBae->getDigesto()){
-		//DIGESTO FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
-		}
-
-
+		error_log("--- Procesando Dictamenes ---");
 		if($Dictamenes){
+			error_log("Procesando dictámenes (count: " . count($Dictamenes) . ")");
 			$firstDictamen = $Dictamenes[0];
 			foreach ($expediente->getExpedientesAdjunto() as $adjunto){
 				if($adjunto->getAdjunto){
@@ -3389,52 +3435,54 @@ class ExpedienteController extends AbstractController
 
 	if($secondProyectoBae){
 
-				//
-				if($secondProyectoBae->getFirmado()){
-					//GIRO FIRMADO
-					$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$secondProyectoBae->getFirmado());
-				}else{
-					//GIRO SIN FIRMAR
-				$giros=$secondProyectoBae->getGirosOrdenados();
-				if ($giros) {
-				$expediente=$secondProyectoBae->getExpediente();
-				$sesion=$secondProyectoBae->getBoletinAsuntoEntrado()->getSesion();
-		
-				$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
-				$fecha=$sesion->getFecha();
-		
-		
-				$html = $this->renderView(
-					'comision/giroComision.pdf.twig',
-					[
-						'expediente' => $expediente,
-						'sesion'=>$sesion,
-						'title'      => $titulo,
-						'giros'      => $giros,
-						'fecha'      => $fecha,
-						
-					]
-				);
-		
-				$date = new \DateTime();
-				$time=$date->getTimeStamp();
-				$nombre=$tmp.'/Giro2'.$time.'.pdf';
-				$knpSnappyPdf->generateFromHtml(
-					$html
-					,$nombre, array(
-						'page-size'      => 'Legal',
-					//					'page-width'     => '220mm',
-					//					'page-height'     => '340mm',
-					//					'margin-left'    => "3cm",
-					//					'margin-right'   => "3cm",
-						'margin-top'     => "5cm",
-						'margin-bottom'  => "2cm",
-					//                    'margin-bottom' => "1cm"
-						
-					)
-				);
-				$pdfMerge->addPDF($nombre);
-				}
+				// Si NO es informe DEM, incluir los archivos de giro del segundo proyecto
+				if (!$secondProyectoBae->getEsInformeDem()) {
+					if($secondProyectoBae->getFirmado()){
+						//GIRO FIRMADO
+						$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$secondProyectoBae->getFirmado());
+					}else{
+						//GIRO SIN FIRMAR
+					$giros=$secondProyectoBae->getGirosOrdenados();
+					if ($giros) {
+					$expediente=$secondProyectoBae->getExpediente();
+					$sesion=$secondProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+			
+					$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+					$fecha=$sesion->getFecha();
+			
+			
+					$html = $this->renderView(
+						'comision/giroComision.pdf.twig',
+						[
+							'expediente' => $expediente,
+							'sesion'=>$sesion,
+							'title'      => $titulo,
+							'giros'      => $giros,
+							'fecha'      => $fecha,
+							
+						]
+					);
+			
+					$date = new \DateTime();
+					$time=$date->getTimeStamp();
+					$nombre=$tmp.'/Giro2'.$time.'.pdf';
+					$knpSnappyPdf->generateFromHtml(
+						$html
+						,$nombre, array(
+							'page-size'      => 'Legal',
+						//					'page-width'     => '220mm',
+						//					'page-height'     => '340mm',
+						//					'margin-left'    => "3cm",
+						//					'margin-right'   => "3cm",
+							'margin-top'     => "5cm",
+							'margin-bottom'  => "2cm",
+						//                    'margin-bottom' => "1cm"
+							
+						)
+					);
+					$pdfMerge->addPDF($nombre);
+					}
+					}
 				}
 		if (count($Dictamenes) > 1) {
 		$secondDictamen = $Dictamenes[1];
@@ -3474,9 +3522,16 @@ class ExpedienteController extends AbstractController
 }
 	
 
-		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+		error_log("--- Finalizando merge de PDF ---");
+		try {
+			$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
+			error_log("PDF merge completado exitosamente");
+		} catch (\Exception $e) {
+			error_log("Error en merge de PDF: " . $e->getMessage());
+			throw $e;
+		}
 
-
+		error_log("=== FIN imprimirArchivo - Expediente ID: " . $expediente->getId() . " ===");
 		return new Response($pdf4, array(
 			'page-size'      => 'Legal',
 		//					'page-width'     => '220mm',
@@ -3861,60 +3916,63 @@ class ExpedienteController extends AbstractController
 
 	if($firstProyectoBae){
 		//
-		if($firstProyectoBae->getFirmado()){
-			//GIRO FIRMADO
-			$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
-		}else{
-			//GIRO SIN FIRMAR
-		$giros=$firstProyectoBae->getGirosOrdenados();
-		if ($giros) {
-		$expediente=$firstProyectoBae->getExpediente();
-		$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+		// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
+		if (!$firstProyectoBae->getEsInformeDem()) {
+			if($firstProyectoBae->getFirmado()){
+				//GIRO FIRMADO
+				$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+			}else{
+				//GIRO SIN FIRMAR
+			$giros=$firstProyectoBae->getGirosOrdenados();
+			if ($giros) {
+			$expediente=$firstProyectoBae->getExpediente();
+			$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
 
-		$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
-		$fecha=$sesion->getFecha();
+			$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+			$fecha=$sesion->getFecha();
 
 
-		$html = $this->renderView(
-			'comision/giroComision.pdf.twig',
-			[
-				'expediente' => $expediente,
-                'sesion'=>$sesion,
-				'title'      => $titulo,
-                'giros'      => $giros,
-				'fecha'      => $fecha,
-                
-			]
-		);
+			$html = $this->renderView(
+				'comision/giroComision.pdf.twig',
+				[
+					'expediente' => $expediente,
+	                'sesion'=>$sesion,
+					'title'      => $titulo,
+	                'giros'      => $giros,
+					'fecha'      => $fecha,
+	                
+				]
+			);
 
-		$date = new \DateTime();
-		$time=$date->getTimeStamp();
-		$nombre=$tmp.'/Giro'.$time.'.pdf';
-		$knpSnappyPdf->generateFromHtml(
-			$html
-			,$nombre, array(
-				'page-size'      => 'Legal',
-			//					'page-width'     => '220mm',
-			//					'page-height'     => '340mm',
-			//					'margin-left'    => "3cm",
-			//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-			//                    'margin-bottom' => "1cm"
-				
-			)
-		);
-		$pdfMerge->addPDF($nombre);
-	}
-	}
-		if($firstProyectoBae->getPedido()){
-		//PEDIDO FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
+			$date = new \DateTime();
+			$time=$date->getTimeStamp();
+			$nombre=$tmp.'/Giro'.$time.'.pdf';
+			$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+			$pdfMerge->addPDF($nombre);
+			}
+			}
+			if($firstProyectoBae->getPedido()){
+			//PEDIDO FIRMADO
+			$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
 
-		} 
-		if($firstProyectoBae->getDigesto()){
-		//DIGESTO FIRMADO
-		$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
+			} 
+			if($firstProyectoBae->getDigesto()){
+			//DIGESTO FIRMADO
+			$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
+			}
 		}
 
 
@@ -4022,6 +4080,14 @@ class ExpedienteController extends AbstractController
         ['id' => 'DESC']
     );
 
+	// Verificar si es informe DEM - no tiene giro firmado
+	if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
+		$this->get('session')->getFlashBag()->add(
+			'warning',
+			'Los informes DEM no tienen archivo de giro firmado disponible.'
+		);
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+	}
 			
 	$pdfPath = $this->getParameter('kernel.project_dir') .'/public/uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado();
 
@@ -4103,6 +4169,14 @@ class ExpedienteController extends AbstractController
         ['id' => 'DESC']
     );
 
+	// Verificar si es informe DEM - no tiene pedido
+	if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
+		$this->get('session')->getFlashBag()->add(
+			'warning',
+			'Los informes DEM no tienen archivo de pedido disponible.'
+		);
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+	}
 			
 	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pedido/'.$firstProyectoBae->getPedido();
 
@@ -4129,6 +4203,14 @@ class ExpedienteController extends AbstractController
         ['id' => 'DESC']
     );
 
+	// Verificar si es informe DEM - no tiene digesto
+	if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
+		$this->get('session')->getFlashBag()->add(
+			'warning',
+			'Los informes DEM no tienen archivo de digesto disponible.'
+		);
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+	}
 			
 	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto();
 

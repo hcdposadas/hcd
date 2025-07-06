@@ -1,0 +1,379 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consulta Avanzada - No Conformidades{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .card-header {
+            background-color: #17a2b8;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+        .filter-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .filter-row {
+            margin-bottom: 15px;
+        }
+        .results-summary {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .export-section {
+            background-color: #fff3e0;
+            border: 1px solid #ffcc02;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #17a2b8;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .badge {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+        }
+        .table th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .btn-lg {
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+        }
+        /* Estilo personalizado para filas revisadas */
+        .table-revisado {
+            background-color: #ffab00 !important;
+            color: #212529;
+        }
+        .table-revisado:hover {
+            background-color: #ff8800 !important;
+        }
+        .table-revisado td {
+            border-color: #ffa000;
+        }
+        /* Badge anaranjado para estado revisado */
+        .badge-orange {
+            background-color: #ff6b35;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                            <i class="fas fa-search"></i> Consulta Avanzada - No Conformidades
+                    </div>
+                    <div class="card-body">
+                        <!-- Formulario de Filtros -->
+                        <div class="filter-card">
+                            <h5 class="section-title">
+                                <i class="fas fa-filter"></i> Filtros de Búsqueda
+                            </h5>
+                            
+                            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                            
+                            <!-- Filtros de Fecha -->
+                            <div class="row filter-row">
+                                <div class="col-md-3">
+                                    <label class="form-label font-weight-bold">Fecha Desde:</label>
+                                    <div class="row">
+                                        <div class="col-md-6 pr-1">
+                                            {{ form_widget(form.mesDesde) }}
+                                        </div>
+                                        <div class="col-md-6 pl-1">
+                                            {{ form_widget(form.anoDesde) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label font-weight-bold">Fecha Hasta:</label>
+                                    <div class="row">
+                                        <div class="col-md-6 pr-1">
+                                            {{ form_widget(form.mesHasta) }}
+                                        </div>
+                                        <div class="col-md-6 pl-1">
+                                            {{ form_widget(form.anoHasta) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_label(form.area, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.area) }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_label(form.usuario, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.usuario) }}
+                                </div>
+                            </div>
+
+                            <!-- Filtros de Origen y Categoría -->
+                            <div class="row filter-row">
+                                <div class="col-md-3">
+                                    {{ form_label(form.origen, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.origen) }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_label(form.categoria, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.categoria) }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_label(form.norma, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.norma) }}
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_label(form.estado, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.estado) }}
+                                </div>
+                            </div>
+
+                            <!-- Filtros de Requisito y PGCD -->
+                            <div class="row filter-row">
+                                <div class="col-md-6">
+                                    {{ form_label(form.requisitoEspecifico, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.requisitoEspecifico) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_label(form.pgcd, null, {'label_attr': {'class': 'form-label font-weight-bold'}}) }}
+                                    {{ form_widget(form.pgcd) }}
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="row mt-4">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg mr-3">
+                                        <i class="fas fa-search"></i> CONSULTAR
+                                    </button>
+                                    <a href="{{ path('no_conformidad_consulta') }}" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-times"></i> LIMPIAR FILTROS
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{ form_end(form) }}
+                        </div>
+
+                        {% if no_conformidades is defined %}
+                            <!-- Resumen de Resultados -->
+                            <div class="results-summary">
+                                <h6 style="font-size: 1.1rem; font-weight: 600;">
+                                    <i class="fas fa-chart-bar"></i> Resumen de Resultados
+                                </h6>
+                                <p class="mb-0" style="font-size: 1rem;">
+                                    <strong>Total de registros encontrados:</strong> {{ total_resultados }}
+                                </p>
+                            </div>
+
+                            <!-- Sección de Exportación -->
+                            <div class="export-section">
+                                <h6 style="font-size: 1.1rem; font-weight: 600;">
+                                    <i class="fas fa-download"></i> Exportar Resultados
+                                </h6>
+                                <p class="mb-3" style="font-size: 1rem;">
+                                    Puede exportar los resultados de esta consulta a Excel:
+                                </p>
+                                <a href="{{ path('no_conformidad_export_filtered', app.request.query.all) }}" class="btn btn-success btn-lg">
+                                    <i class="fas fa-file-excel"></i> EXPORTAR A EXCEL
+                                </a>
+                            </div>
+
+                            <!-- Tabla de Resultados -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Fecha</th>
+                                            <th>Área</th>
+                                            <th>Usuario que registró</th>
+                                            <th>Origen</th>
+                                            <th>Categoría</th>
+                                            <th>Norma</th>
+                                            <th>Hallazgo</th>
+                                            <th>Requisito Específico</th>
+                                            <th>PGCD</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for nc in no_conformidades %}
+                                            <tr class="
+                                                {% if nc.estado == 'nuevo' %}table-danger
+                                                {% elseif nc.estado == 'revisado' %}table-revisado
+                                                {% elseif nc.estado == 'tratado' %}table-warning
+                                                {% elseif nc.estado == 'aceptado' %}table-info
+                                                {% elseif nc.estado == 'verificada_correccion' %}table-success
+                                                {% elseif nc.estado == 'verificada_efectividad' %}table-secondary
+                                                {% elseif nc.estado == 'desestimado' %}
+                                                {% else %}table-secondary
+                                                {% endif %}
+                                            ">
+                                                <td><strong>#{{ nc.id }}</strong></td>
+                                                <td>{{ nc.fecha|date('d/m/Y') }}</td>
+                                                <td>{{ nc.area ? nc.area.nombre : 'N/A' }}</td>
+                                                <td>
+                                                    {% if nc.creadoPor %}
+                                                        {% if nc.creadoPor.persona %}
+                                                            {{ nc.creadoPor.persona.nombre ~ ' ' ~ nc.creadoPor.persona.apellido }}
+                                                        {% else %}
+                                                            {{ nc.creadoPor.email }}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info">{{ nc.origen|replace({'_': ' '})|title }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-{{ nc.categoria == 'no_conformidad' ? 'danger' : 'warning' }}">
+                                                        {{ nc.categoria|replace({'_': ' '})|title }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ nc.norma ?: 'N/A' }}</td>
+                                                <td title="{{ nc.descripcionHallazgo }}">
+                                                    {{ nc.descripcionHallazgo|length > 40 ? nc.descripcionHallazgo|slice(0, 40) ~ '...' : nc.descripcionHallazgo }}
+                                                </td>
+                                                <td>{{ nc.requisitoEspecifico|default('N/A')|upper }}</td>
+                                                <td>{{ nc.pgcd ? nc.pgcd|replace({'_': ' '})|title : 'N/A' }}</td>
+                                                <td>
+                                                    <span class="badge badge-{{ 
+                                                        nc.estado == 'nuevo' ? 'danger' : 
+                                                        (nc.estado == 'revisado' ? 'orange' : 
+                                                        (nc.estado == 'tratado' ? 'warning' : 
+                                                        (nc.estado == 'aceptado' ? 'info' :
+                                                        (nc.estado == 'verificada_correccion' ? 'success' :
+                                                        (nc.estado == 'verificada_efectividad' ? 'secondary' : 'secondary'))))) }}">
+                                                        {% if nc.estado == 'verificada_efectividad' %}
+                                                            Cerrado
+                                                        {% elseif nc.estado == 'verificada_correccion' %}
+                                                            {% if nc.categoria == 'no_conformidad' %}
+                                                                Verificada Corrección
+                                                            {% else %}
+                                                                Verificada Corrección/Acción de Mejora
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {{ nc.estado|replace({'_': ' '})|title }}
+                                                        {% endif %}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ path('no_conformidad_show', {'id': nc.id}) }}" class="btn btn-sm btn-outline-primary" title="Ver Detalle">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="12" class="text-center text-muted" style="font-size: 1.1rem; padding: 2rem;">
+                                                    <i class="fas fa-search fa-2x mb-3 d-block"></i> 
+                                                    No se encontraron resultados con los filtros aplicados
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Paginación -->
+                            <div class="d-flex justify-content-center">
+                                {{ knp_pagination_render(no_conformidades) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            // Ordenar las opciones del select de área según prioridad
+            var areaSelect = $('select[id*="area"]');
+            if (areaSelect.length > 0) {
+                var options = areaSelect.find('option:not(:first)').detach();
+                options.sort(function(a, b) {
+                    var priorityA = parseInt($(a).data('priority')) || 999;
+                    var priorityB = parseInt($(b).data('priority')) || 999;
+                    
+                    if (priorityA !== priorityB) {
+                        return priorityA - priorityB;
+                    }
+                    // Si tienen la misma prioridad, ordenar alfabéticamente
+                    return a.text.localeCompare(b.text);
+                });
+                areaSelect.append(options);
+            }
+            
+            // Inicializar Select2 para los campos de selección
+            $('.select2').select2({
+                theme: 'bootstrap4',
+                placeholder: function() {
+                    return $(this).data('placeholder') || 'Seleccione una opción';
+                },
+                allowClear: true,
+                language: {
+                    noResults: function() {
+                        return "No se encontraron resultados";
+                    },
+                    searching: function() {
+                        return "Buscando...";
+                    }
+                },
+                width: '100%'
+            });
+            
+            // Validación de fechas
+            $('select[name*="mes"], select[name*="ano"]').change(function() {
+                const mesDesde = $('select[name*="mesDesde"]').val();
+                const anoDesde = $('select[name*="anoDesde"]').val();
+                const mesHasta = $('select[name*="mesHasta"]').val();
+                const anoHasta = $('select[name*="anoHasta"]').val();
+                
+                if (mesDesde && anoDesde && mesHasta && anoHasta) {
+                    const fechaDesde = new Date(anoDesde, parseInt(mesDesde) - 1);
+                    const fechaHasta = new Date(anoHasta, parseInt(mesHasta) - 1);
+                    
+                    if (fechaDesde > fechaHasta) {
+                        alert('La fecha "Desde" no puede ser mayor que la fecha "Hasta"');
+                        $(this).val('').trigger('change');
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %} 

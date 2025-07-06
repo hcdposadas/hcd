@@ -1,0 +1,375 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aceptar No Conformidad{% endblock %}
+
+{% block body %}
+    <style>
+        .card-header {
+            background-color: #17a2b8;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #212529;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+        .info-value {
+            font-size: 1rem;
+            color: #212529;
+            margin-bottom: 0;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .badge {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .btn-lg {
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+        }
+        .btn-info-custom {
+            background-color: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+        .btn-info-custom:hover {
+            background-color: #138496;
+            color: white;
+            border-color: #138496;
+        }
+        .adjuntos-button {
+            display: inline-block;
+        }
+        .alert {
+            border-radius: 0.375rem;
+        }
+        .form-check-label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .form-control {
+            font-size: 1rem;
+        }
+        label {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .info-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #212529;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-check-circle"></i> 
+                    {% if no_conformidad.categoria == 'no_conformidad' %}
+                        Aceptar No Conformidad #{{ no_conformidad.id }}
+                    {% else %}
+                        Aceptar {{ no_conformidad.categoria|replace({'_': ' '})|title }} #{{ no_conformidad.id }}
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <!-- Información básica -->
+                    <h5 class="section-title">
+                        <i class="fas fa-info-circle"></i> Información General
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="info-label">ID</label>
+                                <p class="info-value">#{{ no_conformidad.id }}</p>
+                                    </div>
+                                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="info-label">Fecha</label>
+                                <p class="info-value">{{ no_conformidad.fecha|date('d/m/Y H:i') }}</p>
+                                        </div>
+                                    </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="info-label">Área</label>
+                                <p class="info-value">{{ no_conformidad.area ? no_conformidad.area.nombre : 'N/A' }}</p>
+                                        </div>
+                                    </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="info-label">Estado</label>
+                                <p class="info-value">
+                                    <span class="badge badge-{{ 
+                                        no_conformidad.estado == 'nuevo' ? 'primary' :
+                                        (no_conformidad.estado == 'revisado' ? 'warning' :
+                                        (no_conformidad.estado == 'tratado' ? 'info' :
+                                        (no_conformidad.estado == 'aceptado' ? 'success' :
+                                        (no_conformidad.estado == 'desestimado' ? 'danger' : 'secondary')))) }}">
+                                        {{ no_conformidad.estado|title }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del tratamiento -->
+                    {% if no_conformidad.categoria == 'no_conformidad' %}
+                        {% set hasInfo = no_conformidad.analisisCausa or no_conformidad.accionCorrectiva %}
+                    {% else %}
+                        {% set hasInfo = no_conformidad.correccion %}
+                    {% endif %}
+                    
+                    {% if hasInfo %}
+                    <h5 class="section-title">
+                        <i class="fas fa-tools"></i> Información del Tratamiento
+                    </h5>
+                                    
+                    {% if no_conformidad.categoria == 'no_conformidad' %}
+                        <!-- Para NO CONFORMIDAD: mostrar análisis y acción correctiva -->
+                        {% if no_conformidad.analisisCausa %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="info-label">Análisis de Causa</label>
+                                    <div class="info-box">
+                                        <p class="info-value">{{ no_conformidad.analisisCausa }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if no_conformidad.accionCorrectiva %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="info-label">Acción Correctiva</label>
+                                    <div class="info-box">
+                                        <p class="info-value">{{ no_conformidad.accionCorrectiva }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if no_conformidad.fechaAccionCorrectiva %}
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="info-label">Fecha de Acción Correctiva</label>
+                                    <p class="info-value">{{ no_conformidad.fechaAccionCorrectiva|date('d/m/Y') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Para OBSERVACIÓN/OPORTUNIDAD DE MEJORA: mostrar corrección -->
+                        {% if no_conformidad.correccion %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="info-label">Corrección/Acción de Mejora</label>
+                                    <div class="info-box">
+                                        <p class="info-value">{{ no_conformidad.correccion }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if no_conformidad.fechaCorreccion %}
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="info-label">Fecha de Corrección</label>
+                                    <p class="info-value">{{ no_conformidad.fechaCorreccion|date('d/m/Y') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No se ha registrado información de tratamiento aún.
+                    </div>
+                    {% endif %}
+
+                    <!-- Opciones de aceptación/revisión -->
+                    <h5 class="section-title">
+                        <i class="fas fa-gavel"></i> 
+                        {% if no_conformidad.categoria == 'no_conformidad' %}
+                            Decisión sobre Análisis y Acciones Correctivas
+                        {% else %}
+                            Decisión sobre Corrección y/o Acción de Mejora
+                        {% endif %}
+                    </h5>
+                                    
+                                    {% if no_conformidad.analisisAceptado is same as(true) %}
+                                        <div class="alert alert-success">
+                                    <h6><i class="fas fa-check-circle"></i> Estado Actual</h6>
+                                    <p class="mb-1"><strong>ANÁLISIS Y ACCIONES YA ACEPTADAS</strong></p>
+                                    <p class="mb-0">Esta no conformidad ya ha sido aceptada y no puede ser modificada.</p>
+                                        </div>
+                                    {% elseif no_conformidad.analisisAceptado is same as(false) %}
+                                        <div class="alert alert-warning">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Estado Actual</h6>
+                                    <p class="mb-2"><strong>ANÁLISIS Y ACCIONES EN REVISIÓN</strong></p>
+                                    <p class="mb-1"><strong>Explicación de revisión:</strong> {{ no_conformidad.explicacionRevisionAnalisis }}</p>
+                                    <p class="mb-0">Se ha habilitado la edición para modificar el análisis y acciones.</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                        <div class="form-check mb-3">
+                                                    <input class="form-check-input" type="radio" name="decision" id="aceptar_analisis" value="aceptar">
+                                            <label class="form-check-label text-success" for="aceptar_analisis">
+                                                <i class="fas fa-check"></i> 
+                                                {% if no_conformidad.categoria == 'no_conformidad' %}
+                                                    ACEPTAR ANÁLISIS Y ACCIÓN CORRECTIVA
+                                                {% else %}
+                                                    ACEPTAR CORRECCIÓN Y/O ACCIÓN DE MEJORA
+                                                {% endif %}
+                                                    </label>
+                                        </div>
+                                        
+                                        <div class="form-check mb-3">
+                                                    <input class="form-check-input" type="radio" name="decision" id="revisar_analisis" value="revisar">
+                                            <label class="form-check-label text-warning" for="revisar_analisis">
+                                                <i class="fas fa-edit"></i> 
+                                                {% if no_conformidad.categoria == 'no_conformidad' %}
+                                                    REVISAR ANÁLISIS Y ACCIÓN CORRECTIVA PROPUESTOS
+                                                {% else %}
+                                                    REVISAR CORRECCIÓN Y/O ACCIÓN DE MEJORA PROPUESTA
+                                                {% endif %}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div id="campo-revision" style="display: none;">
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle"></i> Al revisar, se habilitará la edición del tratamiento para realizar modificaciones.
+                                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="explicacion_revision" class="info-label">
+                                        <i class="fas fa-comment-alt"></i> Explicación de la Revisión
+                                    </label>
+                                    <textarea name="explicacion_revision" id="explicacion_revision" 
+                                              class="form-control" rows="4" 
+                                              placeholder="Explique los motivos de la revisión y qué aspectos deben ser modificados"></textarea>
+                                            </div>
+                                        </div>
+
+                            <div id="campo-aceptar" style="display: none;">
+                                <div class="alert alert-success mt-3">
+                                    <i class="fas fa-check-circle"></i> Al aceptar, se cerrará el tratamiento y no podrá ser modificado.
+                        </div>
+                    </div>
+                    
+                    <!-- Botones -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if no_conformidad.analisisAceptado is null %}
+                                <form method="post" id="form-aceptar" class="d-inline">
+                                    <input type="hidden" name="decision" id="decision_hidden">
+                                    <input type="hidden" name="explicacion_revision" id="explicacion_hidden">
+                                    <button type="submit" class="btn btn-info-custom btn-lg mr-2" id="btn-guardar" disabled>
+                                        <i class="fas fa-save"></i> GUARDAR
+                                    </button>
+                                    <a href="{{ path('no_conformidad_index') }}" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-arrow-left"></i> Volver
+                                    </a>
+                                </form>
+                            {% else %}
+                                <a href="{{ path('no_conformidad_index') }}" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-arrow-left"></i> Volver
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const radioAceptar = document.getElementById('aceptar_analisis');
+                            const radioRevisar = document.getElementById('revisar_analisis');
+                            const campoRevision = document.getElementById('campo-revision');
+                            const campoAceptar = document.getElementById('campo-aceptar');
+                            const explicacionTextarea = document.getElementById('explicacion_revision');
+                            const btnGuardar = document.getElementById('btn-guardar');
+                            const decisionHidden = document.getElementById('decision_hidden');
+                            const explicacionHidden = document.getElementById('explicacion_hidden');
+                            
+                            function toggleFields() {
+                                if (radioRevisar && radioRevisar.checked) {
+                                    campoRevision.style.display = 'block';
+                                    campoAceptar.style.display = 'none';
+                                    explicacionTextarea.required = true;
+                                } else if (radioAceptar && radioAceptar.checked) {
+                                    campoRevision.style.display = 'none';
+                                    campoAceptar.style.display = 'block';
+                                    explicacionTextarea.required = false;
+                                    explicacionTextarea.value = '';
+                                } else {
+                                    campoRevision.style.display = 'none';
+                                    campoAceptar.style.display = 'none';
+                                }
+                                
+                                // Habilitar botón guardar si se selecciona una opción
+                                btnGuardar.disabled = !(radioAceptar?.checked || radioRevisar?.checked);
+                            }
+                            
+                            if (radioAceptar) radioAceptar.addEventListener('change', toggleFields);
+                            if (radioRevisar) radioRevisar.addEventListener('change', toggleFields);
+                            
+                            // Al enviar el formulario, copiar valores a campos hidden
+                            const form = document.getElementById('form-aceptar');
+                            if (form) {
+                                form.addEventListener('submit', function(e) {
+                                    if (radioAceptar && radioAceptar.checked) {
+                                    decisionHidden.value = 'aceptar';
+                                    } else if (radioRevisar && radioRevisar.checked) {
+                                    decisionHidden.value = 'revisar';
+                                    explicacionHidden.value = explicacionTextarea.value;
+                                }
+                            });
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

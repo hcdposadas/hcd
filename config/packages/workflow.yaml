@@ -1,0 +1,39 @@
+framework:
+    workflows:
+        no_conformidad:
+            type: 'state_machine'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'estado'
+            supports:
+                - App\Entity\NoConformidad
+            initial_marking: nuevo
+            places:
+                - nuevo
+                - revisado
+                - tratado
+                - aceptado
+                - verificada_correccion
+                - verificada_efectividad
+                - desestimado
+            transitions:
+                revisar:
+                    from: nuevo
+                    to: revisado
+                asignar:
+                    from: revisado
+                    to: tratado
+                aceptar:
+                    from: tratado
+                    to: aceptado
+                verificar_correccion:
+                    from: aceptado
+                    to: verificada_correccion
+                verificar_efectividad:
+                    from: verificada_correccion
+                    to: verificada_efectividad
+                desestimar:
+                    from: [nuevo, revisado]
+                    to: desestimado 

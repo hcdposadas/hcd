@@ -1,0 +1,397 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Revisar No Conformidad{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .card-header {
+            background-color: #ff6b35;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #212529;
+        }
+        .btn-lg {
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+        .info-value {
+            font-size: 1rem;
+            color: #212529;
+            margin-bottom: 0;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        #asignacion-container, #explicacion-container {
+            transition: all 0.3s ease;
+        }
+        .adjunto-item {
+            display: inline-block;
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .adjuntos-container {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            border: 1px solid #dee2e6;
+        }
+        .btn-orange {
+            background-color: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+        .btn-orange:hover {
+            background-color: #e55a2b;
+            color: white;
+            border-color: #e55a2b;
+        }
+        .badge {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+        }
+        /* Aumentar tamaño de selectores */
+        #review_asignadoA + .select2-container .select2-selection--single,
+        #review_areaAsignada + .select2-container .select2-selection--single,
+        #review_accionHallazgo + .select2-container .select2-selection--single {
+            height: 45px !important;
+            line-height: 45px !important;
+            font-size: 1.1rem !important;
+        }
+        #review_asignadoA + .select2-container .select2-selection__rendered,
+        #review_areaAsignada + .select2-container .select2-selection__rendered,
+        #review_accionHallazgo + .select2-container .select2-selection__rendered {
+            line-height: 45px !important;
+            padding-left: 15px !important;
+            font-size: 1.1rem !important;
+        }
+        #review_asignadoA + .select2-container .select2-selection__arrow,
+        #review_areaAsignada + .select2-container .select2-selection__arrow,
+        #review_accionHallazgo + .select2-container .select2-selection__arrow {
+            height: 45px !important;
+        }
+        /* Aumentar tamaño del dropdown también */
+        .select2-dropdown {
+            font-size: 1.1rem !important;
+        }
+        .select2-results__option {
+            padding: 10px 15px !important;
+        }
+        /* Hacer que los selectores ocupen el 100% del ancho */
+        #asignacion-container .select2-container,
+        #review_accionHallazgo + .select2-container {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                    <i class="fas fa-clipboard-check"></i> Revisar No Conformidad #{{ no_conformidad.id }}
+                    </div>
+                    <div class="card-body">
+                    <!-- Información básica -->
+                    <h5 class="section-title">
+                        <i class="fas fa-info-circle"></i> Información General
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="info-label">Área</label>
+                                <p class="info-value">{{ no_conformidad.area ? no_conformidad.area.nombre : 'N/A' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="info-label">Empleado</label>
+                                <p class="info-value">{{ no_conformidad.empleado ? no_conformidad.empleado.nombre ~ ' ' ~ no_conformidad.empleado.apellido : 'N/A' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="info-label">Origen</label>
+                                <p class="info-value">
+                                    <span class="badge badge-info">
+                                        {{ no_conformidad.origen|replace({'_': ' '})|title }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                                            <div class="form-group">
+                                <label class="info-label">Categoría</label>
+                                <p class="info-value">
+                                    <span class="badge badge-{{ no_conformidad.categoria == 'no_conformidad' ? 'danger' : 'warning' }}">
+                                        {{ no_conformidad.categoria|replace({'_': ' '})|title }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                                            </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                                            <div class="form-group">
+                                <label class="info-label">Fecha</label>
+                                <p class="info-value">{{ no_conformidad.fecha|date('d/m/Y H:i') }}</p>
+                            </div>
+                                            </div>
+                        <div class="col-md-3">
+                                            <div class="form-group">
+                                <label class="info-label">Estado</label>
+                                <p class="info-value">
+                                    <span class="badge badge-warning">{{ no_conformidad.estado|title }}</span>
+                                </p>
+                                            </div>
+                            </div>
+                            <div class="col-md-6">
+                                            <div class="form-group">
+                                <label class="info-label">Registrado por</label>
+                                <p class="info-value">
+                                    {% if no_conformidad.creadoPor %}
+                                        {% if no_conformidad.creadoPor.persona %}
+                                            {{ no_conformidad.creadoPor.persona.nombre ~ ' ' ~ no_conformidad.creadoPor.persona.apellido }}
+                                        {% else %}
+                                            {{ no_conformidad.creadoPor.email }}
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">No disponible</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            </div>
+                        </div>
+
+                    <!-- Descripción del hallazgo -->
+                    <h5 class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i> Descripción del Hallazgo
+                    </h5>
+                    <div class="row mb-3">
+                            <div class="col-md-12">
+                            <div class="info-box">
+                                <p class="info-value">{{ no_conformidad.descripcionHallazgo }}</p>
+                            </div>
+                            </div>
+                        </div>
+
+                    <!-- Información normativa -->
+                    <h5 class="section-title">
+                        <i class="fas fa-book"></i> Información Normativa
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="info-label">Norma</label>
+                                <p class="info-value">{{ no_conformidad.norma|default('N/A') }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="info-label">PGCD</label>
+                                <p class="info-value">{{ no_conformidad.pgcd ? no_conformidad.pgcd|replace({'_': ' '})|title : 'N/A' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="info-label">Requisito Específico</label>
+                                <p class="info-value">{{ no_conformidad.requisitoEspecifico|default('N/A')|upper }}</p>
+                            </div>
+                                            </div>
+                        <div class="col-md-3">
+                                            <div class="form-group">
+                                <label class="info-label">Requisito Legal</label>
+                                <p class="info-value">
+                                    {% if no_conformidad.requisitoLegal is not null %}
+                                        <span class="badge badge-{{ no_conformidad.requisitoLegal ? 'success' : 'secondary' }}">
+                                            {{ no_conformidad.requisitoLegal ? 'Sí' : 'No' }}
+                                        </span>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                                </p>
+                                            </div>
+                        </div>
+                    </div>
+                    {% if no_conformidad.requisitoLegal == true and no_conformidad.requisito is not empty %}
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                                            <div class="form-group">
+                                <label class="info-label">Requisito</label>
+                                <div class="info-box">
+                                    <p class="info-value">{{ no_conformidad.requisito }}</p>
+                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                    {% endif %}
+                    
+                    <!-- Archivos adjuntos si existen -->
+                    {% if no_conformidad.adjuntos|length > 0 %}
+                    <h5 class="section-title">
+                        <i class="fas fa-paperclip"></i> Archivos Adjuntos
+                    </h5>
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                            <div class="adjuntos-container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                        <p class="info-label mb-3">
+                                            <i class="fas fa-paperclip"></i> Total de archivos: {{ no_conformidad.adjuntos|length }}
+                                        </p>
+                                        <div class="adjuntos-list">
+                                            {% for adjunto in no_conformidad.adjuntos %}
+                                                <div class="adjunto-item">
+                                                    <a href="{{ vich_uploader_asset(adjunto, 'archivoFile') }}" 
+                                                       class="btn btn-outline-primary btn-sm" 
+                                                       target="_blank"
+                                                       data-toggle="tooltip"
+                                                       title="Descargar archivo">
+                                                        <i class="fas fa-file-pdf"></i> 
+                                                        {{ adjunto.nombreOriginal|default('Archivo ' ~ loop.index)|length > 30 ? 
+                                                           adjunto.nombreOriginal|default('Archivo ' ~ loop.index)|slice(0, 30) ~ '...' : 
+                                                           adjunto.nombreOriginal|default('Archivo ' ~ loop.index) }}
+                                                    </a>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                            {{ form_start(form) }}
+                            
+                    <!-- Acción a tomar -->
+                    <h5 class="section-title">
+                        <i class="fas fa-tasks"></i> Revisar Hallazgo
+                    </h5>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    {{ form_row(form.accionHallazgo) }}
+                                </div>
+                            </div>
+
+                    <div class="row mb-3" id="asignacion-container" style="display: none;">
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> <strong>Asignación del hallazgo:</strong>
+                                Al aceptar el hallazgo, debe asignar un responsable para su tratamiento.
+                            </div>
+                        </div>
+                                <div class="col-md-3">
+                                        {{ form_row(form.asignadoA) }}
+                                    </div>
+                                <div class="col-md-3">
+                                        {{ form_row(form.areaAsignada) }}
+                                    </div>
+                                </div>
+
+                    <div class="row mb-3" id="explicacion-container" style="display: none;">
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> <strong>Desestimación del hallazgo:</strong>
+                                Debe proporcionar una explicación detallada del motivo por el cual se desestima este hallazgo.
+                            </div>
+                        </div>
+                                    <div class="col-md-12">
+                                        {{ form_row(form.explicacion) }}
+                                    </div>
+                                </div>
+                                
+                    <!-- Botones -->
+                    <div class="row mt-5">
+                                <div class="col-md-12">
+                            <button class="btn btn-orange btn-lg mr-2">
+                                <i class="fas fa-save"></i> GUARDAR REVISIÓN
+                                    </button>
+                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Volver al listado
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+            
+            // Inicializar tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            // Función para mostrar/ocultar campos según la acción seleccionada
+            function toggleCamposSegunAccion() {
+                var accion = $('#review_accionHallazgo').val();
+                var explicacionContainer = $('#explicacion-container');
+                var asignacionContainer = $('#asignacion-container');
+                
+                if (accion === 'desestimar') {
+                    // Si se desestima, mostrar explicación y ocultar asignación
+                    explicacionContainer.slideDown();
+                    $('#review_explicacion').attr('required', true);
+                    asignacionContainer.slideUp();
+                } else if (accion === 'aceptar') {
+                    // Si se acepta, ocultar explicación y mostrar asignación
+                    explicacionContainer.slideUp();
+                    $('#review_explicacion').attr('required', false);
+                    $('#review_explicacion').val('');
+                    asignacionContainer.slideDown();
+                } else {
+                    // Si no hay selección, ocultar ambos
+                    explicacionContainer.slideUp();
+                    asignacionContainer.slideUp();
+                    $('#review_explicacion').attr('required', false);
+                    $('#review_explicacion').val('');
+                }
+            }
+            
+            // Ejecutar al cargar la página
+            toggleCamposSegunAccion();
+            
+            // Ejecutar cuando cambie la selección del dropdown
+            $('#review_accionHallazgo').change(function() {
+                toggleCamposSegunAccion();
+            });
+        });
+    </script>
+{% endblock %} 

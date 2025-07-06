@@ -539,7 +539,8 @@ class Builder
 
 			if (
 				$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') &&
-				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO')
+				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
+				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')
 			) {
 				$menu[$keyPersonal]
 					->addChild(
@@ -916,6 +917,24 @@ $menu[$keyManual]
 				'Reglamento Interno',
 				array(
 					'route'          => 'documento_reglamento_interno',
+					'attributes'     => ['class' => 'nav-item'],
+					'linkAttributes' => ['class' => 'nav-link']
+				)
+			);
+		$menu[$keyPersonal]
+			->addChild(
+				'Constitución Nacional',
+				array(
+					'route'          => 'cn_nacional',
+					'attributes'     => ['class' => 'nav-item'],
+					'linkAttributes' => ['class' => 'nav-link']
+				)
+			);
+		$menu[$keyPersonal]
+			->addChild(
+				'Constitución Provincial',
+				array(
+					'route'          => 'cn_provincial',
 					'attributes'     => ['class' => 'nav-item'],
 					'linkAttributes' => ['class' => 'nav-link']
 				)

@@ -49,6 +49,14 @@ app_concejal:
 documento_carta_organica:
   path: /documento_carta_organica
   defaults: { _controller: App\Controller\DefaultController::cartaOrganica }
+  
+cn_nacional:
+  path: /cn_nacional
+  defaults: { _controller: App\Controller\DefaultController::cnNacional }
+
+cn_provincial:
+  path: /cn_provincial
+  defaults: { _controller: App\Controller\DefaultController::cnProvincial }
 
 documento_reglamento_interno:
   path: /documento_reglamento_interno

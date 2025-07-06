@@ -560,7 +560,8 @@ class SesionController extends AbstractController {
 		$em     = $this->getDoctrine()->getManager();
 		$sesion = $em->getRepository( Sesion::class )->find( $sesionId );
 
-		if ( !$this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) and !$this->get( 'security.authorization_checker' )->isGranted( ',ROLE_PROSECRETARIO_LEGISLATIVO' ) ) {
+		if ( !$this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) and !$this->get( 'security.authorization_checker' )->isGranted( ',ROLE_PROSECRETARIO_LEGISLATIVO' ) and  
+				$this->get( 'security.authorization_checker' )->isGranted('ROLE_DIGESTO') ) {
 			if ( $sesion->getBae()->first() && $sesion->getOd()->first() ) {
 				if ( ! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado() ) {
 					$this->get( 'session' )->getFlashBag()->add(
@@ -643,7 +644,7 @@ class SesionController extends AbstractController {
 		$em     = $this->getDoctrine()->getManager();
 		$sesion = $em->getRepository( Sesion::class )->find( $sesionId );
 
-		if ( !$this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) and !$this->get( 'security.authorization_checker' )->isGranted( ',ROLE_PROSECRETARIO_LEGISLATIVO' )) {
+		if ( (!$this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) and !$this->get( 'security.authorization_checker' )->isGranted( ',ROLE_PROSECRETARIO_LEGISLATIVO' ))  || $this->get( 'security.authorization_checker' )->isGranted( 'ROLE_DIGESTO' )) {
 			if ( $sesion->getBae()->first() && $sesion->getOd()->first() ) {
 				if ( ! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado() ) {
 					$this->get( 'session' )->getFlashBag()->add(

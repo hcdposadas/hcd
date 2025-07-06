@@ -48,6 +48,32 @@ class DefaultController extends AbstractController {
 		return $this->render( 'default/display3.html.twig' );
 	}
 
+	public function cnNacional() {
+		$cartaOrganica = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+			'slug' => 'nacional'
+		] );
+
+		return $this->render( 'default/index_embed.html.twig',
+			[
+				'titulo'    => 'Constitución Nacional',
+				'documento' => $cartaOrganica
+			] );
+
+	}
+	
+		public function cnProvincial() {
+		$cartaOrganica = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
+			'slug' => 'provincial'
+		] );
+
+		return $this->render( 'default/index_embed.html.twig',
+			[
+				'titulo'    => 'Constitución Provincial',
+				'documento' => $cartaOrganica
+			] );
+
+	}
+
 	public function cartaOrganica() {
 		$cartaOrganica = $this->getDoctrine()->getRepository( Documento::class )->findOneBy( [
 			'slug' => 'carta-organica'

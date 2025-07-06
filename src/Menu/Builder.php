@@ -541,6 +541,8 @@ class Builder
 				$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') &&
 				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
 				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')
+				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
+				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')
 			) {
 				$menu[$keyPersonal]
 					->addChild(
@@ -845,6 +847,59 @@ $menu[$keyLista]->addChild(
 						'linkAttributes' => ['class' => 'nav-link']
 						)
 						);
+
+		}
+
+		// NO CONFORMIDADES
+		// if (
+		//	$this->authorizationChecker->isGranted('ROLE_CALIDAD') ||
+		//	$this->authorizationChecker->isGranted('ROLE_USER')
+		// ) {
+		if (true) {
+			$keyNoConformidad = 'NO CONFORMIDADES';
+			$menu->addChild(
+				$keyNoConformidad,
+				array(
+					'childrenAttributes' => array(
+						'class' => 'nav nav-treeview',
+					),
+				)
+			)
+				->setUri('#')
+				->setLinkAttribute('class', 'nav-link')
+				->setExtra('icon', 'fas fa-exclamation-triangle')
+				->setAttribute('class', 'nav-item has-treeview');
+
+			$menu[$keyNoConformidad]
+				->addChild(
+					'Listado',
+					array(
+						'route'          => 'no_conformidad_index',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
+			$menu[$keyNoConformidad]
+				->addChild(
+					'Nueva No Conformidad',
+					array(
+						'route'          => 'no_conformidad_new',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
+			$menu[$keyNoConformidad]
+				->addChild(
+					'Consulta Avanzada',
+					array(
+						'route'          => 'no_conformidad_consulta',
+						'attributes'     => ['class' => 'nav-item'],
+						'linkAttributes' => ['class' => 'nav-link']
+					)
+				);
+
 
 		}
 

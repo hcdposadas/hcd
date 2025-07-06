@@ -2,10 +2,211 @@
 
 {% block title %}No Conformidades{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .table td {
+            vertical-align: middle;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .btn-group .btn {
+            margin-right: 2px;
+        }
+        .badge {
+            font-size: 90%;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        /* Estilo personalizado para filas revisadas */
+        .table-revisado {
+            background-color: #ffab00 !important;
+            color: #212529;
+        }
+        .table-revisado:hover {
+            background-color: #ff8800 !important;
+        }
+        .table-revisado td {
+            border-color: #ffa000;
+        }
+        /* Badge anaranjado para estado revisado */
+        .badge-orange {
+            background-color: #ff6b35;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
+    <!-- Título de la página -->
     <div class="row mb-3">
         <div class="col-md-12">
-            <a class="btn btn-primary" href="{{ path('no_conformidad_new') }}">Nueva No Conformidad</a>
+            <h1 class="mb-4">
+                <i class="fas fa-exclamation-triangle"></i> {{ titulo_pagina|default('No Conformidades') }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{{ path('no_conformidad_new') }}">
+                <i class="fa fa-plus"></i> Nueva No Conformidad
+            </a>
+            <a class="btn btn-info" href="{{ path('no_conformidad_consulta') }}">
+                <i class="fa fa-search"></i> Consulta Avanzada
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <!-- Primera fila de filtros -->
+                        <div class="row">
+                            {% if not es_vista_estado|default(false) %}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="estado">Estado:</label>
+                            <select name="estado" id="estado" class="form-control">
+                                <option value="">Todos</option>
+                                        <option value="nuevo" {{ estado_filtro|default('') == 'nuevo' ? 'selected' : '' }}>Nuevo</option>
+                                        <option value="revisado" {{ estado_filtro|default('') == 'revisado' ? 'selected' : '' }}>Revisado</option>
+                                        <option value="tratado" {{ estado_filtro|default('') == 'tratado' ? 'selected' : '' }}>Tratado</option>
+                                        <option value="aceptado" {{ estado_filtro|default('') == 'aceptado' ? 'selected' : '' }}>Aceptado</option>
+                                        <option value="verificada_correccion" {{ estado_filtro|default('') == 'verificada_correccion' ? 'selected' : '' }}>Verificada Corrección/Acción de Mejora</option>
+                                        <option value="verificada_efectividad" {{ estado_filtro|default('') == 'verificada_efectividad' ? 'selected' : '' }}>Cerrado</option>
+                                        <option value="desestimado" {{ estado_filtro|default('') == 'desestimado' ? 'selected' : '' }}>Desestimado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="area">Área:</label>
+                                    <select name="area" id="area" class="form-control">
+                                        <option value="">Todas</option>
+                                        {% if areas is defined %}
+                                            {% for area in areas %}
+                                                <option value="{{ area.id }}" {{ area_filtro|default('') == area.id ? 'selected' : '' }}>
+                                                    {{ area.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="origen">Origen:</label>
+                                    <select name="origen" id="origen" class="form-control">
+                                        <option value="">Todos</option>
+                                        <option value="auditoria_interna" {{ origen_filtro|default('') == 'auditoria_interna' ? 'selected' : '' }}>Auditoría Interna</option>
+                                        <option value="auditoria_externa" {{ origen_filtro|default('') == 'auditoria_externa' ? 'selected' : '' }}>Auditoría Externa</option>
+                                        <option value="reclamos" {{ origen_filtro|default('') == 'reclamos' ? 'selected' : '' }}>Reclamos</option>
+                                        <option value="espontanea" {{ origen_filtro|default('') == 'espontanea' ? 'selected' : '' }}>Espontánea</option>
+                                        <option value="foda" {{ origen_filtro|default('') == 'foda' ? 'selected' : '' }}>FODA</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="categoria">Categoría Hallazgo:</label>
+                                    <select name="categoria" id="categoria" class="form-control">
+                                        <option value="">Todas</option>
+                                        <option value="no_conformidad" {{ categoria_filtro|default('') == 'no_conformidad' ? 'selected' : '' }}>No Conformidad</option>
+                                        <option value="observacion" {{ categoria_filtro|default('') == 'observacion' ? 'selected' : '' }}>Observación</option>
+                                        <option value="oportunidad_mejora" {{ categoria_filtro|default('') == 'oportunidad_mejora' ? 'selected' : '' }}>Oportunidad de Mejora</option>
+                            </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Segunda fila de filtros -->
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="norma">Norma:</label>
+                                    <select name="norma" id="norma" class="form-control">
+                                        <option value="">Todas</option>
+                                        <option value="ISO 9001" {{ norma_filtro|default('') == 'ISO 9001' ? 'selected' : '' }}>ISO 9001</option>
+                                        <option value="ISO 14001" {{ norma_filtro|default('') == 'ISO 14001' ? 'selected' : '' }}>ISO 14001</option>
+                                        <option value="ISO 45001" {{ norma_filtro|default('') == 'ISO 45001' ? 'selected' : '' }}>ISO 45001</option>
+                                        <option value="ISO 27001" {{ norma_filtro|default('') == 'ISO 27001' ? 'selected' : '' }}>ISO 27001</option>
+                                        <option value="Otras" {{ norma_filtro|default('') == 'Otras' ? 'selected' : '' }}>Otras</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="pgcd">PGCD:</label>
+                                    <select name="pgcd" id="pgcd" class="form-control">
+                                <option value="">Todos</option>
+                                        <option value="planear" {{ pgcd_filtro|default('') == 'planear' ? 'selected' : '' }}>Planear</option>
+                                        <option value="hacer" {{ pgcd_filtro|default('') == 'hacer' ? 'selected' : '' }}>Hacer</option>
+                                        <option value="verificar" {{ pgcd_filtro|default('') == 'verificar' ? 'selected' : '' }}>Verificar</option>
+                                        <option value="actuar" {{ pgcd_filtro|default('') == 'actuar' ? 'selected' : '' }}>Actuar</option>
+                            </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="fecha_desde">Fecha Desde:</label>
+                                    <input type="month" name="fecha_desde" id="fecha_desde" class="form-control" value="{{ fecha_desde_filtro|default('') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="fecha_hasta">Fecha Hasta:</label>
+                                    <input type="month" name="fecha_hasta" id="fecha_hasta" class="form-control" value="{{ fecha_hasta_filtro|default('') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tercera fila - Botones de acción -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-filter"></i> Filtrar
+                                    </button>
+                                    {% if es_vista_estado|default(false) %}
+                                        <a href="{{ app.request.pathinfo }}" class="btn btn-secondary">
+                                            <i class="fa fa-times"></i> Limpiar
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('no_conformidad_index') }}" class="btn btn-secondary">
+                                            <i class="fa fa-times"></i> Limpiar
+                                        </a>
+                                    {% endif %}
+                                    <!-- Botón de exportar comentado hasta que se implemente en el controlador
+                                    <button type="button" class="btn btn-success" onclick="exportarFiltrados()">
+                                        <i class="fa fa-file-excel"></i> Exportar Filtrados
+                                    </button>
+                                    -->
+                                    <small class="text-muted ml-3">
+                                        <i class="fa fa-info-circle"></i> 
+                                        Puede usar los filtros individualmente o combinar varios para afinar la búsqueda
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -21,53 +222,138 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Área</th>
-                                    <th>Empleado</th>
-                                    <th>Origen</th>
-                                    <th>Categoría</th>
-                                    <th>Estado</th>
                                     <th>Fecha</th>
+                                    <th>Área</th>
+                                    <th>Usuario que registró</th>
+                                    <th>Origen</th>
+                                    <th>Hallazgo</th>
+                                    <th>Estado</th>
+                                    <th>Categoría</th>
+                                    <th>Adjuntos</th>
+                                    <th>Asignado a</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {% for no_conformidad in no_conformidades %}
-                                <tr>
+                                <tr class="
+                                    {% if no_conformidad.estado == 'nuevo' %}table-danger
+                                    {% elseif no_conformidad.estado == 'revisado' %}table-revisado
+                                    {% elseif no_conformidad.estado == 'tratado' %}table-warning
+                                    {% elseif no_conformidad.estado == 'aceptado' %}table-info
+                                    {% elseif no_conformidad.estado == 'verificada_correccion' %}table-success
+                                    {% elseif no_conformidad.estado == 'verificada_efectividad' %}table-secondary
+                                    {% elseif no_conformidad.estado == 'desestimado' %}
+                                    {% else %}table-secondary
+                                    {% endif %}">
                                     <td>{{ no_conformidad.id }}</td>
-                                    <td>{{ no_conformidad.area }}</td>
-                                    <td>{{ no_conformidad.empleado }}</td>
-                                    <td>{{ no_conformidad.origen }}</td>
-                                    <td>{{ no_conformidad.categoria }}</td>
+                                    <td>{{ no_conformidad.fecha ? no_conformidad.fecha|date('d/m/Y') : '' }}</td>
+                                    <td>{{ no_conformidad.area ? no_conformidad.area.nombre : '' }}</td>
                                     <td>
-                                        <span class="badge badge-{{ 
-                                            no_conformidad.estado == 'Nuevo' ? 'danger' : 
-                                            (no_conformidad.estado == 'Revisado' ? 'warning' : 
-                                            (no_conformidad.estado == 'Tratado' ? 'warning' : 
-                                            (no_conformidad.estado == 'Verificado' ? 'info' : 
-                                            (no_conformidad.estado == 'Efectivo' ? 'success' : 'secondary')))) }}">
-                                            {{ no_conformidad.estado }}
+                                        {% if no_conformidad.creadoPor %}
+                                            {% if no_conformidad.creadoPor.persona %}
+                                                {{ no_conformidad.creadoPor.persona.nombre ~ ' ' ~ no_conformidad.creadoPor.persona.apellido }}
+                                            {% else %}
+                                                {{ no_conformidad.creadoPor.email }}
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">
+                                            {{ no_conformidad.origen|replace({'_': ' '})|title }}
                                         </span>
                                     </td>
-                                    <td>{{ no_conformidad.fecha ? no_conformidad.fecha|date('d/m/Y H:i') : '' }}</td>
+                                    <td title="{{ no_conformidad.descripcionHallazgo }}">
+                                        {{ no_conformidad.descripcionHallazgo|length > 50 ? no_conformidad.descripcionHallazgo|slice(0, 50) ~ '...' : no_conformidad.descripcionHallazgo }}
+                                    </td>
                                     <td>
-                                        <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-info btn-sm">
-                                            <i class="fa fa-eye"></i> Ver
-                                        </a>
-                                        <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm">
-                                            <i class="fa fa-edit"></i> Editar
-                                        </a>
-                                        <form method="post" action="{{ path('no_conformidad_delete', {'id': no_conformidad.id}) }}" style="display: inline-block" onsubmit="return confirm('¿Está seguro que desea eliminar esta no conformidad?');">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ no_conformidad.id) }}">
-                                            <button class="btn btn-danger btn-sm">
-                                                <i class="fa fa-trash"></i> Eliminar
+                                        <span class="badge badge-{{ 
+                                            no_conformidad.estado == 'nuevo' ? 'danger' : 
+                                            (no_conformidad.estado == 'revisado' ? 'orange' : 
+                                            (no_conformidad.estado == 'tratado' ? 'warning' : 
+                                            (no_conformidad.estado == 'aceptado' ? 'info' :
+                                            (no_conformidad.estado == 'verificada_correccion' ? 'success' :
+                                            (no_conformidad.estado == 'verificada_efectividad' ? 'secondary' : 'secondary'))))) }}">
+                                            {% if no_conformidad.estado == 'verificada_efectividad' %}
+                                                Cerrado
+                                            {% elseif no_conformidad.estado == 'verificada_correccion' %}
+                                                {% if no_conformidad.categoria == 'no_conformidad' %}
+                                                    Verificada Corrección
+                                                {% else %}
+                                                    Verificada Corrección/Acción de Mejora
+                                                {% endif %}
+                                            {% else %}
+                                                {{ no_conformidad.estado|title }}
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-{{ no_conformidad.categoria == 'no_conformidad' ? 'danger' : 'warning' }}">
+                                            {{ no_conformidad.categoria|replace({'_': ' '})|title }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if no_conformidad.adjuntos|length > 0 %}
+                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#adjuntosModal{{ no_conformidad.id }}" title="Ver adjuntos">
+                                                <i class="fa fa-paperclip"></i> ({{ no_conformidad.adjuntos|length }})
                                             </button>
-                                        </form>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if no_conformidad.asignadoA %}
+                                            {% if no_conformidad.asignadoA.persona %}
+                                                {{ no_conformidad.asignadoA.persona.apellido ~ ', ' ~ no_conformidad.asignadoA.persona.nombre }}
+                                            {% else %}
+                                                {{ no_conformidad.asignadoA.username|default(no_conformidad.asignadoA.email) }}
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">Sin asignar</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if no_conformidad.estado == 'nuevo' %}
+                                            <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Editar">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="{{ path('no_conformidad_review', {'id': no_conformidad.id}) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Revisar">
+                                                <i class="fa fa-check"></i>
+                                            </a>
+                                        {% elseif no_conformidad.estado == 'revisado' %}
+                                            <a href="{{ path('no_conformidad_treat', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Tratar">
+                                                <i class="fa fa-wrench"></i>
+                                            </a>
+                                        {% elseif no_conformidad.estado == 'tratado' %}
+                                            {% if no_conformidad.analisisAceptado is same as(false) %}
+                                                <a href="{{ path('no_conformidad_treat', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Editar Tratamiento">
+                                                    <i class="fa fa-edit"></i>
+                                            </a>
+                                        {% endif %}
+                                            <a href="{{ path('no_conformidad_accept', {'id': no_conformidad.id}) }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Aceptar">
+                                                <i class="fa fa-check"></i>
+                                            </a>
+                                        {% elseif no_conformidad.estado == 'aceptado' %}
+                                            <a href="{{ path('no_conformidad_verify_correction', {'id': no_conformidad.id}) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Verificar Corrección">
+                                                <i class="fa fa-check-circle"></i>
+                                            </a>
+                                        {% elseif no_conformidad.estado == 'verificada_correccion' and no_conformidad.categoria == 'no_conformidad' %}
+                                            <a href="{{ path('no_conformidad_verify_effectiveness', {'id': no_conformidad.id}) }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Verificar Efectividad">
+                                                <i class="fa fa-check-double"></i>
+                                            </a>
+                                        {% elseif no_conformidad.estado == 'verificada_efectividad' or no_conformidad.estado == 'desestimado' or no_conformidad.estado == 'verificada_correccion' %}
+                                            <!-- Botón VER para casos cerrados o desestimados -->
+                                            <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                <i class="fa fa-eye"></i> Ver
+                                            </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td colspan="8">No se encontraron registros</td>
+                                    <td colspan="11" class="text-center">No se encontraron registros</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -78,7 +364,151 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12 text-center">
     <div class="navigation">
         {{ knp_pagination_render(no_conformidades) }}
+            </div>
+        </div>
     </div>
+
+    <!-- Modales para archivos adjuntos -->
+    {% for no_conformidad in no_conformidades %}
+        {% if no_conformidad.adjuntos|length > 0 %}
+            <div class="modal fade" id="adjuntosModal{{ no_conformidad.id }}" tabindex="-1" role="dialog" aria-labelledby="adjuntosModalLabel{{ no_conformidad.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adjuntosModalLabel{{ no_conformidad.id }}">Archivos Adjuntos - No Conformidad #{{ no_conformidad.id }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                {% for adjunto in no_conformidad.adjuntos %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <i class="fa fa-file"></i> {{ adjunto.nombreOriginal|default('Archivo ' ~ loop.index) }}
+                                        </span>
+                                        <a href="{{ vich_uploader_asset(adjunto, 'archivoFile') }}" class="btn btn-sm btn-primary" target="_blank">
+                                            <i class="fa fa-download"></i> Descargar
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            // Inicializar tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            // Función para mostrar/ocultar indicador de filtros activos
+            function mostrarFiltrosActivos() {
+                const form = $('form');
+                const inputs = form.find('select, input[type="month"]');
+                let filtrosActivos = 0;
+                
+                inputs.each(function() {
+                    if ($(this).val() && $(this).val() !== '') {
+                        filtrosActivos++;
+                    }
+                });
+                
+                // Actualizar el título del card de filtros
+                const cardTitle = $('.card-title:contains("Filtros")').first();
+                if (filtrosActivos > 0) {
+                    cardTitle.html(`Filtros <span class="badge badge-primary">${filtrosActivos} activo${filtrosActivos > 1 ? 's' : ''}</span>`);
+                } else {
+                    cardTitle.text('Filtros');
+                }
+            }
+            
+            // Ejecutar al cargar la página
+            mostrarFiltrosActivos();
+            
+            // Ejecutar cuando cambien los filtros
+            $('select, input[type="month"]').on('change', function() {
+                mostrarFiltrosActivos();
+            });
+            
+            // Validación de rango de fechas
+            $('#fecha_desde, #fecha_hasta').on('change', function() {
+                const fechaDesde = $('#fecha_desde').val();
+                const fechaHasta = $('#fecha_hasta').val();
+                
+                if (fechaDesde && fechaHasta && fechaDesde > fechaHasta) {
+                    alert('La fecha "Desde" no puede ser mayor que la fecha "Hasta"');
+                    $(this).val('');
+                }
+            });
+
+        });
+        
+        // Función para exportar registros filtrados (comentada hasta implementar en controlador)
+        /*
+        function exportarFiltrados() {
+            const form = $('form');
+            const formData = new FormData(form[0]);
+            
+            // Agregar parámetro de exportación
+            formData.append('export', 'excel');
+            
+            // Crear URL con parámetros
+            const params = new URLSearchParams();
+            for (let [key, value] of formData.entries()) {
+                if (value && value !== '') {
+                    params.append(key, value);
+                }
+            }
+            
+            // Verificar si hay filtros aplicados
+            const hasFilters = Array.from(formData.entries()).some(([key, value]) => 
+                key !== 'export' && value && value !== ''
+            );
+            
+            if (!hasFilters) {
+                if (!confirm('No hay filtros aplicados. ¿Desea exportar TODOS los registros? Esto puede tomar un tiempo si hay muchos registros.')) {
+                    return;
+                }
+            }
+            
+            // Construir URL de exportación
+            const exportUrl = "{{ path('no_conformidad_export') }}" + (params.toString() ? '?' + params.toString() : '');
+            
+            // Mostrar indicador de carga
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Exportando...';
+            btn.disabled = true;
+            
+            // Crear elemento de descarga temporal
+            const link = document.createElement('a');
+            link.href = exportUrl;
+            link.download = 'no_conformidades_filtradas.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Restaurar botón después de un breve delay
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }
+        */
+
+    </script>
 {% endblock %} 

@@ -97,6 +97,7 @@ use Gedmo\Loggable\Entity\LogEntry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Psr\Log\LoggerInterface;
 
 /**
  * Expediente controller.
@@ -2863,12 +2864,23 @@ class ExpedienteController extends AbstractController
 	}
 	
 
-	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
-		error_log("=== INICIO imprimirArchivo - Expediente ID: " . $expediente->getId() . " ===");
+	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente, LoggerInterface $logger = null){
+		// Usar el logger de Symfony
+		if (!$logger) {
+			$logger = $this->get('logger');
+		}
+		
+		$logger->info("=== INICIO imprimirArchivo", [
+			'expediente_id' => $expediente->getId(),
+			'function' => 'imprimirArchivo'
+		]);
 		
 		$em = $this->getDoctrine()->getManager();
 		$decreto=$expediente->getIsDecreto();
-		error_log("Decreto: " . ($decreto ? 'true' : 'false'));
+		$logger->info("Verificando decreto", [
+			'expediente_id' => $expediente->getId(),
+			'es_decreto' => $decreto
+		]);
 
 		$DictamenRepository = $em->getRepository(Dictamen::class);
 
@@ -2876,17 +2888,28 @@ class ExpedienteController extends AbstractController
 			['expediente' => $expediente->getId()],
 			['id' => 'ASC']
 		);
-		error_log("Dictamenes encontrados: " . count($Dictamenes));
+		$logger->info("Dictamenes obtenidos", [
+			'expediente_id' => $expediente->getId(),
+			'cantidad_dictamenes' => count($Dictamenes)
+		]);
 
+		// Para debugging inmediato, descomenta esta línea:
+		// dd("DEBUG: Función iniciada correctamente, expediente ID: " . $expediente->getId());
 
 		//CARATULA
-		error_log("--- Generando carátula ---");
+		$logger->info("Iniciando generación de carátula", [
+			'expediente_id' => $expediente->getId()
+		]);
 
 		$dataToEncode = $expediente->getCodigoReferencia();
 		if ($expediente->getBorrador()) {
 			$dataToEncode = null;
 		}
-		error_log("DataToEncode: " . ($dataToEncode ?? 'null'));
+		$logger->info("Código de referencia verificado", [
+			'expediente_id' => $expediente->getId(),
+			'codigo_referencia' => $dataToEncode,
+			'es_borrador' => $expediente->getBorrador()
+		]);
  
 		$title      = 'Carátula';
 
@@ -2898,9 +2921,15 @@ class ExpedienteController extends AbstractController
 					'title'      => $title,
 				]
 			);
-			error_log("HTML de carátula generado correctamente");
+			$logger->info("HTML de carátula generado correctamente", [
+				'expediente_id' => $expediente->getId()
+			]);
 		} catch (\Exception $e) {
-			error_log("Error generando HTML de carátula: " . $e->getMessage());
+			$logger->error("Error generando HTML de carátula", [
+				'expediente_id' => $expediente->getId(),
+				'error' => $e->getMessage(),
+				'trace' => $e->getTraceAsString()
+			]);
 			throw $e;
 		}
 
@@ -2948,11 +2977,16 @@ class ExpedienteController extends AbstractController
 		}
 
 		//PROYECTO SIN FIRMAR
-		error_log("--- Verificando tipo de proyecto ---");
-		error_log("ExpedienteInterno: " . ($expediente->getExpedienteInterno() ?? 'null'));
+		$logger->info("Verificando tipo de proyecto", [
+			'expediente_id' => $expediente->getId(),
+			'expediente_interno' => $expediente->getExpedienteInterno(),
+			'tiene_expediente_interno' => !empty($expediente->getExpedienteInterno())
+		]);
 		
 	if(!$expediente->getExpedienteInterno()){
-		error_log("Procesando proyecto SIN FIRMAR");
+		$logger->info("Procesando proyecto SIN FIRMAR", [
+			'expediente_id' => $expediente->getId()
+		]);
 		$header = null;
 		if (!$expediente->getBorrador()) {
 			$header = $this->renderView(
@@ -3041,11 +3075,16 @@ class ExpedienteController extends AbstractController
 
 		} 
 	} else {
-		error_log("Procesando proyecto FIRMADO");
+		$logger->info("Procesando proyecto FIRMADO", [
+			'expediente_id' => $expediente->getId()
+		]);
 
 		//PROYECTO FIRMADO
 		$path=$expediente->getExpedienteInterno();
-		error_log("Ruta expediente interno: " . ($path ?? 'null'));
+		$logger->info("Obteniendo ruta expediente interno", [
+			'expediente_id' => $expediente->getId(),
+			'ruta_expediente_interno' => $path
+		]);
 
 		$extension = pathinfo($path);
 	
@@ -3196,24 +3235,39 @@ class ExpedienteController extends AbstractController
         ['expediente' => $expediente->getId()],
         ['id' => 'ASC']
     );
-	error_log("--- Procesando ProyectosBae ---");
-	error_log("ProyectosBae encontrados: " . count($ProyectosBae));
+		$logger->info("Iniciando procesamiento de ProyectosBae", [
+			'expediente_id' => $expediente->getId(),
+			'cantidad_proyectos_bae' => count($ProyectosBae)
+		]);
 
 	if($ProyectosBae){
 		$firstProyectoBae = $ProyectosBae[0];
-		error_log("Primer ProyectoBae ID: " . $firstProyectoBae->getId());
-		error_log("Es informe DEM: " . ($firstProyectoBae->getEsInformeDem() ? 'true' : 'false'));
+		$logger->info("Primer ProyectoBae obtenido", [
+			'expediente_id' => $expediente->getId(),
+			'proyecto_bae_id' => $firstProyectoBae->getId(),
+			'es_informe_dem' => $firstProyectoBae->getEsInformeDem()
+		]);
 		
 		// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
 		if (!$firstProyectoBae->getEsInformeDem()) {
-			error_log("Procesando archivos de giro/pedido/digesto (NO es informe DEM)");
+			$logger->info("Procesando archivos del ProyectoBae (NO es informe DEM)", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId()
+			]);
 			if($firstProyectoBae->getFirmado()){
 				//GIRO FIRMADO
-				error_log("Agregando giro firmado: " . $firstProyectoBae->getFirmado());
+				$logger->info("Agregando giro firmado al PDF", [
+					'expediente_id' => $expediente->getId(),
+					'proyecto_bae_id' => $firstProyectoBae->getId(),
+					'archivo_giro' => $firstProyectoBae->getFirmado()
+				]);
 				$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
 			}else{
 				//GIRO SIN FIRMAR
-				error_log("Procesando giro SIN FIRMAR");
+				$logger->info("Procesando giro SIN FIRMAR", [
+					'expediente_id' => $expediente->getId(),
+					'proyecto_bae_id' => $firstProyectoBae->getId()
+				]);
 			$giros=$firstProyectoBae->getGirosOrdenados();
 			if ($giros) {
 			$expediente=$firstProyectoBae->getExpediente();
@@ -3257,22 +3311,40 @@ class ExpedienteController extends AbstractController
 			}
 			if($firstProyectoBae->getPedido()){
 			//PEDIDO FIRMADO
-			error_log("Agregando pedido firmado: " . $firstProyectoBae->getPedido());
+			$logger->info("Agregando pedido firmado al PDF", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId(),
+				'archivo_pedido' => $firstProyectoBae->getPedido()
+			]);
 			$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
 
 			} 
 			if($firstProyectoBae->getDigesto()){
 			//DIGESTO FIRMADO
-			error_log("Agregando digesto firmado: " . $firstProyectoBae->getDigesto());
+			$logger->info("Agregando digesto firmado al PDF", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId(),
+				'archivo_digesto' => $firstProyectoBae->getDigesto()
+			]);
 			$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
 			}
 		} else {
-			error_log("NO se procesan giro/pedido/digesto (ES informe DEM)");
+			$logger->info("OMITIENDO archivos giro/pedido/digesto (ES informe DEM)", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId(),
+				'es_informe_dem' => true
+			]);
 		}
 
-		error_log("--- Procesando Dictamenes ---");
+		$logger->info("Iniciando procesamiento de Dictamenes", [
+			'expediente_id' => $expediente->getId(),
+			'cantidad_dictamenes' => count($Dictamenes)
+		]);
 		if($Dictamenes){
-			error_log("Procesando dictámenes (count: " . count($Dictamenes) . ")");
+			$logger->info("Procesando dictámenes", [
+				'expediente_id' => $expediente->getId(),
+				'cantidad' => count($Dictamenes)
+			]);
 			$firstDictamen = $Dictamenes[0];
 			foreach ($expediente->getExpedientesAdjunto() as $adjunto){
 				if($adjunto->getAdjunto){
@@ -3522,16 +3594,27 @@ class ExpedienteController extends AbstractController
 }
 	
 
-		error_log("--- Finalizando merge de PDF ---");
+		$logger->info("Iniciando merge final de PDF", [
+			'expediente_id' => $expediente->getId()
+		]);
 		try {
 			$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
-			error_log("PDF merge completado exitosamente");
+			$logger->info("PDF merge completado exitosamente", [
+				'expediente_id' => $expediente->getId()
+			]);
 		} catch (\Exception $e) {
-			error_log("Error en merge de PDF: " . $e->getMessage());
+			$logger->error("Error en merge de PDF", [
+				'expediente_id' => $expediente->getId(),
+				'error' => $e->getMessage(),
+				'trace' => $e->getTraceAsString()
+			]);
 			throw $e;
 		}
 
-		error_log("=== FIN imprimirArchivo - Expediente ID: " . $expediente->getId() . " ===");
+		$logger->info("=== FIN imprimirArchivo", [
+			'expediente_id' => $expediente->getId(),
+			'function' => 'imprimirArchivo'
+		]);
 		return new Response($pdf4, array(
 			'page-size'      => 'Legal',
 		//					'page-width'     => '220mm',

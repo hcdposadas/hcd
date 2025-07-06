@@ -3,116 +3,402 @@
 {% block title %}Detalles de No Conformidad{% endblock %}
 
 {% block body %}
+    <style>
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-value {
+            font-size: 1.1rem;
+            color: #212529;
+            font-weight: 400;
+            background-color: #f8f9fa;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            border: 1px solid #dee2e6;
+            min-height: 2.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .info-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #212529;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #dee2e6;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #007bff;
+        }
+        .badge {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+        }
+        .attachment-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            color: #007bff;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .attachment-link:hover {
+            background-color: #e9ecef;
+            color: #0056b3;
+        }
+    </style>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Detalles de No Conformidad</h3>
+                    <i class="fas fa-eye"></i> 
+                    {% if no_conformidad.categoria == 'no_conformidad' %}
+                        Detalles de No Conformidad #{{ no_conformidad.id }}
+                    {% else %}
+                        Detalles de {{ no_conformidad.categoria|replace({'_': ' '})|title }} #{{ no_conformidad.id }}
+                    {% endif %}
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Área:</dt>
-                                <dd>{{ no_conformidad.area }}</dd>
-                            </dl>
+                    <!-- Información básica -->
+                    <h5 class="section-title">
+                        <i class="fas fa-info-circle"></i> Información General
+                    </h5>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="info-label">ID:</label>
+                            <div class="info-value">#{{ no_conformidad.id }}</div>
                         </div>
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Empleado:</dt>
-                                <dd>{{ no_conformidad.empleado }}</dd>
-                            </dl>
+                        <div class="col-md-3">
+                            <label class="info-label">Fecha:</label>
+                            <div class="info-value">{{ no_conformidad.fecha ? no_conformidad.fecha|date('d/m/Y H:i') : 'N/A' }}</div>
+                            </div>
+                        <div class="col-md-3">
+                            <label class="info-label">Área:</label>
+                            <div class="info-value">{{ no_conformidad.area ? no_conformidad.area.nombre : 'N/A' }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="info-label">Estado:</label>
+                            <div class="info-value">
+                                <span class="badge badge-{{ 
+                                    no_conformidad.estado == 'nuevo' ? 'danger' : 
+                                    (no_conformidad.estado == 'revisado' ? 'warning' : 
+                                    (no_conformidad.estado == 'tratado' ? 'warning' : 
+                                    (no_conformidad.estado == 'aceptado' ? 'info' : 
+                                    (no_conformidad.estado == 'verificada_correccion' ? 'success' :
+                                    (no_conformidad.estado == 'verificada_efectividad' ? 'secondary' : 'secondary'))))) }}">
+                                    {% if no_conformidad.estado == 'verificada_efectividad' %}
+                                        Cerrado
+                                    {% elseif no_conformidad.estado == 'verificada_correccion' %}
+                                        {% if no_conformidad.categoria == 'no_conformidad' %}
+                                            Verificada Corrección
+                                        {% else %}
+                                            Cerrado
+                                        {% endif %}
+                                    {% elseif no_conformidad.estado == 'desestimado' %}
+                                        Desestimado
+                                    {% else %}
+                                        {{ no_conformidad.estado|replace({'_': ' '})|title }}
+                                    {% endif %}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Origen:</dt>
-                                <dd>{{ no_conformidad.origen }}</dd>
-                            </dl>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="info-label">Usuario que Registra:</label>
+                            <div class="info-value">{{ no_conformidad.creadoPor ? no_conformidad.creadoPor.email : 'N/A' }}</div>
                         </div>
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Categoría:</dt>
-                                <dd>{{ no_conformidad.categoria }}</dd>
-                            </dl>
+                        <div class="col-md-3">
+                            <label class="info-label">Empleado:</label>
+                            <div class="info-value">{{ no_conformidad.empleado ? no_conformidad.empleado.nombre : 'N/A' }}</div>
+                            </div>
+                        <div class="col-md-3">
+                            <label class="info-label">Origen:</label>
+                            <div class="info-value">{{ no_conformidad.origen|title }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="info-label">Categoría:</label>
+                            <div class="info-value">
+                                <span class="badge badge-{{ no_conformidad.categoria == 'no_conformidad' ? 'danger' : 'warning' }}">
+                                    {{ no_conformidad.categoria|replace({'_': ' '})|title }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
+                    
+                    <!-- Información de normativa -->
+                    <h5 class="section-title">
+                        <i class="fas fa-book"></i> Información Normativa
+                    </h5>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="info-label">Norma:</label>
+                            <div class="info-value">{{ no_conformidad.norma|default('N/A') }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="info-label">PGCD:</label>
+                            <div class="info-value">{{ no_conformidad.pgcd ? no_conformidad.pgcd|replace({'_': ' '})|title : 'N/A' }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="info-label">Requisito Específico:</label>
+                            <div class="info-value">{{ no_conformidad.requisitoEspecifico|default('N/A')|upper }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="info-label">Requisito Legal:</label>
+                            <div class="info-value">
+                                {% if no_conformidad.requisitoLegal is not null %}
+                                    {{ no_conformidad.requisitoLegal ? 'Sí' : 'No' }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Descripción del hallazgo -->
+                    <h5 class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i> Descripción del Hallazgo
+                    </h5>
+                    <div class="row mb-4">
                         <div class="col-md-12">
-                            <dl class="dl-horizontal">
-                                <dt>Requisito:</dt>
-                                <dd>{{ no_conformidad.requisito }}</dd>
-                            </dl>
+                            <div class="info-text">{{ no_conformidad.descripcionHallazgo }}</div>
+                        </div>
+                            </div>
+                    
+                    {% if no_conformidad.requisitoLegal == true and no_conformidad.requisito is not empty %}
+                    <!-- Requisito Legal Específico -->
+                    <h5 class="section-title">
+                        <i class="fas fa-gavel"></i> Requisito Legal Específico
+                    </h5>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="info-text">{{ no_conformidad.requisito }}</div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Fecha:</dt>
-                                <dd>{{ no_conformidad.fecha ? no_conformidad.fecha|date('d/m/Y H:i') : '' }}</dd>
-                            </dl>
+                    {% endif %}
+                    
+                    {% if no_conformidad.estado == 'desestimado' and no_conformidad.explicacionDesestimado %}
+                    <!-- Razón del Desestimado -->
+                    <h5 class="section-title">
+                        <i class="fas fa-times-circle"></i> Razón del Desestimado
+                    </h5>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="info-text">{{ no_conformidad.explicacionDesestimado }}</div>
                         </div>
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Estado:</dt>
-                                <dd>
-                                    <span class="badge badge-{{ 
-                                        no_conformidad.estado == 'Nuevo' ? 'danger' : 
-                                        (no_conformidad.estado == 'Revisado' ? 'warning' : 
-                                        (no_conformidad.estado == 'Tratado' ? 'warning' : 
-                                        (no_conformidad.estado == 'Verificado' ? 'info' : 
-                                        (no_conformidad.estado == 'Efectivo' ? 'success' : 'secondary')))) }}">
-                                        {{ no_conformidad.estado }}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Información del Tratamiento -->
+                    {% if no_conformidad.categoria == 'no_conformidad' %}
+                        {% set hasInfo = no_conformidad.analisisCausa or no_conformidad.accionCorrectiva %}
+                    {% else %}
+                        {% set hasInfo = no_conformidad.correccion %}
+                    {% endif %}
+                    
+                    {% if hasInfo %}
+                    <h5 class="section-title">
+                        <i class="fas fa-tools"></i> Información del Tratamiento
+                    </h5>
+                    
+                    {% if no_conformidad.categoria == 'no_conformidad' %}
+                        <!-- Para NO CONFORMIDAD: mostrar análisis y acción correctiva -->
+                        {% if no_conformidad.analisisCausa %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="info-label">Análisis de Causa:</label>
+                                <div class="info-text">{{ no_conformidad.analisisCausa }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if no_conformidad.accionCorrectiva %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="info-label">Acción Correctiva:</label>
+                                <div class="info-text">{{ no_conformidad.accionCorrectiva }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if no_conformidad.fechaAccionCorrectiva %}
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="info-label">Fecha de Acción Correctiva:</label>
+                                <div class="info-value">{{ no_conformidad.fechaAccionCorrectiva|date('d/m/Y') }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Para OBSERVACIÓN/OPORTUNIDAD DE MEJORA: mostrar corrección -->
+                        {% if no_conformidad.correccion %}
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="info-label">Corrección/Acción de Mejora:</label>
+                                <div class="info-text">{{ no_conformidad.correccion }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if no_conformidad.fechaCorreccion %}
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="info-label">Fecha de Corrección:</label>
+                                <div class="info-value">{{ no_conformidad.fechaCorreccion|date('d/m/Y') }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    
+                    <!-- Información de Verificaciones -->
+                    {% if no_conformidad.estado in ['verificada_correccion', 'verificada_efectividad'] %}
+                    <h5 class="section-title">
+                        <i class="fas fa-clipboard-check"></i> Información de Verificaciones
+                    </h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="info-label">
+                                {% if no_conformidad.categoria == 'no_conformidad' %}
+                                    Acción Correctiva Verificada:
+                                {% else %}
+                                    Corrección Verificada:
+                                {% endif %}
+                            </label>
+                            <div class="info-value">
+                                {% if no_conformidad.correccionVerificada is not null %}
+                                    <span class="badge badge-{{ no_conformidad.correccionVerificada ? 'success' : 'danger' }}">
+                                        {{ no_conformidad.correccionVerificada ? 'Sí' : 'No' }}
                                     </span>
-                                </dd>
-                            </dl>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    {% if no_conformidad.responsableCalidad %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Responsable de Calidad:</dt>
-                                <dd>{{ no_conformidad.responsableCalidad }}</dd>
-                            </dl>
+                        
+                        {% if no_conformidad.categoria == 'no_conformidad' and no_conformidad.estado == 'verificada_efectividad' %}
+                        <div class="col-md-4">
+                            <label class="info-label">Efectividad Verificada:</label>
+                            <div class="info-value">
+                                {% if no_conformidad.efectividadVerificada is not null %}
+                                    <span class="badge badge-{{ no_conformidad.efectividadVerificada ? 'success' : 'danger' }}">
+                                        {{ no_conformidad.efectividadVerificada ? 'Sí' : 'No' }}
+                                    </span>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    {% if no_conformidad.imagen %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Imagen:</dt>
-                                <dd>
-                                    <a href="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" target="_blank">
-                                        <img src="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" alt="Imagen" class="img-fluid" style="max-width: 300px;">
-                                    </a>
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% if no_conformidad.documento %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="dl-horizontal">
-                                <dt>Documento:</dt>
-                                <dd>
-                                    <a href="{{ vich_uploader_asset(no_conformidad, 'documentoFile') }}" target="_blank" class="btn btn-info btn-sm">
-                                        <i class="fa fa-file-pdf"></i> Ver documento
-                                    </a>
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-                    {% endif %}
-                    <div class="row">
+                    
+                    {% if no_conformidad.comentariosVerificacion %}
+                    <div class="row mb-4">
                         <div class="col-md-12">
-                            <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning">
-                                <i class="fa fa-edit"></i> Editar
+                            <label class="info-label">Comentarios de Verificación:</label>
+                            <div class="info-text">{{ no_conformidad.comentariosVerificacion }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    
+                    <!-- Información de Asignación -->
+                    {% if no_conformidad.asignadoA %}
+                    <h5 class="section-title">
+                        <i class="fas fa-user-check"></i> Información de Asignación
+                    </h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="info-label">Asignado a:</label>
+                            <div class="info-value">
+                                {% if no_conformidad.asignadoA.persona %}
+                                    {{ no_conformidad.asignadoA.persona.apellido ~ ', ' ~ no_conformidad.asignadoA.persona.nombre }}
+                                {% else %}
+                                    {{ no_conformidad.asignadoA.username|default(no_conformidad.asignadoA.email) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Archivos adjuntos -->
+                    {% if no_conformidad.adjuntos|length > 0 %}
+                    <h5 class="section-title">
+                        <i class="fas fa-paperclip"></i> Archivos Adjuntos
+                    </h5>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nombre del Archivo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for adjunto in no_conformidad.adjuntos %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>
+                                                <i class="fas fa-file"></i> 
+                                                {{ adjunto.nombreOriginal|default('Archivo ' ~ loop.index) }}
+                                            </td>
+                                            <td>
+                                                <a href="{{ vich_uploader_asset(adjunto, 'archivoFile') }}" 
+                                                   class="btn btn-sm btn-primary" 
+                                                   target="_blank">
+                                                    <i class="fas fa-download"></i> Descargar
+                                                </a>
+                                                <a href="{{ vich_uploader_asset(adjunto, 'archivoFile') }}" 
+                                                   class="btn btn-sm btn-info" 
+                                                   target="_blank">
+                                                    <i class="fas fa-eye"></i> Ver
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Botones de acción -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            {% if no_conformidad.estado == 'nuevo' %}
+                            <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-lg mr-2">
+                                <i class="fas fa-edit"></i> Editar
                             </a>
-                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-default">Volver al listado</a>
+                            {% endif %}
+                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Volver al listado
+                            </a>
                         </div>
                     </div>
                 </div>

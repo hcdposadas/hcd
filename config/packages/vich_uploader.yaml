@@ -134,3 +134,9 @@ vich_uploader:
       namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
       delete_on_update: true
       delete_on_remove: true
+    no_conformidad_adjuntos:
+      uri_prefix: /uploads/no_conformidad/adjuntos
+      upload_destination: '%kernel.project_dir%/public/uploads/no_conformidad/adjuntos'
+      namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+      delete_on_update: true
+      delete_on_remove: true

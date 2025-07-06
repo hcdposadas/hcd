@@ -35,8 +35,8 @@ class TextoDefinitivoExpedienteAdjunto extends BaseClass {
 	 */
 	private $textoDefinitivo;
 
-	public function __toString(): ?string {
-		return $this->expediente->__toString();
+	public function __toString(): string {
+		return $this->expediente ? $this->expediente->__toString() : "";
 	}
 
 

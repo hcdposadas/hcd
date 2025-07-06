@@ -3,15 +3,50 @@
 {% block title %}Editar No Conformidad{% endblock %}
 
 {% block body %}
+    <style>
+        .card-header {
+            background-color: #ffc107;
+            color: #212529;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #212529;
+        }
+        .btn-lg {
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+        }
+    </style>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Editar No Conformidad</h3>
+                    <i class="fas fa-edit"></i> Editar No Conformidad #{{ no_conformidad.id }}
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
-                    <div class="row">
+                    
+                    <!-- Información básica -->
+                    <h5 class="section-title">
+                        <i class="fas fa-info-circle"></i> Información General
+                    </h5>
+                    <div class="row mb-3">
                         <div class="col-md-6">
                             {{ form_row(form.area) }}
                         </div>
@@ -19,7 +54,7 @@
                             {{ form_row(form.empleado) }}
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-md-6">
                             {{ form_row(form.origen) }}
                         </div>
@@ -27,45 +62,63 @@
                             {{ form_row(form.categoria) }}
                         </div>
                     </div>
-                    <div class="row">
+                    
+                    <!-- Descripción del hallazgo -->
+                    <h5 class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i> Descripción del Hallazgo
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ form_row(form.descripcionHallazgo) }}
+                        </div>
+                    </div>
+                    
+                    <!-- Información normativa -->
+                    <h5 class="section-title">
+                        <i class="fas fa-book"></i> Información Normativa
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            {{ form_row(form.norma) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.pgcd) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.requisitoEspecifico) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_row(form.requisitoLegal) }}
+                        </div>
+                    </div>
+                    <div class="row mb-3" id="requisito-container">
                         <div class="col-md-12">
                             {{ form_row(form.requisito) }}
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.estado) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.responsable_calidad) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.imagenFile) }}
-                            {% if no_conformidad.imagen %}
-                                <div class="mt-2">
-                                    <a href="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" target="_blank">
-                                        <img src="{{ vich_uploader_asset(no_conformidad, 'imagenFile') }}" alt="Imagen actual" class="img-fluid" style="max-width: 200px;">
-                                    </a>
                                 </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.documentoFile) }}
-                            {% if no_conformidad.documento %}
-                                <div class="mt-2">
-                                    <a href="{{ vich_uploader_asset(no_conformidad, 'documentoFile') }}" target="_blank" class="btn btn-info btn-sm">
-                                        <i class="fa fa-file-pdf"></i> Ver documento actual
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row">
+                    
+                    <!-- Archivos adjuntos -->
+                    <h5 class="section-title">
+                        <i class="fas fa-paperclip"></i> Archivos Adjuntos
+                    </h5>
+                    <div class="row mb-4">
                         <div class="col-md-12">
-                            <button class="btn btn-primary">Guardar cambios</button>
-                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-default">Volver al listado</a>
+                            {{ form_row(form.adjuntos) }}
+                        </div>
+                    </div>
+                    
+                    {# Estado - Eliminado según solicitud para no permitir edición #}
+                    {{ form_widget(form.estado, {'attr': {'style': 'display:none;'}}) }}
+                    
+                    <!-- Botones -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <button class="btn btn-warning btn-lg mr-2">
+                                <i class="fas fa-save"></i> GUARDAR CAMBIOS
+                            </button>
+                            <a href="{{ path('no_conformidad_index') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Volver al listado
+                            </a>
                         </div>
                     </div>
                     {{ form_end(form) }}
@@ -80,6 +133,42 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2();
+            
+            // Función para mostrar/ocultar el campo requisito
+            function toggleRequisitoField() {
+                var requisitoLegalValue = $('select[name*="requisitoLegal"]').val();
+                
+                // Verificar si el valor es "Sí" (true, 1, '1', 'true')
+                if (requisitoLegalValue === '1' || requisitoLegalValue === 'true' || requisitoLegalValue === true || requisitoLegalValue === 1) {
+                    $('#requisito-container').show();
+                    // Hacer el campo requerido cuando se muestra
+                    $('textarea[name*="requisito"]').prop('required', true);
+                    $('textarea[name*="requisito"]').attr('data-required', 'true');
+                } else {
+                    $('#requisito-container').hide();
+                    // Quitar el requerimiento cuando se oculta
+                    $('textarea[name*="requisito"]').prop('required', false);
+                    $('textarea[name*="requisito"]').removeAttr('data-required');
+                    // NO limpiar el campo en edición para no perder datos existentes
+                }
+            }
+            
+            // Ejecutar al cargar la página
+            toggleRequisitoField();
+            
+            // Ejecutar cuando cambie la selección de requisito legal
+            $('select[name*="requisitoLegal"]').on('change', function() {
+                toggleRequisitoField();
+            });
         });
+
+        function bootstrapCollectionBorrarItem(element) {
+            $(element).closest('tr').remove();
+        }
+
+        function inicializarPlugins(container) {
+            // Función requerida por BootstrapCollection para inicializar plugins en nuevos elementos
+            // Aquí puedes agregar inicialización de plugins específicos si es necesario
+        }
     </script>
 {% endblock %} 

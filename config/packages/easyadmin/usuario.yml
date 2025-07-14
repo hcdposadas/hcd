@@ -37,7 +37,8 @@ easy_admin:
                       "ROLE_SECTOR":"ROLE_SECTOR",
                       "ROLE_COMISION": "ROLE_COMISION",
                       "ROLE_DIGESTO": "ROLE_DIGESTO",
-                      "ROLE_ASESOR": "ROLE_ASESOR"                      
+                      "ROLE_ASESOR": "ROLE_ASESOR",
+                      "ROLE_CALIDAD": "ROLE_CALIDAD"                      
                     }
                 }
             }

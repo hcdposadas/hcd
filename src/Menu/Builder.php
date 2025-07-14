@@ -540,7 +540,7 @@ class Builder
 			if (
 				$this->authorizationChecker->isGranted('ROLE_LEGISLATIVO') &&
 				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
-				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')
+				!$this->authorizationChecker->isGranted('ROLE_DIGESTO') ||
 				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
 				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')
 			) {
@@ -851,11 +851,8 @@ $menu[$keyLista]->addChild(
 		}
 
 		// NO CONFORMIDADES
-		// if (
-		//	$this->authorizationChecker->isGranted('ROLE_CALIDAD') ||
-		//	$this->authorizationChecker->isGranted('ROLE_USER')
-		// ) {
-		if (true) {
+		// Todos los usuarios autenticados pueden ver el menú de no conformidades
+		if ($this->authorizationChecker->isGranted('ROLE_USER')) {
 			$keyNoConformidad = 'NO CONFORMIDADES';
 			$menu->addChild(
 				$keyNoConformidad,
@@ -890,16 +887,19 @@ $menu[$keyLista]->addChild(
 					)
 				);
 
-			$menu[$keyNoConformidad]
-				->addChild(
-					'Consulta Avanzada',
-					array(
-						'route'          => 'no_conformidad_consulta',
-						'attributes'     => ['class' => 'nav-item'],
-						'linkAttributes' => ['class' => 'nav-link']
-					)
-				);
-
+			// Solo mostrar consulta avanzada para ROLE_CALIDAD o ROLE_ADMIN
+			if ($this->authorizationChecker->isGranted('ROLE_CALIDAD') || 
+			    $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+				$menu[$keyNoConformidad]
+					->addChild(
+						'Consulta Avanzada',
+						array(
+							'route'          => 'no_conformidad_consulta',
+							'attributes'     => ['class' => 'nav-item'],
+							'linkAttributes' => ['class' => 'nav-link']
+						)
+					);
+			}
 
 		}
 

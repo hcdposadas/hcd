@@ -27,10 +27,96 @@ use Symfony\Component\Workflow\WorkflowInterface;
 class NoConformidadController extends AbstractController
 {
     /**
+     * Verifica si el usuario actual puede acceder a la búsqueda avanzada
+     */
+    private function canAccessAdvancedSearch(): bool
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return false;
+        }
+        
+        // Solo usuarios con ROLE_CALIDAD o ROLE_ADMIN pueden acceder a búsqueda avanzada
+        return $this->isGranted('ROLE_CALIDAD') || $this->isGranted('ROLE_ADMIN');
+    }
+    
+    /**
+     * Aplica filtros según el rol del usuario
+     */
+    private function applyRoleBasedFilters($queryBuilder, $user)
+    {
+        // Si no es ROLE_CALIDAD ni ROLE_ADMIN, aplicar restricciones
+        if (!$this->isGranted('ROLE_CALIDAD') && !$this->isGranted('ROLE_ADMIN')) {
+            // Solo puede ver las creadas por él o donde es responsable
+            $queryBuilder->andWhere('(nc.creadoPor = :user OR nc.asignadoA = :user)')
+                        ->setParameter('user', $user);
+        }
+        
+        return $queryBuilder;
+    }
+    
+    /**
+     * Verifica si el usuario puede crear no conformidades
+     */
+    private function canCreateNoConformidad(): bool
+    {
+        // Todos los usuarios pueden crear no conformidades
+        return $this->getUser() !== null;
+    }
+    
+    /**
+     * Verifica si el usuario puede tratar la no conformidad
+     */
+    private function canTreatNoConformidad(NoConformidad $noConformidad): bool
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return false;
+        }
+        
+        // ROLE_CALIDAD puede tratar cualquier no conformidad
+        if ($this->isGranted('ROLE_CALIDAD') || $this->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+        
+        // Un responsable solo puede tratar si está asignado a la no conformidad
+        return $noConformidad->getAsignadoA() === $user;
+    }
+    
+    /**
+     * Verifica si el usuario puede verificar corrección
+     */
+    private function canVerifyCorrection(NoConformidad $noConformidad): bool
+    {
+        return $this->canTreatNoConformidad($noConformidad);
+    }
+    
+    /**
+     * Verifica si el usuario puede verificar efectividad
+     */
+    private function canVerifyEffectiveness(NoConformidad $noConformidad): bool
+    {
+        return $this->canTreatNoConformidad($noConformidad);
+    }
+    
+    /**
+     * Verifica si el usuario puede revisar (aceptar/desestimar)
+     */
+    private function canReviewNoConformidad(NoConformidad $noConformidad): bool
+    {
+        // Solo ROLE_CALIDAD puede revisar
+        return $this->isGranted('ROLE_CALIDAD') || $this->isGranted('ROLE_ADMIN');
+    }
+    /**
      * @Route("/consulta", name="no_conformidad_consulta", methods={"GET"})
      */
     public function consulta(Request $request, NoConformidadRepository $repository, PaginatorInterface $paginator): Response
     {
+        // Verificar si el usuario puede acceder a búsqueda avanzada
+        if (!$this->canAccessAdvancedSearch()) {
+            $this->addFlash('error', 'No tiene permisos para acceder a la búsqueda avanzada.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
         $form = $this->createForm(NoConformidadFilterType::class);
         $form->handleRequest($request);
 
@@ -242,12 +328,16 @@ class NoConformidadController extends AbstractController
      */
     public function index(NoConformidadRepository $noConformidadRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $user = $this->getUser();
         $estado = $request->query->get('estado');
         $area = $request->query->get('area');
         $origen = $request->query->get('origen');
 
         $queryBuilder = $noConformidadRepository->createQueryBuilder('nc')
             ->orderBy('nc.id', 'DESC');
+
+        // Aplicar filtros según el rol del usuario
+        $queryBuilder = $this->applyRoleBasedFilters($queryBuilder, $user);
 
         if ($estado) {
             $queryBuilder->andWhere('nc.estado = :estado')
@@ -275,6 +365,9 @@ class NoConformidadController extends AbstractController
             'estado_filtro' => $estado,
             'area_filtro' => $area,
             'origen_filtro' => $origen,
+            'can_access_advanced_search' => $this->canAccessAdvancedSearch(),
+            'is_calidad' => $this->isGranted('ROLE_CALIDAD'),
+            'is_admin' => $this->isGranted('ROLE_ADMIN'),
         ]);
     }
 
@@ -290,6 +383,7 @@ class NoConformidadController extends AbstractController
      */
     public function indexByState(string $estado, NoConformidadRepository $noConformidadRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $user = $this->getUser();
         $area = $request->query->get('area');
         $origen = $request->query->get('origen');
         $categoria = $request->query->get('categoria');
@@ -304,6 +398,9 @@ class NoConformidadController extends AbstractController
             ->andWhere('nc.estado = :estado')
             ->setParameter('estado', $estado)
             ->orderBy('nc.id', 'DESC');
+            
+        // Aplicar filtros según el rol del usuario
+        $queryBuilder = $this->applyRoleBasedFilters($queryBuilder, $user);
 
         if ($area) {
             $queryBuilder->andWhere('nc.area = :area')
@@ -373,7 +470,10 @@ class NoConformidadController extends AbstractController
             'mes_hasta' => $mesHasta,
             'ano_hasta' => $anoHasta,
             'titulo_pagina' => 'No Conformidades ' . ($titulosEstado[$estado] ?? $estado),
-            'es_vista_estado' => true
+            'es_vista_estado' => true,
+            'can_access_advanced_search' => $this->canAccessAdvancedSearch(),
+            'is_calidad' => $this->isGranted('ROLE_CALIDAD'),
+            'is_admin' => $this->isGranted('ROLE_ADMIN'),
         ]);
     }
 
@@ -382,6 +482,11 @@ class NoConformidadController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        // Verificar permisos para crear
+        if (!$this->canCreateNoConformidad()) {
+            $this->addFlash('error', 'No tiene permisos para crear no conformidades.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
         $noConformidad = new NoConformidad();
         $noConformidad->setFecha(new \DateTime());
         
@@ -426,6 +531,21 @@ class NoConformidadController extends AbstractController
      */
     public function show(NoConformidad $noConformidad): Response
     {
+        // Pueden ver: creador, usuarios con ROLE_CALIDAD/ADMIN, y usuario asignado
+        $usuarioActual = $this->getUser();
+        $creadoPor = $noConformidad->getCreadoPor();
+        $asignadoA = $noConformidad->getAsignadoA();
+        
+        $puedeVer = $this->isGranted('ROLE_CALIDAD') || 
+                   $this->isGranted('ROLE_ADMIN') ||
+                   ($creadoPor && $creadoPor->getId() === $usuarioActual->getId()) ||
+                   ($asignadoA && $asignadoA->getId() === $usuarioActual->getId());
+        
+        if (!$puedeVer) {
+            $this->addFlash('error', 'No tiene permisos para ver esta no conformidad.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
+        
         return $this->render('no_conformidad/show.html.twig', [
             'no_conformidad' => $noConformidad,
         ]);
@@ -439,6 +559,12 @@ class NoConformidadController extends AbstractController
         // Solo permitir edición si el estado es "nuevo"
         if ($noConformidad->getEstado() !== 'nuevo') {
             $this->addFlash('error', 'Solo se pueden editar las no conformidades con estado "Nuevo".');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
+        
+        // Solo usuarios con ROLE_CALIDAD/ADMIN pueden editar
+        if (!$this->isGranted('ROLE_CALIDAD') && !$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Solo usuarios con rol CALIDAD pueden editar no conformidades.');
             return $this->redirectToRoute('no_conformidad_index');
         }
         
@@ -481,6 +607,11 @@ class NoConformidadController extends AbstractController
      */
     public function review(Request $request, NoConformidad $noConformidad, WorkflowInterface $noConformidadStateMachine): Response
     {
+        // Verificar permisos para revisar
+        if (!$this->canReviewNoConformidad($noConformidad)) {
+            $this->addFlash('error', 'No tiene permisos para revisar esta no conformidad.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
         $form = $this->createForm(ReviewType::class, $noConformidad);
         $form->handleRequest($request);
 
@@ -519,7 +650,11 @@ class NoConformidadController extends AbstractController
      */
     public function treat(Request $request, NoConformidad $noConformidad, WorkflowInterface $noConformidadStateMachine): Response
     {
-        // $this->denyAccessUnlessGranted('HALLAZGO_EDIT', $noConformidad);
+        // Verificar permisos para tratar
+        if (!$this->canTreatNoConformidad($noConformidad)) {
+            $this->addFlash('error', 'No tiene permisos para tratar esta no conformidad.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
 
         $form = $this->createForm(TreatType::class, $noConformidad);
         $form->handleRequest($request);
@@ -550,6 +685,11 @@ class NoConformidadController extends AbstractController
      */
     public function accept(Request $request, NoConformidad $noConformidad, WorkflowInterface $noConformidadStateMachine): Response
     {
+        // Solo ROLE_CALIDAD puede aceptar
+        if (!$this->isGranted('ROLE_CALIDAD') && !$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'No tiene permisos para aceptar esta no conformidad.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
         if ($request->isMethod('POST')) {
             $decision = $request->request->get('decision');
             $explicacionRevision = $request->request->get('explicacion_revision');
@@ -613,6 +753,11 @@ class NoConformidadController extends AbstractController
      */
     public function verifyCorrection(Request $request, NoConformidad $noConformidad, WorkflowInterface $noConformidadStateMachine): Response
     {
+        // Verificar permisos para verificar corrección
+        if (!$this->canVerifyCorrection($noConformidad)) {
+            $this->addFlash('error', 'No tiene permisos para verificar la corrección de esta no conformidad.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
         $form = $this->createForm(VerifyCorrectionType::class, $noConformidad);
         $form->handleRequest($request);
 
@@ -697,6 +842,11 @@ class NoConformidadController extends AbstractController
      */
     public function verifyEffectiveness(Request $request, NoConformidad $noConformidad, WorkflowInterface $noConformidadStateMachine): Response
     {
+        // Verificar permisos para verificar efectividad
+        if (!$this->canVerifyEffectiveness($noConformidad)) {
+            $this->addFlash('error', 'No tiene permisos para verificar la efectividad de esta no conformidad.');
+            return $this->redirectToRoute('no_conformidad_index');
+        }
         $form = $this->createForm(VerifyEffectivenessType::class, $noConformidad);
         $form->handleRequest($request);
 

@@ -55,9 +55,11 @@
             <a class="btn btn-primary" href="{{ path('no_conformidad_new') }}">
                 <i class="fa fa-plus"></i> Nueva No Conformidad
             </a>
-            <a class="btn btn-info" href="{{ path('no_conformidad_consulta') }}">
-                <i class="fa fa-search"></i> Consulta Avanzada
-            </a>
+            {% if can_access_advanced_search|default(false) %}
+                <a class="btn btn-info" href="{{ path('no_conformidad_consulta') }}">
+                    <i class="fa fa-search"></i> Consulta Avanzada
+                </a>
+            {% endif %}
         </div>
     </div>
 
@@ -316,38 +318,91 @@
                                     </td>
                                     <td>
                                         {% if no_conformidad.estado == 'nuevo' %}
-                                            <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Editar">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            <a href="{{ path('no_conformidad_review', {'id': no_conformidad.id}) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Revisar">
-                                                <i class="fa fa-check"></i>
-                                            </a>
+                                            {# Solo usuarios con ROLE_CALIDAD/ADMIN pueden editar #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) %}
+                                                <a href="{{ path('no_conformidad_edit', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Editar">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Solo ROLE_CALIDAD o ROLE_ADMIN pueden revisar #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) %}
+                                                <a href="{{ path('no_conformidad_review', {'id': no_conformidad.id}) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Revisar">
+                                                    <i class="fa fa-check"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Botón Ver para estado nuevo #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.creadoPor or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                            {% endif %}
                                         {% elseif no_conformidad.estado == 'revisado' %}
-                                            <a href="{{ path('no_conformidad_treat', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Tratar">
-                                                <i class="fa fa-wrench"></i>
-                                            </a>
+                                            {# ROLE_CALIDAD o el usuario asignado pueden tratar #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_treat', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Tratar">
+                                                    <i class="fa fa-wrench"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Botón Ver para estado revisado #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.creadoPor or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                            {% endif %}
                                         {% elseif no_conformidad.estado == 'tratado' %}
                                             {% if no_conformidad.analisisAceptado is same as(false) %}
-                                                <a href="{{ path('no_conformidad_treat', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Editar Tratamiento">
-                                                    <i class="fa fa-edit"></i>
-                                            </a>
-                                        {% endif %}
-                                            <a href="{{ path('no_conformidad_accept', {'id': no_conformidad.id}) }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Aceptar">
-                                                <i class="fa fa-check"></i>
-                                            </a>
+                                                {# ROLE_CALIDAD o el usuario asignado pueden editar tratamiento #}
+                                                {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.asignadoA %}
+                                                    <a href="{{ path('no_conformidad_treat', {'id': no_conformidad.id}) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Editar Tratamiento">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                            {# Solo ROLE_CALIDAD puede aceptar #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) %}
+                                                <a href="{{ path('no_conformidad_accept', {'id': no_conformidad.id}) }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Aceptar">
+                                                    <i class="fa fa-check"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Botón Ver para estado tratado #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.creadoPor or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                            {% endif %}
                                         {% elseif no_conformidad.estado == 'aceptado' %}
-                                            <a href="{{ path('no_conformidad_verify_correction', {'id': no_conformidad.id}) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Verificar Corrección">
-                                                <i class="fa fa-check-circle"></i>
-                                            </a>
+                                            {# ROLE_CALIDAD o el usuario asignado pueden verificar corrección #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_verify_correction', {'id': no_conformidad.id}) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Verificar Corrección">
+                                                    <i class="fa fa-check-circle"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Botón Ver para estado aceptado #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.creadoPor or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                            {% endif %}
                                         {% elseif no_conformidad.estado == 'verificada_correccion' and no_conformidad.categoria == 'no_conformidad' %}
-                                            <a href="{{ path('no_conformidad_verify_effectiveness', {'id': no_conformidad.id}) }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Verificar Efectividad">
-                                                <i class="fa fa-check-double"></i>
-                                            </a>
+                                            {# ROLE_CALIDAD o el usuario asignado pueden verificar efectividad #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_verify_effectiveness', {'id': no_conformidad.id}) }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Verificar Efectividad">
+                                                    <i class="fa fa-check-double"></i>
+                                                </a>
+                                            {% endif %}
+                                            {# Botón Ver para verificada_correccion de no_conformidad #}
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.creadoPor or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                            {% endif %}
                                         {% elseif no_conformidad.estado == 'verificada_efectividad' or no_conformidad.estado == 'desestimado' or no_conformidad.estado == 'verificada_correccion' %}
                                             <!-- Botón VER para casos cerrados o desestimados -->
-                                            <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
-                                                <i class="fa fa-eye"></i> Ver
-                                            </a>
+                                            {% if is_calidad|default(false) or is_admin|default(false) or app.user == no_conformidad.creadoPor or app.user == no_conformidad.asignadoA %}
+                                                <a href="{{ path('no_conformidad_show', {'id': no_conformidad.id}) }}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="Ver detalle">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                 </tr>

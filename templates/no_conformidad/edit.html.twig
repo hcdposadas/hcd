@@ -31,6 +31,11 @@
             font-size: 1.1rem;
             padding: 0.75rem 1.5rem;
         }
+        
+        /* Estilos para inputs de archivo personalizados */
+        .custom-file-input ~ .custom-file-label::after {
+            content: "Seleccionar Archivo";
+        }
     </style>
 
     <div class="row">
@@ -170,5 +175,11 @@
             // Función requerida por BootstrapCollection para inicializar plugins en nuevos elementos
             // Aquí puedes agregar inicialización de plugins específicos si es necesario
         }
+    </script>
+
+    <script>
+        $(document).on('change', '.custom-file-input', function (event) {
+            $(this).next('.custom-file-label').html(event.target.files[0].name);
+        })
     </script>
 {% endblock %} 

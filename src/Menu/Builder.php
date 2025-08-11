@@ -852,6 +852,8 @@ $menu[$keyLista]->addChild(
 
 		// NO CONFORMIDADES
 		// Todos los usuarios autenticados pueden ver el menú de no conformidades
+		// COMENTADO TEMPORALMENTE - NO CONFORMIDADES
+		/*
 		if ($this->authorizationChecker->isGranted('ROLE_USER')) {
 			$keyNoConformidad = 'NO CONFORMIDADES';
 			$menu->addChild(
@@ -902,6 +904,7 @@ $menu[$keyLista]->addChild(
 			}
 
 		}
+		*/
 
 
 

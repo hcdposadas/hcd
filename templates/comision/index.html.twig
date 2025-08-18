@@ -27,7 +27,7 @@
                             <label for="fecha" class="mr-2">Fecha:</label>
                             <input type="date" class="form-control" id="fecha" name="fecha" value="{{ fecha }}">
                         </div>
-                        {% if giro.cabecera and 'obras' in app.user.persona.cargoPersona.first.comision.nombre|lower %}
+                        {% if 'obras' in app.user.persona.cargoPersona.first.comision.nombre|lower %}
 
                         <div class="form-group mx-sm-3 mb-2">
                             <label for="estado_giro" class="mr-2">Estado:</label>

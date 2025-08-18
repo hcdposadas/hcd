@@ -42,6 +42,13 @@
 
                                     <p>El Plan de Labor ya está Cerrado.</p>
                                 </div>
+                                {% if is_granted('ROLE_PROSECRETARIO_LEGISLATIVO') or is_granted('ROLE_LEGISLATIVO') %}
+                                    <div class="mt-3">
+                                        <a href="{{ path('sesion_nueva') }}" class="btn btn-success">
+                                            <i class="fa fa-plus"></i> Crear Nueva Sesión
+                                        </a>
+                                    </div>
+                                {% endif %}
                             {% endif %}
 
 

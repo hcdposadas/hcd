@@ -35,64 +35,213 @@ class ComisionController extends AbstractController
      */
     public function index(PaginatorInterface $paginator, Request $request)
     {
-        $comision = $this->getUser()->getPersona()->getCargoPersona()->first()->getComision();
-        if (!$comision) {
-            
+        // Temporal: aumentar límite de memoria para debugging
+        ini_set('memory_limit', '512M');
+        
+        $em = $this->getDoctrine()->getManager();
+        $em->getConfiguration()->setSQLLogger(null); // Desactivar SQL logger para ahorrar memoria
+        
+        // Obtener ID del usuario actual sin cargar toda la entidad
+        $userId = $this->getUser()->getId();
+        
+        // Obtener comisión del usuario usando una consulta DQL optimizada
+        $comisionData = $em->createQuery('
+            SELECT c.id, c.peso, c.nombre
+            FROM App\Entity\Comision c
+            JOIN App\Entity\CargoPersona cp WITH cp.comision = c
+            JOIN cp.persona p
+            JOIN App\Entity\Usuario u WITH u.persona = p
+            WHERE u.id = :userId
+        ')
+        ->setParameter('userId', $userId)
+        ->setMaxResults(1)
+        ->getOneOrNullResult();
+        
+        if (!$comisionData) {
+            throw $this->createNotFoundException('No se encontró comisión para el usuario');
         }
-	$peso = $comision->getPeso();
-	
-	if ($peso){
-	$habilitado = $this->getUser()->getId() == $peso;
-	}else{
-	$habilitado = true;
-	}
-	
-        $giros = $comision->getGirosDestinos()->toArray();
-        usort($giros, function($a, $b) {
-            return $b->getId() - $a->getId();
-        });
-        $giros = array_filter($giros, function($giro) {
-            return  $giro->getProyectoBae();
-        });
+        
+        $comisionId = $comisionData['id'];
+        $peso = $comisionData['peso'];
+        $habilitado = $peso ? ($userId == $peso) : true;
+        
+        // Construir la consulta base con QueryBuilder - Solo el último giro por expediente
+        $qb = $em->getRepository(Giro::class)->createQueryBuilder('gd');
+        $qb->select('gd, pb, e, pl')  // Solo cargar las entidades necesarias
+           ->join('gd.proyectoBae', 'pb')
+           ->join('pb.expediente', 'e')
+           ->leftJoin('e.periodoLegislativo', 'pl')
+           ->where('gd.comisionDestino = :comisionId')
+           ->andWhere('pb.id IS NOT NULL')
+           ->andWhere('gd.id IN (
+               SELECT MAX(g2.id) 
+               FROM App\Entity\Giro g2 
+               JOIN g2.proyectoBae pb2
+               WHERE g2.comisionDestino = :comisionId 
+               GROUP BY pb2.expediente
+           )')
+           ->setParameter('comisionId', $comisionId)
+           ->orderBy('gd.id', 'DESC');
 
         // Filtros
         $numero = $request->query->get('numero');
         $letra = $request->query->get('letra');
         $anio = $request->query->get('anio');
         $fecha = $request->query->get('fecha');
-
-        if ($numero || $letra || $anio || $fecha) {
-            $giros = array_filter($giros, function($giro) use ($numero, $letra, $anio, $fecha) {
-                $proyectoBae = $giro->getProyectoBae();
-                if (!$proyectoBae) return false;
-
-                $expediente = $proyectoBae->getExpediente();
-                if (!$expediente) return false;
-
-                $match = true;
-                if ($numero) {
-                    $match = $match && $expediente->getExpediente() == $numero;
-                }
-                if ($letra) {
-                    $match = $match && $expediente->getLetra() == $letra;
-                }
-                if ($anio) {
-                    $periodoLegislativo = $expediente->getPeriodoLegislativo();
-                    $match = $match && ($periodoLegislativo ? $periodoLegislativo->getAnio() == $anio : $expediente->getAnio() == $anio);
-                }
-                if ($fecha) {
-                    $fechaExpediente = $expediente->getFecha() ? $expediente->getFecha()->format('Y-m-d') : null;
-                    $match = $match && $fechaExpediente == $fecha;
-                }
-                return $match;
-            });
+        $estadoGiro = $request->query->get('estado_giro', 'todos');
+        
+        // Determinar los filtros basados en el estado seleccionado
+        $soloCabecera = false;
+        $enTratamiento = false;
+        $finalizados = false;
+        
+        switch ($estadoGiro) {
+            case 'solo_cabecera':
+                $soloCabecera = true;
+                break;
+            case 'en_tratamiento':
+                $soloCabecera = true;
+                $enTratamiento = true;
+                break;
+            case 'finalizados':
+                $soloCabecera = true;
+                $finalizados = true;
+                break;
         }
+        
+        // Debug
+        error_log('Filtros: numero=' . $numero . ', letra=' . $letra . ', anio=' . $anio . 
+                  ', fecha=' . $fecha . ', estadoGiro=' . $estadoGiro);
 
-        $giros = $paginator->paginate(
-            $giros,
-            $request->query->get('page', 1),
-            10
-        );
+        if ($numero) {
+            $qb->andWhere('e.expediente = :numero')
+               ->setParameter('numero', $numero);
+        }
+        
+        if ($letra) {
+            $qb->andWhere('e.letra = :letra')
+               ->setParameter('letra', $letra);
+        }
+        
+        if ($anio) {
+            $qb->andWhere('(pl.anio = :anio OR (pl.anio IS NULL AND e.anio = :anio))')
+               ->setParameter('anio', $anio);
+        }
+        
+        if ($fecha) {
+            $qb->andWhere('DATE(e.fecha) = :fecha')
+               ->setParameter('fecha', $fecha);
+        }
+        
+        if ($soloCabecera) {
+            $qb->andWhere('gd.cabecera = true');
+        }
+        
+        // Los filtros en_tratamiento y finalizados se aplicarán después
+        
+        // Si está activo en_tratamiento o finalizados, necesitamos obtener todos los resultados primero
+        if ($enTratamiento || $finalizados) {
+            // Obtener todos los giros sin paginar para poder filtrar
+            $allGiros = $qb->getQuery()->getResult();
+            
+            // Filtrar por último giro administrativo
+            $girosToShow = [];
+            foreach ($allGiros as $giro) {
+                if ($giro->getProyectoBae() && $giro->getProyectoBae()->getExpediente()) {
+                    $expedienteId = $giro->getProyectoBae()->getExpediente()->getId();
+                    $ultimoGiro = $em->getRepository(GiroAdministrativo::class)
+                        ->createQueryBuilder('ga')
+                        ->select('ad.nombre')
+                        ->join('ga.areaDestino', 'ad')
+                        ->where('ga.expediente = :expedienteId')
+                        ->setParameter('expedienteId', $expedienteId)
+                        ->orderBy('ga.id', 'DESC')
+                        ->setMaxResults(1)
+                        ->getQuery()
+                        ->getOneOrNullResult();
+                    
+                    $ultimoGiroNombre = $ultimoGiro ? $ultimoGiro['nombre'] : null;
+                    
+                    // Verificar si el último giro fue a archivo o finalizado
+                    $esArchivoOFinalizado = false;
+                    if ($ultimoGiroNombre) {
+                        $nombreLower = strtolower($ultimoGiroNombre);
+                        if (strpos($nombreLower, 'archivo') !== false || strpos($nombreLower, 'finalizado') !== false) {
+                            $esArchivoOFinalizado = true;
+                        }
+                    }
+                    
+                    // Aplicar el filtro correspondiente
+                    if ($enTratamiento && !$esArchivoOFinalizado) {
+                        // En tratamiento: mostrar solo los que NO están en archivo o finalizado
+                        $girosToShow[] = $giro;
+                    } elseif ($finalizados && $esArchivoOFinalizado) {
+                        // Finalizados: mostrar solo los que SÍ están en archivo o finalizado
+                        $girosToShow[] = $giro;
+                    }
+                }
+            }
+            
+            // Paginar los resultados filtrados
+            $giros = $paginator->paginate(
+                $girosToShow,
+                $request->query->get('page', 1),
+                10
+            );
+        } else {
+            // Si no hay filtros especiales, paginar normalmente
+            $query = $qb->getQuery();
+            $giros = $paginator->paginate(
+                $query,
+                $request->query->get('page', 1),
+                10
+            );
+        }
+        
+        // Obtener el último giro administrativo para cada expediente paginado
+        $ultimosGiros = [];
+        
+        // Si no se procesaron filtros especiales arriba, obtener los últimos giros ahora
+        if (!$enTratamiento && !$finalizados) {
+            foreach ($giros as $giro) {
+                if ($giro->getProyectoBae() && $giro->getProyectoBae()->getExpediente()) {
+                    $expedienteId = $giro->getProyectoBae()->getExpediente()->getId();
+                    $ultimoGiro = $em->getRepository(GiroAdministrativo::class)
+                        ->createQueryBuilder('ga')
+                        ->select('ad.nombre')
+                        ->join('ga.areaDestino', 'ad')
+                        ->where('ga.expediente = :expedienteId')
+                        ->setParameter('expedienteId', $expedienteId)
+                        ->orderBy('ga.id', 'DESC')
+                        ->setMaxResults(1)
+                        ->getQuery()
+                        ->getOneOrNullResult();
+                    
+                    $ultimoGiroNombre = $ultimoGiro ? $ultimoGiro['nombre'] : null;
+                    $ultimosGiros[$expedienteId] = $ultimoGiroNombre;
+                }
+            }
+        } else {
+            // Si se procesaron filtros especiales, obtener los últimos giros de los resultados paginados
+            foreach ($giros as $giro) {
+                if ($giro->getProyectoBae() && $giro->getProyectoBae()->getExpediente()) {
+                    $expedienteId = $giro->getProyectoBae()->getExpediente()->getId();
+                    $ultimoGiro = $em->getRepository(GiroAdministrativo::class)
+                        ->createQueryBuilder('ga')
+                        ->select('ad.nombre')
+                        ->join('ga.areaDestino', 'ad')
+                        ->where('ga.expediente = :expedienteId')
+                        ->setParameter('expedienteId', $expedienteId)
+                        ->orderBy('ga.id', 'DESC')
+                        ->setMaxResults(1)
+                        ->getQuery()
+                        ->getOneOrNullResult();
+                    
+                    $ultimoGiroNombre = $ultimoGiro ? $ultimoGiro['nombre'] : null;
+                    $ultimosGiros[$expedienteId] = $ultimoGiroNombre;
+                }
+            }
+        }
 
         return $this->render('comision/index.html.twig', [
             'controller_name' => 'ComisionController',
@@ -101,8 +250,95 @@ class ComisionController extends AbstractController
             'numero' => $numero,
             'letra' => $letra,
             'anio' => $anio,
-            'fecha' => $fecha
+            'fecha' => $fecha,
+            'estado_giro' => $estadoGiro,
+            'solo_cabecera' => $soloCabecera,
+            'en_tratamiento' => $enTratamiento,
+            'finalizados' => $finalizados,
+            'ultimosGiros' => $ultimosGiros
         ]);
+
+        // Nunca se ejecutará; pero si decidimos usar JsonResponse u otra cosa podemos
+        // liberar la relación pesada de Persona antes de que Symfony serialice el token.
+        // Mantengo el código comentado por si se requiere en otros métodos.
+        /*
+        $user = $this->getUser();
+        if ($user) {
+            // No queremos que se serialice toda la gráfica de Persona -> CargoPersona -> …
+            $user->setPersona(null);
+        }
+        */
+    }
+
+    /**
+     * @Route("/comision/girar-finalizado/{id}", name="comision_girar_finalizado")
+     */
+    public function girarFinalizado($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        // Verificar que el usuario pertenece a la comisión de obras
+        $comision = $this->getUser()->getPersona()->getCargoPersona()->first()->getComision();
+        if (!$comision || strpos(strtolower($comision->getNombre()), 'obras') === false) {
+            $this->addFlash('error', 'No tiene permisos para realizar esta acción.');
+            return $this->redirectToRoute('comision_index');
+        }
+        
+        // Obtener el giro
+        $giro = $em->getRepository(Giro::class)->find($id);
+        if (!$giro || !$giro->getCabecera()) {
+            $this->addFlash('error', 'Giro no encontrado o no es cabecera.');
+            return $this->redirectToRoute('comision_index');
+        }
+        
+        $expediente = $giro->getProyectoBae()->getExpediente();
+        
+        // Buscar el área "Finalizado"
+        $areaFinalizado = $em->getRepository(AreaAdministrativa::class)
+            ->createQueryBuilder('a')
+            ->where('LOWER(a.nombre) LIKE :nombre')
+            ->setParameter('nombre', '%finalizado%')
+            ->getQuery()
+            ->getOneOrNullResult();
+            
+        if (!$areaFinalizado) {
+            $this->addFlash('error', 'No se encontró el área "Finalizado".');
+            return $this->redirectToRoute('comision_index');
+        }
+        
+        // Buscar un área administrativa genérica o la primera disponible
+        $areaOrigen = $em->getRepository(AreaAdministrativa::class)
+            ->createQueryBuilder('a')
+            ->where('LOWER(a.nombre) LIKE :comisiones OR LOWER(a.nombre) LIKE :hcd OR LOWER(a.nombre) LIKE :concejo')
+            ->setParameter('comisiones', '%comision%')
+            ->setParameter('hcd', '%hcd%')
+            ->setParameter('concejo', '%concejo%')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+            
+        if (!$areaOrigen) {
+            // Si no se encuentra ninguna, usar la primera área administrativa disponible
+            $areaOrigen = $em->getRepository(AreaAdministrativa::class)->findOneBy([]);
+        }
+        
+        // Crear el giro administrativo
+        $giroAdministrativo = new GiroAdministrativo();
+        $giroAdministrativo->setFechaGiro(new \DateTime());
+        if ($areaOrigen) {
+            $giroAdministrativo->setAreaOrigen($areaOrigen);
+        }
+        $giroAdministrativo->setAreaDestino($areaFinalizado);
+        $giroAdministrativo->setExpediente($expediente);
+        $giroAdministrativo->setTexto('Expediente finalizado desde la comisión de ' . $comision->getNombre());
+        $giroAdministrativo->setEstado('FINALIZADO');
+        
+        $em->persist($giroAdministrativo);
+        $em->flush();
+        
+        $this->addFlash('success', 'El expediente ha sido girado a Finalizado exitosamente.');
+        
+        return $this->redirectToRoute('comision_index');
     }
 
     public function misDictamenes(PaginatorInterface $paginator, Request $request)

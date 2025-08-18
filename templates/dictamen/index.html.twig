@@ -56,6 +56,7 @@
                             <th>Dictamen de</th>
                             <th>Expediente</th>
                             <th>Verificación</th>
+                            <th>Comentario</th>
                             <th>Acciones</th>
                         </tr>
                         </thead>
@@ -72,7 +73,15 @@
                                     {{ dictamen.expediente }}
                                 </td>
                                 <td>{% if dictamen.aprobadoLegislativo %}ACEPTADO{% elseif dictamen.aprobadoLegislativo is same as(null) %}PENDIENTE{% else %} RECHAZADO {% endif %}</td>
-
+                                <td>
+                                    {% if dictamen.comentario %}
+                                        <span data-toggle="tooltip" title="{{ dictamen.comentario }}">
+                                            {{ dictamen.comentario|length > 50 ? dictamen.comentario|slice(0, 50) ~ '...' : dictamen.comentario }}
+                                        </span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"
                                        href="{{ path('dictamen_ver', { 'id': dictamen.id }) }}">
@@ -91,6 +100,13 @@
                                            href="{{ path('dictamenod_incorporar_a_sesion', {'dictamen': dictamen.id }) }}">
                                             <i class="fa fa-caret-square-o-right"></i> IES
                                         </a>
+                                        {% if dictamen.aprobadoLegislativo is not same as(true) and dictamen.aprobadoLegislativo is not same as('true') %}
+                                            <a class="btn btn-danger" data-toggle="tooltip" title="Eliminar Dictamen"
+                                               href="{{ path('dictamen_eliminar', { 'id': dictamen.id }) }}"
+                                               onclick="return confirm('¿Está seguro que desea eliminar este dictamen?');">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>

@@ -122,6 +122,11 @@ class Dictamen extends BaseClass
      * @var File
      */
     private $ramaFile;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $comentario;
     
     /**
      * @return string
@@ -531,6 +536,18 @@ class Dictamen extends BaseClass
     public function setRama(?string $rama): self
     {
         $this->rama = $rama;
+
+        return $this;
+    }
+
+    public function getComentario(): ?string
+    {
+        return $this->comentario;
+    }
+
+    public function setComentario(?string $comentario): self
+    {
+        $this->comentario = $comentario;
 
         return $this;
     }

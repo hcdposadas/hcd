@@ -73,3 +73,7 @@ sesiones_ver_mociones:
 sesiones_imprimir_mociones:
     path: /{id}/imprimir-mociones
     defaults: { _controller: App\Controller\SesionController::imprimirMociones }
+
+sesion_nueva:
+    path: /nueva
+    defaults: { _controller: App\Controller\SesionController::nuevaSesion }

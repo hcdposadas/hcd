@@ -27,6 +27,11 @@
             {% endif %}
             <h4>Fecha de creación: {{ dictamen.fechaCreacion|date('d/m/Y H:i') }}</h4>
             
+            {% if dictamen.comentario %}
+                <h4>Comentario:</h4>
+                <p>{{ dictamen.comentario }}</p>
+            {% endif %}
+            
             <h4>Firmantes</h4>
             {% for firmante in dictamen.firmantes | sort %}
                 {{ firmante.iniciador | title}}<br>
@@ -35,16 +40,26 @@
         </div>
         <div class="card-footer">
             {% if not is_granted('ROLE_SECRETARIO') and is_granted('ROLE_LEGISLATIVO') %}
-                                <a class="btn btn-danger" 
-                       href="{{ path('dictamen_rechazar', {'id': dictamen.id}) }}">
+                {% if dictamen.aprobadoLegislativo is same as(null) %}
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalRechazar">
                         <i class=""></i> Rechazar 
-                    </a>
-                    <a class="btn btn-success" 
-                       href="{{ path('dictamen_aprobar', {'id': dictamen.id}) }}">
+                    </button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAprobar">
                         <i class=""></i> Aprobar
+                    </button>
+                {% else %}
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalEditarComentario">
+                        <i class="fa fa-comment"></i> Editar Comentario
+                    </button>
+                {% endif %}
+                <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
+                    <i class="fa fa-edit"></i> Editar</a>
+                {% if dictamen.aprobadoLegislativo is not same as(true) and dictamen.aprobadoLegislativo is not same as('true') %}
+                    <a class="btn btn-danger" href="{{ path('dictamen_eliminar', {'id':dictamen.id}) }}"
+                       onclick="return confirm('¿Está seguro que desea eliminar este dictamen?');">
+                        <i class="fa fa-trash"></i> Eliminar
                     </a>
-            <a class="btn btn-default" href="{{ path('dictamen_editar', {'id':dictamen.id}) }}">
-                <i class="fa fa-edit"></i> Editar</a>
+                {% endif %}
 
             {% endif %}
             <a class="btn btn-default" target="_blank" href="{{ path('dictamen_imprimir', {'id':dictamen.id}) }}">
@@ -60,4 +75,82 @@
 
 
     <a class="btn btn-default" href="{{ path('dictamen_index') }}">Volver</a>
+
+    <!-- Modal Aprobar -->
+    <div class="modal fade" id="modalAprobar" tabindex="-1" role="dialog" aria-labelledby="modalAprobarLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ path('dictamen_aprobar', {'id': dictamen.id}) }}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAprobarLabel">Aprobar Dictamen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="comentarioAprobar">Comentario (opcional):</label>
+                            <textarea class="form-control" id="comentarioAprobar" name="comentario" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Aprobar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Rechazar -->
+    <div class="modal fade" id="modalRechazar" tabindex="-1" role="dialog" aria-labelledby="modalRechazarLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ path('dictamen_rechazar', {'id': dictamen.id}) }}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRechazarLabel">Rechazar Dictamen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="comentarioRechazar">Comentario (opcional):</label>
+                            <textarea class="form-control" id="comentarioRechazar" name="comentario" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Rechazar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Comentario -->
+    <div class="modal fade" id="modalEditarComentario" tabindex="-1" role="dialog" aria-labelledby="modalEditarComentarioLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ path('dictamen_editar_comentario', {'id': dictamen.id}) }}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarComentarioLabel">Editar Comentario del Dictamen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="comentarioEditar">Comentario:</label>
+                            <textarea class="form-control" id="comentarioEditar" name="comentario" rows="3">{{ dictamen.comentario }}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock body %}

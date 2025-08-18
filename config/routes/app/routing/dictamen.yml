@@ -47,3 +47,13 @@ dictamen_rechazar:
 dictamen_aprobar:
   path: /{id}/aprobar
   defaults: { _controller: App\Controller\DictamenController::aprobarDictamen }
+
+dictamen_eliminar:
+  path: /{id}/eliminar
+  defaults: { _controller: App\Controller\DictamenController::eliminarDictamen }
+  methods: [GET, POST]
+
+dictamen_editar_comentario:
+  path: /{id}/editar-comentario
+  defaults: { _controller: App\Controller\DictamenController::editarComentario }
+  methods: [POST]

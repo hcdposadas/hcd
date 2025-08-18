@@ -108,9 +108,19 @@ class DictamenController extends AbstractController
         $dictamen = $em->getRepository(Dictamen::class)->find($id);
 
         $dictamen->setAprobadoLegislativo(true);
+        
+        // Obtener el comentario del request si existe
+        $comentario = $request->request->get('comentario');
+        if ($comentario) {
+            $dictamen->setComentario($comentario);
+        }
     
         $em->flush();
 
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Dictamen aprobado correctamente'
+        );
 
         return $this->redirectToRoute('dictamen_index');
     }
@@ -122,9 +132,19 @@ class DictamenController extends AbstractController
         $dictamen = $em->getRepository(Dictamen::class)->find($id);
 
         $dictamen->setAprobadoLegislativo(false);
+        
+        // Obtener el comentario del request si existe
+        $comentario = $request->request->get('comentario');
+        if ($comentario) {
+            $dictamen->setComentario($comentario);
+        }
     
         $em->flush();
 
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Dictamen rechazado correctamente'
+        );
 
         return $this->redirectToRoute('dictamen_index');
     }
@@ -439,4 +459,84 @@ class DictamenController extends AbstractController
 				'dictamen' => $dictamen,
 			] );
 	}
+
+    public function editarComentario(Request $request, $id)
+    {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No tiene permisos para editar el comentario del Dictamen.'
+            );
+
+            return $this->redirectToRoute('dictamen_index');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $dictamen = $em->getRepository(Dictamen::class)->find($id);
+
+        if (!$dictamen) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'No se encontró el dictamen.'
+            );
+
+            return $this->redirectToRoute('dictamen_index');
+        }
+
+        $comentario = $request->request->get('comentario');
+        $dictamen->setComentario($comentario);
+        
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Comentario actualizado correctamente.'
+        );
+
+        return $this->redirectToRoute('dictamen_ver', ['id' => $id]);
+    }
+
+    public function eliminarDictamen(Request $request, $id)
+    {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No tiene permisos para eliminar un Dictamen.'
+            );
+
+            return $this->redirectToRoute('dictamen_index');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $dictamen = $em->getRepository(Dictamen::class)->find($id);
+
+        if (!$dictamen) {
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'No se encontró el dictamen.'
+            );
+
+            return $this->redirectToRoute('dictamen_index');
+        }
+
+        // Verificar que el dictamen no esté aprobado
+        if ($dictamen->getAprobadoLegislativo() === 'true' || $dictamen->getAprobadoLegislativo() === true) {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No se puede eliminar un dictamen aprobado.'
+            );
+
+            return $this->redirectToRoute('dictamen_index');
+        }
+
+        $em->remove($dictamen);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Dictamen eliminado correctamente.'
+        );
+
+        return $this->redirectToRoute('dictamen_index');
+    }
 }

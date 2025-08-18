@@ -1075,4 +1075,75 @@ class SesionController extends AbstractController {
 			] );
 	}
 
+	public function nuevaSesion(Request $request) {
+		if (!$this->get('security.authorization_checker')->isGranted('ROLE_PROSECRETARIO_LEGISLATIVO') && 
+		    !$this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
+			$this->get('session')->getFlashBag()->add(
+				'warning',
+				'No tiene permisos para crear una nueva sesión.'
+			);
+
+			return $this->redirectToRoute('sesiones_conformar_plan_de_labor_index');
+		}
+
+		$em = $this->getDoctrine()->getManager();
+		$sesion = new Sesion();
+
+		// Obtener tipos de sesión disponibles
+		$tiposSesion = $em->getRepository(Parametro::class)->findBy(['slug' => 'tipo-sesion']);
+
+		$form = $this->createFormBuilder($sesion)
+			->add('titulo', null, [
+				'label' => 'Título de la Sesión',
+				'required' => true,
+				'attr' => ['class' => 'form-control']
+			])
+			->add('fecha', null, [
+				'label' => 'Fecha',
+				'widget' => 'single_text',
+				'required' => true,
+				'attr' => ['class' => 'form-control']
+			])
+			->add('tipoSesion', null, [
+				'label' => 'Tipo de Sesión',
+				'required' => true,
+				'choices' => $tiposSesion,
+				'choice_label' => 'valor',
+				'attr' => ['class' => 'form-control']
+			])
+			->add('numeroReunion', null, [
+				'label' => 'Número de Reunión',
+				'required' => false,
+				'attr' => ['class' => 'form-control']
+			])
+			->getForm();
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			// Desactivar todas las sesiones activas
+			$sesionesActivas = $em->getRepository(Sesion::class)->findBy(['activo' => true]);
+			foreach ($sesionesActivas as $sesionActiva) {
+				$sesionActiva->setActivo(false);
+			}
+
+			// Crear la nueva sesión como activa
+			$sesion->setActivo(true);
+			
+			$em->persist($sesion);
+			$em->flush();
+
+			$this->get('session')->getFlashBag()->add(
+				'success',
+				'Sesión creada correctamente. Ahora puede crear el plan de labor.'
+			);
+
+			return $this->redirectToRoute('sesiones_conformar_plan_de_labor_index');
+		}
+
+		return $this->render('sesiones/nueva.html.twig', [
+			'form' => $form->createView()
+		]);
+	}
+
 }

@@ -27,6 +27,19 @@
                             <label for="fecha" class="mr-2">Fecha:</label>
                             <input type="date" class="form-control" id="fecha" name="fecha" value="{{ fecha }}">
                         </div>
+                        {% if giro.cabecera and 'obras' in app.user.persona.cargoPersona.first.comision.nombre|lower %}
+
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="estado_giro" class="mr-2">Estado:</label>
+                            <select class="form-control" id="estado_giro" name="estado_giro">
+                                <option value="todos" {% if estado_giro == 'todos' or not estado_giro %}selected{% endif %}>Todos</option>
+                                <option value="solo_cabecera" {% if estado_giro == 'solo_cabecera' %}selected{% endif %}>Solo giros cabecera</option>
+                                <option value="en_tratamiento" {% if estado_giro == 'en_tratamiento' %}selected{% endif %}>En tratamiento</option>
+                                <option value="finalizados" {% if estado_giro == 'finalizados' %}selected{% endif %}>Finalizados</option>
+                            </select>
+                        </div>
+                        {% endif %}
+                        
                         <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
                         <a href="{{ path('comision_index') }}" class="btn btn-secondary mb-2 ml-2">Limpiar</a>
                     </form>
@@ -52,7 +65,7 @@
                             {% if is_granted('ROLE_LEGISLATIVO') %}
                             <th style="width:30%">Extracto</th>
                             {% else %}
-                            <th>Registro municipal</th>
+                            <th>Último Giro</th>
                             {% endif %}
                             <th>Iniciador</th>
                             <th>Acción</th>
@@ -72,7 +85,7 @@
                                 {% if is_granted('ROLE_LEGISLATIVO') %}
                                 <td>{{ giro.proyectoBae.expediente.extracto }}</td>
                                 {% else %}
-                                <td>{{ giro.proyectoBae.expediente.registroMunicipal }}</td>
+                                <td>{{ ultimosGiros[giro.proyectoBae.expediente.id]|default('Sin giro administrativo') }}</td>
                                 {% endif %}
                                 <td>
                                     {% if giro.proyectoBae.expediente.iniciadores.count > 0 %}
@@ -104,8 +117,16 @@
                                         <a class="btn btn-default" data-toggle="tooltip" title="Crear Dictamen"
                                        href="{{ path('comision_dictamen_new', {id: giro.proyectoBae.expediente.id}) }}">
                                         <i class="fas fa-edit"></i>
+                                        </a>
 					{% endif %}
-                                    </a>
+                                    {% endif %}
+                                    
+                                    {% if giro.cabecera and 'obras' in app.user.persona.cargoPersona.first.comision.nombre|lower %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Girar a Finalizado"
+                                           href="{{ path('comision_girar_finalizado', {id: giro.id}) }}"
+                                           onclick="return confirm('¿Está seguro que desea girar este expediente a Finalizado?');">
+                                            <i class="fas fa-check-circle"></i>
+                                        </a>
                                     {% endif %}
                                     {#<a class="btn btn-default" target="_blank"#}
                                     {#href="{{ path('expediente_imprimir_caratula', {id: expediente.id}) }}">#}

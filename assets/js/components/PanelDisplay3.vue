@@ -147,7 +147,7 @@ body {
                   GOMEZ DE OLIVEIRA
                 </span>
                 <span  class="presentes">
-                  JIMENEZ
+                  VIGO
                 </span>
                 <span  class="presentes">
                   KOCH
@@ -245,7 +245,7 @@ body {
                       <span
                         class="texto-resultado-concejal bold text-uppercase mr-1"
                         
-                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - JIMENEZ - KOCH - MARTINEZ - MAZAL - ROMERO - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span
+                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - VIGO - KOCH - MARTINEZ - MAZAL - ROMERO - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span
                       >                      
                     </div>
                   </div>
@@ -317,18 +317,18 @@ body {
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('JIMENEZ')"
+                        v-if="resultados.votaronPositivo.includes('VIGO')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('JIMENEZ')"
+                          v-if="resultados.votaronNegativo.includes('VIGO')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('JIMENEZ')"
+                            v-if="resultados.seAbstuvieron.includes('VIGO')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>

@@ -134,7 +134,7 @@
                   GOMEZ DE OLIVEIRA
                 </span>
                 <span v-if="quorum.lista.includes(76)" class="presentes">
-                  JIMENEZ
+                  VIGO
                 </span>
                 <span v-if="quorum.lista.includes(81)" class="presentes">
                   KOCH
@@ -181,7 +181,7 @@
                   GOMEZ DE OLIVEIRA
                 </span>
                 <span v-if="!quorum.lista.includes(76)" class="ausentes">
-                  JIMENEZ
+                  VIGO
                 </span>
                 <span v-if="!quorum.lista.includes(81)" class="ausentes">
                   KOCH
@@ -355,18 +355,18 @@
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('JIMENEZ')"
+                        v-if="resultados.votaronPositivo.includes('VIGO')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('JIMENEZ')"
+                          v-if="resultados.votaronNegativo.includes('VIGO')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('JIMENEZ')"
+                            v-if="resultados.seAbstuvieron.includes('VIGO')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>

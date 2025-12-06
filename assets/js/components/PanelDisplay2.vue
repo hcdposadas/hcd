@@ -136,7 +136,7 @@
                 <span v-if="quorum.lista.includes(246)" class="presentes">
                   VIGO
                 </span>
-                <span v-if="quorum.lista.includes(81)" class="presentes">
+                <span v-if="quorum.lista.includes(247)" class="presentes">
                   ZARZA
                 </span>
                 <span v-if="quorum.lista.includes(75)" class="presentes">
@@ -183,7 +183,7 @@
                 <span v-if="!quorum.lista.includes(246)" class="ausentes">
                   VIGO
                 </span>
-                <span v-if="!quorum.lista.includes(81)" class="ausentes">
+                <span v-if="!quorum.lista.includes(247)" class="ausentes">
                   ZARZA
                 </span>
                 <span v-if="!quorum.lista.includes(75)" class="ausentes">

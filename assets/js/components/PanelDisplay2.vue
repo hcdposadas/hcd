@@ -133,19 +133,19 @@
                 <span v-if="quorum.lista.includes(96)" class="presentes">
                   GOMEZ DE OLIVEIRA
                 </span>
-                <span v-if="quorum.lista.includes(76)" class="presentes">
+                <span v-if="quorum.lista.includes(246)" class="presentes">
                   VIGO
                 </span>
-                <span v-if="quorum.lista.includes(81)" class="presentes">
+                <span v-if="quorum.lista.includes(247)" class="presentes">
                   ZARZA
                 </span>
-                <span v-if="quorum.lista.includes(75)" class="presentes">
+                <span v-if="quorum.lista.includes(248)" class="presentes">
                   HORIANSKI
                 </span>
                 <span v-if="quorum.lista.includes(78)" class="presentes">
                   MAZAL
                 </span>
-                <span v-if="quorum.lista.includes(103)" class="presentes">
+                <span v-if="quorum.lista.includes(249)" class="presentes">
                   FERNANDEZ
                 </span>
                 <span v-if="quorum.lista.includes(92)" class="presentes">
@@ -157,7 +157,7 @@
                 <span v-if="quorum.lista.includes(97)" class="presentes">
                   TRAID
                 </span>
-                <span v-if="quorum.lista.includes(31)" class="presentes">
+                <span v-if="quorum.lista.includes(250)" class="presentes">
                   MARTINEZ
                 </span>
               </div>
@@ -180,19 +180,19 @@
                 <span v-if="!quorum.lista.includes(96)" class="ausentes">
                   GOMEZ DE OLIVEIRA
                 </span>
-                <span v-if="!quorum.lista.includes(76)" class="ausentes">
+                <span v-if="!quorum.lista.includes(246)" class="ausentes">
                   VIGO
                 </span>
-                <span v-if="!quorum.lista.includes(81)" class="ausentes">
+                <span v-if="!quorum.lista.includes(247)" class="ausentes">
                   ZARZA
                 </span>
-                <span v-if="!quorum.lista.includes(75)" class="ausentes">
+                <span v-if="!quorum.lista.includes(248)" class="ausentes">
                   HORIANSKI
                 </span>
                 <span v-if="!quorum.lista.includes(78)" class="ausentes">
                   MAZAL
                 </span>
-                <span v-if="!quorum.lista.includes(103)" class="ausentes">
+                <span v-if="!quorum.lista.includes(249)" class="ausentes">
                   FERNANDEZ
                 </span>
                 <span v-if="!quorum.lista.includes(92)" class="ausentes">
@@ -204,7 +204,7 @@
                 <span v-if="!quorum.lista.includes(97)" class="ausentes">
                   TRAID
                 </span>
-                <span v-if="!quorum.lista.includes(31)" class="ausentes">
+                <span v-if="!quorum.lista.includes(250)" class="ausentes">
                   MARTINEZ
                 </span>
               </div>

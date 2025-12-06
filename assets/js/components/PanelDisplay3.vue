@@ -171,7 +171,7 @@ body {
                   TRAID
                 </span>
                 <span  class="presentes">
-                  VELAZQUEZ
+                  MARTINEZ
                 </span>
               </div>
 
@@ -245,7 +245,7 @@ body {
                       <span
                         class="texto-resultado-concejal bold text-uppercase mr-1"
                         
-                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - VIGO - ZARZA - HORIANSKI - MAZAL - FERNANDEZ - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span
+                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - VIGO - ZARZA - HORIANSKI - MAZAL - FERNANDEZ - SALOM - SCROMEDA - TRAID - MARTINEZ</span
                       >                      
                     </div>
                   </div>
@@ -600,21 +600,21 @@ body {
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('VELAZQUEZ')"
+                        v-if="resultados.votaronPositivo.includes('MARTINEZ')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
                           v-if="
-                            resultados.votaronNegativo.includes('VELAZQUEZ')
+                            resultados.votaronNegativo.includes('MARTINEZ')
                           "
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
                             v-if="
-                              resultados.seAbstuvieron.includes('VELAZQUEZ')
+                              resultados.seAbstuvieron.includes('MARTINEZ')
                             "
                             ><div class="circulo-gris"></div
                           ></span>

@@ -133,7 +133,7 @@
                 <span v-if="quorum.lista.includes(96)" class="presentes">
                   GOMEZ DE OLIVEIRA
                 </span>
-                <span v-if="quorum.lista.includes(76)" class="presentes">
+                <span v-if="quorum.lista.includes(246)" class="presentes">
                   VIGO
                 </span>
                 <span v-if="quorum.lista.includes(81)" class="presentes">
@@ -180,7 +180,7 @@
                 <span v-if="!quorum.lista.includes(96)" class="ausentes">
                   GOMEZ DE OLIVEIRA
                 </span>
-                <span v-if="!quorum.lista.includes(76)" class="ausentes">
+                <span v-if="!quorum.lista.includes(246)" class="ausentes">
                   VIGO
                 </span>
                 <span v-if="!quorum.lista.includes(81)" class="ausentes">

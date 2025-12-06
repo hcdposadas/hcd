@@ -139,7 +139,7 @@
                 <span v-if="quorum.lista.includes(247)" class="presentes">
                   ZARZA
                 </span>
-                <span v-if="quorum.lista.includes(75)" class="presentes">
+                <span v-if="quorum.lista.includes(248)" class="presentes">
                   HORIANSKI
                 </span>
                 <span v-if="quorum.lista.includes(78)" class="presentes">
@@ -186,7 +186,7 @@
                 <span v-if="!quorum.lista.includes(247)" class="ausentes">
                   ZARZA
                 </span>
-                <span v-if="!quorum.lista.includes(75)" class="ausentes">
+                <span v-if="!quorum.lista.includes(248)" class="ausentes">
                   HORIANSKI
                 </span>
                 <span v-if="!quorum.lista.includes(78)" class="ausentes">

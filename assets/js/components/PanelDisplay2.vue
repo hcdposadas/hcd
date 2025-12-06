@@ -137,16 +137,16 @@
                   VIGO
                 </span>
                 <span v-if="quorum.lista.includes(81)" class="presentes">
-                  KOCH
+                  ZARZA
                 </span>
                 <span v-if="quorum.lista.includes(75)" class="presentes">
-                  MARTINEZ
+                  HORIANSKI
                 </span>
                 <span v-if="quorum.lista.includes(78)" class="presentes">
                   MAZAL
                 </span>
                 <span v-if="quorum.lista.includes(103)" class="presentes">
-                  ROMERO
+                  FERNANDEZ
                 </span>
                 <span v-if="quorum.lista.includes(92)" class="presentes">
                   SALOM
@@ -158,7 +158,7 @@
                   TRAID
                 </span>
                 <span v-if="quorum.lista.includes(31)" class="presentes">
-                  VELAZQUEZ
+                  MARTINEZ
                 </span>
               </div>
 
@@ -184,16 +184,16 @@
                   VIGO
                 </span>
                 <span v-if="!quorum.lista.includes(81)" class="ausentes">
-                  KOCH
+                  ZARZA
                 </span>
                 <span v-if="!quorum.lista.includes(75)" class="ausentes">
-                  MARTINEZ
+                  HORIANSKI
                 </span>
                 <span v-if="!quorum.lista.includes(78)" class="ausentes">
                   MAZAL
                 </span>
                 <span v-if="!quorum.lista.includes(103)" class="ausentes">
-                  ROMERO
+                  FERNANDEZ
                 </span>
                 <span v-if="!quorum.lista.includes(92)" class="ausentes">
                   SALOM
@@ -205,7 +205,7 @@
                   TRAID
                 </span>
                 <span v-if="!quorum.lista.includes(31)" class="ausentes">
-                  VELAZQUEZ
+                  MARTINEZ
                 </span>
               </div>
             </div>
@@ -417,18 +417,18 @@
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('ROMERO')"
+                        v-if="resultados.votaronPositivo.includes('FERNANDEZ')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('ROMERO')"
+                          v-if="resultados.votaronNegativo.includes('FERNANDEZ')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('ROMERO')"
+                            v-if="resultados.seAbstuvieron.includes('FERNANDEZ')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>
@@ -563,18 +563,18 @@
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('MARTINEZ')"
+                        v-if="resultados.votaronPositivo.includes('HORIANSKI')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('MARTINEZ')"
+                          v-if="resultados.votaronNegativo.includes('HORIANSKI')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('MARTINEZ')"
+                            v-if="resultados.seAbstuvieron.includes('HORIANSKI')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>
@@ -587,15 +587,15 @@
                     style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
-                      <span v-if="resultados.votaronPositivo.includes('KOCH')">
+                      <span v-if="resultados.votaronPositivo.includes('ZARZA')">
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
-                        <span v-if="resultados.votaronNegativo.includes('KOCH')"
+                        <span v-if="resultados.votaronNegativo.includes('ZARZA')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
-                          <span v-if="resultados.seAbstuvieron.includes('KOCH')"
+                          <span v-if="resultados.seAbstuvieron.includes('ZARZA')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>
@@ -638,21 +638,21 @@
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('VELAZQUEZ')"
+                        v-if="resultados.votaronPositivo.includes('MARTINEZ')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
                           v-if="
-                            resultados.votaronNegativo.includes('VELAZQUEZ')
+                            resultados.votaronNegativo.includes('MARTINEZ')
                           "
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
                             v-if="
-                              resultados.seAbstuvieron.includes('VELAZQUEZ')
+                              resultados.seAbstuvieron.includes('MARTINEZ')
                             "
                             ><div class="circulo-gris"></div
                           ></span>

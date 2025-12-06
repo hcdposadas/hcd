@@ -140,7 +140,7 @@
                   ZARZA
                 </span>
                 <span v-if="quorum.lista.includes(75)" class="presentes">
-                  MARTINEZ
+                  HORIANSKI
                 </span>
                 <span v-if="quorum.lista.includes(78)" class="presentes">
                   MAZAL
@@ -187,7 +187,7 @@
                   ZARZA
                 </span>
                 <span v-if="!quorum.lista.includes(75)" class="ausentes">
-                  MARTINEZ
+                  HORIANSKI
                 </span>
                 <span v-if="!quorum.lista.includes(78)" class="ausentes">
                   MAZAL
@@ -563,18 +563,18 @@
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('MARTINEZ')"
+                        v-if="resultados.votaronPositivo.includes('HORIANSKI')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('MARTINEZ')"
+                          v-if="resultados.votaronNegativo.includes('HORIANSKI')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('MARTINEZ')"
+                            v-if="resultados.seAbstuvieron.includes('HORIANSKI')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>

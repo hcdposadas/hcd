@@ -159,7 +159,7 @@ body {
                   MAZAL
                 </span>
                 <span  class="presentes">
-                  ROMERO
+                  FERNANDEZ
                 </span>
                 <span  class="presentes">
                   SALOM
@@ -245,7 +245,7 @@ body {
                       <span
                         class="texto-resultado-concejal bold text-uppercase mr-1"
                         
-                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - VIGO - ZARZA - HORIANSKI - MAZAL - ROMERO - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span
+                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA - VIGO - ZARZA - HORIANSKI - MAZAL - FERNANDEZ - SALOM - SCROMEDA - TRAID - VELAZQUEZ</span
                       >                      
                     </div>
                   </div>
@@ -379,18 +379,18 @@ body {
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('ROMERO')"
+                        v-if="resultados.votaronPositivo.includes('FERNANDEZ')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('ROMERO')"
+                          v-if="resultados.votaronNegativo.includes('FERNANDEZ')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('ROMERO')"
+                            v-if="resultados.seAbstuvieron.includes('FERNANDEZ')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>

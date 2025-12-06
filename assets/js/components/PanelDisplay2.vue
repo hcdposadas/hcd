@@ -146,7 +146,7 @@
                   MAZAL
                 </span>
                 <span v-if="quorum.lista.includes(103)" class="presentes">
-                  ROMERO
+                  FERNANDEZ
                 </span>
                 <span v-if="quorum.lista.includes(92)" class="presentes">
                   SALOM
@@ -193,7 +193,7 @@
                   MAZAL
                 </span>
                 <span v-if="!quorum.lista.includes(103)" class="ausentes">
-                  ROMERO
+                  FERNANDEZ
                 </span>
                 <span v-if="!quorum.lista.includes(92)" class="ausentes">
                   SALOM
@@ -417,18 +417,18 @@
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('ROMERO')"
+                        v-if="resultados.votaronPositivo.includes('FERNANDEZ')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('ROMERO')"
+                          v-if="resultados.votaronNegativo.includes('FERNANDEZ')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('ROMERO')"
+                            v-if="resultados.seAbstuvieron.includes('FERNANDEZ')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>

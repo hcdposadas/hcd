@@ -145,7 +145,7 @@
                 <span v-if="quorum.lista.includes(78)" class="presentes">
                   MAZAL
                 </span>
-                <span v-if="quorum.lista.includes(103)" class="presentes">
+                <span v-if="quorum.lista.includes(249)" class="presentes">
                   FERNANDEZ
                 </span>
                 <span v-if="quorum.lista.includes(92)" class="presentes">
@@ -192,7 +192,7 @@
                 <span v-if="!quorum.lista.includes(78)" class="ausentes">
                   MAZAL
                 </span>
-                <span v-if="!quorum.lista.includes(103)" class="ausentes">
+                <span v-if="!quorum.lista.includes(249)" class="ausentes">
                   FERNANDEZ
                 </span>
                 <span v-if="!quorum.lista.includes(92)" class="ausentes">

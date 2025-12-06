@@ -157,7 +157,7 @@
                 <span v-if="quorum.lista.includes(97)" class="presentes">
                   TRAID
                 </span>
-                <span v-if="quorum.lista.includes(31)" class="presentes">
+                <span v-if="quorum.lista.includes(250)" class="presentes">
                   MARTINEZ
                 </span>
               </div>
@@ -204,7 +204,7 @@
                 <span v-if="!quorum.lista.includes(97)" class="ausentes">
                   TRAID
                 </span>
-                <span v-if="!quorum.lista.includes(31)" class="ausentes">
+                <span v-if="!quorum.lista.includes(250)" class="ausentes">
                   MARTINEZ
                 </span>
               </div>

@@ -137,7 +137,7 @@
                   VIGO
                 </span>
                 <span v-if="quorum.lista.includes(81)" class="presentes">
-                  KOCH
+                  ZARZA
                 </span>
                 <span v-if="quorum.lista.includes(75)" class="presentes">
                   MARTINEZ
@@ -184,7 +184,7 @@
                   VIGO
                 </span>
                 <span v-if="!quorum.lista.includes(81)" class="ausentes">
-                  KOCH
+                  ZARZA
                 </span>
                 <span v-if="!quorum.lista.includes(75)" class="ausentes">
                   MARTINEZ
@@ -587,15 +587,15 @@
                     style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
-                      <span v-if="resultados.votaronPositivo.includes('KOCH')">
+                      <span v-if="resultados.votaronPositivo.includes('ZARZA')">
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
-                        <span v-if="resultados.votaronNegativo.includes('KOCH')"
+                        <span v-if="resultados.votaronNegativo.includes('ZARZA')"
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
-                          <span v-if="resultados.seAbstuvieron.includes('KOCH')"
+                          <span v-if="resultados.seAbstuvieron.includes('ZARZA')"
                             ><div class="circulo-gris"></div
                           ></span>
                         </span>

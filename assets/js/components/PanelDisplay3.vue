@@ -263,15 +263,15 @@ body {
               <div class="col-8 padding-4">
                 <div class="row justify-content-center" style="margin-top:5%">
                   <div class="circulo-vacio">
-                    <span v-if="resultados.votaronPositivo.includes('VIGO')">
+                    <span v-if="resultados.votaronPositivo.includes('DIB')">
                       <div class="circulo-verde"></div>
                     </span>
                     <span v-else>
-                      <span v-if="resultados.votaronNegativo.includes('VIGO')"
+                      <span v-if="resultados.votaronNegativo.includes('DIB')"
                         ><div class="circulo-rojo"></div>
                       </span>
                       <span v-else>
-                        <span v-if="resultados.seAbstuvieron.includes('VIGO')"
+                        <span v-if="resultados.seAbstuvieron.includes('DIB')"
                           ><div class="circulo-gris"></div
                         ></span>
                       </span>
@@ -531,21 +531,21 @@ body {
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('DIB')"
+                        v-if="resultados.votaronPositivo.includes('VIGO')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
                           v-if="
-                            resultados.votaronNegativo.includes('DIB')
+                            resultados.votaronNegativo.includes('VIGO')
                           "
                           ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
                             v-if="
-                              resultados.seAbstuvieron.includes('DIB')
+                              resultados.seAbstuvieron.includes('VIGO')
                             "
                             ><div class="circulo-gris"></div
                           ></span>

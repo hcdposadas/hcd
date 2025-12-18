@@ -43,6 +43,6 @@ easy_admin:
             - { label: 'Tipo Relación Persona', entity: TipoRelacionPersona }
             - { label: 'Configuración', entity: Configuracion, icon: 'cog' }
             - { label: 'Usuarios', entity: Usuario, icon: 'users' }
-            - Administracion Display Pantalla
+            # - Administracion Display Pantalla
         assets:
             favicon: 'favicon.png'

@@ -11,152 +11,163 @@ namespace App\Repository;
 class GiroAdministrativoRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function getQbBuscarDestino( $data, $area=null ) {
-        $qb = $this->createQueryBuilder( 'e' );
-                $qb->join('e.expediente', 'expediente');
-                    $qb->andWhere( '(e.areaOrigen = :dependencia)' )
-                       ->setParameter( 'dependencia', $area );
-                if ( $data['extracto'] ) {
-                    $q = $data['extracto'];
-                    //			todo ver acentos
-                    $qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:extracto)' )
-                       ->setParameter( 'extracto', "%$q%" );
-                }
-                if ( $data['letra'] ) {
-                    $q = $data['letra'];
-                    $qb->andWhere( 'UPPER(expediente.letra) LIKE UPPER(:letra)' )
-                       ->setParameter( 'letra', "%$q%" );
-                }
-                if ( $data['expediente'] ) {
-                    $q = $data['expediente'];
-                    $qb->andWhere( 'UPPER(expediente.expediente) LIKE UPPER(:expediente)' )
-                       ->setParameter( 'expediente', "%$q%" );
-                }
-                if ( $data['texto'] ) {
-                    $q = $data['texto'];
-                    $qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
-                       ->setParameter( 'texto', "%$q%" );
-                }
-                if ( $data['areaDestino'] ) {
-                    $q = $data['areaDestino'];
-                    $qb->andWhere( 'e.areaDestino = :areaDestino' )
-                       ->setParameter( 'areaDestino', $q );
-                    $qb->andWhere( 'e.areaOrigen = :areaOrigen' )
-                       ->setParameter( 'areaOrigen', $area );
-                }
-                if ( $data['areaOrigen'] ) {
-                    $q = $data['areaOrigen'];
-                    $qb->andWhere( 'e.areaOrigen = :areaOrigen' )
-                       ->setParameter( 'areaOrigen', $q );
-                    $qb->andWhere( 'e.areaDestino = :areaDestino' )
-                       ->setParameter( 'areaDestino', $area );
-                }
-       
-                if ( ( $data['fecha'] ) ) {
-                    $qb->andWhere( 'e.fechaGiro = :fecha' );
-                    $qb->setParameter( 'fecha', $data['fecha'] );
-                }
-        
-                if ( $data['tipoProyecto'] ) {
-        
-                    $q = $data['tipoProyecto'];
-                    $qb->andWhere( 'e.tipoProyecto = :tipoProyecto ' )
-                       ->setParameter( 'tipoProyecto', $q );
-                }
-                if ( ( $data['anio'] ) ) {
-                
-                    $qb->innerJoin( 'expediente.periodoLegislativo', 'pl' );
-        
-                    $qb->andWhere(
-                        $qb->expr()->andX(
-                            $qb->expr()->orX(
-                                $qb->expr()->eq( 'expediente.anio', ':anio' ),
-                                $qb->expr()->eq( 'pl.anio', ':anio' )
-                            )
-                        )
-                    );
-                    $qb->setParameter( 'anio', $data['anio'] );
-                }
-                
-                $qb->orderBy('e.id', 'DESC');
-                
-        
-                return $qb;
-        
+    public function getQbBuscarDestino($data, $area = null)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.expediente', 'expediente');
+        $qb->andWhere('(e.areaOrigen = :dependencia)')
+            ->setParameter('dependencia', $area);
+        if ($data['extracto']) {
+            $q = $data['extracto'];
+            //			todo ver acentos
+            $qb->andWhere('UPPER(e.texto) LIKE UPPER(:extracto)')
+                ->setParameter('extracto', "%$q%");
+        }
+        if ($data['letra']) {
+            $q = $data['letra'];
+            $qb->andWhere('UPPER(expediente.letra) LIKE UPPER(:letra)')
+                ->setParameter('letra', "%$q%");
+        }
+        if ($data['expediente']) {
+            $q = $data['expediente'];
+            $qb->andWhere('UPPER(expediente.expediente) LIKE UPPER(:expediente)')
+                ->setParameter('expediente', "%$q%");
+        }
+        if ($data['texto']) {
+            $q = $data['texto'];
+            $qb->andWhere('UPPER(e.texto) LIKE UPPER(:texto)')
+                ->setParameter('texto', "%$q%");
+        }
+        if ($data['areaDestino']) {
+            $q = $data['areaDestino'];
+            $qb->andWhere('e.areaDestino = :areaDestino')
+                ->setParameter('areaDestino', $q);
+            $qb->andWhere('e.areaOrigen = :areaOrigen')
+                ->setParameter('areaOrigen', $area);
+        }
+        if ($data['areaOrigen']) {
+            $q = $data['areaOrigen'];
+            $qb->andWhere('e.areaOrigen = :areaOrigen')
+                ->setParameter('areaOrigen', $q);
+            $qb->andWhere('e.areaDestino = :areaDestino')
+                ->setParameter('areaDestino', $area);
+        }
+
+        if (($data['fecha'])) {
+            $qb->andWhere('e.fechaGiro = :fecha');
+            $qb->setParameter('fecha', $data['fecha']);
+        }
+
+        if ($data['tipoProyecto']) {
+
+            $q = $data['tipoProyecto'];
+            $qb->andWhere('e.tipoProyecto = :tipoProyecto ')
+                ->setParameter('tipoProyecto', $q);
+        }
+        if (($data['anio'])) {
+
+            $qb->innerJoin('expediente.periodoLegislativo', 'pl');
+
+            $qb->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->eq('expediente.anio', ':anio'),
+                        $qb->expr()->eq('pl.anio', ':anio')
+                    )
+                )
+            );
+            $qb->setParameter('anio', $data['anio']);
+        }
+
+        $qb->orderBy('e.id', 'DESC');
+
+
+        return $qb;
+    }
+
+    public function getQbBuscarOrigen($data, $area = null)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.expediente', 'expediente');
+        $qb->andWhere('(e.areaDestino = :dependencia)')
+            ->setParameter('dependencia', $area);
+        if ($data['extracto']) {
+            $q = $data['extracto'];
+            //			todo ver acentos
+            $qb->andWhere('UPPER(e.texto) LIKE UPPER(:extracto)')
+                ->setParameter('extracto', "%$q%");
+        }
+        if ($data['letra']) {
+            $q = $data['letra'];
+            $qb->andWhere('UPPER(expediente.letra) LIKE UPPER(:letra)')
+                ->setParameter('letra', "%$q%");
+        }
+        if ($data['expediente']) {
+            $q = $data['expediente'];
+            $qb->andWhere('UPPER(expediente.expediente) LIKE UPPER(:expediente)')
+                ->setParameter('expediente', "%$q%");
+        }
+        if ($data['texto']) {
+            $q = $data['texto'];
+            $qb->andWhere('UPPER(e.texto) LIKE UPPER(:texto)')
+                ->setParameter('texto', "%$q%");
+        }
+        if ($data['areaDestino']) {
+            $q = $data['areaDestino'];
+            $qb->andWhere('e.areaDestino = :areaDestino')
+                ->setParameter('areaDestino', $q);
+            $qb->andWhere('e.areaOrigen = :areaOrigen')
+                ->setParameter('areaOrigen', $area);
+        }
+        if ($data['areaOrigen']) {
+            $q = $data['areaOrigen'];
+            $qb->andWhere('e.areaOrigen = :areaOrigen')
+                ->setParameter('areaOrigen', $q);
+            $qb->andWhere('e.areaDestino = :areaDestino')
+                ->setParameter('areaDestino', $area);
+        }
+
+        if (($data['fecha'])) {
+            $qb->andWhere('e.fechaGiro = :fecha');
+            $qb->setParameter('fecha', $data['fecha']);
+        }
+
+        if ($data['tipoProyecto']) {
+
+            $q = $data['tipoProyecto'];
+            $qb->andWhere('e.tipoProyecto = :tipoProyecto ')
+                ->setParameter('tipoProyecto', $q);
+        }
+        if (($data['anio'])) {
+
+            $qb->innerJoin('expediente.periodoLegislativo', 'pl');
+
+            $qb->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->eq('expediente.anio', ':anio'),
+                        $qb->expr()->eq('pl.anio', ':anio')
+                    )
+                )
+            );
+            $qb->setParameter('anio', $data['anio']);
+        }
+
+        if (($data['estado'])) {
+            if ($data['estado'] === 'rechazado') {
+                $qb->andWhere($qb->expr()->orX(
+                    $qb->expr()->eq('e.estado', ':estado'),
+                    $qb->expr()->isNull('e.estado')
+                ))->setParameter('estado', $data['estado']);
+            } else {
+                $qb->andWhere('e.estado = :estado')
+                    ->setParameter('estado', $data['estado']);
             }
+        }
 
-            public function getQbBuscarOrigen( $data, $area=null ) {
-                $qb = $this->createQueryBuilder( 'e' );
-                        $qb->join('e.expediente', 'expediente');
-                            $qb->andWhere( '(e.areaDestino = :dependencia)' )
-                               ->setParameter( 'dependencia', $area );
-                        if ( $data['extracto'] ) {
-                            $q = $data['extracto'];
-                            //			todo ver acentos
-                            $qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:extracto)' )
-                               ->setParameter( 'extracto', "%$q%" );
-                        }
-                        if ( $data['letra'] ) {
-                            $q = $data['letra'];
-                            $qb->andWhere( 'UPPER(expediente.letra) LIKE UPPER(:letra)' )
-                               ->setParameter( 'letra', "%$q%" );
-                        }
-                        if ( $data['expediente'] ) {
-                            $q = $data['expediente'];
-                            $qb->andWhere( 'UPPER(expediente.expediente) LIKE UPPER(:expediente)' )
-                               ->setParameter( 'expediente', "%$q%" );
-                        }
-                        if ( $data['texto'] ) {
-                            $q = $data['texto'];
-                            $qb->andWhere( 'UPPER(e.texto) LIKE UPPER(:texto)' )
-                               ->setParameter( 'texto', "%$q%" );
-                        }
-                        if ( $data['areaDestino'] ) {
-                            $q = $data['areaDestino'];
-                            $qb->andWhere( 'e.areaDestino = :areaDestino' )
-                               ->setParameter( 'areaDestino', $q );
-                            $qb->andWhere( 'e.areaOrigen = :areaOrigen' )
-                               ->setParameter( 'areaOrigen', $area );
-                        }
-                        if ( $data['areaOrigen'] ) {
-                            $q = $data['areaOrigen'];
-                            $qb->andWhere( 'e.areaOrigen = :areaOrigen' )
-                               ->setParameter( 'areaOrigen', $q );
-                            $qb->andWhere( 'e.areaDestino = :areaDestino' )
-                               ->setParameter( 'areaDestino', $area );
-                        }
-               
-                        if ( ( $data['fecha'] ) ) {
-                            $qb->andWhere( 'e.fechaGiro = :fecha' );
-                            $qb->setParameter( 'fecha', $data['fecha'] );
-                        }
-                
-                        if ( $data['tipoProyecto'] ) {
-                
-                            $q = $data['tipoProyecto'];
-                            $qb->andWhere( 'e.tipoProyecto = :tipoProyecto ' )
-                               ->setParameter( 'tipoProyecto', $q );
-                        }
-                        if ( ( $data['anio'] ) ) {
-                
-                            $qb->innerJoin( 'expediente.periodoLegislativo', 'pl' );
-                
-                            $qb->andWhere(
-                                $qb->expr()->andX(
-                                    $qb->expr()->orX(
-                                        $qb->expr()->eq( 'expediente.anio', ':anio' ),
-                                        $qb->expr()->eq( 'pl.anio', ':anio' )
-                                    )
-                                )
-                            );
-                            $qb->setParameter( 'anio', $data['anio'] );
-                        }
-                        
-                        $qb->orderBy('e.id', 'DESC');
-                        
-                
-                        return $qb;
-                
-                    }
+        $qb->orderBy('e.id', 'DESC');
 
+
+        return $qb;
+    }
 }

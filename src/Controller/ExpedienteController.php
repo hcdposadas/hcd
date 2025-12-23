@@ -98,6 +98,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Expediente controller.
@@ -1687,6 +1688,15 @@ class ExpedienteController extends AbstractController
 				'method' => 'GET'
 			]
 		);
+
+		$filterType->add('estado', ChoiceType::class, [
+			'choices'  => [
+				'Abierto' => 'abierto',
+				'Pendiente' => 'pendiente',
+				'Rechazado' => 'rechazado',
+			],
+			'required' => false,
+		]);
 
 		$filterType->handleRequest($request);
 

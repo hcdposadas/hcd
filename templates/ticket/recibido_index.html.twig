@@ -136,6 +136,7 @@
                         <thead>
                         <tr>
                             <th>Id</th>
+                            <th>Área De Destino</th>
                             <th class="col-md-4">Ticket</th>
                             <th>Área De Origen</th>
                             <th>Fecha</th>
@@ -154,6 +155,7 @@
                                 <td>
                                     {{ ticket.id }}
                                 </td>
+<td>{{ ticket.areaDestino }}</td>
                                 <td>{{ ticket.texto }}
                                 {% if ticket.adjuntoNombre %}
                                     <br><a href="{{ vich_uploader_asset(ticket, 'adjuntoFile') }}" target="_blank" class="text-primary">

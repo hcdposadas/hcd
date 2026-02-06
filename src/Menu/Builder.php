@@ -542,7 +542,9 @@ class Builder
 				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
 				!$this->authorizationChecker->isGranted('ROLE_DIGESTO') ||
 				!$this->authorizationChecker->isGranted('ROLE_SECRETARIO') && 
-				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')
+				!$this->authorizationChecker->isGranted('ROLE_DIGESTO')  &&
+				!$this->authorizationChecker->isGranted('ROLE_COMISION') &&
+				!$this->authorizationChecker->isGranted('ROLE_CONCEJAL')
 			) {
 				$menu[$keyPersonal]
 					->addChild(

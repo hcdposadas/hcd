@@ -558,45 +558,56 @@ class SesionController extends AbstractController {
 
 	public function imprimirBAE( Pdf $knpSnappyPdf, Request $request, $sesionId ) {
 		$em     = $this->getDoctrine()->getManager();
-		$sesion = $em->getRepository( Sesion::class )->find( $sesionId );
+		$sesion = $em->getRepository(Sesion::class)->find($sesionId);
 
-		if ( !$this->get( 'security.authorization_checker' )->isGranted( 'ROLE_LEGISLATIVO' ) and !$this->get( 'security.authorization_checker' )->isGranted( ',ROLE_PROSECRETARIO_LEGISLATIVO' ) and  
-				$this->get( 'security.authorization_checker' )->isGranted('ROLE_DIGESTO') ) {
-			if ( $sesion->getBae()->first() && $sesion->getOd()->first() ) {
-				if ( ! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado() ) {
-					$this->get( 'session' )->getFlashBag()->add(
+		if (
+			(
+				!$this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')
+				&& !$this->get('security.authorization_checker')->isGranted('ROLE_PROSECRETARIO_LEGISLATIVO')
+				&& (
+					$this->get('security.authorization_checker')->isGranted('ROLE_COMISION')
+					|| $this->get('security.authorization_checker')->isGranted('ROLE_CONCEJAL')
+				)
+			)
+			|| $this->get('security.authorization_checker')->isGranted('ROLE_DIGESTO')
+		) {
+			if ($sesion->getBae()->first() && $sesion->getOd()->first()) {
+				if (! $sesion->getBae()->first()->getCerrado() || ! $sesion->getOd()->first()->getCerrado()) {
+					$this->get('session')->getFlashBag()->add(
 						'info',
 						'El Plan de labor aun no está conformado'
 					);
 
-					return $this->redirectToRoute( 'sesiones_index' );
+					return $this->redirectToRoute('sesiones_index');
 				}
 			}
 		}
 
 		$bae = $sesion->getBae()->first();
 
-		if ( ! $bae ) {
-			$this->get( 'session' )->getFlashBag()->add(
+		if (! $bae) {
+			$this->get('session')->getFlashBag()->add(
 				'error',
 				'El Plan de Labor no Posee Boletin de Asuntos Entrados y/u Orden del Día.'
 			);
 
-			return $this->redirectToRoute( 'sesiones_index' );
+			return $this->redirectToRoute('sesiones_index');
 		}
 
 		$title = 'Boletín de Asuntos Entrados';
 
 		$header = null;
-		if ( $bae->getCerrado() ) {
-			$header = $this->renderView( 'sesiones/encabezado_plan_de_labor.pdf.twig',
+		if ($bae->getCerrado()) {
+			$header = $this->renderView(
+				'sesiones/encabezado_plan_de_labor.pdf.twig',
 				[
 					"sesion"    => $sesion,
 					'documento' => $title
-				] );
+				]
+			);
 		}
 
-		$footer = $this->renderView( 'default/pie_pagina.pdf.twig' );
+		$footer = $this->renderView('default/pie_pagina.pdf.twig');
 
 		$proyectos = [
 			'INFORMES DEL DEPARTAMENTO EJECUTIVO'  => $bae->getInformesDeDEM(),
@@ -605,39 +616,42 @@ class SesionController extends AbstractController {
 			'PROYECTOS DEL DEFENSOR DEL PUEBLO'    => $bae->getProyectosDeDefensor(),
 		];
 
-		$html = $this->renderView( 'sesiones/boletin_asuntos_entrados.pdf.twig',
+		$html = $this->renderView(
+			'sesiones/boletin_asuntos_entrados.pdf.twig',
 			[
 				'bae'       => $bae,
 				'title'     => $title . ' - ' . $sesion->getTitulo(),
 				'proyectos' => $proyectos,
 				'sesion'    => $sesion,
-			] );
+			]
+		);
 
-//        return new Response($html);
+		//        return new Response($html);
 
 		return new Response(
-			$knpSnappyPdf->getOutputFromHtml( $html,
+			$knpSnappyPdf->getOutputFromHtml(
+				$html,
 				array(
 					'page-size'      => 'Legal',
-//					'page-width'     => '220mm',
-//					'page-height'     => '340mm',
-//					'margin-left'    => "3cm",
-//					'margin-right'   => "3cm",
+					// 'page-width'     => '220mm',
+					// 'page-height'     => '340mm',
+					// 'margin-left'    => "3cm",
+					// 'margin-right'   => "3cm",
 					'margin-top'     => "8cm",
 					'margin-bottom'  => "2cm",
 					'header-html'    => $header,
 					'header-spacing' => 5,
 					'footer-spacing' => 5,
 					'footer-html'    => $footer,
-//                    'margin-bottom' => "1cm"
+					//                    'margin-bottom' => "1cm"
 				)
-			)
-			, 200, array(
+			),
+			200,
+			array(
 				'Content-Type'        => 'application/pdf',
 				'Content-Disposition' => 'inline; filename="' . $title . ' - ' . $sesion->getTitulo() . '.pdf"'
 			)
 		);
-
 	}
 
 	public function imprimirOD( Pdf $knpSnappyPdf, Request $request, $sesionId ) {

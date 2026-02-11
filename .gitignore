@@ -54,6 +54,8 @@ yarn-error.log
 !public/uploads/expedientes/proyectos/.gitkeep
 /public/uploads/comunicados/proyectos/*
 !public/uploads/comunicados/proyectos/.gitkeep
+/public/uploads/rrmm/proyectos/*
+!public/uploads/rrmm/proyectos/.gitkeep
 
 # -- Editores -----------------------------------------
 # vim

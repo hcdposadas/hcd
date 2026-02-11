@@ -30,3 +30,9 @@ para correr el server node que se conecta a los sockets y a redis
 
 `$ npm run start`
 
+Para la impresion de expedientes firmados es necesario tener instalado
+
+- qpdf
+- ghostscript
+
+para la normalizacion de pdfs

@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Controller;
+require_once (dirname(dirname(__DIR__)).'/PDFMerger/PDFMerger.php');
 
 use App\Entity\AreaAdministrativa;
 use App\Entity\Giro;
@@ -41,12 +41,12 @@ use App\Form\NuevoGiroExpedienteDependenciaType;
 use App\Service\TimeStampManager;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Snappy\Pdf;
-use setasign\Fpdi\Fpdi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\FormError;
+use PDFMerger\PDFMerger;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -104,78 +104,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  * Expediente controller.
  *
  */
-/**
- * Compat wrapper para reemplazar PDFMerger/TCPDI usando FPDI.
- * Mantiene API: addPDF($path), merge($mode, $outputName)
- */
-class PDFMerger
-{
-	/** @var string|null */
-	private $baseDir;
-
-	/** @var string[] */
-	private $files = [];
-
-	public function __construct(?string $baseDir = null)
-	{
-		$this->baseDir = $baseDir ? rtrim($baseDir, '/') : null;
-	}
-
-	public function addPDF(string $path, $pages = 'all'): self
-	{
-		$path = trim($path);
-		if ($path === '') {
-			return $this;
-		}
-
-		// Absoluto?
-		if ($path[0] !== '/' && !preg_match('/^[A-Za-z]:\\\\/', $path)) {
-			if ($this->baseDir) {
-				$path = $this->baseDir . '/' . ltrim($path, '/');
-			}
-		}
-
-		// Normalizar
-		$path = str_replace(['\\'], '/', $path);
-
-		if (is_file($path) && is_readable($path)) {
-			$this->files[] = $path;
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @param string $mode 'browser' | 'file' | 'string' (se ignora 'browser' y devuelve string)
-	 * @param string|null $outputName si $mode == 'file', path de salida
-	 * @return string
-	 */
-	public function merge(string $mode = 'string', ?string $outputName = null): string
-	{
-		$pdf = new Fpdi();
-
-		foreach ($this->files as $file) {
-			$pageCount = $pdf->setSourceFile($file);
-
-			for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-				$tplId = $pdf->importPage($pageNo);
-				$size  = $pdf->getTemplateSize($tplId);
-
-				$pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-				$pdf->useTemplate($tplId);
-			}
-		}
-
-		if ($mode === 'file' && $outputName) {
-			$pdf->Output('F', $outputName);
-			return $outputName;
-		}
-
-		return $pdf->Output('S');
-	}
-}
-
-
 class ExpedienteController extends AbstractController
 {
 	/**
@@ -567,18 +495,18 @@ class ExpedienteController extends AbstractController
 			} else {
 				$expedientes = $em->getRepository(Expediente::class)->getQbExpedientesMesaEntradaTipo($tipoExpediente);
 				if ($this->get('security.authorization_checker')->isGranted('ROLE_MESA_ENTRADA')) { //si es mesa de entrada solo mostrar los expedientes legislativos
-					$expedientes = $expedientes->andWhere('e.expediente is not null or e.expedienteInterno is not null');
+				$expedientes = $expedientes->andWhere('e.expediente is not null or e.expedienteInterno is not null');
 				} else {
-					$expedientes = $expedientes->andWhere('e.expediente is not null ');
+					$expedientes = $expedientes->andWhere('e.expediente is not null ');	
 				}
 			}
 		}
-
+		
 		// Verificar si se solicitó exportar a Excel
 		if ($request->query->get('export') === 'excel') {
 			// Limitar a 500 registros para evitar problemas de rendimiento
 			$expedientes->setMaxResults(500);
-
+			
 			// Obtener resultados para Excel sin paginación
 			$expedientesParaExcel = $expedientes->getQuery()->getResult();
 			return $this->generarExcelExpedientes($expedientesParaExcel);
@@ -611,7 +539,7 @@ class ExpedienteController extends AbstractController
 		// Redirigir a la página principal con parámetro de exportación
 		return $this->redirectToRoute('expedientes_legislativos_index', ['export' => 'excel']);
 	}
-
+	
 	/**
 	 * Genera un archivo Excel con los expedientes proporcionados
 	 * 
@@ -622,11 +550,11 @@ class ExpedienteController extends AbstractController
 	{
 		$totalRegistros = count($expedientes);
 		$limitado = ($totalRegistros >= 500) ? '-limitado' : '';
-
+		
 		// Crear nuevo objeto Spreadsheet
 		$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
-
+		
 		// Establecer encabezados
 		$sheet->setCellValue('A1', 'ID');
 		$sheet->setCellValue('B1', 'Expediente');
@@ -634,10 +562,10 @@ class ExpedienteController extends AbstractController
 		$sheet->setCellValue('D1', 'Fecha Presentación');
 		$sheet->setCellValue('E1', 'Extracto');
 		$sheet->setCellValue('F1', 'Iniciador');
-
+		
 		// Estilo para encabezados
 		$sheet->getStyle('A1:F1')->getFont()->setBold(true);
-
+		
 		// Llenar datos
 		$row = 2;
 		foreach ($expedientes as $expediente) {
@@ -654,45 +582,45 @@ class ExpedienteController extends AbstractController
 			} elseif ($expediente->getDependencia()) {
 				$iniciadorValue = $expediente->getDependencia()->__toString();
 			}
-
+			
 			$sheet->setCellValue('A' . $row, $expediente->getId());
-			$sheet->setCellValue('B' . $row, $expediente->getExpediente() . '-' . $expediente->getLetra() . '-' .
+			$sheet->setCellValue('B' . $row, $expediente->getExpediente() . '-' . $expediente->getLetra() . '-' . 
 				($expediente->getPeriodoLegislativo() ? $expediente->getPeriodoLegislativo() : $expediente->getAnio()));
 			$sheet->setCellValue('C' . $row, $expediente->getFecha() ? $expediente->getFecha()->format('d/m/Y') : '');
 			$sheet->setCellValue('D' . $row, $expediente->getFechaPresentacion() ? $expediente->getFechaPresentacion()->format('d/m/Y') : '');
 			$sheet->setCellValue('E' . $row, $expediente->getExtracto());
 			$sheet->setCellValue('F' . $row, $iniciadorValue);
-
+			
 			$row++;
 		}
-
+		
 		// Agregar información sobre el límite si corresponde
 		if ($limitado) {
 			$sheet->setCellValue('A' . ($row + 1), 'NOTA: Se ha limitado la exportación a 500 registros para optimizar el rendimiento.');
 			$sheet->getStyle('A' . ($row + 1))->getFont()->setBold(true);
 			$sheet->mergeCells('A' . ($row + 1) . ':F' . ($row + 1));
 		}
-
+		
 		// Autoajustar anchos de columna
 		foreach (range('A', 'F') as $col) {
 			$sheet->getColumnDimension($col)->setAutoSize(true);
 		}
-
+		
 		// Generar un nombre de archivo único
 		$filename = 'expedientes_legislativos_' . $totalRegistros . '_registros' . $limitado . '_' . date('Y-m-d_H-i-s') . '.xlsx';
-
+		
 		// Crear el writer y guardar a un archivo temporal
 		$writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 		$tempFile = tempnam(sys_get_temp_dir(), 'excel_');
 		$writer->save($tempFile);
-
+		
 		// Retornar el archivo como respuesta
 		$response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($tempFile);
 		$disposition = \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT;
 		$response->setContentDisposition($disposition, $filename);
 		$response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		$response->deleteFileAfterSend(true);
-
+		
 		return $response;
 	}
 
@@ -748,19 +676,21 @@ class ExpedienteController extends AbstractController
 		}
 	}
 
-	public function showProyecto(Request $request, Expediente $expediente)
+	public function showProyecto(Request $request,Expediente $expediente)
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		$signatureForm = $this->createForm(FirmaType::class, $expediente);
+		$signatureForm= $this->createForm(FirmaType::class, $expediente);
 
 		$signatureForm->handleRequest($request);
 
 		if ($signatureForm->isSubmitted() && $signatureForm->isValid()) {
 
 			$expediente->setFechaPresentacion(new \DateTime());
-
+		
 			$em->flush();
+
+
 		}
 		return $this->render(
 			'expediente/proyecto_show.html.twig',
@@ -815,6 +745,7 @@ class ExpedienteController extends AbstractController
 				$em->persist($giroAdministrativo);
 				$toRoute = 'proyecto_show';
 				$TimeStamp->stamp($expediente);
+
 			}
 
 			$tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
@@ -916,7 +847,7 @@ class ExpedienteController extends AbstractController
 			$girosAComisionOriginal->add($giro);
 		}
 
-		$signatureForm = $this->createForm(FirmaType::class, $expediente);
+		$signatureForm= $this->createForm(FirmaType::class, $expediente);
 
 		$editForm = $this->createForm(ProyectoType::class, $expediente);
 		if ($this->get('security.authorization_checker')->isGranted('ROLE_LEGISLATIVO')) {
@@ -926,7 +857,7 @@ class ExpedienteController extends AbstractController
 		$editForm->handleRequest($request);
 		$signatureForm->handleRequest($request);
 
-		if ($signatureForm->isSubmitted() && $signatureForm->isValid()) {
+		if ($signatureForm->isSubmitted() && $signatureForm->isValid()){
 			$em->flush();
 			$this->get('session')->getFlashBag()->add(
 				'success',
@@ -934,6 +865,8 @@ class ExpedienteController extends AbstractController
 			);
 
 			return $this->redirectToRoute($toRoute, array('id' => $expediente->getId()));
+
+
 		}
 
 		if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -1045,7 +978,7 @@ class ExpedienteController extends AbstractController
 		$footer = $this->renderView('default/pie_pagina.pdf.twig');
 
 
-		$array = array(
+		$array=array(
 			'page-size'      => 'Legal',
 			//					'page-width'     => '220mm',
 			//					'page-height'     => '340mm',
@@ -1069,84 +1002,82 @@ class ExpedienteController extends AbstractController
 		);
 
 		//        return new Response($html);
-		$pdfMerge = new PDFMerger($this->getParameter('kernel.project_dir') . '/public');
+		$pdfMerge = new PDFMerger;
 
 		$filesystem = new Filesystem();
 		$filesystem->remove('filePDF.pdf');
 		$date = new \DateTime();
-		$time = $date->getTimeStamp();
-		$tmp = sys_get_temp_dir();
-		$nombre = $tmp . '/' . $time . '.pdf';
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
 
 		$knpSnappyPdf->generateFromHtml(
-			$html,
-			$nombre,
-			array(
-				'page-size'      => 'Legal',
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
 				//					'margin-left'    => "3cm",
 				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
 				//                    'margin-bottom' => "1cm"
-
-			)
-		);
-
+					
+				)
+			);
+		
 
 		$pdfMerge->addPDF($nombre);
+		
 
+		foreach ($expediente->getAnexos() as $anexo){
 
-		foreach ($expediente->getAnexos() as $anexo) {
-
-			$path = $anexo->getAnexo();
-
+			$path=$anexo->getAnexo();
+		
 			$extension = pathinfo($path);
-
+	
 			$extension = strtolower($extension['extension']);
 
-			if ($extension == 'pdf') {
-				$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 			}
+
 		}
 
-		$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 
 
-		return new Response(
-			$pdf4,
-			array(
-				'page-size'      => 'Legal',
-				//					'page-width'     => '220mm',
-				//					'page-height'     => '340mm',
-				//					'margin-left'    => "3cm",
-				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
-				//                    'margin-bottom' => "1cm"
-
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
-		);
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+	
 	}
 
 	public function imprimirProyectoBlock(Pdf $knpSnappyPdf, $hash, Request $request)
 	{
 		$em         = $this->getDoctrine()->getManager();
-		$expediente = $em->getRepository(Expediente::class)->findOneBy(array('hash' => $hash));
+		$expediente = $em->getRepository(Expediente::class)->findOneBy(array('hash'=>$hash));
 
 
 
@@ -1180,7 +1111,7 @@ class ExpedienteController extends AbstractController
 		$footer = $this->renderView('default/pie_pagina.pdf.twig');
 
 
-		$array = array(
+		$array=array(
 			'page-size'      => 'Legal',
 			//					'page-width'     => '220mm',
 			//					'page-height'     => '340mm',
@@ -1204,77 +1135,75 @@ class ExpedienteController extends AbstractController
 		);
 
 		//        return new Response($html);
-		$pdfMerge = new PDFMerger($this->getParameter('kernel.project_dir') . '/public');
+		$pdfMerge = new PDFMerger;
 
 		$filesystem = new Filesystem();
 		$filesystem->remove('filePDF.pdf');
 		$date = new \DateTime();
-		$time = $date->getTimeStamp();
-		$tmp = sys_get_temp_dir();
-		$nombre = $tmp . '/' . $time . '.pdf';
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
 
 		$knpSnappyPdf->generateFromHtml(
-			$html,
-			$nombre,
-			array(
-				'page-size'      => 'Legal',
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
 				//					'margin-left'    => "3cm",
 				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
 				//                    'margin-bottom' => "1cm"
-
-			)
-		);
-
+					
+				)
+			);
+		
 
 		$pdfMerge->addPDF($nombre);
 
-		foreach ($expediente->getAnexos() as $anexo) {
+		foreach ($expediente->getAnexos() as $anexo){
 
-			$path = $anexo->getAnexo();
-
+			$path=$anexo->getAnexo();
+		
 			$extension = pathinfo($path);
-
+	
 			$extension = strtolower($extension['extension']);
 
-			if ($extension == 'pdf') {
-				$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 			}
+
 		}
 
-		$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 
 
-		return new Response(
-			$pdf4,
-			array(
-				'page-size'      => 'Legal',
-				//					'page-width'     => '220mm',
-				//					'page-height'     => '340mm',
-				//					'margin-left'    => "3cm",
-				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
-				//                    'margin-bottom' => "1cm"
-
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
-		);
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+	
 	}
 
 	public function impresionProyecto(Request $request)
@@ -1323,7 +1252,7 @@ class ExpedienteController extends AbstractController
 			//	7,
 			//	strlen($request->get('codigoReferencia'))
 			//);
-			$codigoReferencia = $request->get('codigoReferencia');
+			$codigoReferencia=$request->get('codigoReferencia');
 			//$expediente = $em->getRepository(Expediente::class)->findOneByCodigoReferencia($codigoReferencia);
 			$expediente = $em->getRepository(Expediente::class)->findOneById($codigoReferencia);
 			if (!$expediente) {
@@ -1358,7 +1287,7 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function asignarNumeroExpediente(Request $request, TimeStampManager $TimeStamp)
+	public function asignarNumeroExpediente(Request $request,TimeStampManager $TimeStamp)
 	{
 		$em = $this->getDoctrine()->getManager();
 
@@ -1437,7 +1366,7 @@ class ExpedienteController extends AbstractController
 			//);
 
 			$codigoReferencia = $request->get('codigoReferencia');
-
+			
 			$expediente = $em->getRepository(Expediente::class)->findOneById($codigoReferencia);
 
 
@@ -1607,6 +1536,7 @@ class ExpedienteController extends AbstractController
 		} else {
 
 			$expedientes = $em->getRepository(Expediente::class)->getQbExpedientesMesaEntradaTipo($tipoExpediente);
+		
 		}
 
 
@@ -1652,8 +1582,7 @@ class ExpedienteController extends AbstractController
 
 			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
 				$filterType->getData(),
-				$tipoExpediente,
-				$dependencia
+				$tipoExpediente,$dependencia
 			);
 			$expedientes = $paginator->paginate(
 				$expedientes,
@@ -1661,15 +1590,15 @@ class ExpedienteController extends AbstractController
 				10/* limit per page */
 			);
 		} else {
-			if ($dependencia) {
-				$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente' => $tipoExpediente, 'dependencia' => $dependencia]);
-				$expedientes = $paginator->paginate(
-					$expedientes,
-					$request->query->get('page', 1)/* page number */,
-					10/* limit per page */
-				);
-			} else {
-				$expedientes = null;
+			if ($dependencia){
+			$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente'=>$tipoExpediente,'dependencia'=>$dependencia]);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+			}else{
+				$expedientes=null;
 			}
 		}
 
@@ -1712,8 +1641,7 @@ class ExpedienteController extends AbstractController
 
 			$expedientes = $em->getRepository(Expediente::class)->getQbBuscar(
 				$filterType->getData(),
-				$tipoExpediente,
-				$dependencia
+				$tipoExpediente,$dependencia
 			);
 			$expedientes = $paginator->paginate(
 				$expedientes,
@@ -1721,15 +1649,15 @@ class ExpedienteController extends AbstractController
 				10/* limit per page */
 			);
 		} else {
-			if ($dependencia) {
-				$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente' => $tipoExpediente, 'dependencia' => $dependencia], ['id' => 'DESC']);
-				$expedientes = $paginator->paginate(
-					$expedientes,
-					$request->query->get('page', 1)/* page number */,
-					10/* limit per page */
-				);
-			} else {
-				$expedientes = null;
+			if ($dependencia){
+			$expedientes = $em->getRepository(Expediente::class)->findBy(['tipoExpediente'=>$tipoExpediente,'dependencia'=>$dependencia],['id'=>'DESC']);
+			$expedientes = $paginator->paginate(
+				$expedientes,
+				$request->query->get('page', 1)/* page number */,
+				10/* limit per page */
+			);
+			}else{
+				$expedientes=null;
 			}
 		}
 
@@ -1785,35 +1713,40 @@ class ExpedienteController extends AbstractController
 			);
 		} else {
 			if ($this->get('security.authorization_checker')->isGranted('ROLE_SECRETARIO')) {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino' => $area], ['id' => 'DESC'], 300);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 300);
 			} else {
-				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino' => $area], ['id' => 'DESC'], 300);
+				$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaDestino'=>$area],['id'=>'DESC'], 300);
+
 			}
-			$giros = array_filter($giros, function ($giro) {
+			$giros = array_filter($giros, function($giro) {
 				return $giro->getExpediente()->getLetra() != null;
 			});
+			
 
-
-			$giros = $paginator->paginate(
+				$giros = $paginator->paginate(
 				$giros,
 				$request->query->get('page', 1)/* page number */,
 				10/* limit per page */
 			);
-		}
-		$contador = 0;
-		foreach ($giros as $giro) {
 
-			$estado = $giro->getEstado();
-			if ($estado == 'pendiente') {
-				$contador = $contador + 1;
+
+			
+		}
+		$contador=0;
+		foreach($giros as $giro){
+			
+			$estado=$giro->getEstado();
+			if ($estado == 'pendiente'){
+				$contador=$contador+1;
 			}
+
 		}
-		if ($contador > 0) {
-			$this->get('session')->getFlashBag()->add(
-				'info',
-				'Expedientes pendientes: ' . $contador . ''
-			);
-		}
+		if ($contador > 0){
+		$this->get('session')->getFlashBag()->add(
+			'info',
+			'Expedientes pendientes: '.$contador.''
+		);
+	}
 
 
 		return $this->render(
@@ -1856,14 +1789,15 @@ class ExpedienteController extends AbstractController
 				10/* limit per page */
 			);
 		} else {
-
-			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaOrigen' => $area], ['id' => 'DESC']);
-
-			$giros = $paginator->paginate(
+			
+			$giros = $em->getRepository(GiroAdministrativo::class)->findBy(['areaOrigen'=>$area],['id'=>'DESC']);
+			
+				$giros = $paginator->paginate(
 				$giros,
 				$request->query->get('page', 1)/* page number */,
 				10/* limit per page */
 			);
+
 		}
 
 
@@ -1881,178 +1815,182 @@ class ExpedienteController extends AbstractController
 	public function showExpedienteCreado(Expediente $id)
 	{
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-		$ruta = 'expedientes_administrativos_sector_index';
+		$ruta='expedientes_administrativos_sector_index';
 
-		if ($area->getNombre() == $id->getDependencia()) {
+		if($area->getNombre() == $id->getDependencia()){
 
 
 			return $this->render(
 				'expediente/showExpedienteSector.html.twig',
-				[
+				[	
 					'ruta' => $ruta,
 					'expediente' => $id,
 				]
 			);
+
 		}
+
+		
+
 	}
 
 	public function imprimirExpedienteSector(Expediente $id)
-	{
-		$expediente = $id->getExpedienteInterno();
+    {
+        $expediente=$id->getExpedienteInterno();
 
 
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-		$iniciador = false;
-		if ($area->getNombre() == $id->getDependencia()) {
-			$iniciador = true;
+		$iniciador=false;
+		if($area->getNombre() == $id->getDependencia()){
+			$iniciador=true;
 		}
-		$giros = $id->getGiroAdministrativos();
+        $giros = $id->getGiroAdministrativos();
 
 
-		$areaGiros = false;
-		foreach ($giros as $giro) {
-			if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
-				$areaGiros = true;
-				break;
-			}
-		}
+        $areaGiros = false;
+        foreach ($giros as $giro) {
+            if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
+                $areaGiros = true;
+                break;
+            }
+        }
 
 
-		if ($areaGiros || $iniciador) {
+		if($areaGiros || $iniciador) {
 			$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
 
 			// Crear una BinaryFileResponse para el archivo PDF
 			$response = new BinaryFileResponse($pdfPath);
-
+	
 			// Configurar la cabecera para forzar la descarga del archivo
 			$response->headers->set('Content-Type', 'application/pdf');
 			$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
-
+	
 			return $response;
 		}
-	}
+
+
+    }
 
 	public function imprimirAnexoSector(AnexoExpediente $id)
-	{
-		$expediente = $id->getAnexo();
+    {
+        $expediente=$id->getAnexo();
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
 		$giros = $id->getExpediente()->getGiroAdministrativos();
 
-		$iniciador = false;
-		if ($area->getNombre() == $id->getExpediente()->getDependencia()) {
-			$iniciador = true;
+		$iniciador=false;
+		if($area->getNombre() == $id->getExpediente()->getDependencia()){
+			$iniciador=true;
+		} 
+        $areaGiros = false;
+        foreach ($giros as $giro) {
+            if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
+                $areaGiros = true;
+                break;
+            }
+        }
+
+		if($areaGiros || $iniciador) {
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/anexos/' . $expediente;
+
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
+
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+
+        return $response;
 		}
-		$areaGiros = false;
-		foreach ($giros as $giro) {
-			if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
-				$areaGiros = true;
-				break;
-			}
-		}
+    }
 
-		if ($areaGiros || $iniciador) {
-			$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/anexos/' . $expediente;
-
-			// Crear una BinaryFileResponse para el archivo PDF
-			$response = new BinaryFileResponse($pdfPath);
-
-			// Configurar la cabecera para forzar la descarga del archivo
-			$response->headers->set('Content-Type', 'application/pdf');
-			$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
-
-			return $response;
-		}
-	}
-
-
+	
 	public function imprimirProyectoFirmado(Expediente $id)
-	{
-		$expediente = $id->getExpedienteInterno();
+    {
+        $expediente=$id->getExpedienteInterno();
 
 
 
-		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/internos/' . $expediente;
 
-		// Crear una BinaryFileResponse para el archivo PDF
-		$response = new BinaryFileResponse($pdfPath);
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
 
-		// Configurar la cabecera para forzar la descarga del archivo
-		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
 
-		return $response;
-	}
+        return $response;
+    }
 
 	public function imprimirAnexoGiro(AnexoGiro $id)
-	{
-		$anexo = $id->getAnexo();
+    {
+        $anexo=$id->getAnexo();
 
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
 
 		$giros = $id->getGiro()->getExpediente()->getGiroAdministrativos();
 
-		$iniciador = false;
-		if ($area->getNombre() == $id->getGiro()->getExpediente()->getDependencia()) {
-			$iniciador = true;
+		$iniciador=false;
+		if($area->getNombre() == $id->getGiro()->getExpediente()->getDependencia()){
+			$iniciador=true;
+		} 
+
+        $areaGiros = false;
+        foreach ($giros as $giro) {
+            if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
+                $areaGiros = true;
+                break;
+            }
+        }
+
+		if($areaGiros || $iniciador) {
+        $pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/giros/anexos/' . $anexo;
+
+        // Crear una BinaryFileResponse para el archivo PDF
+        $response = new BinaryFileResponse($pdfPath);
+
+        // Configurar la cabecera para forzar la descarga del archivo
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
+
+        return $response;
 		}
-
-		$areaGiros = false;
-		foreach ($giros as $giro) {
-			if ($area == $giro->getAreaOrigen() or $area == $giro->getAreaDestino()) {
-				$areaGiros = true;
-				break;
-			}
-		}
-
-		if ($areaGiros || $iniciador) {
-			$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/giros/anexos/' . $anexo;
-
-			// Crear una BinaryFileResponse para el archivo PDF
-			$response = new BinaryFileResponse($pdfPath);
-
-			// Configurar la cabecera para forzar la descarga del archivo
-			$response->headers->set('Content-Type', 'application/pdf');
-			$response->headers->set('Content-Disposition', 'inline; filename="custom_pdf_name.pdf"');
-
-			return $response;
-		}
-	}
+    }
 
 	public function showExpedienteRecibido(GiroAdministrativo $id)
 	{
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-		$giro = $id;
-		$expediente = $giro->getExpediente();
+		$giro=$id;
+		$expediente=$giro->getExpediente();
 
-		if ($area == $giro->getAreaDestino()) {
+		if($area == $giro->getAreaDestino()){
 			$em = $this->getDoctrine()->getManager();
-			$rechazar = true;
+			$rechazar= true;
 			if ($giro->getEstado() == 'pendiente' or $giro->getEstado() == null) {
 				$giro->setEstado('abierto');
 			}
 			$em->flush();
-			$ruta = 'expedientes_administrativos_sector_recibidos';
+			$ruta= 'expedientes_administrativos_sector_recibidos';
 			return $this->render(
 				'expediente/showSector.html.twig',
-				[
-					'rechazar' => $rechazar,
-					'area' => $area->getNombre(),
+				[	'rechazar' => $rechazar,
+				'area'=> $area->getNombre(),
 					'giro' => $giro,
 					'ruta' => $ruta,
 					'expediente' => $expediente,
 				]
 			);
-		} elseif ($area == $giro->getAreaOrigen()) {
-			$rechazar = false;
-			$ruta = 'expedientes_administrativos_sector_enviados';
+		}elseif ($area == $giro->getAreaOrigen()) {
+			$rechazar= false;
+			$ruta='expedientes_administrativos_sector_enviados';
 			return $this->render(
 				'expediente/showSector.html.twig',
-				[
-					'rechazar' => $rechazar,
-					'area' => $area->getNombre(),
+				[	'rechazar' => $rechazar,
+				'area'=> $area->getNombre(),
 					'giro' => $giro,
 					'ruta' => $ruta,
 					'expediente' => $expediente,
@@ -2061,46 +1999,48 @@ class ExpedienteController extends AbstractController
 		}
 
 
-
-
+		
+		
 		return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
+
+		
 	}
 
 	public function RechazarExpedienteSector(Request $request, GiroAdministrativo $id)
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		$giro = $id;
+		$giro=$id;
 
-		$form       = $this->createForm(RechazarGiroType::class, $giro);
+		$form       = $this->createForm(RechazarGiroType::class,$giro);
 
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
 
-			if ($giro->getEstado() == 'abierto') {
-				$giro->setEstado('rechazado');
-				$em->flush();
-			}
-			return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
+		if ($giro->getEstado() == 'abierto') {
+			$giro->setEstado('rechazado');
+			$em->flush();
 		}
+		return $this->redirectToRoute('expedientes_administrativos_sector_recibidos');
+	}
+		
 
-
-		return $this->render('expediente/rejectExpedienteSector.html.twig', [
+		return $this->render('expediente/rejectExpedienteSector.html.twig',[
 			'giro' => $giro,
 			'form'       => $form->createView()
 		]);
 	}
 
 
-	public function nuevoGiroAdministrativoSector(Request $request, Expediente $id)
+	public function nuevoGiroAdministrativoSector(Request $request,Expediente $id)
 	{
 		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-
-		$expediente = $id;
+		
+		$expediente=$id;
 		$em         = $this->getDoctrine()->getManager();
-		$giro = new giroAdministrativo;
-		$form       = $this->createForm(GiroAdministrativoSectorType::class, $giro);
+		$giro=new giroAdministrativo;
+		$form       = $this->createForm(GiroAdministrativoSectorType::class,$giro);
 
 		$form->handleRequest($request);
 
@@ -2131,7 +2071,7 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function nuevoExpedienteAdministrativoSector(Request $request, TimeStampManager $TimeStamp)
+	public function nuevoExpedienteAdministrativoSector(Request $request, TimeStampManager $TimeStamp )
 	{
 
 		$em             = $this->getDoctrine()->getManager();
@@ -2146,11 +2086,11 @@ class ExpedienteController extends AbstractController
 
 
 
-		$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
-		$dependecia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area]);
-
+			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa()->getNombre();
+			$dependecia = $em->getRepository(Dependencia::class)->findOneBy(['nombre' => $area]);
+			
 		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
-		if (!$dependecia) {
+		if (!$dependecia ){
 			$dependecia = new Dependencia();
 			$dependecia->setNombre($area);
 			$em->persist($dependecia);
@@ -2159,53 +2099,54 @@ class ExpedienteController extends AbstractController
 		$expediente->setFechaPresentacion(new \DateTime());
 		$expediente->setDependencia($dependecia);
 		$expediente->setPeriodoLegislativo($periodo);
-
+		
 		$mesa        = $em->getRepository(AreaAdministrativa::class)->findOneBy([
 			'nombre' => 'Departamento de Mesa de Entradas y Salidas'
 		]);
 		$form = $this->createForm(ExpedienteAdministrativoSectorType::class, $expediente);
 
 		$form->handleRequest($request);
-		$numero = 0;
+		$numero=0;
 		if ($form->isSubmitted() && $form->isValid()) {
-			$ultimo = $em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo' => $periodo], ['expediente' => 'DESC']);
+			$ultimo = $em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo'=>$periodo],['expediente' => 'DESC']);
 
-			if ($ultimo) {
-				$numero = $ultimo->getExpediente();
+			if($ultimo){
+				$numero=$ultimo->getExpediente(); 
 			}
 
-			$nuevo = $numero + 1;
-			$existe = $em->getRepository(Expediente::class)->findOneBy(['expediente' => $nuevo, 'periodoLegislativo' => $periodo]);
-			if ($existe ==  null) {
-				$existe = $em->getRepository(ExpedienteBloqueado::class)->findOneBy(['numero' => $nuevo, 'ano' => date('Y')]);
+			$nuevo=$numero+1;
+			$existe=$em->getRepository(Expediente::class)->findOneBy(['expediente'=>$nuevo,'periodoLegislativo'=>$periodo]);
+			if($existe ==  null){
+				$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['numero'=>$nuevo,'ano'=>date('Y')]);
 			}
 
-			while ($existe != null) {
-				$nuevo = $nuevo + 1;
-				$existe = $em->getRepository(Expediente::class)->findOneBy(['expediente' => $nuevo]);
-				if ($existe ==  null) {
-					$existe = $em->getRepository(ExpedienteBloqueado::class)->findOneBy(['numero' => $nuevo, 'ano' => date('Y')]);
+			while($existe != null ){ 
+				$nuevo=$nuevo+1;
+				$existe=$em->getRepository(Expediente::class)->findOneBy(['expediente'=>$nuevo]);
+				if($existe ==  null){
+					$existe=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['numero'=>$nuevo,'ano'=>date('Y')]);
 				}
 			}
-			$giro = new giroAdministrativo;
+			$giro=new giroAdministrativo;
 
-			$date = new \DateTime();
-			$giro->setFechaGiro($date);
-			$giro->setEstado('pendiente');
-			$giro->setAreaDestino($mesa);
-			$em->persist($giro);
-
-			$expediente->addGiroAdministrativo($giro);
+				$date = new \DateTime();
+				$giro->setFechaGiro($date);
+				$giro->setEstado('pendiente');
+				$giro->setAreaDestino($mesa);
+				$em->persist($giro);
+				
+				$expediente->addGiroAdministrativo($giro);
 
 			$expediente->setExpediente($nuevo);
 
 			$expediente->setFecha($date);
 			$area = $this->getUser()->getPersona()->getCargoPersona()->first()->getAreaAdministrativa();
-			foreach ($expediente->getGiroAdministrativos() as $giro) {
+			foreach ($expediente->getGiroAdministrativos() as $giro){
 
 				$giro->setAreaOrigen($area);
 				$giro->setFechaGiro($date);
 				$giro->setEstado('pendiente');
+
 			}
 			$TimeStamp->stamp($expediente);
 
@@ -2215,37 +2156,37 @@ class ExpedienteController extends AbstractController
 
 			$em->flush();
 
-			// 			foreach ($expediente->getGirosAdministatrivos() as $giro){
-			// /* 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
-			// 			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
-			// 			$mail = $user->getEmail();
-			// 			*/
-			// 			$email=$giro->getAreaDestino()->getEmail();
+// 			foreach ($expediente->getGirosAdministatrivos() as $giro){
+// /* 			$cargo = $em->getRepository( CargoPersona::class )->findOneByAreaAdministrativa( $giro->getAreaDestino() ); 
+// 			$user  = $em->getRepository( User::class )->findOneByPersona($cargo->getPersona());
+// 			$mail = $user->getEmail();
+// 			*/
+// 			$email=$giro->getAreaDestino()->getEmail();
 
-			// 			$email=false;
-			// 			if ( $email ) {
-			// 				$asunto = 'HCD Posadas - Expediente Administrativo ' . $expediente->getNumero().' '. $expediente->getLetra(). ' '. $expediente->getAno().'';
-
-			// 				$email = ( new TemplatedEmail() )
-			// 					->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
-			// 					->to( $mail )
-			// 					->subject( $asunto )
-			// 					->htmlTemplate( 'emails/plan_de_labor.html.twig' )
-			// 					->context( [
-			// 						'sesion' => '1'
-			// 					] );
-
-			// 				try {
-			// 					$mailer->send($email);
-			// 					return true;
-			// 				} catch (TransportExceptionInterface $e) {
-			// 					// some error prevented the email sending; display an
-			// 					// error message or try to resend the message
-			// 					return false;
-			// 				}
-
-			// 			} 
-			// 		} 
+// 			$email=false;
+// 			if ( $email ) {
+// 				$asunto = 'HCD Posadas - Expediente Administrativo ' . $expediente->getNumero().' '. $expediente->getLetra(). ' '. $expediente->getAno().'';
+	
+// 				$email = ( new TemplatedEmail() )
+// 					->from( new Address( $_ENV['EMAIL_FROM'], $_ENV['EMAIL_FROM_NAME'] ) )
+// 					->to( $mail )
+// 					->subject( $asunto )
+// 					->htmlTemplate( 'emails/plan_de_labor.html.twig' )
+// 					->context( [
+// 						'sesion' => '1'
+// 					] );
+	
+// 				try {
+// 					$mailer->send($email);
+// 					return true;
+// 				} catch (TransportExceptionInterface $e) {
+// 					// some error prevented the email sending; display an
+// 					// error message or try to resend the message
+// 					return false;
+// 				}
+	
+// 			} 
+// 		} 
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Expediente creado correctamente'
@@ -2253,7 +2194,7 @@ class ExpedienteController extends AbstractController
 
 			return $this->redirectToRoute('expedientes_administrativos_sector_index');
 		}
-
+		
 		return $this->render(
 			'expediente/new_administrativo_sector.html.twig',
 			[
@@ -2264,11 +2205,10 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function bloqueadoIndex(Request $request)
-	{
-		$em = $this->getDoctrine()->getManager();
-		$bloqueados = $em->getRepository(ExpedienteBloqueado::class)->findAll();
-		$bloqueado = new ExpedienteBloqueado;
+	public function bloqueadoIndex(Request $request){
+		$em= $this->getDoctrine()->getManager();
+		$bloqueados=$em->getRepository(ExpedienteBloqueado::class)->findAll();
+		$bloqueado= new ExpedienteBloqueado;
 		$periodo = $em->getRepository(PeriodoLegislativo::class)->findOneBy(['anio' => date('Y')]);
 
 		$form = $this->createForm(BloqueadoType::class, $bloqueado);
@@ -2277,16 +2217,16 @@ class ExpedienteController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$bloqueado->setAno(date('Y'));
-			$repetido = $em->getRepository(ExpedienteBloqueado::class)->findOneBy(['ano' => date('Y'), 'numero' => $bloqueado->getNumero()]);
-			$existe = $em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo' => $periodo, 'expediente' => $bloqueado->getNumero()]);
-			if ($existe) {
+			$repetido=$em->getRepository(ExpedienteBloqueado::class)->findOneBy(['ano' => date('Y'),'numero'=>$bloqueado->getNumero()]);
+			$existe=$em->getRepository(Expediente::class)->findOneBy(['periodoLegislativo' => $periodo,'expediente'=>$bloqueado->getNumero()]);
+			if($existe){
 				$this->get('session')->getFlashBag()->add(
 					'warning',
 					'Expediente ya existe'
 				);
 				return $this->redirectToRoute('expedientes_bloqueados');
 			}
-			if ($repetido) {
+			if($repetido){
 				$this->get('session')->getFlashBag()->add(
 					'warning',
 					'Expediente ya esta bloqueado'
@@ -2313,24 +2253,23 @@ class ExpedienteController extends AbstractController
 			]
 		);
 	}
-
-	public function deleteBloqueado(ExpedienteBloqueado $id)
-	{
-		$em = $this->getDoctrine()->getManager();
+	
+	public function deleteBloqueado(ExpedienteBloqueado $id){
+		$em= $this->getDoctrine()->getManager();
 
 		$em->remove($id);
-
+		
 		$em->flush();
-		$this->get('session')->getFlashBag()->add(
-			'success',
-			'Bloqueo eliminado correctamente'
-		);
+	$this->get('session')->getFlashBag()->add(
+	'success',
+	'Bloqueo eliminado correctamente'
+);
 
 		return $this->redirectToRoute('expedientes_bloqueados');
 	}
+	
 
-
-	//agregar block
+//agregar block
 	public function nuevoExpedienteAdministrativo(Request $request)
 	{
 
@@ -2343,7 +2282,7 @@ class ExpedienteController extends AbstractController
 		$expediente->setTipoExpediente($tipoExpediente);
 
 		$form = $this->createForm(ExpedienteAdministrativoType::class, $expediente);
-
+	
 
 		$form->handleRequest($request);
 
@@ -2352,14 +2291,14 @@ class ExpedienteController extends AbstractController
 			$em->persist($expediente);
 			$em->flush();
 
-
+  
 			$this->get('session')->getFlashBag()->add(
 				'success',
 				'Expediente creado correctamente'
 			);
 			return $this->redirectToRoute('expediente_administrativo_editar', ['id' => $expediente->getId()]);
 		}
-
+		
 		return $this->render(
 			'expediente/new_administrativo.html.twig',
 			[
@@ -2394,7 +2333,7 @@ class ExpedienteController extends AbstractController
 			[
 				'form'       => $form->createView(),
 				'expediente' => $expediente,
-				'edit' => true,
+				'edit'=> true,
 			]
 		);
 	}
@@ -2476,7 +2415,7 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
-	//agregar block
+//agregar block
 	public function nuevoExpedienteLegislativoExterno(Request $request)
 	{
 
@@ -2651,7 +2590,7 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
-	//agregar block
+//agregar block
 	public function nuevoExpedienteAdministrativoExterno(Request $request)
 	{
 
@@ -2722,7 +2661,7 @@ class ExpedienteController extends AbstractController
 			[
 				'form'       => $form->createView(),
 				'expediente' => $expediente,
-				'edit' => true,
+				'edit' =>true,
 			]
 		);
 	}
@@ -2933,22 +2872,21 @@ class ExpedienteController extends AbstractController
 			)
 		);
 	}
+	
 
-
-	function imprimirArchivo(Pdf $knpSnappyPdf, Pdf $knpSnappyPdf2, Expediente $expediente, LoggerInterface $logger = null)
-	{
+	function imprimirArchivo(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente, LoggerInterface $logger = null){
 		// Usar el logger de Symfony
 		if (!$logger) {
 			$logger = $this->get('logger');
 		}
-
+		
 		$logger->info("=== INICIO imprimirArchivo", [
 			'expediente_id' => $expediente->getId(),
 			'function' => 'imprimirArchivo'
 		]);
-
+		
 		$em = $this->getDoctrine()->getManager();
-		$decreto = $expediente->getIsDecreto();
+		$decreto=$expediente->getIsDecreto();
 		$logger->info("Verificando decreto", [
 			'expediente_id' => $expediente->getId(),
 			'es_decreto' => $decreto
@@ -2982,7 +2920,7 @@ class ExpedienteController extends AbstractController
 			'codigo_referencia' => $dataToEncode,
 			'es_borrador' => $expediente->getBorrador()
 		]);
-
+ 
 		$title      = 'Carátula';
 
 		try {
@@ -3005,45 +2943,44 @@ class ExpedienteController extends AbstractController
 			throw $e;
 		}
 
-		$pdfMerge = new PDFMerger($this->getParameter('kernel.project_dir') . '/public');
+		$pdfMerge = new PDFMerger;
 
 		$filesystem = new Filesystem();
 		$filesystem->remove('filePDF.pdf');
 		$date = new \DateTime();
-		$time = $date->getTimeStamp();
-		$tmp = sys_get_temp_dir();
-		$nombre = $tmp . '/Caratula' . $time . '.pdf';
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/Caratula'.$time.'.pdf';
 		error_log("Archivo temporal carátula: " . $nombre);
 
 		try {
 			$knpSnappyPdf->generateFromHtml(
-				$html,
-				$nombre,
-				array(
-					'page-size'      => 'Legal',
+					$html
+					,$nombre, array(
+						'page-size'      => 'Legal',
 					//					'page-width'     => '220mm',
 					//					'page-height'     => '340mm',
 					//					'margin-left'    => "3cm",
 					//					'margin-right'   => "3cm",
-					'margin-top'     => "5cm",
-					'margin-bottom'  => "2cm",
-					'header-spacing' => 4,
-					'footer-spacing' => 5,
+						'margin-top'     => "5cm",
+						'margin-bottom'  => "2cm",
+						'header-spacing' => 4,
+						'footer-spacing' => 5,
 					//                    'margin-bottom' => "1cm"
-
-				)
-			);
+						
+					)
+				);
 			error_log("PDF de carátula generado correctamente: " . $nombre);
 		} catch (\Exception $e) {
 			error_log("Error generando PDF de carátula: " . $e->getMessage());
 			throw $e;
 		}
-
+				
 		$esRM = strpos($expediente->getExpediente(), 'RM') !== false;
 		error_log("Es RM: " . ($esRM ? 'true' : 'false'));
 
-		if (!$esRM) {
-			$pdfMerge->addPDF($nombre);
+		if(!$esRM){
+			$pdfMerge->addPDF($nombre); 
 			error_log("Carátula agregada al PDF merge");
 		} else {
 			error_log("No se agrega carátula (es RM)");
@@ -3055,205 +2992,386 @@ class ExpedienteController extends AbstractController
 			'expediente_interno' => $expediente->getExpedienteInterno(),
 			'tiene_expediente_interno' => !empty($expediente->getExpedienteInterno())
 		]);
+		
+	if(!$expediente->getExpedienteInterno()){
+		$logger->info("Procesando proyecto SIN FIRMAR", [
+			'expediente_id' => $expediente->getId()
+		]);
+		$header = null;
+		if (!$expediente->getBorrador()) {
+			$header = $this->renderView(
+				'default/membrete.pdf.twig',
+				[
+					"periodo"      => $expediente->getPeriodoLegislativo(),
+					'dataToEncode' => $dataToEncode
+				]
+			);
+		}
+		$footer = $this->renderView('default/pie_pagina.pdf.twig');
 
-		if (!$expediente->getExpedienteInterno()) {
-			$logger->info("Procesando proyecto SIN FIRMAR", [
-				'expediente_id' => $expediente->getId()
-			]);
-			$header = null;
-			if (!$expediente->getBorrador()) {
-				$header = $this->renderView(
-					'default/membrete.pdf.twig',
-					[
-						"periodo"      => $expediente->getPeriodoLegislativo(),
-						'dataToEncode' => $dataToEncode
-					]
-				);
-			}
-			$footer = $this->renderView('default/pie_pagina.pdf.twig');
+		$array=array(
+			'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+			//                    'margin-bottom' => "1cm"
+		);
 
-			$array = array(
-				'page-size'      => 'Legal',
+		//        return new Response($html);
+		$title = 'Proyecto';
+
+		try {
+			$html = $this->renderView(
+				'expediente/proyecto.pdf.twig',
+				[
+					'expediente' => $expediente,
+					'title'      => $title,
+				]
+			);
+			error_log("HTML de proyecto sin firmar generado correctamente");
+		} catch (\Exception $e) {
+			error_log("Error generando HTML de proyecto sin firmar: " . $e->getMessage());
+			throw $e;
+		}
+
+
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Firmado'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
 				//					'margin-left'    => "3cm",
 				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
-				//                    'margin-bottom' => "1cm"
-			);
-
-			//        return new Response($html);
-			$title = 'Proyecto';
-
-			try {
-				$html = $this->renderView(
-					'expediente/proyecto.pdf.twig',
-					[
-						'expediente' => $expediente,
-						'title'      => $title,
-					]
-				);
-				error_log("HTML de proyecto sin firmar generado correctamente");
-			} catch (\Exception $e) {
-				error_log("Error generando HTML de proyecto sin firmar: " . $e->getMessage());
-				throw $e;
-			}
-
-
-			$date = new \DateTime();
-			$time = $date->getTimeStamp();
-			$nombre = $tmp . '/Firmado' . $time . '.pdf';
-
-			$knpSnappyPdf->generateFromHtml(
-				$html,
-				$nombre,
-				array(
-					'page-size'      => 'Legal',
-					//					'page-width'     => '220mm',
-					//					'page-height'     => '340mm',
-					//					'margin-left'    => "3cm",
-					//					'margin-right'   => "3cm",
 					'margin-top'     => "5cm",
 					'margin-bottom'  => "2cm",
 					'header-html'    => $header,
 					'header-spacing' => 4,
 					'footer-spacing' => 5,
 					'footer-html'    => $footer,
-					//                    'margin-bottom' => "1cm"
-
+				//                    'margin-bottom' => "1cm"
+					
 				)
 			);
-
+				
 
 
 			//$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
 
-			$pdfMerge->addPDF($nombre);
+		$pdfMerge->addPDF($nombre);
 
-			foreach ($expediente->getAnexos() as $anexo) {
+ 		foreach ($expediente->getAnexos() as $anexo){
 
-				$path = $anexo->getAnexo();
-
-				$extension = pathinfo($path);
-
-				$extension = strtolower($extension['extension']);
-
-				if ($extension == 'pdf') {
-					$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-				}
-			}
-		} else {
-			$logger->info("Procesando proyecto FIRMADO", [
-				'expediente_id' => $expediente->getId()
-			]);
-
-			//PROYECTO FIRMADO
-			$path = $expediente->getExpedienteInterno();
-			$logger->info("Obteniendo ruta expediente interno", [
-				'expediente_id' => $expediente->getId(),
-				'ruta_expediente_interno' => $path
-			]);
-
+			$path=$anexo->getAnexo();
+		
 			$extension = pathinfo($path);
-
+	
 			$extension = strtolower($extension['extension']);
 
-			if ($extension == 'pdf') {
-				$pdfMerge->addPDF('uploads/expedientes/internos/' . $path);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 			}
 
-			if ($decreto || $expediente->getTipoExpediente()->getId() == 1) {
-				foreach ($expediente->getAnexos() as $anexo) {
+		} 
+	} else {
+		$logger->info("Procesando proyecto FIRMADO", [
+			'expediente_id' => $expediente->getId()
+		]);
 
-					$path = $anexo->getAnexo();
+		//PROYECTO FIRMADO
+		$path=$expediente->getExpedienteInterno();
+		$logger->info("Obteniendo ruta expediente interno", [
+			'expediente_id' => $expediente->getId(),
+			'ruta_expediente_interno' => $path
+		]);
 
-					if ($path) {
+		$extension = pathinfo($path);
+	
+		$extension = strtolower($extension['extension']);
 
-						$extension = pathinfo($path);
+		if ($extension == 'pdf'){
+			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
+		}
 
-						$extension = strtolower($extension['extension']);
+				if($decreto || $expediente->getTipoExpediente()->getId()==1){
+			 		foreach ($expediente->getAnexos() as $anexo){
 
-						if ($extension == 'pdf') {
-							$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-						}
-					}
+			$path=$anexo->getAnexo();
+
+			if($path){
+
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+		} 
+		$contador=0;
+		foreach ($expediente->getGiroAdministrativos() as $anexo){
+			$contador=$contador+1;
+
+		
+
+			$path=$anexo->getAnexo();
+		
+			if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 				}
-				$contador = 0;
-				foreach ($expediente->getGiroAdministrativos() as $anexo) {
-					$contador = $contador + 1;
+			}
 
 
+			foreach ($anexo->getAnexoGiros() as $anexoGiro){ 
 
-					$path = $anexo->getAnexo();
-
-					if ($path) {
-						$extension = pathinfo($path);
-						$extension = strtolower($extension['extension']);
-						if ($extension == 'pdf') {
-							$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-						}
-					}
-
-
-					foreach ($anexo->getAnexoGiros() as $anexoGiro) {
-
-						$path = $anexoGiro->getAnexo();
-
-						if ($path) {
-							$extension = pathinfo($path);
-							$extension = strtolower($extension['extension']);
-							if ($extension == 'pdf') {
-								$pdfMerge->addPDF('uploads/giros/anexos/' . $path);
-							}
-						}
-					}
-
-					$title = 'Giro';
-
-					$html = $this->renderView(
-						'expediente/giroSector.pdf.twig',
-						[
-							'expediente' => $expediente,
-							'giro'       => $anexo,
-							'title'      => $title,
-						]
-					);
-					$date = new \DateTime();
-					$time = $date->getTimeStamp();
-					$nombre = $tmp . '/Giro' . $time . $contador . '.pdf';
-
-					$knpSnappyPdf->generateFromHtml(
-						$html,
-						$nombre,
-						array(
-							'page-size'      => 'Legal',
-							//					'page-width'     => '220mm',
-							//					'page-height'     => '340mm',
-							//					'margin-left'    => "3cm",
-							//					'margin-right'   => "3cm",
-							'margin-top'     => "5cm",
-							'margin-bottom'  => "2cm",
-							'header-spacing' => 4,
-							'footer-spacing' => 5,
-							//                    'margin-bottom' => "1cm"
-
-						)
-					);
-
-					$pdfMerge->addPDF($nombre);
+				$path=$anexoGiro->getAnexo();
+		
+				if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/giros/anexos/'.$path);
 				}
 
-				$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
+			}
+
+			} 
+
+			$title = 'Giro';
+
+		$html = $this->renderView(
+			'expediente/giroSector.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'giro'       => $anexo,
+				'title'      => $title,
+			]
+		);
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Giro'.$time.$contador.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+										'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+
+			$pdfMerge->addPDF($nombre);
+
+		}
+
+				$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 
 
-				return new Response(
-					$pdf4,
-					array(
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+
+
+		}
+
+
+		
+	}
+
+
+
+	foreach ($expediente->getProveidos() as $proveido){
+
+/*		$caratula=$proveido->getCaratula();
+ 		if($caratula){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
+		} */
+
+		$archivo=$proveido->getArchivo();
+		if($archivo){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/'.$archivo);
+		}
+	
+/* 		$cierre=$proveido->getCierre();
+		if($cierre){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
+		} */
+
+	} 
+
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+
+	$ProyectosBae = $proyectoBaeRepository->findBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'ASC']
+    );
+		$logger->info("Iniciando procesamiento de ProyectosBae", [
+			'expediente_id' => $expediente->getId(),
+			'cantidad_proyectos_bae' => count($ProyectosBae)
+		]);
+
+	if($ProyectosBae){
+		$firstProyectoBae = $ProyectosBae[0];
+		$logger->info("Primer ProyectoBae obtenido", [
+			'expediente_id' => $expediente->getId(),
+			'proyecto_bae_id' => $firstProyectoBae->getId(),
+			'es_informe_dem' => $firstProyectoBae->getEsInformeDem()
+		]);
+		
+		// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
+		if (!$firstProyectoBae->getEsInformeDem()) {
+			$logger->info("Procesando archivos del ProyectoBae (NO es informe DEM)", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId()
+			]);
+			if($firstProyectoBae->getFirmado()){
+				//GIRO FIRMADO
+				$logger->info("Agregando giro firmado al PDF", [
+					'expediente_id' => $expediente->getId(),
+					'proyecto_bae_id' => $firstProyectoBae->getId(),
+					'archivo_giro' => $firstProyectoBae->getFirmado()
+				]);
+				$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+			}else{
+				//GIRO SIN FIRMAR
+				$logger->info("Procesando giro SIN FIRMAR", [
+					'expediente_id' => $expediente->getId(),
+					'proyecto_bae_id' => $firstProyectoBae->getId()
+				]);
+			$giros=$firstProyectoBae->getGirosOrdenados();
+			if ($giros) {
+			$expediente=$firstProyectoBae->getExpediente();
+			$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+
+			$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+			$fecha=$sesion->getFecha();
+
+
+			$html = $this->renderView(
+				'comision/giroComision.pdf.twig',
+				[
+					'expediente' => $expediente,
+	                'sesion'=>$sesion,
+					'title'      => $titulo,
+	                'giros'      => $giros,
+					'fecha'      => $fecha,
+	                
+				]
+			);
+
+			$date = new \DateTime();
+			$time=$date->getTimeStamp();
+			$nombre=$tmp.'/Giro'.$time.'.pdf';
+			$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+			$pdfMerge->addPDF($nombre);
+			}
+			}
+			if($firstProyectoBae->getPedido()){
+			//PEDIDO FIRMADO
+			$logger->info("Agregando pedido firmado al PDF", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId(),
+				'archivo_pedido' => $firstProyectoBae->getPedido()
+			]);
+			$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
+
+			} 
+			if($firstProyectoBae->getDigesto()){
+			//DIGESTO FIRMADO
+			$logger->info("Agregando digesto firmado al PDF", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId(),
+				'archivo_digesto' => $firstProyectoBae->getDigesto()
+			]);
+			$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
+			}
+		} else {
+			$logger->info("OMITIENDO archivos giro/pedido/digesto (ES informe DEM)", [
+				'expediente_id' => $expediente->getId(),
+				'proyecto_bae_id' => $firstProyectoBae->getId(),
+				'es_informe_dem' => true
+			]);
+		}
+
+		$logger->info("Iniciando procesamiento de Dictamenes", [
+			'expediente_id' => $expediente->getId(),
+			'cantidad_dictamenes' => count($Dictamenes)
+		]);
+		if($Dictamenes){
+			$logger->info("Procesando dictámenes", [
+				'expediente_id' => $expediente->getId(),
+				'cantidad' => count($Dictamenes)
+			]);
+			$firstDictamen = $Dictamenes[0];
+			foreach ($expediente->getExpedientesAdjunto() as $adjunto){
+				if($adjunto->getAdjunto){
+				if($adjunto->getAdjunto()->getExpedienteInterno()){
+					$header = null;
+					if (!$adjunto->getAdjunto()->getBorrador()) {
+						$header = $this->renderView(
+							'default/membrete.pdf.twig',
+							[
+								"periodo"      => $adjunto->getAdjunto()->getPeriodoLegislativo(),
+								'dataToEncode' => $dataToEncode
+							]
+						);
+					}
+					$footer = $this->renderView('default/pie_pagina.pdf.twig');
+			
+					$array=array(
 						'page-size'      => 'Legal',
 						//					'page-width'     => '220mm',
 						//					'page-height'     => '340mm',
@@ -3261,361 +3379,202 @@ class ExpedienteController extends AbstractController
 						//					'margin-right'   => "3cm",
 						'margin-top'     => "5cm",
 						'margin-bottom'  => "2cm",
+						'header-html'    => $header,
 						'header-spacing' => 4,
 						'footer-spacing' => 5,
+						'footer-html'    => $footer,
 						//                    'margin-bottom' => "1cm"
-
-					),
-					200,
-					array(
-						'Content-Type'        => 'application/pdf',
-						'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-					)
-				);
-			}
-		}
-
-
-
-		foreach ($expediente->getProveidos() as $proveido) {
-
-			/*		$caratula=$proveido->getCaratula();
- 		if($caratula){
-			$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
-		} */
-
-			$archivo = $proveido->getArchivo();
-			if ($archivo) {
-				$pdfMerge->addPDF('uploads/expedientes/proveido/' . $archivo);
-			}
-
-			/* 		$cierre=$proveido->getCierre();
-		if($cierre){
-			$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
-		} */
-		}
-
-		$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
-
-		$ProyectosBae = $proyectoBaeRepository->findBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'ASC']
-		);
-		$logger->info("Iniciando procesamiento de ProyectosBae", [
-			'expediente_id' => $expediente->getId(),
-			'cantidad_proyectos_bae' => count($ProyectosBae)
-		]);
-
-		if ($ProyectosBae) {
-			$firstProyectoBae = $ProyectosBae[0];
-			$logger->info("Primer ProyectoBae obtenido", [
-				'expediente_id' => $expediente->getId(),
-				'proyecto_bae_id' => $firstProyectoBae->getId(),
-				'es_informe_dem' => $firstProyectoBae->getEsInformeDem()
-			]);
-
-			// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
-			if (!$firstProyectoBae->getEsInformeDem()) {
-				$logger->info("Procesando archivos del ProyectoBae (NO es informe DEM)", [
-					'expediente_id' => $expediente->getId(),
-					'proyecto_bae_id' => $firstProyectoBae->getId()
-				]);
-				if ($firstProyectoBae->getFirmado()) {
-					//GIRO FIRMADO
-					$logger->info("Agregando giro firmado al PDF", [
-						'expediente_id' => $expediente->getId(),
-						'proyecto_bae_id' => $firstProyectoBae->getId(),
-						'archivo_giro' => $firstProyectoBae->getFirmado()
-					]);
-					$pdfMerge->addPDF('uploads/expedientes/comision/giro/' . $firstProyectoBae->getFirmado());
-				} else {
-					//GIRO SIN FIRMAR
-					$logger->info("Procesando giro SIN FIRMAR", [
-						'expediente_id' => $expediente->getId(),
-						'proyecto_bae_id' => $firstProyectoBae->getId()
-					]);
-					$giros = $firstProyectoBae->getGirosOrdenados();
-					if ($giros) {
-						$expediente = $firstProyectoBae->getExpediente();
-						$sesion = $firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
-
-						$titulo = "Giro " . $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
-						$fecha = $sesion->getFecha();
-
-
-						$html = $this->renderView(
-							'comision/giroComision.pdf.twig',
-							[
-								'expediente' => $expediente,
-								'sesion' => $sesion,
-								'title'      => $titulo,
-								'giros'      => $giros,
-								'fecha'      => $fecha,
-
-							]
-						);
-
-						$date = new \DateTime();
-						$time = $date->getTimeStamp();
-						$nombre = $tmp . '/Giro' . $time . '.pdf';
-						$knpSnappyPdf->generateFromHtml(
-							$html,
-							$nombre,
-							array(
+					);
+			
+					//        return new Response($html);
+					$title = 'Proyecto';
+			
+			
+					$html = $this->renderView(
+						'expediente/proyecto.pdf.twig',
+						[
+							'expediente' => $adjunto->getAdjunto(),
+							'title'      => $title,
+						]
+					);
+			
+			
+					$date = new \DateTime();
+					$time=$date->getTimeStamp();
+					$nombre=$tmp.'/Firmado'.$time.'.pdf';
+			
+					$knpSnappyPdf->generateFromHtml(
+							$html
+							,$nombre, array(
 								'page-size'      => 'Legal',
-								//					'page-width'     => '220mm',
-								//					'page-height'     => '340mm',
-								//					'margin-left'    => "3cm",
-								//					'margin-right'   => "3cm",
-								'margin-top'     => "5cm",
-								'margin-bottom'  => "2cm",
-								//                    'margin-bottom' => "1cm"
-
-							)
-						);
-						$pdfMerge->addPDF($nombre);
-					}
-				}
-				if ($firstProyectoBae->getPedido()) {
-					//PEDIDO FIRMADO
-					$logger->info("Agregando pedido firmado al PDF", [
-						'expediente_id' => $expediente->getId(),
-						'proyecto_bae_id' => $firstProyectoBae->getId(),
-						'archivo_pedido' => $firstProyectoBae->getPedido()
-					]);
-					$pdfMerge->addPDF('uploads/expedientes/pedido/' . $firstProyectoBae->getPedido());
-				}
-				if ($firstProyectoBae->getDigesto()) {
-					//DIGESTO FIRMADO
-					$logger->info("Agregando digesto firmado al PDF", [
-						'expediente_id' => $expediente->getId(),
-						'proyecto_bae_id' => $firstProyectoBae->getId(),
-						'archivo_digesto' => $firstProyectoBae->getDigesto()
-					]);
-					$pdfMerge->addPDF('uploads/expedientes/digesto/' . $firstProyectoBae->getDigesto());
-				}
-			} else {
-				$logger->info("OMITIENDO archivos giro/pedido/digesto (ES informe DEM)", [
-					'expediente_id' => $expediente->getId(),
-					'proyecto_bae_id' => $firstProyectoBae->getId(),
-					'es_informe_dem' => true
-				]);
-			}
-
-			$logger->info("Iniciando procesamiento de Dictamenes", [
-				'expediente_id' => $expediente->getId(),
-				'cantidad_dictamenes' => count($Dictamenes)
-			]);
-			if ($Dictamenes) {
-				$logger->info("Procesando dictámenes", [
-					'expediente_id' => $expediente->getId(),
-					'cantidad' => count($Dictamenes)
-				]);
-				$firstDictamen = $Dictamenes[0];
-				foreach ($expediente->getExpedientesAdjunto() as $adjunto) {
-					if ($adjunto->getAdjunto) {
-						if ($adjunto->getAdjunto()->getExpedienteInterno()) {
-							$header = null;
-							if (!$adjunto->getAdjunto()->getBorrador()) {
-								$header = $this->renderView(
-									'default/membrete.pdf.twig',
-									[
-										"periodo"      => $adjunto->getAdjunto()->getPeriodoLegislativo(),
-										'dataToEncode' => $dataToEncode
-									]
-								);
-							}
-							$footer = $this->renderView('default/pie_pagina.pdf.twig');
-
-							$array = array(
-								'page-size'      => 'Legal',
-								//					'page-width'     => '220mm',
-								//					'page-height'     => '340mm',
-								//					'margin-left'    => "3cm",
-								//					'margin-right'   => "3cm",
+							//					'page-width'     => '220mm',
+							//					'page-height'     => '340mm',
+							//					'margin-left'    => "3cm",
+							//					'margin-right'   => "3cm",
 								'margin-top'     => "5cm",
 								'margin-bottom'  => "2cm",
 								'header-html'    => $header,
 								'header-spacing' => 4,
 								'footer-spacing' => 5,
 								'footer-html'    => $footer,
-								//                    'margin-bottom' => "1cm"
-							);
-
-							//        return new Response($html);
-							$title = 'Proyecto';
-
-
-							$html = $this->renderView(
-								'expediente/proyecto.pdf.twig',
-								[
-									'expediente' => $adjunto->getAdjunto(),
-									'title'      => $title,
-								]
-							);
-
-
-							$date = new \DateTime();
-							$time = $date->getTimeStamp();
-							$nombre = $tmp . '/Firmado' . $time . '.pdf';
-
-							$knpSnappyPdf->generateFromHtml(
-								$html,
-								$nombre,
-								array(
-									'page-size'      => 'Legal',
-									//					'page-width'     => '220mm',
-									//					'page-height'     => '340mm',
-									//					'margin-left'    => "3cm",
-									//					'margin-right'   => "3cm",
-									'margin-top'     => "5cm",
-									'margin-bottom'  => "2cm",
-									'header-html'    => $header,
-									'header-spacing' => 4,
-									'footer-spacing' => 5,
-									'footer-html'    => $footer,
-									//                    'margin-bottom' => "1cm"
-
+							//                    'margin-bottom' => "1cm"
+								
 								)
 							);
-
-
-
-							//$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
-
-							$pdfMerge->addPDF($nombre);
-
-							foreach ($adjunto->getAdjunto()->getAnexos() as $anexo) {
-
-								$path = $anexo->getAnexo();
-
-								$extension = pathinfo($path);
-
-								$extension = strtolower($extension['extension']);
-
-								if ($extension == 'pdf') {
-									$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-								}
-							}
-						} else {
-
-							//PROYECTO FIRMADO
-							$path = $adjunto->getAdjunto()->getExpedienteInterno();
-
-							$extension = pathinfo($path);
-
-							$extension = strtolower($extension['extension']);
-
-							if ($extension == 'pdf') {
-								$pdfMerge->addPDF('uploads/expedientes/internos/' . $path);
-							}
+							
+			
+			
+						//$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
+			
+					$pdfMerge->addPDF($nombre);
+			
+					 foreach ($adjunto->getAdjunto()->getAnexos() as $anexo){
+			
+						$path=$anexo->getAnexo();
+					
+						$extension = pathinfo($path);
+				
+						$extension = strtolower($extension['extension']);
+			
+						if ($extension == 'pdf'){
+							$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 						}
-					}
-				}
-				//DICTAMEN FIRMADO
-				if ($firstDictamen->getDictamen()) {
-					$pdfMerge->addPDF('uploads/dictamenes/' . $firstDictamen->getDictamen());
-				}
-
-				//RAMA FIRMADO
-				if ($firstDictamen->getRama()) {
-					$pdfMerge->addPDF('uploads/expedientes/rama/' . $firstDictamen->getRama());
-				}
-				$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
-
-
-				$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
-					['dictamen' => $firstDictamen->getId()],
-					['id' => 'DESC']
-				);
-				if ($textoDefinitivo) {
-					//TEXTO DEFINITIVO FIRMADO
-					if ($textoDefinitivo->getArchivo()) {
-						$pdfMerge->addPDF('uploads/expedientes/definitivo/' . $textoDefinitivo->getArchivo());
-					}
-					if ($textoDefinitivo->getPase()) {
-						$pdfMerge->addPDF('uploads/expedientes/pasedem/' . $textoDefinitivo->getPase());
-					}
-				}
-			}
-
-			foreach ($expediente->getInformeDems() as $anexo) {
-				if ($anexo) {
-
-					$path = $anexo->getArchivo();
-
+			
+					} 
+				} else {
+			
+					//PROYECTO FIRMADO
+					$path=$adjunto->getAdjunto()->getExpedienteInterno();
+			
 					$extension = pathinfo($path);
-
+				
 					$extension = strtolower($extension['extension']);
-
-					if ($extension == 'pdf') {
-						$pdfMerge->addPDF('uploads/expedientes/dem/' . $path);
+			
+					if ($extension == 'pdf'){
+						$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
 					}
+					
 				}
 			}
 		}
-		if (count($ProyectosBae) > 1) {
-			$secondProyectoBae = $ProyectosBae[1];
+		//DICTAMEN FIRMADO
+		if($firstDictamen->getDictamen()){
+			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());
 
 
-			if ($secondProyectoBae) {
+
+			}
+
+					//RAMA FIRMADO
+					if($firstDictamen->getRama()){
+						$pdfMerge->addPDF('uploads/expedientes/rama/'.$firstDictamen->getRama());
+					}
+					$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+					$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+						['dictamen' => $firstDictamen->getId()],
+						['id' => 'DESC']
+					);	
+					if($textoDefinitivo){
+						//TEXTO DEFINITIVO FIRMADO
+						if($textoDefinitivo->getArchivo()){
+							$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
+			
+						}	
+						if($textoDefinitivo->getPase()){
+							$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
+						}
+			
+					}
+					
+		}
+
+		foreach ($expediente->getInformeDems() as $anexo){
+			if($anexo){
+
+			$path=$anexo->getArchivo();
+		
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/dem/'.$path);
+			}
+		}
+		}  
+
+		
+
+
+
+
+	}
+	if (count($ProyectosBae) > 1) {
+	$secondProyectoBae = $ProyectosBae[1];
+	
+
+	if($secondProyectoBae){
 
 				// Si NO es informe DEM, incluir los archivos de giro del segundo proyecto
 				if (!$secondProyectoBae->getEsInformeDem()) {
-					if ($secondProyectoBae->getFirmado()) {
+					if($secondProyectoBae->getFirmado()){
 						//GIRO FIRMADO
-						$pdfMerge->addPDF('uploads/expedientes/comision/giro/' . $secondProyectoBae->getFirmado());
-					} else {
+						$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$secondProyectoBae->getFirmado());
+					}else{
 						//GIRO SIN FIRMAR
-						$giros = $secondProyectoBae->getGirosOrdenados();
-						if ($giros) {
-							$expediente = $secondProyectoBae->getExpediente();
-							$sesion = $secondProyectoBae->getBoletinAsuntoEntrado()->getSesion();
-
-							$titulo = "Giro " . $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
-							$fecha = $sesion->getFecha();
-
-
-							$html = $this->renderView(
-								'comision/giroComision.pdf.twig',
-								[
-									'expediente' => $expediente,
-									'sesion' => $sesion,
-									'title'      => $titulo,
-									'giros'      => $giros,
-									'fecha'      => $fecha,
-
-								]
-							);
-
-							$date = new \DateTime();
-							$time = $date->getTimeStamp();
-							$nombre = $tmp . '/Giro2' . $time . '.pdf';
-							$knpSnappyPdf->generateFromHtml(
-								$html,
-								$nombre,
-								array(
-									'page-size'      => 'Legal',
-									//					'page-width'     => '220mm',
-									//					'page-height'     => '340mm',
-									//					'margin-left'    => "3cm",
-									//					'margin-right'   => "3cm",
-									'margin-top'     => "5cm",
-									'margin-bottom'  => "2cm",
-									//                    'margin-bottom' => "1cm"
-
-								)
-							);
-							$pdfMerge->addPDF($nombre);
-						}
+					$giros=$secondProyectoBae->getGirosOrdenados();
+					if ($giros) {
+					$expediente=$secondProyectoBae->getExpediente();
+					$sesion=$secondProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+			
+					$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+					$fecha=$sesion->getFecha();
+			
+			
+					$html = $this->renderView(
+						'comision/giroComision.pdf.twig',
+						[
+							'expediente' => $expediente,
+							'sesion'=>$sesion,
+							'title'      => $titulo,
+							'giros'      => $giros,
+							'fecha'      => $fecha,
+							
+						]
+					);
+			
+					$date = new \DateTime();
+					$time=$date->getTimeStamp();
+					$nombre=$tmp.'/Giro2'.$time.'.pdf';
+					$knpSnappyPdf->generateFromHtml(
+						$html
+						,$nombre, array(
+							'page-size'      => 'Legal',
+						//					'page-width'     => '220mm',
+						//					'page-height'     => '340mm',
+						//					'margin-left'    => "3cm",
+						//					'margin-right'   => "3cm",
+							'margin-top'     => "5cm",
+							'margin-bottom'  => "2cm",
+						//                    'margin-bottom' => "1cm"
+							
+						)
+					);
+					$pdfMerge->addPDF($nombre);
+					}
 					}
 				}
-				if (count($Dictamenes) > 1) {
-					$secondDictamen = $Dictamenes[1];
-					if ($secondDictamen->getDictamen()) {
+		if (count($Dictamenes) > 1) {
+		$secondDictamen = $Dictamenes[1];
+		if($secondDictamen->getDictamen()){
+						
+			$pdfMerge->addPDF('uploads/dictamenes/'.$secondDictamen->getDictamen());
 
-						$pdfMerge->addPDF('uploads/dictamenes/' . $secondDictamen->getDictamen());
-					}
+
+
+			}
 
 					$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
 
@@ -3623,26 +3582,33 @@ class ExpedienteController extends AbstractController
 					$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
 						['dictamen' => $secondDictamen->getId()],
 						['id' => 'DESC']
-					);
-					if ($textoDefinitivo) {
+					);	
+					if($textoDefinitivo){
 						//TEXTO DEFINITIVO FIRMADO
-						if ($textoDefinitivo->getArchivo()) {
-							$pdfMerge->addPDF('uploads/expedientes/definitivo/' . $textoDefinitivo->getArchivo());
+						if($textoDefinitivo->getArchivo()){
+							$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
+			
+						}	
+						if($textoDefinitivo->getPase()){
+							$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
 						}
-						if ($textoDefinitivo->getPase()) {
-							$pdfMerge->addPDF('uploads/expedientes/pasedem/' . $textoDefinitivo->getPase());
-						}
+			
 					}
-				}
-			}
+		
+
 		}
 
+
+
+	}
+}
+	
 
 		$logger->info("Iniciando merge final de PDF", [
 			'expediente_id' => $expediente->getId()
 		]);
 		try {
-			$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
+			$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 			$logger->info("PDF merge completado exitosamente", [
 				'expediente_id' => $expediente->getId()
 			]);
@@ -3659,32 +3625,29 @@ class ExpedienteController extends AbstractController
 			'expediente_id' => $expediente->getId(),
 			'function' => 'imprimirArchivo'
 		]);
-		return new Response(
-			$pdf4,
-			array(
-				'page-size'      => 'Legal',
-				//					'page-width'     => '220mm',
-				//					'page-height'     => '340mm',
-				//					'margin-left'    => "3cm",
-				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				//                    'margin-bottom' => "1cm"
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
+		));
 
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
-			)
-		);
 	}
 
-	function generarQRVerificación(Pdf $knpSnappyPdf, $url)
-	{
-
+	function generarQRVerificación(Pdf $knpSnappyPdf,$url){
+		
 
 
 		//        return new Response($html);
@@ -3693,68 +3656,72 @@ class ExpedienteController extends AbstractController
 
 		$html = $this->renderView(
 			'default/qr.pdf.twig',
-			[]
+			[
+
+			]
 		);
 		$date = new \DateTime();
-		$time = $date->getTimeStamp();
-		$tmp = sys_get_temp_dir();
-		$nombre = $tmp . '/QR' . $time . '.pdf';
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/QR'.$time.'.pdf';
 		return new Response(
-			$knpSnappyPdf->getOutputFromHtml(
-				$html,
-				array(
+		$knpSnappyPdf->getOutputFromHtml(
+				$html
+				, array(
 					'page-size'      => 'Legal',
-					//					'page-width'     => '220mm',
-					//					'page-height'     => '340mm',
-					//					'margin-left'    => "3cm",
-					//					'margin-right'   => "3cm",
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
 					'margin-top'     => "5cm",
 					'margin-bottom'  => "2cm",
 					'header-spacing' => 4,
 					'footer-spacing' => 5,
-					//                    'margin-bottom' => "1cm"
-
+				//                    'margin-bottom' => "1cm"
+					
 				)
-			),
+				),
 			200,
 			array(
 				'Content-Type'        => 'application/pdf',
 				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
 			)
 		);
+
+
 	}
 
-	function imprimirArchivoGirosV(Pdf $knpSnappyPdf, GiroAdministrativo $giro)
-	{
+	function imprimirArchivoGirosV(Pdf $knpSnappyPdf,GiroAdministrativo $giro){
+		
+
+		$url=[];
 
 
-		$url = [];
-
-
-		$path = $giro->getAnexo();
-
-		if ($path) {
+		$path=$giro->getAnexo();
+		
+		if($path){
 			$extension = pathinfo($path);
 			$extension = strtolower($extension['extension']);
-			if ($extension == 'pdf') {
-				array_push($url, 'uploads/expedientes/anexos/' . $path);
+			if ($extension == 'pdf'){
+				array_push($url, 'uploads/expedientes/anexos/'.$path);
 			}
 		}
 
 
-		foreach ($giro->getAnexoGiros() as $anexoGiro) {
-			if ($anexoGiro) {
-				$path = $anexoGiro->getAnexo();
-
-				if ($path) {
-					$extension = pathinfo($path);
-					$extension = strtolower($extension['extension']);
-					if ($extension == 'pdf') {
-						array_push($url, 'uploads/giros/anexos/' . $path);
-					}
-				}
+		foreach ($giro->getAnexoGiros() as $anexoGiro){ 
+			if($anexoGiro){
+			$path=$anexoGiro->getAnexo();
+	
+			if($path){
+			$extension = pathinfo($path);
+			$extension = strtolower($extension['extension']);
+			if ($extension == 'pdf'){
+				array_push($url,'uploads/giros/anexos/'.$path);
 			}
-		}
+
+			}
+			}
+		} 
 
 		return $this->render(
 			'default/descargar.html.twig',
@@ -3762,16 +3729,17 @@ class ExpedienteController extends AbstractController
 				'urls' => $url
 			]
 		);
+
+
 	}
 
-	function imprimirArchivoFirmasV(Pdf $knpSnappyPdf, Pdf $knpSnappyPdf2, Expediente $expediente)
-	{
+	function imprimirArchivoFirmasV(Pdf $knpSnappyPdf,Pdf $knpSnappyPdf2,Expediente $expediente){
 
 
 
-		$url = [];
+		$url=[];
 		$em = $this->getDoctrine()->getManager();
-		$decreto = $expediente->getIsDecreto();
+		$decreto=$expediente->getIsDecreto();
 
 		$DictamenRepository = $em->getRepository(Dictamen::class);
 
@@ -3789,7 +3757,7 @@ class ExpedienteController extends AbstractController
 		if ($expediente->getBorrador()) {
 			$dataToEncode = null;
 		}
-
+ 
 		$title      = 'Carátula';
 
 		$html = $this->renderView(
@@ -3800,340 +3768,362 @@ class ExpedienteController extends AbstractController
 			]
 		);
 
-		$pdfMerge = new PDFMerger($this->getParameter('kernel.project_dir') . '/public');
+		$pdfMerge = new PDFMerger;
 
 		$filesystem = new Filesystem();
 		$filesystem->remove('filePDF.pdf');
 		$date = new \DateTime();
-		$tmp = sys_get_temp_dir();
-
+		$tmp=sys_get_temp_dir();
+		
 
 		//PROYECTO SIN FIRMAR
-		if (!$expediente->getExpedienteInterno()) {
-			$header = null;
-			if (!$expediente->getBorrador()) {
-				$header = $this->renderView(
-					'default/membrete.pdf.twig',
-					[
-						"periodo"      => $expediente->getPeriodoLegislativo(),
-						'dataToEncode' => $dataToEncode
-					]
-				);
-			}
+	if(!$expediente->getExpedienteInterno()){
+		$header = null;
+		if (!$expediente->getBorrador()) {
+			$header = $this->renderView(
+				'default/membrete.pdf.twig',
+				[
+					"periodo"      => $expediente->getPeriodoLegislativo(),
+					'dataToEncode' => $dataToEncode
+				]
+			);
+		}
 
-			$array = array(
-				'page-size'      => 'Legal',
+		$array=array(
+			'page-size'      => 'Legal',
+			//					'page-width'     => '220mm',
+			//					'page-height'     => '340mm',
+			//					'margin-left'    => "3cm",
+			//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+			//                    'margin-bottom' => "1cm"
+		);
+
+		//        return new Response($html);
+		$title = 'Proyecto';
+
+
+		$html = $this->renderView(
+			'expediente/proyecto.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'title'      => $title,
+			]
+		);
+
+
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Firmado'.$time.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
 				//					'margin-left'    => "3cm",
 				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
-				//                    'margin-bottom' => "1cm"
-			);
-
-			//        return new Response($html);
-			$title = 'Proyecto';
-
-
-			$html = $this->renderView(
-				'expediente/proyecto.pdf.twig',
-				[
-					'expediente' => $expediente,
-					'title'      => $title,
-				]
-			);
-
-
-			$date = new \DateTime();
-			$time = $date->getTimeStamp();
-			$nombre = $tmp . '/Firmado' . $time . '.pdf';
-
-			$knpSnappyPdf->generateFromHtml(
-				$html,
-				$nombre,
-				array(
-					'page-size'      => 'Legal',
-					//					'page-width'     => '220mm',
-					//					'page-height'     => '340mm',
-					//					'margin-left'    => "3cm",
-					//					'margin-right'   => "3cm",
 					'margin-top'     => "5cm",
 					'margin-bottom'  => "2cm",
 					'header-html'    => $header,
 					'header-spacing' => 4,
 					'footer-spacing' => 5,
 					'footer-html'    => $footer,
-					//                    'margin-bottom' => "1cm"
-
+				//                    'margin-bottom' => "1cm"
+					
 				)
 			);
-
+				
 
 
 			//$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
 
-			$pdfMerge->addPDF($nombre);
+		$pdfMerge->addPDF($nombre);
 
-			foreach ($expediente->getAnexos() as $anexo) {
+ 		foreach ($expediente->getAnexos() as $anexo){
 
-				$path = $anexo->getAnexo();
-
-				$extension = pathinfo($path);
-
-				$extension = strtolower($extension['extension']);
-
-				if ($extension == 'pdf') {
-					$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-				}
-			}
-		} else {
-
-			//PROYECTO FIRMADO
-			$path = $expediente->getExpedienteInterno();
-
+			$path=$anexo->getAnexo();
+		
 			$extension = pathinfo($path);
-
+	
 			$extension = strtolower($extension['extension']);
 
-			if ($extension == 'pdf') {
-				$pdfMerge->addPDF('uploads/expedientes/internos/' . $path);
-				array_push($url, 'uploads/expedientes/internos/' . $path);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+
 			}
 
+		} 
+	} else {
 
-			if ($decreto || $expediente->getTipoExpediente()->getId() == 1) {
-				foreach ($expediente->getAnexos() as $anexo) {
+		//PROYECTO FIRMADO
+		$path=$expediente->getExpedienteInterno();
 
-					$path = $anexo->getAnexo();
+		$extension = pathinfo($path);
+	
+		$extension = strtolower($extension['extension']);
 
-					if ($path) {
-
-						$extension = pathinfo($path);
-
-						$extension = strtolower($extension['extension']);
-
-						if ($extension == 'pdf') {
-							$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-							array_push($url, 'uploads/expedientes/anexos/' . $path);
-						}
-					}
-				}
-				$contador = 0;
-				foreach ($expediente->getGiroAdministrativos() as $anexo) {
-					$contador = $contador + 1;
-
-
-
-					$path = $anexo->getAnexo();
-
-					if ($path) {
-						$extension = pathinfo($path);
-						$extension = strtolower($extension['extension']);
-						if ($extension == 'pdf') {
-							$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-							array_push($url, 'uploads/expedientes/anexos/' . $path);
-						}
-					}
-
-
-					foreach ($anexo->getAnexoGiros() as $anexoGiro) {
-
-						$path = $anexoGiro->getAnexo();
-
-						if ($path) {
-							$extension = pathinfo($path);
-							$extension = strtolower($extension['extension']);
-							if ($extension == 'pdf') {
-								$pdfMerge->addPDF('uploads/giros/anexos/' . $path);
-								array_push($url, 'uploads/giros/anexos/' . $path);
-							}
-						}
-					}
-
-					$title = 'Giro';
-
-					$html = $this->renderView(
-						'expediente/giroSector.pdf.twig',
-						[
-							'expediente' => $expediente,
-							'giro'       => $anexo,
-							'title'      => $title,
-						]
-					);
-					$date = new \DateTime();
-					$time = $date->getTimeStamp();
-					$nombre = $tmp . '/Giro' . $time . $contador . '.pdf';
-
-					$knpSnappyPdf->generateFromHtml(
-						$html,
-						$nombre,
-						array(
-							'page-size'      => 'Legal',
-							//					'page-width'     => '220mm',
-							//					'page-height'     => '340mm',
-							//					'margin-left'    => "3cm",
-							//					'margin-right'   => "3cm",
-							'margin-top'     => "5cm",
-							'margin-bottom'  => "2cm",
-							'header-spacing' => 4,
-							'footer-spacing' => 5,
-							//                    'margin-bottom' => "1cm"
-
-						)
-					);
-
-					$pdfMerge->addPDF($nombre);
-				}
-
-
-
-
-
-				return $this->render(
-					'default/descargar.html.twig',
-					[
-						'urls' => $url
-					]
-				);
-			}
+		if ($extension == 'pdf'){
+			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
+			array_push($url, 'uploads/expedientes/internos/'.$path);
 		}
 
 
-		foreach ($expediente->getProveidos() as $proveido) {
+				if($decreto || $expediente->getTipoExpediente()->getId()==1){
+			 		foreach ($expediente->getAnexos() as $anexo){
 
-			/*		$caratula=$proveido->getCaratula();
+			$path=$anexo->getAnexo();
+
+			if($path){
+
+			$extension = pathinfo($path);
+	
+			$extension = strtolower($extension['extension']);
+
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+				array_push($url, 'uploads/expedientes/anexos/'.$path);
+			}
+
+		}
+
+		} 
+		$contador=0;
+		foreach ($expediente->getGiroAdministrativos() as $anexo){
+			$contador=$contador+1;
+
+		
+
+			$path=$anexo->getAnexo();
+		
+			if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
+					array_push($url, 'uploads/expedientes/anexos/'.$path);
+				}
+			}
+
+
+			foreach ($anexo->getAnexoGiros() as $anexoGiro){ 
+
+				$path=$anexoGiro->getAnexo();
+		
+				if($path){
+				$extension = pathinfo($path);
+				$extension = strtolower($extension['extension']);
+				if ($extension == 'pdf'){
+					$pdfMerge->addPDF('uploads/giros/anexos/'.$path);
+					array_push($url,'uploads/giros/anexos/'.$path);
+				}
+
+			}
+
+			} 
+
+			$title = 'Giro';
+
+		$html = $this->renderView(
+			'expediente/giroSector.pdf.twig',
+			[
+				'expediente' => $expediente,
+				'giro'       => $anexo,
+				'title'      => $title,
+			]
+		);
+		$date = new \DateTime();
+		$time=$date->getTimeStamp();
+		$nombre=$tmp.'/Giro'.$time.$contador.'.pdf';
+
+		$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+										'header-spacing' => 4,
+					'footer-spacing' => 5,
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+
+			$pdfMerge->addPDF($nombre);
+
+		}
+
+
+
+
+
+		return $this->render(
+			'default/descargar.html.twig',
+			[
+				'urls' => $url
+			]
+		);
+
+		}
+
+
+		
+	}
+
+
+	foreach ($expediente->getProveidos() as $proveido){
+
+/*		$caratula=$proveido->getCaratula();
  		if($caratula){
 			$pdfMerge->addPDF('uploads/expedientes/proveido/caratula/'.$caratula);
 		} */
 
-			$archivo = $proveido->getArchivo();
-			if ($archivo) {
-				$pdfMerge->addPDF('uploads/expedientes/proveido/' . $archivo);
-			}
-
-			/* 		$cierre=$proveido->getCierre();
+		$archivo=$proveido->getArchivo();
+		if($archivo){
+			$pdfMerge->addPDF('uploads/expedientes/proveido/'.$archivo);
+		}
+	
+/* 		$cierre=$proveido->getCierre();
 		if($cierre){
 			$pdfMerge->addPDF('uploads/expedientes/proveido/cierre/'.$cierre);
 		} */
-		}
 
-		$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+	} 
 
-		$firstProyectoBae = $proyectoBaeRepository->findOneBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'DESC']
-		);
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
 
-		if ($firstProyectoBae) {
-			//
-			// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
-			if (!$firstProyectoBae->getEsInformeDem()) {
-				if ($firstProyectoBae->getFirmado()) {
-					//GIRO FIRMADO
-					$pdfMerge->addPDF('uploads/expedientes/comision/giro/' . $firstProyectoBae->getFirmado());
-				} else {
-					//GIRO SIN FIRMAR
-					$giros = $firstProyectoBae->getGirosOrdenados();
-					if ($giros) {
-						$expediente = $firstProyectoBae->getExpediente();
-						$sesion = $firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
 
-						$titulo = "Giro " . $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
-						$fecha = $sesion->getFecha();
+	if($firstProyectoBae){
+		//
+		// Si NO es informe DEM, incluir los archivos de giro, pedido y digesto
+		if (!$firstProyectoBae->getEsInformeDem()) {
+			if($firstProyectoBae->getFirmado()){
+				//GIRO FIRMADO
+				$pdfMerge->addPDF('uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado());
+			}else{
+				//GIRO SIN FIRMAR
+			$giros=$firstProyectoBae->getGirosOrdenados();
+			if ($giros) {
+			$expediente=$firstProyectoBae->getExpediente();
+			$sesion=$firstProyectoBae->getBoletinAsuntoEntrado()->getSesion();
+
+			$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
+			$fecha=$sesion->getFecha();
 
 
-						$html = $this->renderView(
-							'comision/giroComision.pdf.twig',
-							[
-								'expediente' => $expediente,
-								'sesion' => $sesion,
-								'title'      => $titulo,
-								'giros'      => $giros,
-								'fecha'      => $fecha,
+			$html = $this->renderView(
+				'comision/giroComision.pdf.twig',
+				[
+					'expediente' => $expediente,
+	                'sesion'=>$sesion,
+					'title'      => $titulo,
+	                'giros'      => $giros,
+					'fecha'      => $fecha,
+	                
+				]
+			);
 
-							]
-						);
-
-						$date = new \DateTime();
-						$time = $date->getTimeStamp();
-						$nombre = $tmp . '/Giro' . $time . '.pdf';
-						$knpSnappyPdf->generateFromHtml(
-							$html,
-							$nombre,
-							array(
-								'page-size'      => 'Legal',
-								//					'page-width'     => '220mm',
-								//					'page-height'     => '340mm',
-								//					'margin-left'    => "3cm",
-								//					'margin-right'   => "3cm",
-								'margin-top'     => "5cm",
-								'margin-bottom'  => "2cm",
-								//                    'margin-bottom' => "1cm"
-
-							)
-						);
-						$pdfMerge->addPDF($nombre);
-					}
-				}
-				if ($firstProyectoBae->getPedido()) {
-					//PEDIDO FIRMADO
-					$pdfMerge->addPDF('uploads/expedientes/pedido/' . $firstProyectoBae->getPedido());
-				}
-				if ($firstProyectoBae->getDigesto()) {
-					//DIGESTO FIRMADO
-					$pdfMerge->addPDF('uploads/expedientes/digesto/' . $firstProyectoBae->getDigesto());
-				}
+			$date = new \DateTime();
+			$time=$date->getTimeStamp();
+			$nombre=$tmp.'/Giro'.$time.'.pdf';
+			$knpSnappyPdf->generateFromHtml(
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
+				//					'page-width'     => '220mm',
+				//					'page-height'     => '340mm',
+				//					'margin-left'    => "3cm",
+				//					'margin-right'   => "3cm",
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+			$pdfMerge->addPDF($nombre);
 			}
+			}
+			if($firstProyectoBae->getPedido()){
+			//PEDIDO FIRMADO
+			$pdfMerge->addPDF('uploads/expedientes/pedido/'.$firstProyectoBae->getPedido());
 
-
-			if ($firstDictamen) {
-				//DICTAMEN FIRMADO
-				if ($firstDictamen->getDictamen()) {
-					$pdfMerge->addPDF('uploads/dictamenes/' . $firstDictamen->getDictamen());
-				}
-
-				//RAMA FIRMADO
-				if ($firstDictamen->getRama()) {
-					$pdfMerge->addPDF('uploads/expedientes/rama/' . $firstDictamen->getRama());
-				}
-				$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
-
-
-				$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
-					['dictamen' => $firstDictamen->getId()],
-					['id' => 'DESC']
-				);
-				if ($textoDefinitivo) {
-					//TEXTO DEFINITIVO FIRMADO
-					if ($textoDefinitivo->getArchivo()) {
-						$pdfMerge->addPDF('uploads/expedientes/definitivo/' . $textoDefinitivo->getArchivo());
-					}
-					if ($textoDefinitivo->getPase()) {
-						$pdfMerge->addPDF('uploads/expedientes/pasedem/' . $textoDefinitivo->getPase());
-					}
-				}
+			} 
+			if($firstProyectoBae->getDigesto()){
+			//DIGESTO FIRMADO
+			$pdfMerge->addPDF('uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto());
 			}
 		}
 
 
+		if($firstDictamen){
+		//DICTAMEN FIRMADO
+		if($firstDictamen->getDictamen()){
+			$pdfMerge->addPDF('uploads/dictamenes/'.$firstDictamen->getDictamen());
 
 
-		$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
+
+		}
+
+					//RAMA FIRMADO
+					if($firstDictamen->getRama()){
+						$pdfMerge->addPDF('uploads/expedientes/rama/'.$firstDictamen->getRama());
+					}
+					$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+					$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+						['dictamen' => $firstDictamen->getId()],
+						['id' => 'DESC']
+					);	
+					if($textoDefinitivo){
+						//TEXTO DEFINITIVO FIRMADO
+						if($textoDefinitivo->getArchivo()){
+							$pdfMerge->addPDF('uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo());
+			
+						}	
+						if($textoDefinitivo->getPase()){
+							$pdfMerge->addPDF('uploads/expedientes/pasedem/'.$textoDefinitivo->getPase());
+						}
+			
+					}
+					
+		}
+
+	
+
+
+
+
+	}
+
+	
+	
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 
 		$htmls = '<html><head><title>Descargar PDFs</title></head><body>';
-		foreach ($url as $file) {
-			$urls = $this->generateUrl('base_url', [], UrlGeneratorInterface::ABSOLUTE_URL) . $file;
-			$htmls .= '<iframe src="' . $urls . '" style="display:none;"></iframe>';
-		}
-		$htmls .= '</body></html>';
+        foreach ($url as $file) {
+            $urls = $this->generateUrl('base_url', [], UrlGeneratorInterface::ABSOLUTE_URL) . $file;
+            $htmls .= '<iframe src="' . $urls . '" style="display:none;"></iframe>';
+        }
+        $htmls .= '</body></html>';
 
-		return new Response(null);
-		/* 		return new Response($pdf4, array(
+        return new Response(null); 
+/* 		return new Response($pdf4, array(
 			'page-size'      => 'Legal',
 		//					'page-width'     => '220mm',
 		//					'page-height'     => '340mm',
@@ -4151,16 +4141,16 @@ class ExpedienteController extends AbstractController
 			'Content-Type'        => 'application/pdf',
 			'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
 		)); */
+
 	}
 
-	public function imprimirGiroComision(ProyectoBae $id)
-	{
-		$giros = $id->getGirosOrdenados();
-		$expediente = $id->getExpediente();
-		$sesion = $id->getBoletinAsuntoEntrado()->getSesion();
+	public function imprimirGiroComision(ProyectoBae $id){
+		$giros=$id->getGirosOrdenados();
+		$expediente=$id->getExpediente();
+		$sesion=$id->getBoletinAsuntoEntrado()->getSesion();
 
-		$titulo = $sesion->getTitulo();
-		$fecha = $sesion->getFecha();
+		$titulo=$sesion->getTitulo();
+		$fecha=$sesion->getFecha();
 
 		$html = $this->renderView(
 			'expediente/giroComision.pdf.twig',
@@ -4172,41 +4162,40 @@ class ExpedienteController extends AbstractController
 		);
 	}
 
-	public function imprimirGiroComisionFirmado(Expediente $expediente)
-	{
+	public function imprimirGiroComisionFirmado(Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 
-		$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
 
-		$firstProyectoBae = $proyectoBaeRepository->findOneBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'DESC']
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+	// Verificar si es informe DEM - no tiene giro firmado
+	if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
+		$this->get('session')->getFlashBag()->add(
+			'warning',
+			'Los informes DEM no tienen archivo de giro firmado disponible.'
 		);
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+	}
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') .'/public/uploads/expedientes/comision/giro/'.$firstProyectoBae->getFirmado();
 
-		// Verificar si es informe DEM - no tiene giro firmado
-		if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
-			$this->get('session')->getFlashBag()->add(
-				'warning',
-				'Los informes DEM no tienen archivo de giro firmado disponible.'
-			);
-			return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
-		}
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo=$firstProyectoBae->getExpediente()->getExpediente()."-".$firstProyectoBae->getExpediente()->getLetra()."-".$firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
 
-		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/comision/giro/' . $firstProyectoBae->getFirmado();
-
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = $firstProyectoBae->getExpediente()->getExpediente() . "-" . $firstProyectoBae->getExpediente()->getLetra() . "-" . $firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
-		// Configurar la cabecera para forzar la descarga del archivo
-		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
-
-
-		return $response;
 	}
 
-	public function imprimirDictamenFirmado(Expediente $expediente)
-	{
+	public function imprimirDictamenFirmado(Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 
@@ -4219,22 +4208,22 @@ class ExpedienteController extends AbstractController
 		);
 
 
-
+	
 
 		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/dictamenes/' . $dictamen->getDictamen();
 		// Crear una BinaryFileResponse para el archivo PDF
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = $dictamen->getExpediente()->getExpediente() . "-" . $dictamen->getExpediente()->getLetra() . "-" . $dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
+		$response = new BinaryFileResponse($pdfPath);   
+		$titulo=$dictamen->getExpediente()->getExpediente()."-".$dictamen->getExpediente()->getLetra()."-".$dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
 		// Configurar la cabecera para forzar la descarga del archivo
 		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
+		$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
 
 
 		return $response;
+	
 	}
 
-	public function imprimirRamaFirmado(Expediente $expediente)
-	{
+	public function imprimirRamaFirmado(Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 
@@ -4247,126 +4236,89 @@ class ExpedienteController extends AbstractController
 		);
 
 
-
+	
 
 		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/rama/' . $dictamen->getRama();
 		// Crear una BinaryFileResponse para el archivo PDF
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = $dictamen->getExpediente()->getExpediente() . "-" . $dictamen->getExpediente()->getLetra() . "-" . $dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
+		$response = new BinaryFileResponse($pdfPath);   
+		$titulo=$dictamen->getExpediente()->getExpediente()."-".$dictamen->getExpediente()->getLetra()."-".$dictamen->getExpediente()->getPeriodoLegislativo()->getAnio();
 		// Configurar la cabecera para forzar la descarga del archivo
 		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
+		$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
 
 
 		return $response;
+	
 	}
 
-	public function imprimirPedidoFirmado(Expediente $expediente)
-	{
+	public function imprimirPedidoFirmado(Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 
-		$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
 
-		$firstProyectoBae = $proyectoBaeRepository->findOneBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'DESC']
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+	// Verificar si es informe DEM - no tiene pedido
+	if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
+		$this->get('session')->getFlashBag()->add(
+			'warning',
+			'Los informes DEM no tienen archivo de pedido disponible.'
 		);
-
-		// Verificar si es informe DEM - no tiene pedido
-		if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
-			$this->get('session')->getFlashBag()->add(
-				'warning',
-				'Los informes DEM no tienen archivo de pedido disponible.'
-			);
-			return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
-		}
-
-		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pedido/' . $firstProyectoBae->getPedido();
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+	}
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pedido/'.$firstProyectoBae->getPedido();
 
 
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = $firstProyectoBae->getExpediente()->getExpediente() . "-" . $firstProyectoBae->getExpediente()->getLetra() . "-" . $firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
+		$response = new BinaryFileResponse($pdfPath);   
+		$titulo=$firstProyectoBae->getExpediente()->getExpediente()."-".$firstProyectoBae->getExpediente()->getLetra()."-".$firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
 		// Configurar la cabecera para forzar la descarga del archivo
 		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
+		$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
 
 
 		return $response;
+
 	}
 
-	public function imprimirInformeFirmado(Expediente $expediente)
-	{
+	public function imprimirInformeFirmado(Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 
-		$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
+	$proyectoBaeRepository = $em->getRepository(ProyectoBAE::class);
 
-		$firstProyectoBae = $proyectoBaeRepository->findOneBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'DESC']
+	$firstProyectoBae = $proyectoBaeRepository->findOneBy(
+        ['expediente' => $expediente->getId()],
+        ['id' => 'DESC']
+    );
+
+	// Verificar si es informe DEM - no tiene digesto
+	if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
+		$this->get('session')->getFlashBag()->add(
+			'warning',
+			'Los informes DEM no tienen archivo de digesto disponible.'
 		);
+		return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
+	}
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/digesto/'.$firstProyectoBae->getDigesto();
 
-		// Verificar si es informe DEM - no tiene digesto
-		if ($firstProyectoBae && $firstProyectoBae->getEsInformeDem()) {
-			$this->get('session')->getFlashBag()->add(
-				'warning',
-				'Los informes DEM no tienen archivo de digesto disponible.'
-			);
-			return $this->redirectToRoute('expediente_show', ['id' => $expediente->getId()]);
-		}
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo=$firstProyectoBae->getExpediente()->getExpediente()."-".$firstProyectoBae->getExpediente()->getLetra()."-".$firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
 
-		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/digesto/' . $firstProyectoBae->getDigesto();
-
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = $firstProyectoBae->getExpediente()->getExpediente() . "-" . $firstProyectoBae->getExpediente()->getLetra() . "-" . $firstProyectoBae->getExpediente()->getPeriodoLegislativo()->getAnio();
-		// Configurar la cabecera para forzar la descarga del archivo
-		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
-
-
-		return $response;
 	}
 
-	public function imprimirTextoFirmado(Expediente $expediente)
-	{
-		$em = $this->getDoctrine()->getManager();
-
-
-		$DictamenRepository = $em->getRepository(Dictamen::class);
-
-
-		$dictamen = $DictamenRepository->findOneBy(
-			['expediente' => $expediente->getId()],
-			['id' => 'DESC']
-		);
-
-		$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
-
-
-		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
-			['dictamen' => $dictamen->getId()],
-			['id' => 'DESC']
-		);
-
-
-
-
-		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/definitivo/' . $textoDefinitivo->getArchivo();
-
-
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = "Texto Definitivo";
-		// Configurar la cabecera para forzar la descarga del archivo
-		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
-
-
-		return $response;
-	}
-
-	public function imprimirPaseFirmado(Expediente $expediente)
-	{
+	public function imprimirTextoFirmado(Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 
@@ -4384,22 +4336,60 @@ class ExpedienteController extends AbstractController
 		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
 			['dictamen' => $dictamen->getId()],
 			['id' => 'DESC']
+		);		
+
+
+
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/definitivo/'.$textoDefinitivo->getArchivo();
+
+
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo="Texto Definitivo";
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
+
+	}
+
+	public function imprimirPaseFirmado(Expediente $expediente){
+		$em = $this->getDoctrine()->getManager();
+
+
+		$DictamenRepository = $em->getRepository(Dictamen::class);
+
+
+		$dictamen = $DictamenRepository->findOneBy(
+			['expediente' => $expediente->getId()],
+			['id' => 'DESC']
 		);
 
+		$TextoDefinitivoRepository = $em->getRepository(TextoDefinitivo::class);
+
+
+		$textoDefinitivo = $TextoDefinitivoRepository->findOneBy(
+			['dictamen' => $dictamen->getId()],
+			['id' => 'DESC']
+		);		
 
 
 
-		$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pasedem/' . $textoDefinitivo->getPase();
+			
+	$pdfPath = $this->getParameter('kernel.project_dir') . '/public/uploads/expedientes/pasedem/'.$textoDefinitivo->getPase();
 
 
-		$response = new BinaryFileResponse($pdfPath);
-		$titulo = "Texto Definitivo";
-		// Configurar la cabecera para forzar la descarga del archivo
-		$response->headers->set('Content-Type', 'application/pdf');
-		$response->headers->set('Content-Disposition', 'inline; filename="' . $titulo . '.pdf"');
+			$response = new BinaryFileResponse($pdfPath);   
+			$titulo="Texto Definitivo";
+			// Configurar la cabecera para forzar la descarga del archivo
+			$response->headers->set('Content-Type', 'application/pdf');
+			$response->headers->set('Content-Disposition', 'inline; filename="'.$titulo.'.pdf"');
+	
+	
+			return $response;
 
-
-		return $response;
 	}
 
 	public function imprimirProyectoNumero(Pdf $knpSnappyPdf, $id, Request $request)
@@ -4439,7 +4429,7 @@ class ExpedienteController extends AbstractController
 		$footer = $this->renderView('default/pie_pagina.pdf.twig');
 
 
-		$array = array(
+		$array=array(
 			'page-size'      => 'Legal',
 			//					'page-width'     => '220mm',
 			//					'page-height'     => '340mm',
@@ -4463,82 +4453,79 @@ class ExpedienteController extends AbstractController
 		);
 
 		//        return new Response($html);
-		$pdfMerge = new PDFMerger($this->getParameter('kernel.project_dir') . '/public');
+		$pdfMerge = new PDFMerger;
 
 		$filesystem = new Filesystem();
 		$filesystem->remove('filePDF.pdf');
 		$date = new \DateTime();
-		$time = $date->getTimeStamp();
-		$tmp = sys_get_temp_dir();
-		$nombre = $tmp . '/' . $time . '.pdf';
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/'.$time.'.pdf';
 
 		$knpSnappyPdf->generateFromHtml(
-			$html,
-			$nombre,
-			array(
-				'page-size'      => 'Legal',
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
 				//					'margin-left'    => "3cm",
 				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-html'    => $header,
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
+					'footer-html'    => $footer,
 				//                    'margin-bottom' => "1cm"
-
-			)
-		);
-
+					
+				)
+			);
+		
 
 		$pdfMerge->addPDF($nombre);
+		
 
+		foreach ($expediente->getAnexos() as $anexo){
 
-		foreach ($expediente->getAnexos() as $anexo) {
-
-			$path = $anexo->getAnexo();
-
+			$path=$anexo->getAnexo();
+		
 			$extension = pathinfo($path);
-
+	
 			$extension = strtolower($extension['extension']);
 
-			if ($extension == 'pdf') {
-				$pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/anexos/'.$path);
 			}
+
 		}
 
-		$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 
 
-		return new Response(
-			$pdf4,
-			array(
-				'page-size'      => 'Legal',
-				//					'page-width'     => '220mm',
-				//					'page-height'     => '340mm',
-				//					'margin-left'    => "3cm",
-				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-html'    => $header,
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				'footer-html'    => $footer,
-				//                    'margin-bottom' => "1cm"
-
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
-		);
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-html'    => $header,
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+			'footer-html'    => $footer,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
+	
 	}
 
-	function imprimirArchivoAdministrativo(Pdf $knpSnappyPdf, Expediente $expediente)
-	{
+	function imprimirArchivoAdministrativo(Pdf $knpSnappyPdf,Expediente $expediente){
 		$em = $this->getDoctrine()->getManager();
 
 		//CARATULA
@@ -4547,7 +4534,7 @@ class ExpedienteController extends AbstractController
 		if ($expediente->getBorrador()) {
 			$dataToEncode = null;
 		}
-
+ 
 		$title      = 'Carátula';
 
 		$html = $this->renderView(
@@ -4558,86 +4545,84 @@ class ExpedienteController extends AbstractController
 			]
 		);
 
-		$pdfMerge = new PDFMerger($this->getParameter('kernel.project_dir') . '/public');
+		$pdfMerge = new PDFMerger;
 
 		$filesystem = new Filesystem();
 		$filesystem->remove('filePDF.pdf');
 		$date = new \DateTime();
-		$time = $date->getTimeStamp();
-		$tmp = sys_get_temp_dir();
-		$nombre = $tmp . '/Caratula' . $time . '.pdf';
+		$time=$date->getTimeStamp();
+		$tmp=sys_get_temp_dir();
+		$nombre=$tmp.'/Caratula'.$time.'.pdf';
 
 		$knpSnappyPdf->generateFromHtml(
-			$html,
-			$nombre,
-			array(
-				'page-size'      => 'Legal',
+				$html
+				,$nombre, array(
+					'page-size'      => 'Legal',
 				//					'page-width'     => '220mm',
 				//					'page-height'     => '340mm',
 				//					'margin-left'    => "3cm",
 				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
+					'margin-top'     => "5cm",
+					'margin-bottom'  => "2cm",
+					'header-spacing' => 4,
+					'footer-spacing' => 5,
 				//                    'margin-bottom' => "1cm"
+					
+				)
+			);
+				
 
-			)
-		);
-
-
-		$pdfMerge->addPDF($nombre);
+		$pdfMerge->addPDF($nombre); 
 
 		//PROYECTO FIRMADO
-		$path = $expediente->getExpedienteInterno();
+		$path=$expediente->getExpedienteInterno();
 
 		$extension = pathinfo($path);
-
+	
 		$extension = strtolower($extension['extension']);
 
-		if ($extension == 'pdf') {
-			$pdfMerge->addPDF('uploads/expedientes/internos/' . $path);
+		if ($extension == 'pdf'){
+			$pdfMerge->addPDF('uploads/expedientes/internos/'.$path);
 		}
 
-		$giros = $expediente->getGiroAdministrativos();
+		$giros=$expediente->getGiroAdministrativos();
 
-		foreach ($giros as $giro) {
-			$path = $giro->getGiro();
-
+		foreach ($giros as $giro){
+			$path=$giro->getGiro();
+		
 			$extension = pathinfo($path);
-
+	
 			$extension = strtolower($extension['extension']);
 
-			if ($extension == 'pdf') {
-				$pdfMerge->addPDF('uploads/expedientes/giros/' . $path);
+			if ($extension == 'pdf'){
+				$pdfMerge->addPDF('uploads/expedientes/giros/'.$path);
 			}
 		}
+	
+	
+
+		$pdf4=$pdfMerge->merge('browser','pdf3.pdf');
 
 
+		return new Response($pdf4, array(
+			'page-size'      => 'Legal',
+		//					'page-width'     => '220mm',
+		//					'page-height'     => '340mm',
+		//					'margin-left'    => "3cm",
+		//					'margin-right'   => "3cm",
+			'margin-top'     => "5cm",
+			'margin-bottom'  => "2cm",
+			'header-spacing' => 4,
+			'footer-spacing' => 5,
+		//                    'margin-bottom' => "1cm"
+			
+		),
+		200,
+		array(
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
+		));
 
-		$pdf4 = $pdfMerge->merge('browser', 'pdf3.pdf');
-
-
-		return new Response(
-			$pdf4,
-			array(
-				'page-size'      => 'Legal',
-				//					'page-width'     => '220mm',
-				//					'page-height'     => '340mm',
-				//					'margin-left'    => "3cm",
-				//					'margin-right'   => "3cm",
-				'margin-top'     => "5cm",
-				'margin-bottom'  => "2cm",
-				'header-spacing' => 4,
-				'footer-spacing' => 5,
-				//                    'margin-bottom' => "1cm"
-
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $title . '.pdf"'
-			)
-		);
 	}
+
 }

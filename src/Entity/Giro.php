@@ -46,7 +46,7 @@ class Giro extends BaseClass {
 	/**
 	 * @var
 	 *
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Comision")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Comision", inversedBy="girosDestinos")
 	 * @ORM\JoinColumn(name="comision_destino_id", referencedColumnName="id")
 	 */
 	private $comisionDestino;

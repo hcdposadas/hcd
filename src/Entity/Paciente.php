@@ -24,7 +24,7 @@ class Paciente
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Persona::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Persona::class, cascade={"persist", "remove"}, inversedBy="paciente")
      * @ORM\JoinColumn(nullable=false)
      */
     private $persona;

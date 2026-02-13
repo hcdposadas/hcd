@@ -3292,19 +3292,19 @@ class ExpedienteController extends AbstractController
 
                 return new Response(
                     $pdf4,
-                    array(
-                        'page-size' => 'Legal',
-                        //					'page-width'     => '220mm',
-                        //					'page-height'     => '340mm',
-                        //					'margin-left'    => "3cm",
-                        //					'margin-right'   => "3cm",
-                        'margin-top' => "5cm",
-                        'margin-bottom' => "2cm",
-                        'header-spacing' => 4,
-                        'footer-spacing' => 5,
-                        //                    'margin-bottom' => "1cm"
-
-                    ),
+//                    array(
+//                        'page-size' => 'Legal',
+//                        //					'page-width'     => '220mm',
+//                        //					'page-height'     => '340mm',
+//                        //					'margin-left'    => "3cm",
+//                        //					'margin-right'   => "3cm",
+//                        'margin-top' => "5cm",
+//                        'margin-bottom' => "2cm",
+//                        'header-spacing' => 4,
+//                        'footer-spacing' => 5,
+//                        //                    'margin-bottom' => "1cm"
+//
+//                    ),
                     200,
                     array(
                         'Content-Type' => 'application/pdf',

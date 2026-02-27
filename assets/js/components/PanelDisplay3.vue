@@ -41,18 +41,21 @@ body {
   border-radius: 50%; /* Hace que el elemento tenga forma de círculo */
   background-color: green; /* Color verde */
 }
+
 .circulo-gris {
   width: 54px;
   height: 54px;
   border-radius: 50%; /* Hace que el elemento tenga forma de círculo */
   background-color: green; /* Color verde */
 }
+
 .circulo-rojo {
   width: 54px;
   height: 54px;
   border-radius: 50%; /* Hace que el elemento tenga forma de círculo */
   background-color: green; /* Color verde */
 }
+
 .circulo-vacio {
   width: 56px;
   height: 56px;
@@ -78,6 +81,7 @@ body {
   display: inline-block;
   font-family: "Poppins", sans-serif;
 }
+
 .ausentes {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -115,8 +119,8 @@ body {
             <div class="row">
               <div class="col-12">
                 <div
-                  class="alert text-center"
-                  :class="[
+                    class="alert text-center"
+                    :class="[
                     quorum.hayQuorum ? 'alert-success' : 'alert-success',
                   ]"
                 >
@@ -185,7 +189,7 @@ body {
             MOCIÓN
           </h2>
           <div style="font-size: 3em;">{{ textoMocion }} {{ tipoMayoria }}</div>
-          <hr />
+          <hr/>
           <!--<div style="text-align: center; font-size: 3em; width: 50%; float: left">-->
           <div class="row">
             <div class="col-lg-6 panel-votacion-sesion-presentes-ausentes">
@@ -214,15 +218,15 @@ body {
             <div class="row">
               <div class="col-12">
                 <div
-                  class="alert text-center"
-                  :class="[
+                    class="alert text-center"
+                    :class="[
                     resultados.aprobado ? 'alert-success' : 'alert-success',
                   ]"
                 >
                   <h1>
                     <span>{{
-                      resultados.aprobado ? "APROBADO" : "APROBADO"
-                    }}</span>
+                        resultados.aprobado ? "APROBADO" : "APROBADO"
+                      }}</span>
                   </h1>
                 </div>
               </div>
@@ -238,8 +242,8 @@ body {
                   <div class="row">
                     <div class="col-12">
                       <span
-                        class="texto-resultado-concejal bold text-uppercase mr-1"
-                        >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA
+                          class="texto-resultado-concejal bold text-uppercase mr-1"
+                      >ALMIRON - ARGAÑARAZ - CARDOZO - DIB - GOMEZ DE OLIVEIRA
                         - VIGO - ZARZA - HORIANSKI - MAZAL - FERNANDEZ - SALOM -
                         SCROMEDA - TRAID - MARTINEZ</span
                       >
@@ -268,11 +272,11 @@ body {
                     </span>
                     <span v-else>
                       <span v-if="resultados.votaronNegativo.includes('DIB')"
-                        ><div class="circulo-rojo"></div>
+                      ><div class="circulo-rojo"></div>
                       </span>
                       <span v-else>
                         <span v-if="resultados.seAbstuvieron.includes('DIB')"
-                          ><div class="circulo-gris"></div
+                        ><div class="circulo-gris"></div
                         ></span>
                       </span>
                     </span>
@@ -281,8 +285,8 @@ body {
                 <div class="row" style="margin-top:5%">
                   <div class=""></div>
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span v-if="resultados.votaronPositivo.includes('TRAID')">
@@ -290,13 +294,13 @@ body {
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('TRAID')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('TRAID')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('TRAID')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('TRAID')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -304,8 +308,8 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span v-if="resultados.votaronPositivo.includes('SCROMEDA')">
@@ -313,11 +317,11 @@ body {
                       </span>
                       <span v-else>
                         <span v-if="resultados.votaronNegativo.includes('SCROMEDA')"
-                          ><div class="circulo-rojo"></div>
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span v-if="resultados.seAbstuvieron.includes('SCROMEDA')"
-                            ><div class="circulo-gris"></div
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -325,36 +329,36 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('ZARZA')"
+                          v-if="resultados.votaronPositivo.includes('ZARZA')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('ZARZA')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('ZARZA')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('ZARZA')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('ZARZA')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
                     </div>
                   </div>
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div
-                      class="circulo-vacio"
-                      style="background-color:#4f3872;font-weight:bold; font-size: 35px;color:white"
+                        class="circulo-vacio"
+                        style="background-color:#4f3872;font-weight:bold; font-size: 35px;color:white"
                     >
                       <span>D</span>
                     </div>
@@ -362,28 +366,28 @@ body {
                 </div>
                 <div class="row" style="margin-top:5%">
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('CARDOZO')"
+                          v-if="resultados.votaronPositivo.includes('CARDOZO')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="
+                            v-if="
                             resultados.votaronNegativo.includes('CARDOZO')
                           "
-                          ><div class="circulo-rojo"></div>
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="
+                              v-if="
                               resultados.seAbstuvieron.includes('CARDOZO')
                             "
-                            ><div class="circulo-gris"></div
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -391,24 +395,24 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('MAZAL')"
+                          v-if="resultados.votaronPositivo.includes('MAZAL')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('MAZAL')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('MAZAL')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('MAZAL')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('MAZAL')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -416,8 +420,8 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span v-if="resultados.votaronPositivo.includes('MARTINEZ')">
@@ -425,13 +429,13 @@ body {
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('MARTINEZ')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('MARTINEZ')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('MARTINEZ')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('MARTINEZ')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -439,12 +443,12 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="
+                          v-if="
                           resultados.votaronPositivo.includes(
                             'GOMEZ DE OLIVEIRA'
                           )
@@ -454,21 +458,21 @@ body {
                       </span>
                       <span v-else>
                         <span
-                          v-if="
+                            v-if="
                             resultados.votaronNegativo.includes(
                               'GOMEZ DE OLIVEIRA'
                             )
                           "
-                          ><div class="circulo-rojo"></div>
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="
+                              v-if="
                               resultados.seAbstuvieron.includes(
                                 'GOMEZ DE OLIVEIRA'
                               )
                             "
-                            ><div class="circulo-gris"></div
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -476,8 +480,8 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span v-if="resultados.votaronPositivo.includes('SALOM')">
@@ -485,13 +489,13 @@ body {
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('SALOM')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('SALOM')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('SALOM')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('SALOM')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -501,24 +505,24 @@ body {
 
                 <div class="row" style="margin-top:5%">
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('ALMIRON')"
+                          v-if="resultados.votaronPositivo.includes('ALMIRON')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('ALMIRON')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('ALMIRON')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('ALMIRON')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('ALMIRON')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -526,28 +530,28 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('VIGO')"
+                          v-if="resultados.votaronPositivo.includes('VIGO')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="
+                            v-if="
                             resultados.votaronNegativo.includes('VIGO')
                           "
-                          ><div class="circulo-rojo"></div>
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="
+                              v-if="
                               resultados.seAbstuvieron.includes('VIGO')
                             "
-                            ><div class="circulo-gris"></div
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -555,8 +559,8 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span v-if="resultados.votaronPositivo.includes('FERNANDEZ')">
@@ -564,13 +568,13 @@ body {
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('FERNANDEZ')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('FERNANDEZ')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('FERNANDEZ')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('FERNANDEZ')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -578,28 +582,28 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('ARGANARAZ')"
+                          v-if="resultados.votaronPositivo.includes('ARGANARAZ')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="
+                            v-if="
                             resultados.votaronNegativo.includes('ARGANARAZ')
                           "
-                          ><div class="circulo-rojo"></div>
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="
+                              v-if="
                               resultados.seAbstuvieron.includes('ARGANARAZ')
                             "
-                            ><div class="circulo-gris"></div
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -607,24 +611,24 @@ body {
                   </div>
 
                   <div
-                    class="col"
-                    style="display: flex; justify-content: center; align-items: center;"
+                      class="col"
+                      style="display: flex; justify-content: center; align-items: center;"
                   >
                     <div class="circulo-vacio">
                       <span
-                        v-if="resultados.votaronPositivo.includes('HORIANSKI')"
+                          v-if="resultados.votaronPositivo.includes('HORIANSKI')"
                       >
                         <div class="circulo-verde"></div>
                       </span>
                       <span v-else>
                         <span
-                          v-if="resultados.votaronNegativo.includes('HORIANSKI')"
-                          ><div class="circulo-rojo"></div>
+                            v-if="resultados.votaronNegativo.includes('HORIANSKI')"
+                        ><div class="circulo-rojo"></div>
                         </span>
                         <span v-else>
                           <span
-                            v-if="resultados.seAbstuvieron.includes('HORIANSKI')"
-                            ><div class="circulo-gris"></div
+                              v-if="resultados.seAbstuvieron.includes('HORIANSKI')"
+                          ><div class="circulo-gris"></div
                           ></span>
                         </span>
                       </span>
@@ -638,30 +642,30 @@ body {
                 <span style="font-size:40px;">AFIRMATIVOS</span>
 
                 <div
-                  style="width:100px; height:100px; background-color:green; display:inline-block; border-radius:0%;"
+                    style="width:100px; height:100px; background-color:green; display:inline-block; border-radius:0%;"
                 >
                   <span style="color:#fff; font-size:60px; line-height:100px;"
-                    >14</span
+                  >14</span
                   >
                 </div>
               </div>
               <div class="col text-center">
                 <span style="font-size:40px;">NEGATIVOS</span>
                 <div
-                  style="width:100px; height:100px; background-color:red; display:inline-block; border-radius:0%;"
+                    style="width:100px; height:100px; background-color:red; display:inline-block; border-radius:0%;"
                 >
                   <span style="color:#fff; font-size:60px; line-height:100px;"
-                    >0</span
+                  >0</span
                   >
                 </div>
               </div>
               <div class="col text-center">
                 <span style="font-size:40px;">ABSTENCIONES</span>
                 <div
-                  style="width:100px; height:100px; background-color:grey; display:inline-block; border-radius:0%;"
+                    style="width:100px; height:100px; background-color:grey; display:inline-block; border-radius:0%;"
                 >
                   <span style="color:#fff; font-size:60px; line-height:100px;"
-                    >0</span
+                  >0</span
                   >
                 </div>
               </div>
@@ -715,51 +719,51 @@ export default {
       upgrade: true,
     });
     socket.on(
-      "message",
-      function(msg) {
-        console.log(msg);
-        switch (msg.type) {
-          case "quorum":
-            this.quorum.presentes = msg.data.quorum;
-            this.quorum.ausentes = msg.data.ausentes;
-            this.quorum.hayQuorum = msg.data.hayQuorum;
-            this.quorum.lista = msg.data.presentes;
-            break;
-          case "votacion.finalizada":
-            this.panel = "presentes";
-            break;
-          case "votacion.abierta":
-            this.mocion = msg.data.mocion;
-            this.display = true;
-            this.sesion = msg.data.sesion;
-            this.tipoMayoria = msg.data.tipoMayoria;
-            this.textoMocion = msg.data.textoMocion;
-            this.duracion = msg.data.duracion;
-            this.tiempo = msg.data.tiempo;
+        "message",
+        function (msg) {
+          console.log(msg);
+          switch (msg.type) {
+            case "quorum":
+              this.quorum.presentes = msg.data.quorum;
+              this.quorum.ausentes = msg.data.ausentes;
+              this.quorum.hayQuorum = msg.data.hayQuorum;
+              this.quorum.lista = msg.data.presentes;
+              break;
+            case "votacion.finalizada":
+              this.panel = "presentes";
+              break;
+            case "votacion.abierta":
+              this.mocion = msg.data.mocion;
+              this.display = true;
+              this.sesion = msg.data.sesion;
+              this.tipoMayoria = msg.data.tipoMayoria;
+              this.textoMocion = msg.data.textoMocion;
+              this.duracion = msg.data.duracion;
+              this.tiempo = msg.data.tiempo;
 
-            this.panel = "votacion";
+              this.panel = "votacion";
 
-            break;
-          case "votacion.tick":
-            this.tiempo = msg.data.tiempo;
-            break;
-          case "votacion.cerrada":
-            break;
-          case "votacion.resultados":
-            this.mocion = msg.data.mocion;
-            this.resultados.afirmativos = msg.data.afirmativos;
-            this.resultados.negativos = msg.data.negativos;
-            this.resultados.abstenciones = msg.data.abstenciones;
-            this.resultados.total = msg.data.total;
-            this.resultados.aprobado = msg.data.aprobado;
-            this.resultados.votaronNegativo = msg.data.votaronNegativo;
-            this.resultados.votaronPositivo = msg.data.votaronPositivo;
-            this.resultados.seAbstuvieron = msg.data.seAbstuvieron;
+              break;
+            case "votacion.tick":
+              this.tiempo = msg.data.tiempo;
+              break;
+            case "votacion.cerrada":
+              break;
+            case "votacion.resultados":
+              this.mocion = msg.data.mocion;
+              this.resultados.afirmativos = msg.data.afirmativos;
+              this.resultados.negativos = msg.data.negativos;
+              this.resultados.abstenciones = msg.data.abstenciones;
+              this.resultados.total = msg.data.total;
+              this.resultados.aprobado = msg.data.aprobado;
+              this.resultados.votaronNegativo = msg.data.votaronNegativo;
+              this.resultados.votaronPositivo = msg.data.votaronPositivo;
+              this.resultados.seAbstuvieron = msg.data.seAbstuvieron;
 
-            this.panel = "resultados";
-            break;
-        }
-      }.bind(this)
+              this.panel = "resultados";
+              break;
+          }
+        }.bind(this)
     );
   },
 };

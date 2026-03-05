@@ -12,4 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class CargoPersonaRepository extends EntityRepository
 {
+    public function findActivos()
+    {
+        return $this->createQueryBuilder('cp')
+            ->where('cp.activo = :activo')
+            ->setParameter('activo', true)
+            ->getQuery();
+    }
 }

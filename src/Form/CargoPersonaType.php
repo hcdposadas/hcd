@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use App\Repository\ComisionRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,7 +16,14 @@ class CargoPersonaType extends AbstractType {
 		$builder
 			->add( 'cargo')
 			->add( 'areaAdministrativa')
-			->add('comision')
+			->add( 'comision', EntityType::class, [
+				'class' => 'App\Entity\Comision',
+				'query_builder' => function (ComisionRepository $er) {
+					return $er->createQueryBuilder('c')
+						->where('c.activo = :activo')
+						->setParameter('activo', true);
+				}
+			])
 		;
 	}
 

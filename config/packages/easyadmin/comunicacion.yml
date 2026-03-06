@@ -1,0 +1,22 @@
+easy_admin:
+    entities:
+        Comunicacion:
+            class: App\Entity\Comunicacion
+            form:
+                fields:
+                    - { property: 'numero' }
+                    - { property: 'anio' }
+                    - { property: 'fecha' }
+                    - { property: 'areaOrigen' }
+                    - { property: 'areaDestino' }
+                    - { property: 'estado', type: 'textarea' }
+                    - { property: 'tipo', type: "choice", type_options: { multiple: false, expanded: false, choices: {
+                        'Nota': 'NOTA',
+                        'Memorándum': 'MEMORANDUM',
+                        'Circular': 'CIRCULAR',
+                        'Informe': 'INFORME',
+                    } }
+                    }
+            list:
+                title: 'Comunicación'
+                fields: ['numero', 'anio', 'fecha', 'areaOrigen', 'areaDestino', 'estado', 'tipo']

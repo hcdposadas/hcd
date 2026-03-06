@@ -6,9 +6,27 @@ easy_admin:
                 fields:
                     - { property: 'nombre' }
                     - { property: 'descripcion' }
+                    - { property: 'activo' }
             edit:
                 title:  'Editar Área Administrativa'
             new:
                 title:  'Alta Área Administrativa'
             list:
                 title:  'Área Administrativa'
+                fields:
+                    - { property: 'id' }
+                    - { property: 'nombre' }
+                    - { property: 'activo' }
+                    - { property: 'fechaCreacion', type: 'datetime' }
+                    - { property: 'fechaActualizacion', type: 'datetime' }
+            show:
+                title: 'Área Administrativa'
+                fields:
+                    - { property: 'id' }
+                    - { property: 'nombre' }
+                    - { property: 'descripcion' }
+                    - { property: 'activo' }
+                    - { property: 'fechaCreacion', type: 'datetime' }
+                    - { property: 'fechaActualizacion', type: 'datetime' }
+                    - { property: 'creadoPor' }
+                    - { property: 'actualizadoPor' }

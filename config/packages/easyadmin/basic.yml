@@ -1,5 +1,9 @@
 #easy admin
 easy_admin:
+    formats:
+        date: 'd/m/Y'
+        time: 'H:i:s'
+        datetime: 'd/m/Y H:i:s'
 #    disabled_actions: ['delete']
     site_name: '%env(APP_NAME)%'
     show:
@@ -25,6 +29,8 @@ easy_admin:
             - { label: 'Documentos', entity: Documento, icon: 'file' }
             - { label: 'Parametro', entity: Parametro, icon: 'cog' }
             - { label: 'Artículo', entity: PersonalArticulo, icon: 'umbrella' }
+            - { label: 'Comunicación', entity: Comunicacion }
+            - { label: 'Ticket', entity: Ticket, icon: 'ticket-alt' }
             - Expediente
             - Dictamen
             - { label: 'Texto Definitivo', entity: TextoDefinitivo, icon: 'file' }

@@ -39,6 +39,11 @@ class RecibidoComunicado
      */
     private $fecha;
 
+    public function __toString()
+    {
+        return 'Recibido: '.$this->getArea();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

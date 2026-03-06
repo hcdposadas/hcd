@@ -1,0 +1,23 @@
+easy_admin:
+    entities:
+        Ticket:
+            class: App\Entity\Ticket
+            form:
+                fields:
+                    - { property: 'texto', type: 'textarea' }
+                    - { property: 'areaOrigen' }
+                    - { property: 'areaDestino' }
+                    - { property: 'completo' }
+                    - { property: 'observacion' }
+            list:
+                fields:
+                    - { property: 'id' }
+                    - { property: 'areaOrigen' }
+                    - { property: 'areaDestino' }
+                    - { property: 'completo' }
+                    - { property: 'abierto' }
+                    - { property: 'fecha' }
+                    - { property: 'fechaC' }
+                    - { property: 'fechaV' }
+                    - { property: 'fechaCon' }
+

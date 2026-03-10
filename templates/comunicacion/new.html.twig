@@ -1,37 +1,104 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-Comunicados
+    Comunicados
 {% endblock title %}
 {% block body %}
-<div class="card p-4" >
-{{ form_start(form) }}
-<div style="width:20%"> {{ form_row(form.tipo) }}</div>
-<div style="width:50%"> {{ form_row(form.estado) }}</div>
-<div style="width:50%"> {{ form_row(form.archivoFile) }}</div>
-<div style="width:50%"> {{ form_row(form.areaDestino) }}</div>
+    <div class="card p-4">
+        {{ form_start(form) }}
+        <div style="width:20%"> {{ form_row(form.tipo) }}</div>
+        <div style="width:50%"> {{ form_row(form.estado) }}</div>
+        <div style="width:50%"> {{ form_row(form.archivoFile) }}</div>
 
-<div style="width:50%; {% if 'ROLE_EXTERNO' in app.user.roles %}display:none;{% endif %}"> {{ form_row(form.masivo) }}</div>
+        <div class="archivos-wrapper" style="width:50%">
+            <h3>{{ form_label(form.archivos) }}</h3>
+            <ul class="archivos" style="list-style: none; padding-left: 0;"
+                data-prototype="{{ form_widget(form.archivos.vars.prototype)|e('html_attr') }}">
+                {% for archivo in form.archivos %}
+                    <li>{{ form_row(archivo.archivoFile) }}</li>
+                {% endfor %}
+            </ul>
+            <button type="button" class="add_item_link btn btn-secondary mb-3" data-collection-holder-class="archivos">
+                Agregar otro archivo
+            </button>
+        </div>
 
-<input class="btn btn-primary" type="submit" value="Enviar"/>
-</div>
-{{ form_end(form)}}
-<a class="btn btn-default mb-2" href="{{ path('comunicaciones_enviadas') }}">Volver</a>
+        <div style="width:50%"> {{ form_row(form.areaDestino) }}</div>
+
+        <div style="width:50%; {% if 'ROLE_EXTERNO' in app.user.roles %}display:none;{% endif %}"> {{ form_row(form.masivo) }}</div>
+
+        <input class="btn btn-primary" type="submit" value="Enviar"/>
+    </div>
+    <div class="d-none">
+        {{ form_end(form) }}
+    </div>
+    <a class="btn btn-default mb-2" href="{{ path('comunicaciones_enviadas') }}">Volver</a>
 {% endblock body %}
 {% block javascripts %}
-  <style>
-.custom-file-input ~ .custom-file-label::after {
-    content: "Seleccionar Archivo";
-}
-  </style>
+    <style>
+        .custom-file-input ~ .custom-file-label::after {
+            content: "Seleccionar Archivo";
+        }
+    </style>
 
-    {#<script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>#}
+    {# <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script> #}
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-$(document).on('change', '.custom-file-input', function (event) {
-    $(this).next('.custom-file-label').html(event.target.files[0].name);
-})
-</script>
+    <script>
+        $(document).on('change', '.custom-file-input', function (event) {
+            if (event.target.files.length > 0) {
+                $(this).next('.custom-file-label').html(event.target.files[0].name);
+            }
+        })
+
+        const addFormToCollection = (e) => {
+            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+            const item = document.createElement('li');
+
+            item.innerHTML = collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                );
+
+            addTagFormDeleteLink(item);
+
+            collectionHolder.appendChild(item);
+
+            collectionHolder.dataset.index++;
+        };
+
+        const addTagFormDeleteLink = (item) => {
+            const removeFormButton = document.createElement('button');
+            removeFormButton.innerText = 'Eliminar archivo';
+            removeFormButton.classList.add('btn', 'btn-danger', 'mb-2');
+
+            item.append(removeFormButton);
+
+            removeFormButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // remove the li for the tag form
+                item.remove();
+            });
+        }
+
+        document
+            .querySelectorAll('.add_item_link')
+            .forEach(btn => {
+                btn.addEventListener("click", addFormToCollection)
+            });
+
+        document
+            .querySelectorAll('ul.archivos li')
+            .forEach((tag) => {
+                addTagFormDeleteLink(tag)
+            });
+
+        document.querySelector('ul.archivos').dataset.index = document.querySelectorAll('ul.archivos li').length;
+
+    </script>
 
 {% endblock javascripts %}

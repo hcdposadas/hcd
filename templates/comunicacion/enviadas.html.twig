@@ -96,6 +96,13 @@
                                        href="{{ path('imprimir_comunicado', { 'id': comunicado.id }) }}">
                                         <i class="fa fa-print"></i>
                                     </a>
+                                    {% if comunicado.archivos.count > 0 %}
+                                        {% for archivo in comunicado.archivos %}
+                                            <a class="btn btn-default" target="_blank" href="{{ vich_uploader_asset(archivo, 'archivoFile') }}">
+                                                <i class="fa fa-paperclip"></i>
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

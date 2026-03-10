@@ -20,3 +20,6 @@ easy_admin:
             list:
                 title: 'Comunicación'
                 fields: ['numero', 'anio', 'fecha', 'areaOrigen', 'areaDestino', 'estado', 'tipo']
+            show:
+                title: 'Comunicación'
+                fields: ['numero', 'anio', 'fecha', 'areaOrigen', 'areaDestino', 'estado', 'tipo', 'archivo', 'archivos' ]

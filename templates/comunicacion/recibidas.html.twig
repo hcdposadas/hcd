@@ -106,7 +106,7 @@
                                     {% if recibido.comunicacion.archivos.count > 0 %}
                                         {% for archivo in recibido.comunicacion.archivos %}
                                             <a class="btn btn-default" target="_blank"
-                                               href="{{ asset('uploads/comunicados/' ~ archivo.archivoName) }}">
+                                               href="{{ asset('uploads/comunicados/' ~ archivo) }}">
                                                 <i class="fa fa-paperclip"></i>
                                             </a>
                                         {% endfor %}

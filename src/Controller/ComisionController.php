@@ -37,13 +37,13 @@ class ComisionController extends AbstractController
     {
         // Temporal: aumentar límite de memoria para debugging
         ini_set('memory_limit', '512M');
-        
+
         $em = $this->getDoctrine()->getManager();
         $em->getConfiguration()->setSQLLogger(null); // Desactivar SQL logger para ahorrar memoria
-        
+
         // Obtener ID del usuario actual sin cargar toda la entidad
         $userId = $this->getUser()->getId();
-        
+
         // Obtener comisión del usuario usando una consulta DQL optimizada
         $comisionData = $em->createQuery('
             SELECT c.id, c.peso, c.nombre
@@ -53,35 +53,35 @@ class ComisionController extends AbstractController
             JOIN App\Entity\Usuario u WITH u.persona = p
             WHERE u.id = :userId
         ')
-        ->setParameter('userId', $userId)
-        ->setMaxResults(1)
-        ->getOneOrNullResult();
-        
+            ->setParameter('userId', $userId)
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+
         if (!$comisionData) {
             throw $this->createNotFoundException('No se encontró comisión para el usuario');
         }
-        
+
         $comisionId = $comisionData['id'];
         $peso = $comisionData['peso'];
         $habilitado = $peso ? ($userId == $peso) : true;
-        
+
         // Construir la consulta base con QueryBuilder - Solo el último giro por expediente
         $qb = $em->getRepository(Giro::class)->createQueryBuilder('gd');
         $qb->select('gd, pb, e, pl')  // Solo cargar las entidades necesarias
-           ->join('gd.proyectoBae', 'pb')
-           ->join('pb.expediente', 'e')
-           ->leftJoin('e.periodoLegislativo', 'pl')
-           ->where('gd.comisionDestino = :comisionId')
-           ->andWhere('pb.id IS NOT NULL')
-           ->andWhere('gd.id IN (
+        ->join('gd.proyectoBae', 'pb')
+            ->join('pb.expediente', 'e')
+            ->leftJoin('e.periodoLegislativo', 'pl')
+            ->where('gd.comisionDestino = :comisionId')
+            ->andWhere('pb.id IS NOT NULL')
+            ->andWhere('gd.id IN (
                SELECT MAX(g2.id) 
                FROM App\Entity\Giro g2 
                JOIN g2.proyectoBae pb2
                WHERE g2.comisionDestino = :comisionId 
                GROUP BY pb2.expediente
            )')
-           ->setParameter('comisionId', $comisionId)
-           ->orderBy('gd.id', 'DESC');
+            ->setParameter('comisionId', $comisionId)
+            ->orderBy('gd.id', 'DESC');
 
         // Filtros
         $numero = $request->query->get('numero');
@@ -89,12 +89,12 @@ class ComisionController extends AbstractController
         $anio = $request->query->get('anio');
         $fecha = $request->query->get('fecha');
         $estadoGiro = $request->query->get('estado_giro', 'todos');
-        
+
         // Determinar los filtros basados en el estado seleccionado
         $soloCabecera = false;
         $enTratamiento = false;
         $finalizados = false;
-        
+
         switch ($estadoGiro) {
             case 'solo_cabecera':
                 $soloCabecera = true;
@@ -108,42 +108,42 @@ class ComisionController extends AbstractController
                 $finalizados = true;
                 break;
         }
-        
+
         // Debug
-        error_log('Filtros: numero=' . $numero . ', letra=' . $letra . ', anio=' . $anio . 
-                  ', fecha=' . $fecha . ', estadoGiro=' . $estadoGiro);
+        error_log('Filtros: numero=' . $numero . ', letra=' . $letra . ', anio=' . $anio .
+            ', fecha=' . $fecha . ', estadoGiro=' . $estadoGiro);
 
         if ($numero) {
             $qb->andWhere('e.expediente = :numero')
-               ->setParameter('numero', $numero);
+                ->setParameter('numero', $numero);
         }
-        
+
         if ($letra) {
             $qb->andWhere('e.letra = :letra')
-               ->setParameter('letra', $letra);
+                ->setParameter('letra', $letra);
         }
-        
+
         if ($anio) {
             $qb->andWhere('(pl.anio = :anio OR (pl.anio IS NULL AND e.anio = :anio))')
-               ->setParameter('anio', $anio);
+                ->setParameter('anio', $anio);
         }
-        
+
         if ($fecha) {
             $qb->andWhere('DATE(e.fecha) = :fecha')
-               ->setParameter('fecha', $fecha);
+                ->setParameter('fecha', $fecha);
         }
-        
+
         if ($soloCabecera) {
             $qb->andWhere('gd.cabecera = true');
         }
-        
+
         // Los filtros en_tratamiento y finalizados se aplicarán después
-        
+
         // Si está activo en_tratamiento o finalizados, necesitamos obtener todos los resultados primero
         if ($enTratamiento || $finalizados) {
             // Obtener todos los giros sin paginar para poder filtrar
             $allGiros = $qb->getQuery()->getResult();
-            
+
             // Filtrar por último giro administrativo
             $girosToShow = [];
             foreach ($allGiros as $giro) {
@@ -159,9 +159,9 @@ class ComisionController extends AbstractController
                         ->setMaxResults(1)
                         ->getQuery()
                         ->getOneOrNullResult();
-                    
+
                     $ultimoGiroNombre = $ultimoGiro ? $ultimoGiro['nombre'] : null;
-                    
+
                     // Verificar si el último giro fue a archivo o finalizado
                     $esArchivoOFinalizado = false;
                     if ($ultimoGiroNombre) {
@@ -170,7 +170,7 @@ class ComisionController extends AbstractController
                             $esArchivoOFinalizado = true;
                         }
                     }
-                    
+
                     // Aplicar el filtro correspondiente
                     if ($enTratamiento && !$esArchivoOFinalizado) {
                         // En tratamiento: mostrar solo los que NO están en archivo o finalizado
@@ -181,7 +181,7 @@ class ComisionController extends AbstractController
                     }
                 }
             }
-            
+
             // Paginar los resultados filtrados
             $giros = $paginator->paginate(
                 $girosToShow,
@@ -197,10 +197,10 @@ class ComisionController extends AbstractController
                 10
             );
         }
-        
+
         // Obtener el último giro administrativo para cada expediente paginado
         $ultimosGiros = [];
-        
+
         // Si no se procesaron filtros especiales arriba, obtener los últimos giros ahora
         if (!$enTratamiento && !$finalizados) {
             foreach ($giros as $giro) {
@@ -216,7 +216,7 @@ class ComisionController extends AbstractController
                         ->setMaxResults(1)
                         ->getQuery()
                         ->getOneOrNullResult();
-                    
+
                     $ultimoGiroNombre = $ultimoGiro ? $ultimoGiro['nombre'] : null;
                     $ultimosGiros[$expedienteId] = $ultimoGiroNombre;
                 }
@@ -236,7 +236,7 @@ class ComisionController extends AbstractController
                         ->setMaxResults(1)
                         ->getQuery()
                         ->getOneOrNullResult();
-                    
+
                     $ultimoGiroNombre = $ultimoGiro ? $ultimoGiro['nombre'] : null;
                     $ultimosGiros[$expedienteId] = $ultimoGiroNombre;
                 }
@@ -246,7 +246,7 @@ class ComisionController extends AbstractController
         return $this->render('comision/index.html.twig', [
             'controller_name' => 'ComisionController',
             'giros' => $giros,
-	        'habilitado' => $habilitado,
+            'habilitado' => $habilitado,
             'numero' => $numero,
             'letra' => $letra,
             'anio' => $anio,
@@ -276,23 +276,23 @@ class ComisionController extends AbstractController
     public function girarFinalizado($id)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         // Verificar que el usuario pertenece a la comisión de obras
         $comision = $this->getUser()->getPersona()->getCargoPersona()->first()->getComision();
         if (!$comision || strpos(strtolower($comision->getNombre()), 'obras') === false) {
             $this->addFlash('error', 'No tiene permisos para realizar esta acción.');
             return $this->redirectToRoute('comision_index');
         }
-        
+
         // Obtener el giro
         $giro = $em->getRepository(Giro::class)->find($id);
         if (!$giro || !$giro->getCabecera()) {
             $this->addFlash('error', 'Giro no encontrado o no es cabecera.');
             return $this->redirectToRoute('comision_index');
         }
-        
+
         $expediente = $giro->getProyectoBae()->getExpediente();
-        
+
         // Buscar el área "Finalizado"
         $areaFinalizado = $em->getRepository(AreaAdministrativa::class)
             ->createQueryBuilder('a')
@@ -300,12 +300,12 @@ class ComisionController extends AbstractController
             ->setParameter('nombre', '%finalizado%')
             ->getQuery()
             ->getOneOrNullResult();
-            
+
         if (!$areaFinalizado) {
             $this->addFlash('error', 'No se encontró el área "Finalizado".');
             return $this->redirectToRoute('comision_index');
         }
-        
+
         // Buscar un área administrativa genérica o la primera disponible
         $areaOrigen = $em->getRepository(AreaAdministrativa::class)
             ->createQueryBuilder('a')
@@ -316,12 +316,12 @@ class ComisionController extends AbstractController
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
-            
+
         if (!$areaOrigen) {
             // Si no se encuentra ninguna, usar la primera área administrativa disponible
             $areaOrigen = $em->getRepository(AreaAdministrativa::class)->findOneBy([]);
         }
-        
+
         // Crear el giro administrativo
         $giroAdministrativo = new GiroAdministrativo();
         $giroAdministrativo->setFechaGiro(new \DateTime());
@@ -332,12 +332,12 @@ class ComisionController extends AbstractController
         $giroAdministrativo->setExpediente($expediente);
         $giroAdministrativo->setTexto('Expediente finalizado desde la comisión de ' . $comision->getNombre());
         $giroAdministrativo->setEstado('FINALIZADO');
-        
+
         $em->persist($giroAdministrativo);
         $em->flush();
-        
+
         $this->addFlash('success', 'El expediente ha sido girado a Finalizado exitosamente.');
-        
+
         return $this->redirectToRoute('comision_index');
     }
 
@@ -347,10 +347,10 @@ class ComisionController extends AbstractController
         $esPresidenteComision = $this->getUser()->getPersona()->esPresidenteComision();
 
 
-        $comision =$esPresidenteComision->getComision();
+        $comision = $esPresidenteComision->getComision();
 
         if (!$comision) {
-            
+
         }
 
 
@@ -371,16 +371,15 @@ class ComisionController extends AbstractController
     }
 
 
-    public function newdictamen(Request $request,$id )
+    public function newdictamen(Request $request, $id)
     {
 
         $esPresidenteComision = $this->getUser()->getPersona()->esPresidenteComision();
 
-        
 
         $expediente = $this->getDoctrine()->getRepository(Expediente::class)->find($id);
 
-        
+
         $dictamen = new Dictamen();
 
         $form = $this->createForm(CrearDictamenComisionType::class, $dictamen);
@@ -394,9 +393,9 @@ class ComisionController extends AbstractController
 
             $dictamen->setPresidenteComision($esPresidenteComision);
 
-            $adjuntos= $form->get("expedientesAdjunto")->getData();
+            $adjuntos = $form->get("expedientesAdjunto")->getData();
 
-            foreach ($adjuntos as $adjunto){
+            foreach ($adjuntos as $adjunto) {
 
                 $expediente->addExpedientesAdjunto($adjunto);
             }
@@ -408,10 +407,10 @@ class ComisionController extends AbstractController
 
 
                 $em->persist($proveido);
-                
+
 
             }
-            
+
 
             $em->persist($dictamen);
             $em->flush();
@@ -430,7 +429,7 @@ class ComisionController extends AbstractController
     }
 
 
-    public function editdictamen(Request $request,$id )
+    public function editdictamen(Request $request, $id)
     {
 
         //$esPresidenteComision = $this->getUser()->getPersona()->esPresidenteComision();
@@ -439,7 +438,7 @@ class ComisionController extends AbstractController
 
         $expediente = $this->getDoctrine()->getRepository(Expediente::class)->find($id);
 
-        
+
         $dictamen = new Dictamen();
 
         $form = $this->createForm(CrearDictamenComisionType::class, $dictamen);
@@ -468,14 +467,13 @@ class ComisionController extends AbstractController
     }
 
 
-    public function cargarGiroSecretaria(ProyectoBae $id )
+    public function cargarGiroSecretaria(ProyectoBae $id)
     {
 
         $giros = $comision->getGiros()->slice(0, 100);
 
         var_dump($giros);
         die();
-
 
 
         return $this->render('comision/index.html.twig', [
@@ -500,10 +498,10 @@ class ComisionController extends AbstractController
             );
 
             return $this->render('comision/showDictamen.html.twig',
-            [
-                'form' => $form->createView(),
-                'dictamen' => $dictamen
-            ]);
+                [
+                    'form' => $form->createView(),
+                    'dictamen' => $dictamen
+                ]);
         }
         return $this->render('comision/showDictamen.html.twig',
             [
@@ -512,28 +510,28 @@ class ComisionController extends AbstractController
             ]);
     }
 
-    public function showProyectoComision(Request $request,Giro $giro)
-	{
+    public function showProyectoComision(Request $request, Giro $giro)
+    {
         $giro->setVisto(true);
-		$expediente = $giro->getProyectoBae()->getExpediente();
+        $expediente = $giro->getProyectoBae()->getExpediente();
 
 
-		return $this->render(
-			'comision/showProyecto.html.twig',
-			[
-				'expediente' => $expediente,
-			]
-		);
-	}
+        return $this->render(
+            'comision/showProyecto.html.twig',
+            [
+                'expediente' => $expediente,
+            ]
+        );
+    }
 
-    public function indexProyectosBae(PaginatorInterface $paginator, Request $request){
+    public function indexProyectosBae(PaginatorInterface $paginator, Request $request)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
 
-
         $proyectosBae = $em->getRepository(ProyectoBae::class)->findBy(
-            ['tratamientoSobretabla' =>  false],
+            ['tratamientoSobretabla' => false],
             ['fechaCreacion' => 'DESC'],
             10
         );
@@ -550,24 +548,25 @@ class ComisionController extends AbstractController
         ]);
     }
 
-    public function indexGiros(PaginatorInterface $paginator, Request $request){
+    public function indexGiros(PaginatorInterface $paginator, Request $request)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
         $qb = $em->createQueryBuilder();
 
         $qb->select('p')
-           ->from(ProyectoBae::class, 'p')
-           ->where(
-            $qb->expr()->orX(
-                $qb->expr()->isNull('p.tratamientoSobretabla'),
-                $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+            ->from(ProyectoBae::class, 'p')
+            ->where(
+                $qb->expr()->orX(
+                    $qb->expr()->isNull('p.tratamientoSobretabla'),
+                    $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+                )
+
             )
-            
-        )
-        ->setParameter('false', false)
-           ->orderBy('p.id', 'DESC');
-    
+            ->setParameter('false', false)
+            ->orderBy('p.id', 'DESC');
+
         $proyectosBae = $qb->getQuery()->getResult();
 
         $proyectosBae = $paginator->paginate(
@@ -581,7 +580,8 @@ class ComisionController extends AbstractController
         ]);
     }
 
-    public function indexPedidoInforme(PaginatorInterface $paginator, Request $request){
+    public function indexPedidoInforme(PaginatorInterface $paginator, Request $request)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -590,23 +590,23 @@ class ComisionController extends AbstractController
         $qb = $em->createQueryBuilder();
 
         $qb->select('p')
-           ->from(ProyectoBae::class, 'p')
-           ->join('p.expediente', 'e')
-           ->where($qb->expr()->andX(
-               $qb->expr()->orX(
-                   $qb->expr()->isNull('p.tratamientoSobretabla'),
-                   $qb->expr()->eq('p.tratamientoSobretabla', ':false')
-               ),
+            ->from(ProyectoBae::class, 'p')
+            ->join('p.expediente', 'e')
+            ->where($qb->expr()->andX(
                 $qb->expr()->orX(
-                   $qb->expr()->isNull('p.esInformeDem'),
-                   $qb->expr()->eq('p.esInformeDem', ':false')
-               ) 
-           ))
-           ->setParameter('false', false)
-           ->andWhere('e.tipoProyecto = :tipoProyecto')
-           ->setParameter('tipoProyecto', $tipoProyecto->getId())
-           ->orderBy('p.id', 'DESC');
-    
+                    $qb->expr()->isNull('p.tratamientoSobretabla'),
+                    $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+                ),
+                $qb->expr()->orX(
+                    $qb->expr()->isNull('p.esInformeDem'),
+                    $qb->expr()->eq('p.esInformeDem', ':false')
+                )
+            ))
+            ->setParameter('false', false)
+            ->andWhere('e.tipoProyecto = :tipoProyecto')
+            ->setParameter('tipoProyecto', $tipoProyecto->getId())
+            ->orderBy('p.id', 'DESC');
+
         $proyectosBae = $qb->getQuery()->getResult();
 
         $proyectosBae = $paginator->paginate(
@@ -621,31 +621,31 @@ class ComisionController extends AbstractController
 
     }
 
-    public function indexInformesDigesto(PaginatorInterface $paginator, Request $request){
-
+    public function indexInformesDigesto(PaginatorInterface $paginator, Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $tipoProyecto = $em->getRepository(TipoProyecto::class)->findOneBySlug('ordenanza');
 
         $qb = $em->createQueryBuilder();
 
         $qb->select('p')
-           ->from(ProyectoBae::class, 'p')
-           ->join('p.expediente', 'e')
-           ->where($qb->expr()->andX(
-            $qb->expr()->orX(
-                $qb->expr()->isNull('p.tratamientoSobretabla'),
-                $qb->expr()->eq('p.tratamientoSobretabla', ':false')
-            ),
-            $qb->expr()->orX(
-                $qb->expr()->isNull('p.esInformeDem'),
-                $qb->expr()->eq('p.esInformeDem', ':false')
-            )
-        ))
-        ->setParameter('false', false)
-           ->andWhere('e.tipoProyecto = :tipoProyecto')
-           ->setParameter('tipoProyecto', $tipoProyecto->getId())
-           ->orderBy('p.id', 'DESC');
-    
+            ->from(ProyectoBae::class, 'p')
+            ->join('p.expediente', 'e')
+            ->where($qb->expr()->andX(
+                $qb->expr()->orX(
+                    $qb->expr()->isNull('p.tratamientoSobretabla'),
+                    $qb->expr()->eq('p.tratamientoSobretabla', ':false')
+                ),
+                $qb->expr()->orX(
+                    $qb->expr()->isNull('p.esInformeDem'),
+                    $qb->expr()->eq('p.esInformeDem', ':false')
+                )
+            ))
+            ->setParameter('false', false)
+            ->andWhere('e.tipoProyecto = :tipoProyecto')
+            ->setParameter('tipoProyecto', $tipoProyecto->getId())
+            ->orderBy('p.id', 'DESC');
+
         $proyectosBae = $qb->getQuery()->getResult();
 
         $proyectosBae = $paginator->paginate(
@@ -653,6 +653,7 @@ class ComisionController extends AbstractController
             $request->query->get('page', 1)/* page number */,
             10/* limit per page */
         );
+
         return $this->render('comision/indexInformes.html.twig', [
             'controller_name' => 'ComisionController',
             'proyectos' => $proyectosBae
@@ -664,18 +665,18 @@ class ComisionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $expediente = $proyectoBae->getExpediente();
-    
+
         $form = $this->createForm(PedidoType::class, $proyectoBae);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-    
+
             $this->addFlash(
                 'success',
                 'Pedido firmado correctamente'
             );
-    
+
             return $this->render(
                 'comision/pedido.html.twig',
                 [
@@ -685,7 +686,7 @@ class ComisionController extends AbstractController
                 ]
             );
         }
-    
+
         return $this->render(
             'comision/pedido.html.twig',
             [
@@ -701,18 +702,18 @@ class ComisionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $expediente = $proyectoBae->getExpediente();
-    
+
         $form = $this->createForm(InformeDigestoType::class, $proyectoBae);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-    
+
             $this->addFlash(
                 'success',
                 'Informe subido correctamente'
             );
-    
+
             return $this->render(
                 'comision/digesto.html.twig',
                 [
@@ -722,7 +723,7 @@ class ComisionController extends AbstractController
                 ]
             );
         }
-    
+
         return $this->render(
             'comision/digesto.html.twig',
             [
@@ -735,8 +736,7 @@ class ComisionController extends AbstractController
 
     public function showAsignacion(Request $request, Dictamen $dictamen): Response
     {
-$em = $this->getDoctrine()->getManager();
-
+        $em = $this->getDoctrine()->getManager();
 
 
         $form = $this->createForm(AsignacionType::class, $dictamen);
@@ -750,10 +750,10 @@ $em = $this->getDoctrine()->getManager();
             );
 
             return $this->render('comision/asignacion.html.twig',
-            [
-                'form' => $form->createView(),
-                'dictamen' => $dictamen
-            ]);
+                [
+                    'form' => $form->createView(),
+                    'dictamen' => $dictamen
+                ]);
         }
         return $this->render('comision/asignacion.html.twig',
             [
@@ -761,24 +761,24 @@ $em = $this->getDoctrine()->getManager();
                 'dictamen' => $dictamen
             ]);
     }
-    
+
     public function showProyectoBae(Request $request, ProyectoBAE $proyectoBae): Response
     {
         $em = $this->getDoctrine()->getManager();
 
         $expediente = $proyectoBae->getExpediente();
-    
+
         $form = $this->createForm(FirmaBAEType::class, $proyectoBae);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-    
+
             $this->addFlash(
                 'success',
                 'Giro firmado correctamente'
             );
-    
+
             return $this->render(
                 'comision/firmar.html.twig',
                 [
@@ -788,7 +788,7 @@ $em = $this->getDoctrine()->getManager();
                 ]
             );
         }
-    
+
         return $this->render(
             'comision/firmar.html.twig',
             [
@@ -798,45 +798,47 @@ $em = $this->getDoctrine()->getManager();
             ]
         );
     }
-    public function imprimirGiros(Pdf $knpSnappyPdf, Request $request,ProyectoBae $id){
-		$giros=$id->getGirosOrdenados();
-		$expediente=$id->getExpediente();
-		$sesion=$id->getBoletinAsuntoEntrado()->getSesion();
 
-		$titulo ="Giro ". $expediente->getExpediente()."-".$expediente->getLetra()."-". $expediente->getPeriodoLegislativo()->getAnio();
-		$fecha=$sesion->getFecha();
+    public function imprimirGiros(Pdf $knpSnappyPdf, Request $request, ProyectoBae $id)
+    {
+        $giros = $id->getGirosOrdenados();
+        $expediente = $id->getExpediente();
+        $sesion = $id->getBoletinAsuntoEntrado()->getSesion();
+
+        $titulo = "Giro " . $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
+        $fecha = $sesion->getFecha();
 
 
-		$html = $this->renderView(
-			'comision/giroComision.pdf.twig',
-			[
-				'expediente' => $expediente,
-                'sesion'=>$sesion,
-				'title'      => $titulo,
-                'giros'      => $giros,
-				'fecha'      => $fecha,
-                
-			]
-		);
+        $html = $this->renderView(
+            'comision/giroComision.pdf.twig',
+            [
+                'expediente' => $expediente,
+                'sesion' => $sesion,
+                'title' => $titulo,
+                'giros' => $giros,
+                'fecha' => $fecha,
 
-		return new Response(
-			$knpSnappyPdf->getOutputFromHtml(
-				$html,
-				array(
-					'page-size'      => 'Legal',
-					'margin-left'  => "2cm",
-					'margin-right' => "3cm",
-					'margin-top'   => "3cm",
-					//                    'margin-bottom' => "1cm"
-				)
-			),
-			200,
-			array(
-				'Content-Type'        => 'application/pdf',
-				'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
-			)
-		);
-	}
+            ]
+        );
+
+        return new Response(
+            $knpSnappyPdf->getOutputFromHtml(
+                $html,
+                array(
+                    'page-size' => 'Legal',
+                    'margin-left' => "2cm",
+                    'margin-right' => "3cm",
+                    'margin-top' => "3cm",
+                    //                    'margin-bottom' => "1cm"
+                )
+            ),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
+            )
+        );
+    }
 
     public function indexDictamenesOrd(PaginatorInterface $paginator, Request $request)
     {
@@ -875,11 +877,11 @@ $em = $this->getDoctrine()->getManager();
 
         $qb = $em->createQueryBuilder();
         $qb->select('g')
-           ->from(GiroAdministrativo::class, 'g')
-           ->where($qb->expr()->orX(
-               $qb->expr()->eq('g.areaOrigen', ':areaAdministrativa'),
-               $qb->expr()->eq('g.areaDestino', ':areaAdministrativa')
-           ));
+            ->from(GiroAdministrativo::class, 'g')
+            ->where($qb->expr()->orX(
+                $qb->expr()->eq('g.areaOrigen', ':areaAdministrativa'),
+                $qb->expr()->eq('g.areaDestino', ':areaAdministrativa')
+            ));
         $qb->orWhere($qb->expr()->orX(
             $qb->expr()->eq('g.areaOrigen', ':areaAdministrativa2'),
             $qb->expr()->eq('g.areaDestino', ':areaAdministrativa2')
@@ -902,22 +904,22 @@ $em = $this->getDoctrine()->getManager();
     }
 
     public function showAsesor(GiroAdministrativo $id)
-	{
-		$giro=$id;
-		$expediente=$giro->getExpediente();
+    {
+        $giro = $id;
+        $expediente = $giro->getExpediente();
 
 
-			$em = $this->getDoctrine()->getManager();
-			$rechazar= true;
-			if ($giro->getEstado() == 'pendiente' or $giro->getEstado() == null) {
-				$giro->setEstado('abierto');
-			}
-			$em->flush();
-			return $this->render(
-				'comision/showGiroAsesor.html.twig',
-				[	'giro' => $giro,
-					'expediente' => $expediente,
-				]
-			);
+        $em = $this->getDoctrine()->getManager();
+        $rechazar = true;
+        if ($giro->getEstado() == 'pendiente' or $giro->getEstado() == null) {
+            $giro->setEstado('abierto');
         }
+        $em->flush();
+        return $this->render(
+            'comision/showGiroAsesor.html.twig',
+            ['giro' => $giro,
+                'expediente' => $expediente,
+            ]
+        );
+    }
 }

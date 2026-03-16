@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-   Comunicados 
+    Comunicados
 {% endblock title %}
 {% block body %}
 
@@ -16,37 +16,38 @@
                 <div class="card-header">
                     <h3 class="card-title">Filtros</h3>
                     <div class="card-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        <button type="button" class="btn btn-box-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
-                {{ form_start(filter_type) }}
-                <div class="row">
+                    {{ form_start(filter_type) }}
+                    <div class="row">
                         <div style="width:40%">
                             {{ form_row(filter_type.estado) }}</div>
-                                                        <div style="width:100%">
+                        <div style="width:100%">
                             <b>Área de Destino</b>
-                            </div>
-                            <div style="width:100%">
+                        </div>
+                        <div style="width:100%">
                             {{ form_widget(filter_type.areaDestino) }}
-                            </div>
-                            <div class="col-md-2">           
+                        </div>
+                        <div class="col-md-2">
                             {{ form_row(filter_type.fecha) }}
-                            </div>
+                        </div>
 
                     </div>
                 </div>
                 <div class="card-footer">
                     {{ form_widget(filter_type.buscar) }}
-<button type="submit" name="reset" class="btn btn-default">Limpiar</button>
+                    <button type="submit" name="reset" class="btn btn-default">Limpiar</button>
                 </div>
                 <div class="d-none">
                     {{ form_end(filter_type) }}
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -71,23 +72,39 @@
                         {% for comunicado in comunicados %}
                             <tr>
                                 <td>
-                                    <a target="_blank" href="{{ path('imprimir_comunicado', { 'id': comunicado.id }) }}">{{ comunicado.id }}</a>
+                                    <a target="_blank"
+                                       href="{{ path('imprimir_comunicado', { 'id': comunicado.id }) }}">{{ comunicado.id }}</a>
                                 </td>
                                 <td>{{ comunicado.numero }} - {{ comunicado.anio }}</td>
-                                <td>{{comunicado.tipo}}</td>
-                                <td>{{comunicado.estado}}</td>
+                                <td>{{ comunicado.tipo }}</td>
+                                <td>{{ comunicado.estado }}</td>
                                 <td>{{ comunicado.fecha|date('d/m/Y H:i') }}</td>
                                 <td>
                                     {% if comunicado.recibidoComunicados.count > 0 %}
                                         {% for area in comunicado.recibidoComunicados %}
-                                        {{area.area.nombre}} {% if area.estado == 'RECIBIDO' %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
-                                    {% elseif area.estado == 'ABIERTO' %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#63E6BE" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
-                                    {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#da1616" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
-                                    {% endif %} 
-                                
+                                            {{ area.area.nombre }} {% if area.estado == 'RECIBIDO' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12"
+                                                 viewBox="0 0 512 512">
+                                                <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                <path fill="#da1616"
+                                                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                                            </svg>
+                                        {% elseif area.estado == 'ABIERTO' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12"
+                                                 viewBox="0 0 512 512">
+                                                <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                <path fill="#63E6BE"
+                                                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                                            </svg>
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12"
+                                                 viewBox="0 0 512 512">
+                                                <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                <path fill="#da1616"
+                                                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>
+                                            </svg>
+                                        {% endif %}
+
                                         {% endfor %}
                                     {% endif %}
                                 </td>
@@ -98,7 +115,8 @@
                                     </a>
                                     {% if comunicado.archivos.count > 0 %}
                                         {% for archivo in comunicado.archivos %}
-                                            <a class="btn btn-default" target="_blank" href="{{ vich_uploader_asset(archivo, 'archivoFile') }}">
+                                            <a class="btn btn-default" target="_blank"
+                                               href="{{ asset('uploads/comunicados/' ~ archivo) }}">
                                                 <i class="fa fa-paperclip"></i>
                                             </a>
                                         {% endfor %}
@@ -115,10 +133,10 @@
     {# display navigation #}
     <div class="col-md-12 text-center">
         <div class="navigation">
-        {% if comunicados %}
-            {{ knp_pagination_render(comunicados) }}
-        {% endif %}
+            {% if comunicados %}
+                {{ knp_pagination_render(comunicados) }}
+            {% endif %}
         </div>
     </div>
-    
+
 {% endblock %}

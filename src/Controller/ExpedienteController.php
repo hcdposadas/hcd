@@ -692,7 +692,6 @@ class ExpedienteController extends AbstractController
                 $expediente->addGiroAdministrativo($giroAdministrativo);
                 $em->persist($giroAdministrativo);
                 $toRoute = 'proyecto_show';
-                $TimeStamp->stamp($expediente);
             }
 
             $tipoExpediente = $em->getRepository(TipoExpediente::class)->findOneBy([
@@ -864,7 +863,6 @@ class ExpedienteController extends AbstractController
                 $expediente->addGiroAdministrativo($giroAdministrativo);
                 $em->persist($giroAdministrativo);
                 $toRoute = 'proyecto_show';
-                $TimeStamp->stamp($expediente);
             }
 
             $em->flush();
@@ -1295,7 +1293,6 @@ class ExpedienteController extends AbstractController
                         $expediente->setFechaPresentacion(new \DateTime('now'));
                         $expediente->setAsignadoPor($this->getUser());
 
-                        $TimeStamp->stampDefinitivo($expediente);
 
                         $em->flush();
 
@@ -2071,7 +2068,6 @@ class ExpedienteController extends AbstractController
                 $giro->setFechaGiro($date);
                 $giro->setEstado('pendiente');
             }
-            $TimeStamp->stamp($expediente);
 
             $em->persist($expediente);
 

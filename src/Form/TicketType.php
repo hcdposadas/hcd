@@ -31,7 +31,7 @@ class TicketType extends AbstractType
         // Obtener el área del usuario actual
         $user = $this->security->getUser();
         $area = null;
-        
+
         if ($user) {
             $persona = $user->getPersona();
             if ($persona) {
@@ -41,18 +41,18 @@ class TicketType extends AbstractType
                 }
             }
         }
-        
+
         $builder
             ->add('texto',
-            TextareaType::class,
-            [
-                'attr' => [ 'rows' => 3, 'maxlength' => 250  ],
-                'label' => 'Descripción'
-            ] )
+                TextareaType::class,
+                [
+                    'attr' => ['rows' => 3, 'maxlength' => 250],
+                    'label' => 'Descripción'
+                ])
             ->add('areaDestino', EntityType::class, [
                 'class' => AreaAdministrativa::class,
                 'query_builder' => function (AreaAdministrativaRepository $repository) {
-                    $ids = [19, 32, 20, 21, 34, 5, 4, 24,7,9,22,6,2];
+                    $ids = [19, 32, 20, 21, 34, 5, 4, 24, 7, 9, 22, 6, 2, 3];
                     return $repository->createQueryBuilder('a')
                         ->where('a.id IN (:ids)')
                         ->setParameter('ids', $ids);
@@ -67,8 +67,7 @@ class TicketType extends AbstractType
                 'download_label' => 'Descargar archivo',
                 'asset_helper' => true,
                 'label' => 'Archivo adjunto (PDF, DOC, DOCX, JPG, PNG, GIF)',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

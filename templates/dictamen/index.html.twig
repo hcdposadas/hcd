@@ -10,13 +10,14 @@
                 <div class="card-header">
                     <h3 class="card-title">Filtros</h3>
                     <div class="card-tools pull-right">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>
                 {{ form_start(filter_type) }}
                 <div class="card-body">
-                    <div  class="row">
+                    <div class="row">
                         <div class="col-md-6">
                             {{ form_row(filter_type.expediente) }}
                         </div>
@@ -33,7 +34,7 @@
             </div>
         </div>
     </div>
-    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
+    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') and not is_granted('ROLE_CONCEJAL') and not is_granted('ROLE_COMISION') %}
         <div class="row mb-3">
             <div class="col-md-12">
                 <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>
@@ -92,11 +93,13 @@
                                            href="{{ path('dictamen_editar', { 'id': dictamen.id }) }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-default" data-toggle="tooltip" title="Asingar Texto Definitivo"
+                                        <a class="btn btn-default" data-toggle="tooltip"
+                                           title="Asingar Texto Definitivo"
                                            href="{{ path('texto_definitivo_asignar', { 'dictamen': dictamen.id }) }}">
                                             <i class="fa fa-file"></i>
                                         </a>
-                                        <a class="btn btn-default" data-toggle="tooltip" title="Dictamen Incorporado en Sesión"
+                                        <a class="btn btn-default" data-toggle="tooltip"
+                                           title="Dictamen Incorporado en Sesión"
                                            href="{{ path('dictamenod_incorporar_a_sesion', {'dictamen': dictamen.id }) }}">
                                             <i class="fa fa-caret-square-o-right"></i> IES
                                         </a>

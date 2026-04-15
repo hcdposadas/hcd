@@ -375,9 +375,13 @@ class ComisionController extends AbstractController
 
     public function newdictamen(Request $request, $id)
     {
+        if ($this->isGranted('ROLE_COMISION') || $this->isGranted('ROLE_CONCEJAL')) {
+            $this->addFlash('warning', 'No tiene permisos para crear un Dictamen.');
+
+            return $this->redirectToRoute('comision_index');
+        }
 
         $esPresidenteComision = $this->getUser()->getPersona()->esPresidenteComision();
-
 
         $expediente = $this->getDoctrine()->getRepository(Expediente::class)->find($id);
 

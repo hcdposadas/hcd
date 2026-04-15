@@ -22,6 +22,15 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DictamenController extends AbstractController
 {
+    private function puedeCrearDictamenDesdeExpediente(): bool
+    {
+        if ($this->isGranted('ROLE_CONCEJAL') || $this->isGranted('ROLE_COMISION')) {
+            return false;
+        }
+
+        return $this->isGranted('ROLE_LEGISLATIVO') && !$this->isGranted('ROLE_SECRETARIO');
+    }
+
     public function index(PaginatorInterface $paginator, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -346,6 +355,15 @@ class DictamenController extends AbstractController
 
     public function asignarAExpte(Request $request)
     {
+        if (!$this->puedeCrearDictamenDesdeExpediente()) {
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'No tiene permisos para crear un Dictamen.'
+            );
+
+            return $this->redirectToRoute('dictamen_index');
+        }
+
         $dictamen = new Dictamen();
 
         $form = $this->createForm(AsignarDictamenAExpteType::class, $dictamen);

@@ -10,7 +10,8 @@
                 <div class="card-header">
                     <h3 class="card-title">Filtros</h3>
                     <div class="card-tools pull-right">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa fa-plus"></i>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -30,7 +31,7 @@
             </div>
         </div>
     </div>
-    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') %}
+    {% if is_granted('ROLE_LEGISLATIVO') and not is_granted('ROLE_SECRETARIO') and not is_granted('ROLE_CONCEJAL') and not is_granted('ROLE_COMISION') %}
         <div class="row mb-3">
             <div class="col-md-12">
                 <a class="btn btn-primary" href="{{ path('dictamen_alta') }}"> Nuevo</a>

@@ -3,6 +3,25 @@
     Proyectos BAE
 {% endblock title %}
 {% block body %}
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtrar por Expediente</h3>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{{ path('giros_comisiones_index') }}" class="form-inline">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="numero" class="mr-2">Número:</label>
+                            <input type="number" class="form-control" id="numero" name="numero" value="{{ numero|default('') }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
+                        <a href="{{ path('giros_comisiones_index') }}" class="btn btn-secondary mb-2 ml-2">Limpiar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -20,7 +39,7 @@
                     <table class="table table-bordered table-striped data-table">
                         <thead>
                         <tr>
-                        
+
                             <th>Id</th>
                             <th>Expediente</th>
                             <th>Fecha</th>
@@ -35,21 +54,21 @@
                         {% for expediente in proyectos %}
                             <tr>
                                 <td>
-                                {{expediente.id}}
+                                    {{ expediente.id }}
                                 </td>
                                 <td>{{ expediente.expediente.expediente }}-{{ expediente.expediente.letra }}
                                     -{% if expediente.expediente.periodoLegislativo %}{{ expediente.expediente.periodoLegislativo }}{% else %}{{ expediente.expediente.anio }}{% endif %}</td>
 
                                 <td>
-                                {% if expediente.expediente.fecha %}{{ expediente.expediente.fecha|date('d/m/Y') }}{% endif %}
+                                    {% if expediente.expediente.fecha %}{{ expediente.expediente.fecha|date('d/m/Y') }}{% endif %}
                                 </td>
-                                <td>{{expediente.boletinAsuntoEntrado.sesion.titulo}}</td>
+                                <td>{{ expediente.boletinAsuntoEntrado.sesion.titulo }}</td>
                                 <td>
-                                {{expediente.extracto|raw}}
+                                    {{ expediente.extracto|raw }}
                                 </td>
 
                                 <td>
-                                                                    {% if expediente.expediente.iniciadores.count > 0 %}
+                                    {% if expediente.expediente.iniciadores.count > 0 %}
                                         {% for iniciadorExpediente in expediente.expediente.iniciadores %}
                                             {% if iniciadorExpediente.iniciador %}
                                                 {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
@@ -62,13 +81,20 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                {% if expediente.firmado %}SI{% else %}NO{% endif %}
+                                    {% if expediente.firmado %}SI{% else %}NO{% endif %}
                                 </td>
                                 <td>
-                                                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Ver Dictamen"
                                        href="{{ path('comision_show_proyectobae', { 'id': expediente.id }) }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
+                                    {% if is_granted('ROLE_PROSECRETARIO_LEGISLATIVO') %}
+                                        <a class="btn btn-default" data-toggle="tooltip" title="Cargar giros"
+                                           href="{{ path('comision_edit_giros', { 'id': expediente.expediente.id }) }}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {% endif %}
+
                                 </td>
                             </tr>
                         {% endfor %}

@@ -72,3 +72,7 @@ giros_asesor:
 show_asesor:
   path: /giros/asesor/{id}/show
   defaults: { _controller: App\Controller\ComisionController::showAsesor }
+
+comision_edit_giros:
+  path: /giros/expediente/{id}/edit
+  defaults: { _controller: App\Controller\ComisionController::editGiro }

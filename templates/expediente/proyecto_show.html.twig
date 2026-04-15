@@ -28,19 +28,19 @@
                                             <span>100% Completo</span>
                                         </div>
                                     </div>
-                                                               <a class="btn btn-default " target="_blank"
-                       href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
-                    </a>
+                                    <a class="btn btn-default " target="_blank"
+                                       href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
+                                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
+                                    </a>
                                     <a class="btn btn-default" target="_blank"
                                        href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
                                                 class="fa fa-print"></i> Imprimir Proyecto Sin Firmar</a>
-                                                <a class="btn btn-default " target="_blank"
-                       href="{{ path('expediente_imprimir_archivo', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Proyecto Completo
-                    </a>
+                                    <a class="btn btn-default " target="_blank"
+                                       href="{{ path('expediente_imprimir_archivo', {id: expediente.id}) }}">
+                                        <i class="fa fa-print"></i> Imprimir Proyecto Completo
+                                    </a>
                                 </div>
-                                  
+
                             </div>
                         {% else %}
                             <div class="row">
@@ -55,33 +55,35 @@
                                 </div>
                             </div>
 
-                        {% if expediente.expedienteInterno == null %}
-                        <p class="text-light-blue">Para finalizar con el expediente, cargue el mismo con las firmas solicitadas.</p>
-                                                            <a class="btn btn-default" target="_blank"
-                                       href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
-                                                class="fa fa-print"></i></a>
-                        {{ form_start(signature_form) }}
-                            {{ form_row(signature_form.expedienteInternoFile) }}
-                                        <input class="btn btn-primary mb-4" type="submit" value="Enviar"/>
-                {{ form_end(signature_form) }}
+                            {% if expediente.expedienteInterno == null %}
+                                <p class="text-light-blue">Para finalizar con el expediente, cargue el mismo con las
+                                    firmas solicitadas.</p>
+                                <a class="btn btn-default" target="_blank"
+                                   href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
+                                            class="fa fa-print"></i></a>
+                                {{ form_start(signature_form) }}
+                                {{ form_row(signature_form.expedienteInternoFile) }}
+                                <input class="btn btn-primary mb-4" type="submit" value="Enviar"/>
+                                {{ form_end(signature_form) }}
 
-                        {% elseif expediente.expediente == null  %}
-                                                         
-<p class="text-light-blue">Si deasea modificar el proyecto firmado ingrese un nuevo archivo. </p>
-          <div> <a class="btn btn-default " target="_blank"
-                       href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
-                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
-                    </a></div>
-                             <div>       <a class="btn btn-default" target="_blank"
-                                       href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
+                            {% elseif expediente.expediente == null %}
+
+                                <p class="text-light-blue">Si deasea modificar el proyecto firmado ingrese un nuevo
+                                    archivo. </p>
+                                <div><a class="btn btn-default " target="_blank"
+                                        href="{{ path('imprimir_proyecto_firmado', {id: expediente.id}) }}">
+                                        <i class="fa fa-print"></i> Imprimir Proyecto Firmado
+                                    </a></div>
+                                <div><a class="btn btn-default" target="_blank"
+                                        href="{{ path('expediente_imprimir_proyecto', {'id': expediente.id}) }}"><i
                                                 class="fa fa-print"></i> Imprimir Proyecto Sin Firmar</a></div>
 
-                                                                {{ form_start(signature_form) }}
-                            {{ form_row(signature_form.expedienteInternoFile) }}
-                                        <input class="btn btn-primary mb-4" type="submit" value="Modificar"/>
-                {{ form_end(signature_form) }}
+                                {{ form_start(signature_form) }}
+                                {{ form_row(signature_form.expedienteInternoFile) }}
+                                <input class="btn btn-primary mb-4" type="submit" value="Modificar"/>
+                                {{ form_end(signature_form) }}
+                            {% endif %}
                         {% endif %}
-                        {% endif %} 
                     {% endif %}
                     <dl class="dl-horizontal">
                         <dt>Expediente</dt>
@@ -106,19 +108,19 @@
                         <dd>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</dd>
                     </dl>
                     <dl class="dl-horizontal">
-                                            <dt>Adjuntos</dt>
+                        <dt>Adjuntos</dt>
                         <dd>
                             {% if expediente.expedientesAdjunto.count > 0 %}
                                 {% for adjuntoExpediente in expediente.expedientesAdjunto %}
                                     {% if adjuntoExpediente.adjunto %}
-                                    <br>
+                                        <br>
                                         {{ adjuntoExpediente.adjunto.expediente }}-{{ adjuntoExpediente.adjunto.letra }}-
                                         {% if adjuntoExpediente.adjunto.periodoLegislativo %}
                                             {{ adjuntoExpediente.adjunto.periodoLegislativo }}
                                         {% else %}
                                             {{ adjuntoExpediente.adjunto.anio }}
                                         {% endif %}
-                                    </br>
+                                        </br>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
@@ -126,12 +128,12 @@
                     </dl>
                     <dl class="dl-horizontal">
                         <dt>Codificación</dt>
-                        <dd>{{expediente.hash}}</dd>
+                        <dd>{{ expediente.hash }}</dd>
                     </dl>
 
                     <dl class="dl-horizontal">
                         <dt>Marca Temporal</dt>
-                        <dd>{{expediente.marcaTemporal}}</dd>
+                        <dd>{{ expediente.marcaTemporal }}</dd>
                     </dl>
                 </div>
             </div>
@@ -164,18 +166,18 @@
 {% endblock %}
 {% block javascripts %}
 
-  <style>
-.custom-file-input ~ .custom-file-label::after {
-    content: "Seleccionar Archivo";
-}
-  </style>
+    <style>
+        .custom-file-input ~ .custom-file-label::after {
+            content: "Seleccionar Archivo";
+        }
+    </style>
 
 
-<script>
-$(document).on('change', '.custom-file-input', function (event) {
-    $(this).next('.custom-file-label').html(event.target.files[0].name);
-})
-</script>
+    <script>
+        $(document).on('change', '.custom-file-input', function (event) {
+            $(this).next('.custom-file-label').html(event.target.files[0].name);
+        })
+    </script>
     <script>
         $(document).ready(function () {
             $('.btn-enviar-mail').click(function () {

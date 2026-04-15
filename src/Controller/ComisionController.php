@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Form\EditarGiro;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
@@ -552,11 +554,13 @@ class ComisionController extends AbstractController
     {
 
         $em = $this->getDoctrine()->getManager();
+        $numero = trim((string) $request->query->get('numero', ''));
 
         $qb = $em->createQueryBuilder();
 
         $qb->select('p')
             ->from(ProyectoBae::class, 'p')
+            ->join('p.expediente', 'e')
             ->where(
                 $qb->expr()->orX(
                     $qb->expr()->isNull('p.tratamientoSobretabla'),
@@ -567,6 +571,11 @@ class ComisionController extends AbstractController
             ->setParameter('false', false)
             ->orderBy('p.id', 'DESC');
 
+        if ($numero !== '') {
+            $qb->andWhere('e.expediente = :numero')
+                ->setParameter('numero', $numero);
+        }
+
         $proyectosBae = $qb->getQuery()->getResult();
 
         $proyectosBae = $paginator->paginate(
@@ -576,7 +585,8 @@ class ComisionController extends AbstractController
         );
         return $this->render('comision/indexGiros.html.twig', [
             'controller_name' => 'ComisionController',
-            'proyectos' => $proyectosBae
+            'proyectos' => $proyectosBae,
+            'numero' => $numero,
         ]);
     }
 
@@ -922,4 +932,96 @@ class ComisionController extends AbstractController
             ]
         );
     }
+
+    public function editGiro(Expediente $expediente, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $girosBae = $em->getRepository(ProyectoBAE::class)->findByExpedienteTimeline($expediente);
+        $girosTimeline = [];
+
+        foreach ($girosBae as $giroBae) {
+            foreach ($giroBae->getGiros() as $itemGiro) {
+                $girosTimeline[] = [
+                    'giro' => $itemGiro,
+                    'tipo' => 'comision',
+                    'sesion' => $giroBae->getBoletinAsuntoEntrado() ? $giroBae->getBoletinAsuntoEntrado()->getSesion() : null,
+                    'origen' => 'bae',
+                ];
+            }
+        }
+
+        foreach ($expediente->getGiros() as $giro) {
+            $girosTimeline[] = [
+                'giro' => $giro,
+                'tipo' => 'comision',
+                'sesion' => null,
+                'origen' => 'expediente',
+            ];
+        }
+
+        foreach ($expediente->getGiroAdministrativos() as $giroAdministrativo) {
+            $girosTimeline[] = [
+                'giro' => $giroAdministrativo,
+                'tipo' => 'administrativo',
+                'sesion' => null,
+                'origen' => 'administrativo',
+            ];
+        }
+
+        usort($girosTimeline, function ($a, $b) {
+            $fechaA = $a['giro']->getFechaGiro() ?: $a['giro']->getFechaCreacion();
+            $fechaB = $b['giro']->getFechaGiro() ?: $b['giro']->getFechaCreacion();
+
+            if ($fechaA == $fechaB) {
+                return 0;
+            }
+
+            return $fechaA < $fechaB ? -1 : 1;
+        });
+
+        $form = $this->createForm(EditarGiro::class, $expediente);
+
+        $girosAComisionOriginal = new ArrayCollection();
+
+        // Create an ArrayCollection of the current Tag objects in the database
+        foreach ( $expediente->getGiros() as $giro ) {
+            $girosAComisionOriginal->add( $giro );
+        }
+
+        $form->handleRequest( $request );
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach ( $girosAComisionOriginal as $giro ) {
+                if ( false === $expediente->getGiros()->contains( $giro ) ) {
+                    $giro->setExpediente( null );
+                    $em->remove( $giro );
+                }
+            }
+
+            foreach ($expediente->getGiros() as $giro) {
+                $giro->setExpediente($expediente);
+                $em->persist($giro);
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Los giros del expediente fueron actualizados.');
+
+            return $this->redirectToRoute('comision_edit_giros', [
+                'id' => $expediente->getId(),
+            ]);
+        }
+
+        return $this->render(
+            'comision/editGiroProyecto.html.twig',
+            [
+                'expediente' => $expediente,
+                'edit_form' => $form->createView(),
+                'giros' => $expediente->getGirosOrdenados(),
+                'giros_timeline' => $girosTimeline,
+            ]
+        );
+    }
+
 }

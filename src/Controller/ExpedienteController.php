@@ -2797,6 +2797,80 @@ class ExpedienteController extends AbstractController
     }
 
 
+    private function agregarExpedientesAdjuntosAlPdf(Pdf $knpSnappyPdf, PDFMerger $pdfMerge, Expediente $expediente, $dataToEncode, $tmp)
+    {
+        foreach ($expediente->getExpedientesAdjunto() as $expedienteAdjunto) {
+            $adjunto = $expedienteAdjunto->getAdjunto();
+
+            if (!$adjunto) {
+                continue;
+            }
+
+            if (!$adjunto->getExpedienteInterno()) {
+                $header = null;
+                if (!$adjunto->getBorrador()) {
+                    $header = $this->renderView(
+                        'default/membrete.pdf.twig',
+                        [
+                            "periodo" => $adjunto->getPeriodoLegislativo(),
+                            'dataToEncode' => $dataToEncode
+                        ]
+                    );
+                }
+
+                $footer = $this->renderView('default/pie_pagina.pdf.twig');
+                $title = 'Proyecto';
+                $html = $this->renderView(
+                    'expediente/proyecto.pdf.twig',
+                    [
+                        'expediente' => $adjunto,
+                        'title' => $title,
+                    ]
+                );
+
+                $date = new \DateTime();
+                $time = $date->getTimeStamp();
+                $nombre = $tmp . '/Adjunto' . $adjunto->getId() . $time . '.pdf';
+
+                $knpSnappyPdf->generateFromHtml(
+                    $html,
+                    $nombre,
+                    [
+                        'page-size' => 'Legal',
+                        'margin-top' => "5cm",
+                        'margin-bottom' => "2cm",
+                        'header-html' => $header,
+                        'header-spacing' => 4,
+                        'footer-spacing' => 5,
+                        'footer-html' => $footer,
+                    ]
+                );
+
+                $pdfMerge->addPDF($nombre);
+
+                foreach ($adjunto->getAnexos() as $anexo) {
+                    $path = $anexo->getAnexo();
+                    $extension = pathinfo($path);
+                    $extension = strtolower($extension['extension']);
+
+                    if ($extension == 'pdf') {
+                        $pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
+                    }
+                }
+
+                continue;
+            }
+
+            $path = $adjunto->getExpedienteInterno();
+            $extension = pathinfo($path);
+            $extension = strtolower($extension['extension']);
+
+            if ($extension == 'pdf') {
+                $pdfMerge->addPDF('uploads/expedientes/internos/' . $path);
+            }
+        }
+    }
+
     function imprimirArchivo(Pdf $knpSnappyPdf, Pdf $knpSnappyPdf2, Expediente $expediente, LoggerInterface $logger = null)
     {
         // Usar el logger de Symfony
@@ -3136,6 +3210,9 @@ class ExpedienteController extends AbstractController
         }
 
 
+        // TODO comentar si falla con muchos exptes
+        $this->agregarExpedientesAdjuntosAlPdf($knpSnappyPdf, $pdfMerge, $expediente, $dataToEncode, $tmp);
+
         foreach ($expediente->getProveidos() as $proveido) {
 
             /*		$caratula=$proveido->getCaratula();
@@ -3165,6 +3242,8 @@ class ExpedienteController extends AbstractController
             'cantidad_proyectos_bae' => count($ProyectosBae)
         ]);
 
+        $titulo = $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
+
         if ($ProyectosBae) {
             $firstProyectoBae = $ProyectosBae[0];
             $logger->info("Primer ProyectoBae obtenido", [
@@ -3179,6 +3258,7 @@ class ExpedienteController extends AbstractController
                     'expediente_id' => $expediente->getId(),
                     'proyecto_bae_id' => $firstProyectoBae->getId()
                 ]);
+
                 if ($firstProyectoBae->getFirmado()) {
                     //GIRO FIRMADO
                     $logger->info("Agregando giro firmado al PDF", [
@@ -3271,105 +3351,6 @@ class ExpedienteController extends AbstractController
                     'cantidad' => count($Dictamenes)
                 ]);
                 $firstDictamen = $Dictamenes[0];
-                foreach ($expediente->getExpedientesAdjunto() as $adjunto) {
-                    if ($adjunto->getAdjunto) {
-                        if ($adjunto->getAdjunto()->getExpedienteInterno()) {
-                            $header = null;
-                            if (!$adjunto->getAdjunto()->getBorrador()) {
-                                $header = $this->renderView(
-                                    'default/membrete.pdf.twig',
-                                    [
-                                        "periodo" => $adjunto->getAdjunto()->getPeriodoLegislativo(),
-                                        'dataToEncode' => $dataToEncode
-                                    ]
-                                );
-                            }
-                            $footer = $this->renderView('default/pie_pagina.pdf.twig');
-
-                            $array = array(
-                                'page-size' => 'Legal',
-                                //					'page-width'     => '220mm',
-                                //					'page-height'     => '340mm',
-                                //					'margin-left'    => "3cm",
-                                //					'margin-right'   => "3cm",
-                                'margin-top' => "5cm",
-                                'margin-bottom' => "2cm",
-                                'header-html' => $header,
-                                'header-spacing' => 4,
-                                'footer-spacing' => 5,
-                                'footer-html' => $footer,
-                                //                    'margin-bottom' => "1cm"
-                            );
-
-                            //        return new Response($html);
-                            $title = 'Proyecto';
-
-
-                            $html = $this->renderView(
-                                'expediente/proyecto.pdf.twig',
-                                [
-                                    'expediente' => $adjunto->getAdjunto(),
-                                    'title' => $title,
-                                ]
-                            );
-
-
-                            $date = new \DateTime();
-                            $time = $date->getTimeStamp();
-                            $nombre = $tmp . '/Firmado' . $time . '.pdf';
-
-                            $knpSnappyPdf->generateFromHtml(
-                                $html,
-                                $nombre,
-                                array(
-                                    'page-size' => 'Legal',
-                                    //					'page-width'     => '220mm',
-                                    //					'page-height'     => '340mm',
-                                    //					'margin-left'    => "3cm",
-                                    //					'margin-right'   => "3cm",
-                                    'margin-top' => "5cm",
-                                    'margin-bottom' => "2cm",
-                                    'header-html' => $header,
-                                    'header-spacing' => 4,
-                                    'footer-spacing' => 5,
-                                    'footer-html' => $footer,
-                                    //                    'margin-bottom' => "1cm"
-
-                                )
-                            );
-
-
-                            //$pdfMerge->addPDF('uploads/expedientes/anexos/'.$archivo);
-
-                            $pdfMerge->addPDF($nombre);
-
-                            foreach ($adjunto->getAdjunto()->getAnexos() as $anexo) {
-
-                                $path = $anexo->getAnexo();
-
-                                $extension = pathinfo($path);
-
-                                $extension = strtolower($extension['extension']);
-
-                                if ($extension == 'pdf') {
-                                    $pdfMerge->addPDF('uploads/expedientes/anexos/' . $path);
-                                }
-                            }
-                        } else {
-
-                            //PROYECTO FIRMADO
-                            $path = $adjunto->getAdjunto()->getExpedienteInterno();
-
-                            $extension = pathinfo($path);
-
-                            $extension = strtolower($extension['extension']);
-
-                            if ($extension == 'pdf') {
-                                $pdfMerge->addPDF('uploads/expedientes/internos/' . $path);
-                            }
-                        }
-                    }
-                }
                 //DICTAMEN FIRMADO
                 if ($firstDictamen->getDictamen()) {
                     $pdfMerge->addPDF('uploads/dictamenes/' . $firstDictamen->getDictamen());
@@ -3533,10 +3514,10 @@ class ExpedienteController extends AbstractController
 
             // ),
             200,
-            array(
+            [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="' . $titulo . '.pdf"'
-            )
+            ]
         );
     }
 

@@ -11,6 +11,7 @@ use App\Entity\ProyectoBAE;
 use App\Entity\Dictamen;
 use App\Entity\Dependencia;
 use App\Entity\ExpedienteBloqueado;
+use App\Entity\ExpedienteAdjunto;
 use App\Entity\AnexoExpediente;
 use App\Entity\TipoExpediente;
 use App\Form\AsignarHojasType;
@@ -142,7 +143,10 @@ class ExpedienteController extends AbstractController
      */
     public function show(Request $request, Expediente $expediente)
     {
-
+        $em = $this->getDoctrine()->getManager();
+        $expedientePadre = $em->getRepository(ExpedienteAdjunto::class)->findOneBy(
+            ['adjunto' => $expediente]
+        );
 
         $referer = $request->headers
             ->get('referer');
@@ -158,6 +162,7 @@ class ExpedienteController extends AbstractController
             'expediente/show.html.twig',
             [
                 'expediente' => $expediente,
+                'expedientePadre' => $expedientePadre ? $expedientePadre->getExpediente() : null,
                 'referer' => $referer
             ]
         );

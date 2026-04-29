@@ -17,6 +17,7 @@ use App\Entity\Expediente;
 use App\Entity\AreaAdministrativa;
 use App\Entity\GiroAdministrativo;
 use App\Entity\Giro;
+use App\Entity\Sesion;
 use App\Form\CrearDictamenType;
 use App\Form\CrearDictamenComisionType;
 use App\Form\FirmaDictamenType;
@@ -995,6 +996,8 @@ class ComisionController extends AbstractController
         $form->handleRequest( $request );
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Sesion|null $sesion */
+            $sesion = $form->get('sesion')->getData();
 
             foreach ( $girosAComisionOriginal as $giro ) {
                 if ( false === $expediente->getGiros()->contains( $giro ) ) {
@@ -1003,9 +1006,50 @@ class ComisionController extends AbstractController
                 }
             }
 
-            foreach ($expediente->getGiros() as $giro) {
-                $giro->setExpediente($expediente);
-                $em->persist($giro);
+            if ($sesion) {
+                $bae = $sesion->getBae()->last();
+
+                if (!$bae) {
+                    $this->addFlash('warning', 'La sesión seleccionada no tiene BAE asociado.');
+
+                    return $this->redirectToRoute('comision_edit_giros', [
+                        'id' => $expediente->getId(),
+                    ]);
+                }
+
+                $proyectoBae = $em->getRepository(ProyectoBAE::class)->findOneBy([
+                    'expediente' => $expediente,
+                    'boletinAsuntoEntrado' => $bae,
+                ]);
+
+                if (!$proyectoBae) {
+                    $proyectoBae = new ProyectoBAE();
+                }
+
+                $proyectoBae->setExpediente($expediente);
+                $proyectoBae->setBoletinAsuntoEntrado($bae);
+                $proyectoBae->setIncorporadoEnSesion(true);
+                $proyectoBae->setExtracto($expediente->getExtracto());
+
+                foreach ($proyectoBae->getGiros() as $giroExistente) {
+                    $giroExistente->setProyectoBae(null);
+                    $em->remove($giroExistente);
+                }
+
+                foreach ($expediente->getGiros()->toArray() as $giro) {
+                    $expediente->removeGiro($giro);
+                    $giro->setExpediente(null);
+                    $proyectoBae->addGiro($giro);
+                    $em->persist($giro);
+                }
+
+                $em->persist($proyectoBae);
+            } else {
+                foreach ($expediente->getGiros() as $giro) {
+                    $giro->setProyectoBae(null);
+                    $giro->setExpediente($expediente);
+                    $em->persist($giro);
+                }
             }
 
             $em->flush();

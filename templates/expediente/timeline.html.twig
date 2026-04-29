@@ -50,10 +50,12 @@
                             {% if attribute(giro, 'comisionDestino') is defined %}
 
                                 <h3 class="timeline-header"><a>{{ giro.comisionDestino }}</a> {{ giro.texto }}
-                                    {% for giroBae in girosBae %}
-                                        ({{ giroBae.boletinAsuntoEntrado.sesion }} - {{ giroBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }}){% if giro.cabecera %}  -
-                                        <span class="text-primary">Comisión de Cabecera</span>{% endif %}
-                                    {% endfor %}
+                                    {% if giro.proyectoBae and giro.proyectoBae.boletinAsuntoEntrado and giro.proyectoBae.boletinAsuntoEntrado.sesion %}
+                                        ({{ giro.proyectoBae.boletinAsuntoEntrado.sesion }} - {{ giro.proyectoBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }})
+                                    {% endif %}
+                                    {% if giro.cabecera %}  -
+                                        <span class="text-primary">Comisión de Cabecera</span>
+                                    {% endif %}
                                 </h3>
 
                                 {% if is_granted('ROLE_MESA_ENTRADA') %}

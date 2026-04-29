@@ -6,8 +6,9 @@ easy_admin:
                 fields:
                     - { property: 'tipoExpediente' }
                     - { property: 'periodoLegislativo' }
+                    - { property: 'expediente', type_options: { required: false, empty_data: ~ } }
+                    - { property: 'letra', type_options: { required: false, empty_data: ~ } }
                     - { property: 'texto', type: 'fos_ckeditor'}
-#                    - { property: 'letra' }
                     - { property: 'fecha', type_options: { widget: 'single_text', html5: true }}
                     - { property: 'iniciadores' , type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\AdminIniciadorExpedienteType } }
                     - { property: 'anexos' , type: 'collection' , type_options: { by_reference: false, entry_type: App\Form\AnexoExpedienteType } }

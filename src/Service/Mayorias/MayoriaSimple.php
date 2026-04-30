@@ -27,44 +27,47 @@ class MayoriaSimple extends Mayoria
      */
     public function seAprueba(Mocion $mocion)
     {
-        if (array_key_exists($mocion->getCuentaTotal(), $this->cantidades)) {
-            $afirmativos = $mocion->getCuentaAfirmativos();
-            $negativos = $mocion->getCuentaNegativos();
+        $afirmativos = $mocion->getCuentaAfirmativos();
+        $negativos = $mocion->getCuentaNegativos();
+        $votosEmitidos = $afirmativos + $negativos;
 
-            // Afirmativos necesarios para aprobar
-            if ($afirmativos >= $this->cantidades[$mocion->getCuentaTotal()]) {
-                return true;
-            }
+        if ($votosEmitidos <= 0) {
+            return false;
+        }
 
-            // En caso de empate (no hace falta verificar la cantidad total por el if de afuera)
-            if ($afirmativos == $negativos) {
-                ksort($this->ordenCargos);
+        $afirmativosNecesarios = (int) floor($votosEmitidos / 2) + 1;
 
-                $votosOrdenados = $mocion->getVotos()->filter(function (Voto $voto) {
-                    // quita las abstenciones
-                    return !$voto->esAbstencion();
-                })->map(function (Voto $voto) {
-                    // obtiene los votos de los cargos con jerarquia a considerar, o null para los otros
-                    $persona = $voto->getConcejal()->getPersona();
-                    foreach ($this->ordenCargos as $jerarquia => $oc) {
-                        if ($this->personaTieneCargo($persona, $oc)) {
-                            return ['cargo' => $oc, 'jerarquia' => $jerarquia, 'voto' => $voto];
-                        }
+        if ($afirmativos >= $afirmativosNecesarios) {
+            return true;
+        }
+
+        if ($afirmativos == $negativos) {
+            ksort($this->ordenCargos);
+
+            $votosOrdenados = $mocion->getVotos()->filter(function (Voto $voto) {
+                // El desempate solo considera votos emitidos.
+                return !$voto->esAbstencion();
+            })->map(function (Voto $voto) {
+                // obtiene los votos de los cargos con jerarquia a considerar, o null para los otros
+                $persona = $voto->getConcejal()->getPersona();
+                foreach ($this->ordenCargos as $jerarquia => $oc) {
+                    if ($this->personaTieneCargo($persona, $oc)) {
+                        return ['cargo' => $oc, 'jerarquia' => $jerarquia, 'voto' => $voto];
                     }
-                    return null;
-                })->filter(function ($x) {
-                    // elimina los null, para que queden solo los cargos con jerarquia
-                    return $x != null;
-                })->toArray();
-
-                // ordena los votos por jerarquia
-                usort($votosOrdenados, function ($a, $b) {
-                    return $a['jerarquia'] <=> $b['jerarquia'];
-                });
-
-                if (count($votosOrdenados)) {
-                    return $votosOrdenados[0]['voto']->esAfirmativo();
                 }
+                return null;
+            })->filter(function ($x) {
+                // elimina los null, para que queden solo los cargos con jerarquia
+                return $x != null;
+            })->toArray();
+
+            // ordena los votos por jerarquia
+            usort($votosOrdenados, function ($a, $b) {
+                return $a['jerarquia'] <=> $b['jerarquia'];
+            });
+
+            if (count($votosOrdenados)) {
+                return $votosOrdenados[0]['voto']->esAfirmativo();
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Comision;
 use App\Repository\ComisionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -20,9 +21,16 @@ class CargoPersonaType extends AbstractType {
 				'class' => 'App\Entity\Comision',
 				'query_builder' => function (ComisionRepository $er) {
 					return $er->createQueryBuilder('c')
-						->where('c.activo = :activo')
-						->setParameter('activo', true);
-				}
+						->orderBy('c.id', 'ASC');
+				},
+				'choice_label' => function (Comision $comision) {
+					return sprintf(
+						'%d - %s (%s)',
+						$comision->getId(),
+						$comision->getNombre(),
+						$comision->getActivo() ? 'activo' : 'no activo'
+					);
+				},
 			])
 		;
 	}

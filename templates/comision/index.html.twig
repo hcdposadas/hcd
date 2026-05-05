@@ -27,7 +27,7 @@
                             <label for="fecha" class="mr-2">Fecha:</label>
                             <input type="date" class="form-control" id="fecha" name="fecha" value="{{ fecha }}">
                         </div>
-                        {% if 'obras' in app.user.persona.cargoPersona.first.comision.nombre|lower %}
+                        {% if es_obras %}
 
                             <div class="form-group mx-sm-3 mb-2">
                                 <label for="estado_giro" class="mr-2">Estado:</label>
@@ -82,32 +82,34 @@
                         </thead>
                         <tbody>
                         {% for giro in giros %}
-                            {% if giro.proyectoBae %}
+                            {% set expediente = giro.proyectoBae ? giro.proyectoBae.expediente : giro.expediente %}
+                            {% if expediente %}
+                                {% set comisionDestinoId = giro.comisionDestino ? giro.comisionDestino.id : null %}
                                 <tr>
                                     <td>
-                                        <a href="{{ path('expediente_show', { 'id': giro.proyectoBae.expediente.id }) }}">{{ giro.id }}</a>
+                                        <a href="{{ path('expediente_show', { 'id': expediente.id }) }}">{{ giro.id }}</a>
                                     </td>
-                                    <td>{{ giro.proyectoBae.expediente.expediente }}
-                                        -{{ giro.proyectoBae.expediente.letra }}
-                                        -{% if giro.proyectoBae.expediente.periodoLegislativo %}{{ giro.proyectoBae.expediente.periodoLegislativo }}{% else %}{{ giro.proyectoBae.expediente.anio }}{% endif %}</td>
+                                    <td>{{ expediente.expediente }}
+                                        -{{ expediente.letra }}
+                                        -{% if expediente.periodoLegislativo %}{{ expediente.periodoLegislativo }}{% else %}{{ expediente.anio }}{% endif %}</td>
 
-                                    <td>{% if giro.proyectoBae.expediente.fecha %}{{ giro.proyectoBae.expediente.fecha|date('d/m/Y') }}{% endif %}</td>
+                                    <td>{% if expediente.fecha %}{{ expediente.fecha|date('d/m/Y') }}{% endif %}</td>
                                     {% if is_granted('ROLE_LEGISLATIVO') %}
-                                        <td>{{ giro.proyectoBae.expediente.extracto }}</td>
+                                        <td>{{ expediente.extracto }}</td>
                                     {% else %}
-                                        <td>{{ ultimosGiros[giro.proyectoBae.expediente.id]|default('Sin giro administrativo') }}</td>
+                                        <td>{{ ultimosGiros[expediente.id]|default('Sin giro administrativo') }}</td>
                                     {% endif %}
                                     <td>
-                                        {% if giro.proyectoBae.expediente.iniciadores.count > 0 %}
-                                            {% for iniciadorExpediente in giro.proyectoBae.expediente.iniciadores %}
+                                        {% if expediente.iniciadores.count > 0 %}
+                                            {% for iniciadorExpediente in expediente.iniciadores %}
                                                 {% if iniciadorExpediente.iniciador %}
                                                     {{ iniciadorExpediente.iniciador.cargoPersona | title }} -
                                                 {% endif %}
                                             {% endfor %}
-                                        {% elseif giro.proyectoBae.expediente.iniciadorParticular %}
-                                            {{ giro.proyectoBae.expediente.iniciadorParticular.nombreCompleto }}
-                                        {% elseif giro.proyectoBae.expediente.dependencia %}
-                                            {{ giro.proyectoBae.expediente.dependencia }}
+                                        {% elseif expediente.iniciadorParticular %}
+                                            {{ expediente.iniciadorParticular.nombreCompleto }}
+                                        {% elseif expediente.dependencia %}
+                                            {{ expediente.dependencia }}
                                         {% endif %}
                                     </td>
 
@@ -117,22 +119,22 @@
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento"
-                                           href="{{ path('expediente_timeline', {id: giro.proyectoBae.expediente.id}) }}">
+                                           href="{{ path('expediente_timeline', {id: expediente.id}) }}">
                                             <i class="fas fa-road"></i>
                                         </a>
 
-                                        {% set cantidadGiros = giro.proyectoBae.giros|length %}
+                                        {% set cantidadGiros = giro.proyectoBae ? giro.proyectoBae.giros|length : 1 %}
                                         {% if (cantidadGiros == 1 or giro.cabecera) and not is_granted('ROLE_CONCEJAL') %}
-                                            {% if habilitado %}
+                                            {% if comisionDestinoId in comisiones_habilitadas %}
                                                 <a class="btn btn-default" data-toggle="tooltip"
                                                    title="Crear Dictamen"
-                                                   href="{{ path('comision_dictamen_new', {id: giro.proyectoBae.expediente.id}) }}">
+                                                   href="{{ path('comision_dictamen_new', {id: expediente.id}) }}">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             {% endif %}
                                         {% endif %}
 
-                                        {% if giro.cabecera and 'obras' in app.user.persona.cargoPersona.first.comision.nombre|lower %}
+                                        {% if giro.cabecera and comisionDestinoId in comisiones_obras %}
                                             <a class="btn btn-default" data-toggle="tooltip" title="Girar a Finalizado"
                                                href="{{ path('comision_girar_finalizado', {id: giro.id}) }}"
                                                onclick="return confirm('¿Está seguro que desea girar este expediente a Finalizado?');">

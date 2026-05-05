@@ -47,8 +47,8 @@ class ComisionController extends AbstractController
         // Obtener ID del usuario actual sin cargar toda la entidad
         $userId = $this->getUser()->getId();
 
-        // Obtener comisión del usuario usando una consulta DQL optimizada
-        $comisionData = $em->createQuery('
+        // Obtener comisiones del usuario usando una consulta DQL optimizada
+        $comisionesData = $em->createQuery('
             SELECT c.id, c.peso, c.nombre
             FROM App\Entity\Comision c
             JOIN App\Entity\CargoPersona cp WITH cp.comision = c
@@ -57,33 +57,54 @@ class ComisionController extends AbstractController
             WHERE u.id = :userId
         ')
             ->setParameter('userId', $userId)
-            ->setMaxResults(1)
-            ->getOneOrNullResult();
+            ->getResult();
 
-        if (!$comisionData) {
+        if (!$comisionesData) {
             throw $this->createNotFoundException('No se encontró comisión para el usuario');
         }
 
-        $comisionId = $comisionData['id'];
-        $peso = $comisionData['peso'];
-        $habilitado = $peso ? ($userId == $peso) : true;
+        $comisionIds = array_values(array_unique(array_map(function ($comision) {
+            return $comision['id'];
+        }, $comisionesData)));
 
-        // Construir la consulta base con QueryBuilder - Solo el último giro por expediente
+        $comisionesHabilitadas = [];
+        $comisionesObras = [];
+        $habilitado = false;
+        $esObras = false;
+        foreach ($comisionesData as $comisionData) {
+            if (!$comisionData['peso'] || $userId == $comisionData['peso']) {
+                $comisionesHabilitadas[] = $comisionData['id'];
+                $habilitado = true;
+            }
+
+            if (strpos(strtolower($comisionData['nombre']), 'obras') !== false) {
+                $comisionesObras[] = $comisionData['id'];
+                $esObras = true;
+            }
+        }
+
+        // Construir la consulta base con QueryBuilder - Solo el último giro por expediente y comisión
         $qb = $em->getRepository(Giro::class)->createQueryBuilder('gd');
-        $qb->select('gd, pb, e, pl')  // Solo cargar las entidades necesarias
-        ->join('gd.proyectoBae', 'pb')
-            ->join('pb.expediente', 'e')
+        $qb->select('gd, cd, pb, e, ed, pl, pld')  // Solo cargar las entidades necesarias
+            ->join('gd.comisionDestino', 'cd')
+            ->leftJoin('gd.proyectoBae', 'pb')
+            ->leftJoin('pb.expediente', 'e')
+            ->leftJoin('gd.expediente', 'ed')
             ->leftJoin('e.periodoLegislativo', 'pl')
-            ->where('gd.comisionDestino = :comisionId')
-            ->andWhere('pb.id IS NOT NULL')
-            ->andWhere('gd.id IN (
-               SELECT MAX(g2.id) 
-               FROM App\Entity\Giro g2 
-               JOIN g2.proyectoBae pb2
-               WHERE g2.comisionDestino = :comisionId 
-               GROUP BY pb2.expediente
+            ->leftJoin('ed.periodoLegislativo', 'pld')
+            ->where('gd.comisionDestino IN (:comisionIds)')
+            ->andWhere('(pb.id IS NOT NULL OR ed.id IS NOT NULL)')
+            ->andWhere('NOT EXISTS (
+               SELECT g2.id
+               FROM App\Entity\Giro g2
+               LEFT JOIN g2.proyectoBae pb2
+               LEFT JOIN pb2.expediente e2
+               LEFT JOIN g2.expediente ed2
+               WHERE g2.comisionDestino = gd.comisionDestino
+               AND g2.id > gd.id
+               AND COALESCE(e2.id, ed2.id) = COALESCE(e.id, ed.id)
            )')
-            ->setParameter('comisionId', $comisionId)
+            ->setParameter('comisionIds', $comisionIds)
             ->orderBy('gd.id', 'DESC');
 
         // Filtros
@@ -117,22 +138,22 @@ class ComisionController extends AbstractController
             ', fecha=' . $fecha . ', estadoGiro=' . $estadoGiro);
 
         if ($numero) {
-            $qb->andWhere('e.expediente = :numero')
+            $qb->andWhere('(e.expediente = :numero OR ed.expediente = :numero)')
                 ->setParameter('numero', $numero);
         }
 
         if ($letra) {
-            $qb->andWhere('e.letra = :letra')
+            $qb->andWhere('(e.letra = :letra OR ed.letra = :letra)')
                 ->setParameter('letra', $letra);
         }
 
         if ($anio) {
-            $qb->andWhere('(pl.anio = :anio OR (pl.anio IS NULL AND e.anio = :anio))')
+            $qb->andWhere('(pl.anio = :anio OR pld.anio = :anio OR (pl.anio IS NULL AND e.anio = :anio) OR (pld.anio IS NULL AND ed.anio = :anio))')
                 ->setParameter('anio', $anio);
         }
 
         if ($fecha) {
-            $qb->andWhere('DATE(e.fecha) = :fecha')
+            $qb->andWhere('(DATE(e.fecha) = :fecha OR DATE(ed.fecha) = :fecha)')
                 ->setParameter('fecha', $fecha);
         }
 
@@ -150,8 +171,9 @@ class ComisionController extends AbstractController
             // Filtrar por último giro administrativo
             $girosToShow = [];
             foreach ($allGiros as $giro) {
-                if ($giro->getProyectoBae() && $giro->getProyectoBae()->getExpediente()) {
-                    $expedienteId = $giro->getProyectoBae()->getExpediente()->getId();
+                $expediente = $giro->getProyectoBae() ? $giro->getProyectoBae()->getExpediente() : $giro->getExpediente();
+                if ($expediente) {
+                    $expedienteId = $expediente->getId();
                     $ultimoGiro = $em->getRepository(GiroAdministrativo::class)
                         ->createQueryBuilder('ga')
                         ->select('ad.nombre')
@@ -207,8 +229,9 @@ class ComisionController extends AbstractController
         // Si no se procesaron filtros especiales arriba, obtener los últimos giros ahora
         if (!$enTratamiento && !$finalizados) {
             foreach ($giros as $giro) {
-                if ($giro->getProyectoBae() && $giro->getProyectoBae()->getExpediente()) {
-                    $expedienteId = $giro->getProyectoBae()->getExpediente()->getId();
+                $expediente = $giro->getProyectoBae() ? $giro->getProyectoBae()->getExpediente() : $giro->getExpediente();
+                if ($expediente) {
+                    $expedienteId = $expediente->getId();
                     $ultimoGiro = $em->getRepository(GiroAdministrativo::class)
                         ->createQueryBuilder('ga')
                         ->select('ad.nombre')
@@ -227,8 +250,9 @@ class ComisionController extends AbstractController
         } else {
             // Si se procesaron filtros especiales, obtener los últimos giros de los resultados paginados
             foreach ($giros as $giro) {
-                if ($giro->getProyectoBae() && $giro->getProyectoBae()->getExpediente()) {
-                    $expedienteId = $giro->getProyectoBae()->getExpediente()->getId();
+                $expediente = $giro->getProyectoBae() ? $giro->getProyectoBae()->getExpediente() : $giro->getExpediente();
+                if ($expediente) {
+                    $expedienteId = $expediente->getId();
                     $ultimoGiro = $em->getRepository(GiroAdministrativo::class)
                         ->createQueryBuilder('ga')
                         ->select('ad.nombre')
@@ -258,6 +282,9 @@ class ComisionController extends AbstractController
             'solo_cabecera' => $soloCabecera,
             'en_tratamiento' => $enTratamiento,
             'finalizados' => $finalizados,
+            'es_obras' => $esObras,
+            'comisiones_habilitadas' => array_values(array_unique($comisionesHabilitadas)),
+            'comisiones_obras' => array_values(array_unique($comisionesObras)),
             'ultimosGiros' => $ultimosGiros
         ]);
 
@@ -520,7 +547,11 @@ class ComisionController extends AbstractController
     public function showProyectoComision(Request $request, Giro $giro)
     {
         $giro->setVisto(true);
-        $expediente = $giro->getProyectoBae()->getExpediente();
+        $expediente = $giro->getProyectoBae() ? $giro->getProyectoBae()->getExpediente() : $giro->getExpediente();
+
+        if (!$expediente) {
+            throw $this->createNotFoundException('No se encontró expediente para el giro');
+        }
 
 
         return $this->render(

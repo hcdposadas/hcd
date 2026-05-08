@@ -3,7 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Comunicacion;
+use App\Entity\AreaAdministrativa;
+use App\Repository\AreaAdministrativaRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,8 +51,15 @@ class ComunicacionType extends AbstractType
                 'by_reference' => false,
                 'label' => 'Archivos Adjuntos',
             ])
-            ->add('areaDestino', null,
+            ->add('areaDestino', EntityType::class,
                 [
+                    'class' => AreaAdministrativa::class,
+                    'query_builder' => function (AreaAdministrativaRepository $repository) {
+                        return $repository->createQueryBuilder('a')
+                            ->where('a.activo = true')
+                            ->orderBy('a.nombre', 'ASC');
+                    },
+                    'multiple' => true,
                     'attr' => ['class' => 'select2', 'rows' => 3]
                 ])
             ->add('masivo', ChoiceType::class, [

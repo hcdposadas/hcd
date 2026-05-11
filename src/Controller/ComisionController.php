@@ -1079,6 +1079,9 @@ class ComisionController extends AbstractController
                 foreach ($expediente->getGiros() as $giro) {
                     $giro->setProyectoBae(null);
                     $giro->setExpediente($expediente);
+                    if (!$giro->getId()) {
+                        $giro->setCreadoPor($this->getUser());
+                    }
                     $em->persist($giro);
                 }
             }

@@ -85,7 +85,7 @@
 <div style="font-size:1.5em;text-indent: 10em;">
 De acuerdo con lo dispuesto en la <b style="font-size:1em">{{ sesion.titulo }}</b> del día {{ sesion.fecha|date('d/m/Y') }}, pase el presente Expediente a
 {% if giros|length == 1 %}
-    la <b style="font-size:1em">Comisión</b> de <b style="font-size:1em">{{ giros[0].comisionDestino.nombre|slice(9) }}</b>
+    la <b style="font-size:1em">Comisión</b> <b style="font-size:1em">{{ giros[0].comisionDestino.nombre|slice(9) }}</b>
 {% elseif giros|length > 1 %}
     las <b style="font-size:1em">Comisiones</b>
     {% for giro in giros %}

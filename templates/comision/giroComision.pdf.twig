@@ -82,15 +82,15 @@
                         <p style="font-weight: bold;font-size:1.5em;text-decoration: underline;">EXPTE. Nº {{ expediente.expediente }}-{{expediente.letra}}-{{expediente.periodoLegislativo.anio}}</p>
                         
                     </div>
-<div style="font-size:1.5em;text-indent: 12em;">
+<div style="font-size:1.5em;text-indent: 10em;">
 De acuerdo con lo dispuesto en la <b style="font-size:1em">{{ sesion.titulo }}</b> del día {{ sesion.fecha|date('d/m/Y') }}, pase el presente Expediente a
 {% if giros|length == 1 %}
-    la <b>Comisión</b> de <b style="font-size:1em">{{ giros[0].comisionDestino.nombre|slice(9) }}</b>
+    la <b style="font-size:1em">Comisión</b> de <b style="font-size:1em">{{ giros[0].comisionDestino.nombre|slice(9) }}</b>
 {% elseif giros|length > 1 %}
-    las <b>Comisiones</b>
+    las <b style="font-size:1em">Comisiones</b>
     {% for giro in giros %}
         {% if loop.last %}
-            y 
+            <b style="font-size:1em">y<b> 
         {% elseif not loop.first %}
             , 
         {% endif %}

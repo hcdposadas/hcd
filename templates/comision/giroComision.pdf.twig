@@ -79,13 +79,13 @@
 </section>
 <section>
                     <div style="text-align: right;margin-top:50px">
-                        <p style="font-weight: bold;font-size:1.5em">EXPTE. Nº {{ expediente.expediente }}-{{expediente.letra}}-{{expediente.periodoLegislativo.anio}}</p>
+                        <p style="font-weight: bold;font-size:1.5em;text-decoration: underline;">EXPTE. Nº {{ expediente.expediente }}-{{expediente.letra}}-{{expediente.periodoLegislativo.anio}}</p>
                         
                     </div>
-<div style="font-size:1.5em;">
-De acuerdo con lo dispuesto en la <b style="font-size:1em">{{ sesion.titulo }}</b> del día {{ sesion.fecha|date('d/m/Y') }}, pase el presente Expediente a 
+<div style="font-size:1.5em;text-indent: 3em;">
+De acuerdo con lo dispuesto en la <b style="font-size:1em">{{ sesion.titulo }}</b> del día {{ sesion.fecha|date('d/m/Y') }}, pase el presente Expediente a
 {% if giros|length == 1 %}
-    la Comisión de <b style="font-size:1em">{{ giros[0].comisionDestino.nombre }}</b>  
+    la Comisión de <b style="font-size:1em">{{ giros[0].comisionDestino.nombre|slice(9) }}</b>
 {% elseif giros|length > 1 %}
     las comisiones 
     {% for giro in giros %}
@@ -94,7 +94,7 @@ De acuerdo con lo dispuesto en la <b style="font-size:1em">{{ sesion.titulo }}</
         {% elseif not loop.first %}
             , 
         {% endif %}
-        <b style="font-size:1em">{{ giro.comisionDestino.nombre }}</b>
+        <b style="font-size:1em">{{ giro.comisionDestino.nombre|slice(9) }}</b>
     {% endfor %}
 {% endif %}
 a su consideración.-

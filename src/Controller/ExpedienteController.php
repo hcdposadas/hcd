@@ -299,6 +299,10 @@ class ExpedienteController extends AbstractController
 
         foreach ($girosBae as $giroBae) {
             foreach ($giroBae->getGiros() as $itemGiro) {
+                // Un cambio de cabecera se muestra como una sola entrada: la de la nueva cabecera.
+                if ($giroBae->getEsCambioCabecera() && !$itemGiro->getCabecera()) {
+                    continue;
+                }
                 $giros[] = $itemGiro;
             }
         }

@@ -48,22 +48,47 @@
 
                             {# si es giro comision #}
                             {% if attribute(giro, 'comisionDestino') is defined %}
+                                {% set cambioCabecera = giro.proyectoBae and giro.proyectoBae.esCambioCabecera %}
 
-                                <h3 class="timeline-header"><a>{{ giro.comisionDestino }}</a> {{ giro.texto }}
-                                    {% if giro.proyectoBae and giro.proyectoBae.boletinAsuntoEntrado and giro.proyectoBae.boletinAsuntoEntrado.sesion %}
-                                        ({{ giro.proyectoBae.boletinAsuntoEntrado.sesion }} - {{ giro.proyectoBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }})
-                                    {% endif %}
-                                    {% if giro.cabecera %}  -
-                                        <span class="text-primary">Comisión de Cabecera</span>
-                                    {% endif %}
-                                </h3>
+                                {% if cambioCabecera %}
+                                    {% set sesionCambio = giro.proyectoBae.boletinAsuntoEntrado.sesion %}
+                                    <h3 class="timeline-header">
+                                        <strong>Cambio de cabecera</strong> —
+                                        {% if giro.proyectoBae.comisionCabeceraAnterior %}
+                                            de {{ giro.proyectoBae.comisionCabeceraAnterior }} a
+                                        {% else %}
+                                            a
+                                        {% endif %}
+                                        <a><strong>{{ giro.comisionDestino }}</strong></a>
+                                        ({{ sesionCambio }} - {{ sesionCambio.fecha | date('d/m/Y') }})
+                                        {% if not giro.proyectoBae.comisionCabeceraAnterior %}
+                                            (sin cabecera anterior)
+                                        {% endif %}
+                                    </h3>
+                                {% else %}
+                                    <h3 class="timeline-header"><a>{{ giro.comisionDestino }}</a> {{ giro.texto }}
+                                        {% if giro.proyectoBae and giro.proyectoBae.boletinAsuntoEntrado and giro.proyectoBae.boletinAsuntoEntrado.sesion %}
+                                            ({{ giro.proyectoBae.boletinAsuntoEntrado.sesion }} - {{ giro.proyectoBae.boletinAsuntoEntrado.sesion.fecha | date ('d/m/Y') }})
+                                        {% endif %}
+                                        {% if giro.cabecera %}  -
+                                            <span class="text-primary">Comisión de Cabecera</span>
+                                        {% endif %}
+                                    </h3>
+                                {% endif %}
 
                                 {% if is_granted('ROLE_MESA_ENTRADA') %}
                                     <div class="timeline-footer">
-                                        <a class="btn btn-default btn-xs" target="_blank"
-                                           href="{{ path('expediente_imprimir_giro', {id: expediente.id, giroId: giro.id, tipoExpediente: 'legislativo'}) }}">
-                                            <i class="fas fa-print"></i>
-                                        </a>
+                                        {% if cambioCabecera %}
+                                            <a class="btn btn-default btn-xs" target="_blank"
+                                               href="{{ path('giros_comision_imprimir', {id: giro.proyectoBae.id}) }}">
+                                                <i class="fas fa-print"></i>
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-default btn-xs" target="_blank"
+                                               href="{{ path('expediente_imprimir_giro', {id: expediente.id, giroId: giro.id, tipoExpediente: 'legislativo'}) }}">
+                                                <i class="fas fa-print"></i>
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             {% endif %}

@@ -2,6 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Expediente;
+use App\Entity\Giro;
+use App\Entity\Sesion;
+
 /**
  * GiroRepository
  *
@@ -10,4 +14,27 @@ namespace App\Repository;
  */
 class GiroRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Giros del expediente en ProyectoBAE de sesiones anteriores a $sesion,
+     * de la sesión más vieja a la más nueva. Los usa CambioCabeceraManager.
+     *
+     * @return Giro[]
+     */
+    public function findGirosDeSesionesAnteriores(Expediente $expediente, Sesion $sesion): array
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.proyectoBae', 'pb')
+            ->join('pb.boletinAsuntoEntrado', 'bae')
+            ->join('bae.sesion', 's')
+            ->where('pb.expediente = :expediente')
+            ->andWhere('(s.fecha < :fecha OR (s.fecha = :fecha AND s.id < :sesionId))')
+            ->setParameter('expediente', $expediente)
+            ->setParameter('fecha', $sesion->getFecha(), 'date')
+            ->setParameter('sesionId', $sesion->getId())
+            ->orderBy('s.fecha', 'ASC')
+            ->addOrderBy('s.id', 'ASC')
+            ->addOrderBy('g.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

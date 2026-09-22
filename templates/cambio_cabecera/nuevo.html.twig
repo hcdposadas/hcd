@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Nuevo cambio de cabecera
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default mb-3" href="{{ path('sesiones_cambio_cabecera_index') }}">Volver</a>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">1. Elegir la sesión ordinaria</h3>
+        </div>
+        <div class="card-body">
+            <form method="get" action="{{ path('sesiones_cambio_cabecera_nuevo') }}" class="form-inline">
+                <div class="form-group mr-2 mb-2">
+                    <select name="sesion" class="form-control select2" style="min-width: 350px">
+                        <option value="">Seleccione una sesión</option>
+                        {% for item in sesiones %}
+                            <option value="{{ item.id }}" {% if sesion and sesion.id == item.id %}selected{% endif %}>
+                                {{ item.tituloLargo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Ver expedientes del BAE</button>
+            </form>
+        </div>
+    </div>
+
+    {% if sesion %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">2. Elegir el expediente — {{ sesion.tituloLargo }}</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Expediente</th>
+                        <th style="width:40%">Extracto</th>
+                        <th>Cabecera anterior</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for proyectoBae in proyectos %}
+                        <tr>
+                            <td>{{ proyectoBae.expediente }}</td>
+                            <td>{{ proyectoBae.extracto|raw }}</td>
+                            <td>{{ cabecerasAnteriores[proyectoBae.id] ?? 'Sin cabecera anterior' }}</td>
+                            <td>
+                                {% if proyectoBae.esCambioCabecera %}
+                                    <a class="btn btn-default"
+                                       href="{{ path('sesiones_cambio_cabecera_formulario', {proyectoBae: proyectoBae.id}) }}">Editar</a>
+                                {% else %}
+                                    <a class="btn btn-primary"
+                                       href="{{ path('sesiones_cambio_cabecera_formulario', {proyectoBae: proyectoBae.id}) }}">Cambiar cabecera</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">El BAE de esta sesión no tiene expedientes para cambiar la cabecera.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

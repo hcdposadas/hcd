@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {% if esEdicion %}Editar{% else %}Nuevo{% endif %} cambio de cabecera
+{% endblock title %}
+{% block body %}
+    <a class="btn btn-default mb-3" href="{{ path('sesiones_cambio_cabecera_nuevo', {sesion: sesion.id}) }}">Volver</a>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                {% if esEdicion %}Editar{% else %}Nuevo{% endif %} cambio de cabecera — Expediente {{ proyectoBae.expediente }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label">Sesión</label>
+                    <div>{{ sesion.tituloLargo }}</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Cabecera anterior</label>
+                    <div>{{ cabeceraAnterior ?? 'Sin cabecera anterior' }}</div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label">Extracto</label>
+                    <div>{{ proyectoBae.extracto|raw }}</div>
+                </div>
+            </div>
+
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.comision) }}
+            <button type="submit" class="btn btn-primary">Confirmar</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

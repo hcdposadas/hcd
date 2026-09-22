@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Sesion;
+
 /**
  * ProyectoBAERepository
  *
@@ -24,6 +26,46 @@ class ProyectoBAERepository extends \Doctrine\ORM\EntityRepository {
 
 		return $qb->getQuery()->getResult();
 
+	}
+
+	/**
+	 * Cambios de cabecera registrados, del más reciente al más viejo.
+	 */
+	public function getQbCambiosDeCabecera( ?string $numero ) {
+		$qb = $this->createQueryBuilder( 'pb' )
+		           ->join( 'pb.boletinAsuntoEntrado', 'bae' )
+		           ->join( 'bae.sesion', 's' )
+		           ->join( 'pb.expediente', 'e' )
+		           ->addSelect( 'bae', 's', 'e' )
+		           ->where( 'pb.esCambioCabecera = true' )
+		           ->orderBy( 's.fecha', 'DESC' )
+		           ->addOrderBy( 'pb.id', 'DESC' );
+
+		if ( $numero !== null && $numero !== '' ) {
+			$qb->andWhere( 'e.expediente = :numero' )
+			   ->setParameter( 'numero', $numero );
+		}
+
+		return $qb;
+	}
+
+	/**
+	 * Proyectos del BAE de la sesión a los que se les puede cambiar la cabecera.
+	 * Se excluyen los de tratamiento sobre tablas: no pasan por comisión.
+	 *
+	 * @return \App\Entity\ProyectoBAE[]
+	 */
+	public function findParaCambioDeCabecera( Sesion $sesion ) {
+		return $this->createQueryBuilder( 'pb' )
+		            ->join( 'pb.boletinAsuntoEntrado', 'bae' )
+		            ->join( 'pb.expediente', 'e' )
+		            ->addSelect( 'e' )
+		            ->where( 'bae.sesion = :sesion' )
+		            ->andWhere( '(pb.tratamientoSobretabla IS NULL OR pb.tratamientoSobretabla = false)' )
+		            ->setParameter( 'sesion', $sesion )
+		            ->orderBy( 'e.expediente', 'ASC' )
+		            ->getQuery()
+		            ->getResult();
 	}
 
 }

@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Cambios de cabecera
+{% endblock title %}
+{% block body %}
+    {% for proyectoBaeId in app.flashes('cambio_cabecera_imprimir') %}
+        <div class="alert alert-info">
+            <a class="btn btn-primary" target="_blank"
+               href="{{ path('giros_comision_imprimir', {id: proyectoBaeId}) }}">
+                <i class="fas fa-print"></i> Imprimir hoja
+            </a>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filtrar por Expediente</h3>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{{ path('sesiones_cambio_cabecera_index') }}" class="form-inline">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="numero" class="mr-2">Número:</label>
+                            <input type="number" class="form-control" id="numero" name="numero" value="{{ numero }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
+                        <a href="{{ path('sesiones_cambio_cabecera_index') }}" class="btn btn-secondary mb-2 ml-2">Limpiar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Cambios de cabecera</h3>
+                    <div class="card-tools">
+                        <a class="btn btn-success btn-sm" href="{{ path('sesiones_cambio_cabecera_nuevo') }}">
+                            <i class="fas fa-plus"></i> Nuevo cambio de cabecera
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>Expediente</th>
+                            <th>Cabecera anterior → nueva</th>
+                            <th>Sesión</th>
+                            <th>Firmada</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for cambio in cambios %}
+                            {% set giroCabecera = cambio.giroCabecera %}
+                            {% set sesionCambio = cambio.boletinAsuntoEntrado.sesion %}
+                            <tr>
+                                <td>{{ cambio.expediente }}</td>
+                                <td>
+                                    {{ cambio.comisionCabeceraAnterior ?? 'Sin cabecera anterior' }}
+                                    →
+                                    <strong>{{ giroCabecera ? giroCabecera.comisionDestino : '-' }}</strong>
+                                </td>
+                                <td>{{ sesionCambio.titulo }} - {{ sesionCambio.fecha|date('d/m/Y') }}</td>
+                                <td>{% if cambio.firmado %}SI{% else %}NO{% endif %}</td>
+                                <td>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Imprimir" target="_blank"
+                                       href="{{ path('giros_comision_imprimir', {id: cambio.id}) }}">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Editar"
+                                       href="{{ path('sesiones_cambio_cabecera_formulario', {proyectoBae: cambio.id}) }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Cargar hoja firmada"
+                                       href="{{ path('comision_show_proyectobae', {id: cambio.id}) }}">
+                                        <i class="fa fa-file-signature"></i>
+                                    </a>
+                                    <a class="btn btn-default" data-toggle="tooltip" title="Seguimiento"
+                                       href="{{ path('expediente_timeline', {id: cambio.expediente.id}) }}">
+                                        <i class="fa fa-map-signs"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No hay cambios de cabecera registrados.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div class="navigation">
+                {{ knp_pagination_render(cambios) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

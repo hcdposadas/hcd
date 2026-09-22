@@ -586,6 +586,15 @@ class Builder
                             'linkAttributes' => ['class' => 'nav-link']
                         ]
                     );
+                $menu[$keyPersonal]
+                    ->addChild(
+                        'Cambio de Cabecera',
+                        [
+                            'route' => 'sesiones_cambio_cabecera_index',
+                            'attributes' => ['class' => 'nav-item'],
+                            'linkAttributes' => ['class' => 'nav-link']
+                        ]
+                    );
             }
         }
 

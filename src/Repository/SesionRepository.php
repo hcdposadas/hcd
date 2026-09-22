@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Sesion;
+
 /**
  * SesionRepository
  *
@@ -57,5 +59,22 @@ class SesionRepository extends \Doctrine\ORM\EntityRepository {
 		return $qb;
 	}
 
+	/**
+	 * Sesiones ordinarias que tienen BAE, de la más nueva a la más vieja.
+	 *
+	 * @return Sesion[]
+	 */
+	public function findOrdinariasConBae() {
+		return $this->createQueryBuilder( 's' )
+		            ->distinct()
+		            ->innerJoin( 's.bae', 'bae' )
+		            ->innerJoin( 's.tipoSesion', 't' )
+		            ->where( 't.slug = :slug' )
+		            ->setParameter( 'slug', Sesion::SLUG_TIPO_ORDINARIA )
+		            ->orderBy( 's.fecha', 'DESC' )
+		            ->addOrderBy( 's.id', 'DESC' )
+		            ->getQuery()
+		            ->getResult();
+	}
 
 }

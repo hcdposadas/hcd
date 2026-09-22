@@ -60,9 +60,7 @@ class CambioCabeceraController extends AbstractController
             }
 
             $proyectos = $em->getRepository(ProyectoBAE::class)->findParaCambioDeCabecera($sesion);
-            foreach ($proyectos as $proyectoBae) {
-                $cabecerasAnteriores[$proyectoBae->getId()] = $manager->cabeceraAnterior($proyectoBae);
-            }
+            $cabecerasAnteriores = $manager->cabecerasAnteriores($proyectos);
         }
 
         return $this->render('cambio_cabecera/nuevo.html.twig', [
@@ -81,8 +79,8 @@ class CambioCabeceraController extends AbstractController
 
         $bae = $proyectoBae->getBoletinAsuntoEntrado();
         $sesion = $bae ? $bae->getSesion() : null;
-        if (!$sesion || !$sesion->esOrdinaria() || $proyectoBae->getTratamientoSobretabla()) {
-            $this->addFlash('warning', 'El cambio de cabecera solo se registra para proyectos del BAE de una sesión ordinaria que no sean de tratamiento sobre tablas.');
+        if (!$sesion || !$sesion->esOrdinaria() || $proyectoBae->getTratamientoSobretabla() || !$proyectoBae->getExpediente()) {
+            $this->addFlash('warning', 'El cambio de cabecera solo se registra para proyectos del BAE de una sesión ordinaria, con expediente y que no sean de tratamiento sobre tablas.');
 
             return $this->redirectToRoute('sesiones_cambio_cabecera_index');
         }

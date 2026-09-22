@@ -37,4 +37,57 @@ class GiroRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Como findGirosDeSesionesAnteriores, pero para varios expedientes a la
+     * vez. Lo usa CambioCabeceraManager::cabecerasAnteriores para no
+     * consultar una vez por cada ProyectoBAE.
+     *
+     * @param Expediente[] $expedientes
+     *
+     * @return Giro[]
+     */
+    public function findGirosDeSesionesAnterioresDeExpedientes(array $expedientes, Sesion $sesion): array
+    {
+        if (empty($expedientes)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('g')
+            ->join('g.proyectoBae', 'pb')
+            ->join('pb.boletinAsuntoEntrado', 'bae')
+            ->join('bae.sesion', 's')
+            ->where('pb.expediente IN (:expedientes)')
+            ->andWhere('(s.fecha < :fecha OR (s.fecha = :fecha AND s.id < :sesionId))')
+            ->setParameter('expedientes', $expedientes)
+            ->setParameter('fecha', $sesion->getFecha(), 'date')
+            ->setParameter('sesionId', $sesion->getId())
+            ->orderBy('s.fecha', 'ASC')
+            ->addOrderBy('s.id', 'ASC')
+            ->addOrderBy('g.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Giros cargados directo en cada expediente (g.expediente), ordenados
+     * por id. Los usa CambioCabeceraManager::cabecerasAnteriores.
+     *
+     * @param Expediente[] $expedientes
+     *
+     * @return Giro[]
+     */
+    public function findGirosDirectosDeExpedientes(array $expedientes): array
+    {
+        if (empty($expedientes)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('g')
+            ->where('g.expediente IN (:expedientes)')
+            ->setParameter('expedientes', $expedientes)
+            ->orderBy('g.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

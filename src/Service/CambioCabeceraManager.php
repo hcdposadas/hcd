@@ -34,8 +34,88 @@ class CambioCabeceraManager
             return $proyectoBae->getComisionCabeceraAnterior();
         }
 
+        $expediente = $proyectoBae->getExpediente();
+
+        return $this->calcularCabeceraAnterior(
+            $proyectoBae,
+            $this->girosDeSesionesAnteriores($proyectoBae),
+            $expediente !== null ? $expediente->getGiros()->toArray() : []
+        );
+    }
+
+    /**
+     * Como cabeceraAnterior(), pero para varios ProyectoBAE a la vez, sin
+     * disparar una consulta de giros por fila.
+     *
+     * @param ProyectoBAE[] $proyectosBae
+     *
+     * @return array [id del ProyectoBAE => ?Comision]
+     */
+    public function cabecerasAnteriores(array $proyectosBae): array
+    {
+        $sesion = null;
+        $expedientes = [];
+        foreach ($proyectosBae as $proyectoBae) {
+            if ($sesion === null) {
+                $sesion = $this->sesionDe($proyectoBae);
+            }
+            $expediente = $proyectoBae->getExpediente();
+            if ($expediente !== null) {
+                $expedientes[] = $expediente;
+            }
+        }
+
+        $repositorio = $this->em->getRepository(Giro::class);
+        $girosDeSesionesAnteriores = $sesion !== null
+            ? $repositorio->findGirosDeSesionesAnterioresDeExpedientes($expedientes, $sesion)
+            : [];
+        $girosDirectos = $repositorio->findGirosDirectosDeExpedientes($expedientes);
+
+        $girosDeSesionesAnterioresPorExpediente = $this->agruparGirosDeSesionesPorExpediente($girosDeSesionesAnteriores);
+        $girosDirectosPorExpediente = $this->agruparGirosDirectosPorExpediente($girosDirectos);
+
+        $resultado = [];
+        foreach ($proyectosBae as $proyectoBae) {
+            if ($proyectoBae->getEsCambioCabecera()) {
+                $resultado[$proyectoBae->getId()] = $proyectoBae->getComisionCabeceraAnterior();
+                continue;
+            }
+
+            $expediente = $proyectoBae->getExpediente();
+            if ($expediente === null) {
+                $resultado[$proyectoBae->getId()] = null;
+                continue;
+            }
+
+            $clave = spl_object_hash($expediente);
+            $resultado[$proyectoBae->getId()] = $this->calcularCabeceraAnterior(
+                $proyectoBae,
+                isset($girosDeSesionesAnterioresPorExpediente[$clave]) ? $girosDeSesionesAnterioresPorExpediente[$clave] : [],
+                isset($girosDirectosPorExpediente[$clave]) ? $girosDirectosPorExpediente[$clave] : []
+            );
+        }
+
+        return $resultado;
+    }
+
+    /**
+     * Regla común de la cabecera anterior, dados los giros ya cargados:
+     * primero el giro con cabecera propio del ProyectoBAE, si no el más
+     * reciente entre los giros de sesiones anteriores, si no el de los
+     * giros directos del expediente, si no null.
+     *
+     * @param Giro[] $girosDeSesionesAnteriores de la sesión más vieja a la más nueva
+     * @param Giro[] $girosDirectos del expediente
+     */
+    private function calcularCabeceraAnterior(ProyectoBAE $proyectoBae, array $girosDeSesionesAnteriores, array $girosDirectos): ?Comision
+    {
+        $giroPropio = $proyectoBae->getGiroCabecera();
+        if ($giroPropio !== null) {
+            return $giroPropio->getComisionDestino();
+        }
+
         $cabecera = null;
-        foreach ($this->girosDeSesionesAnteriores($proyectoBae) as $giro) {
+        foreach ($girosDeSesionesAnteriores as $giro) {
             if ($giro->getCabecera()) {
                 $cabecera = $giro->getComisionDestino();
             }
@@ -44,13 +124,52 @@ class CambioCabeceraManager
             return $cabecera;
         }
 
-        foreach ($proyectoBae->getExpediente()->getGiros() as $giro) {
+        foreach ($girosDirectos as $giro) {
             if ($giro->getCabecera()) {
                 return $giro->getComisionDestino();
             }
         }
 
         return null;
+    }
+
+    /**
+     * @param Giro[] $giros de findGirosDeSesionesAnterioresDeExpedientes
+     *
+     * @return array<string, Giro[]> agrupados por el hash del Expediente del ProyectoBAE de cada giro
+     */
+    private function agruparGirosDeSesionesPorExpediente(array $giros): array
+    {
+        $agrupados = [];
+        foreach ($giros as $giro) {
+            $proyectoBae = $giro->getProyectoBae();
+            $expediente = $proyectoBae !== null ? $proyectoBae->getExpediente() : null;
+            if ($expediente === null) {
+                continue;
+            }
+            $agrupados[spl_object_hash($expediente)][] = $giro;
+        }
+
+        return $agrupados;
+    }
+
+    /**
+     * @param Giro[] $giros de findGirosDirectosDeExpedientes
+     *
+     * @return array<string, Giro[]> agrupados por el hash del Expediente
+     */
+    private function agruparGirosDirectosPorExpediente(array $giros): array
+    {
+        $agrupados = [];
+        foreach ($giros as $giro) {
+            $expediente = $giro->getExpediente();
+            if ($expediente === null) {
+                continue;
+            }
+            $agrupados[spl_object_hash($expediente)][] = $giro;
+        }
+
+        return $agrupados;
     }
 
     /**
@@ -63,6 +182,9 @@ class CambioCabeceraManager
         $sesion = $this->sesionDe($proyectoBae);
         if ($sesion === null || !$sesion->esOrdinaria()) {
             throw new \DomainException('El cambio de cabecera solo se registra en sesiones ordinarias.');
+        }
+        if ($proyectoBae->getExpediente() === null) {
+            throw new \DomainException('El proyecto no tiene expediente asociado.');
         }
         if (!$nueva->getActivo()) {
             throw new \DomainException('La comisión elegida no está activa.');

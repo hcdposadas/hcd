@@ -20,6 +20,12 @@ class CambioCabeceraManagerTest extends TestCase
     /** @var Giro[] lo que devuelve GiroRepository::findGirosDeSesionesAnteriores */
     private $girosAnteriores = [];
 
+    /** @var Giro[] lo que devuelve GiroRepository::findGirosDeSesionesAnterioresDeExpedientes */
+    private $girosAnterioresDeExpedientes = [];
+
+    /** @var Giro[] lo que devuelve GiroRepository::findGirosDirectosDeExpedientes */
+    private $girosDirectosDeExpedientes = [];
+
     /** @var EntityManagerInterface&MockObject */
     private $em;
 
@@ -29,11 +35,21 @@ class CambioCabeceraManagerTest extends TestCase
     protected function setUp(): void
     {
         $this->girosAnteriores = [];
+        $this->girosAnterioresDeExpedientes = [];
+        $this->girosDirectosDeExpedientes = [];
 
         $repositorio = $this->createMock(GiroRepository::class);
         $repositorio->method('findGirosDeSesionesAnteriores')
             ->willReturnCallback(function () {
                 return $this->girosAnteriores;
+            });
+        $repositorio->method('findGirosDeSesionesAnterioresDeExpedientes')
+            ->willReturnCallback(function () {
+                return $this->girosAnterioresDeExpedientes;
+            });
+        $repositorio->method('findGirosDirectosDeExpedientes')
+            ->willReturnCallback(function () {
+                return $this->girosDirectosDeExpedientes;
             });
 
         $this->em = $this->createMock(EntityManagerInterface::class);
@@ -77,6 +93,50 @@ class CambioCabeceraManagerTest extends TestCase
         $this->assertSame($a, $this->manager->cabeceraAnterior($proyectoBae));
     }
 
+    public function testCabeceraAnteriorPrefiereElGiroPropioDelProyectoBaeALosDeSesionesAnteriores(): void
+    {
+        $x = $this->comision('Obras');
+        $y = $this->comision('Hacienda');
+        $this->girosAnteriores = [$this->giro($y, true)];
+        $proyectoBae = $this->proyectoBae();
+        $proyectoBae->addGiro($this->giro($x, true));
+
+        $this->assertSame($x, $this->manager->cabeceraAnterior($proyectoBae));
+    }
+
+    public function testAplicarConLaComisionDelGiroPropioRechazaSinTocarNada(): void
+    {
+        $x = $this->comision('Obras');
+        $y = $this->comision('Hacienda');
+        $this->girosAnteriores = [$this->giro($y, true)];
+        $proyectoBae = $this->proyectoBae();
+        $proyectoBae->addGiro($this->giro($x, true));
+
+        try {
+            $this->manager->aplicar($proyectoBae, $x);
+            $this->fail('Se esperaba \DomainException');
+        } catch (\DomainException $e) {
+            $this->assertSame('La comisión elegida ya es la cabecera.', $e->getMessage());
+        }
+
+        $this->assertSame([$x], $this->comisionesDe($proyectoBae));
+        $this->assertNull($proyectoBae->getEsCambioCabecera());
+    }
+
+    public function testAplicarConOtraComisionGuardaElGiroPropioComoCabeceraAnterior(): void
+    {
+        $x = $this->comision('Obras');
+        $y = $this->comision('Hacienda');
+        $z = $this->comision('Salud');
+        $this->girosAnteriores = [$this->giro($y, true)];
+        $proyectoBae = $this->proyectoBae();
+        $proyectoBae->addGiro($this->giro($x, true));
+
+        $this->manager->aplicar($proyectoBae, $z);
+
+        $this->assertSame($x, $proyectoBae->getComisionCabeceraAnterior());
+    }
+
     public function testRechazaSesionQueNoEsOrdinaria(): void
     {
         $this->expectException(\DomainException::class);
@@ -94,6 +154,22 @@ class CambioCabeceraManagerTest extends TestCase
         $this->expectExceptionMessage('La comisión elegida no está activa.');
 
         $this->manager->aplicar($this->proyectoBae(), $inactiva);
+    }
+
+    public function testAplicarRechazaProyectoSinExpedienteSinTocarNada(): void
+    {
+        $proyectoBae = $this->proyectoBae();
+        $proyectoBae->setExpediente(null);
+
+        try {
+            $this->manager->aplicar($proyectoBae, $this->comision('Obras'));
+            $this->fail('Se esperaba \DomainException');
+        } catch (\DomainException $e) {
+            $this->assertSame('El proyecto no tiene expediente asociado.', $e->getMessage());
+        }
+
+        $this->assertCount(0, $proyectoBae->getGiros());
+        $this->assertNull($proyectoBae->getEsCambioCabecera());
     }
 
     public function testRechazaSiLaComisionElegidaYaEsLaCabeceraSinTocarNada(): void
@@ -235,6 +311,37 @@ class CambioCabeceraManagerTest extends TestCase
         $this->manager->aplicar($proyectoBae, $a);
     }
 
+    public function testCabecerasAnterioresDevuelveElMapaCorrectoParaVariosProyectos(): void
+    {
+        $x = $this->comision('Obras');
+        $y = $this->comision('Hacienda');
+
+        $expedienteConCabeceraPropia = new Expediente();
+        $proyectoBae1 = $this->conId($this->proyectoBae(null, $expedienteConCabeceraPropia), 10);
+        $proyectoBae1->addGiro($this->giro($x, true));
+
+        $expedienteQueHeredaDeSesionAnterior = new Expediente();
+        $proyectoBae2 = $this->conId($this->proyectoBae(null, $expedienteQueHeredaDeSesionAnterior), 20);
+        $proyectoBaeDeSesionAnterior = $this->proyectoBae(null, $expedienteQueHeredaDeSesionAnterior);
+        $proyectoBaeDeSesionAnterior->addGiro($this->giro($y, true));
+        $this->girosAnterioresDeExpedientes = $proyectoBaeDeSesionAnterior->getGiros()->toArray();
+
+        $resultado = $this->manager->cabecerasAnteriores([$proyectoBae1, $proyectoBae2]);
+
+        $this->assertSame([10 => $x, 20 => $y], $resultado);
+    }
+
+    public function testCabecerasAnterioresDejaEnNullElProyectoSinExpediente(): void
+    {
+        $proyectoBae = $this->conId($this->proyectoBae(), 30);
+        $proyectoBae->setExpediente(null);
+
+        $resultado = $this->manager->cabecerasAnteriores([$proyectoBae]);
+
+        $this->assertArrayHasKey(30, $resultado);
+        $this->assertNull($resultado[30]);
+    }
+
     private function sesion(string $slugTipo = Sesion::SLUG_TIPO_ORDINARIA): Sesion
     {
         $tipo = new Parametro();
@@ -256,6 +363,20 @@ class CambioCabeceraManagerTest extends TestCase
         $proyectoBae = new ProyectoBAE();
         $proyectoBae->setBoletinAsuntoEntrado($bae);
         $proyectoBae->setExpediente($expediente ?? new Expediente());
+
+        return $proyectoBae;
+    }
+
+    /**
+     * Fuerza el id de un ProyectoBAE creado en memoria (sin base de datos no
+     * hay forma de que Doctrine lo asigne), para poder probar el mapa por id
+     * que arma cabecerasAnteriores().
+     */
+    private function conId(ProyectoBAE $proyectoBae, int $id): ProyectoBAE
+    {
+        $propiedad = new \ReflectionProperty(ProyectoBAE::class, 'id');
+        $propiedad->setAccessible(true);
+        $propiedad->setValue($proyectoBae, $id);
 
         return $proyectoBae;
     }

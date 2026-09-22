@@ -118,6 +118,29 @@ class ProyectoBAE extends BaseClass {
      */
     private $pedido;
 
+    /**
+     * Marca el paso por sesión como cambio de cabecera.
+     *
+     * @ORM\Column(name="es_cambio_cabecera", type="boolean", nullable=true)
+     */
+    private $esCambioCabecera;
+
+    /**
+     * Comisión que era cabecera antes del cambio (null = no había).
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Comision")
+     * @ORM\JoinColumn(name="comision_cabecera_anterior_id", referencedColumnName="id", nullable=true)
+     */
+    private $comisionCabeceraAnterior;
+
+    /**
+     * Giro que el cambio creó porque la comisión nueva no estaba girada.
+     * La edición del cambio lo usa para sacarlo si se corrige la comisión.
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Giro")
+     * @ORM\JoinColumn(name="giro_cabecera_agregado_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     */
+    private $giroCabeceraAgregado;
 
 	/**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -511,5 +534,63 @@ class ProyectoBAE extends BaseClass {
         $this->pedido = $pedido;
 
         return $this;
+    }
+
+    public function getEsCambioCabecera(): ?bool
+    {
+        return $this->esCambioCabecera;
+    }
+
+    public function setEsCambioCabecera(?bool $esCambioCabecera): self
+    {
+        $this->esCambioCabecera = $esCambioCabecera;
+
+        return $this;
+    }
+
+    public function getComisionCabeceraAnterior(): ?Comision
+    {
+        return $this->comisionCabeceraAnterior;
+    }
+
+    public function setComisionCabeceraAnterior(?Comision $comisionCabeceraAnterior): self
+    {
+        $this->comisionCabeceraAnterior = $comisionCabeceraAnterior;
+
+        return $this;
+    }
+
+    public function getGiroCabeceraAgregado(): ?Giro
+    {
+        return $this->giroCabeceraAgregado;
+    }
+
+    public function setGiroCabeceraAgregado(?Giro $giroCabeceraAgregado): self
+    {
+        $this->giroCabeceraAgregado = $giroCabeceraAgregado;
+
+        return $this;
+    }
+
+    /**
+     * Giro marcado como cabecera en este paso por sesión, si lo hay.
+     */
+    public function getGiroCabecera(): ?Giro
+    {
+        foreach ($this->giros as $giro) {
+            if ($giro->getCabecera()) {
+                return $giro;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Título de la hoja que se imprime para los giros de este paso por sesión.
+     */
+    public function getTituloHojaGiro(): string
+    {
+        return $this->esCambioCabecera ? 'CAMBIO DE CABECERA' : 'PASE A COMISIÓN';
     }
 }

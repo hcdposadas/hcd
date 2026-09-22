@@ -13,6 +13,8 @@ use App\Entity\Base\BaseClass;
  * @ORM\Entity(repositoryClass="App\Repository\SesionRepository")
  */
 class Sesion extends BaseClass {
+	public const SLUG_TIPO_ORDINARIA = 'sesion-tipo-ordinaria';
+
 	/**
 	 * @var int
 	 *
@@ -421,5 +423,13 @@ class Sesion extends BaseClass {
 		$this->numeroReunion = $numeroReunion;
 
 		return $this;
+	}
+
+	/**
+	 * Sesión ordinaria según su tipo (Parametro con slug sesion-tipo-ordinaria).
+	 */
+	public function esOrdinaria(): bool {
+		return $this->tipoSesion !== null
+		       && $this->tipoSesion->getSlug() === self::SLUG_TIPO_ORDINARIA;
 	}
 }

@@ -74,8 +74,10 @@
             </div>
         </div>
 </section>
+{# El título sale del ProyectoBAE: "CAMBIO DE CABECERA" o "PASE A COMISIÓN". #}
+{% set proyectoBaeHoja = giros|length > 0 ? (giros|first).proyectoBae : null %}
 <section>
-    <div style="font-weight: bold;text-align: center;margin-top:250px; font-size:1.75em">PASE A COMISIÓN</div>
+    <div style="font-weight: bold;text-align: center;margin-top:250px; font-size:1.75em">{{ proyectoBaeHoja ? proyectoBaeHoja.tituloHojaGiro : 'PASE A COMISIÓN' }}</div>
 </section>
 <section>
                     <div style="text-align: right;margin-top:50px">

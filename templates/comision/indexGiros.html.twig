@@ -57,7 +57,10 @@
                                     {{ expediente.id }}
                                 </td>
                                 <td>{{ expediente.expediente.expediente }}-{{ expediente.expediente.letra }}
-                                    -{% if expediente.expediente.periodoLegislativo %}{{ expediente.expediente.periodoLegislativo }}{% else %}{{ expediente.expediente.anio }}{% endif %}</td>
+                                    -{% if expediente.expediente.periodoLegislativo %}{{ expediente.expediente.periodoLegislativo }}{% else %}{{ expediente.expediente.anio }}{% endif %}
+                                    {% if expediente.esCambioCabecera %}
+                                        <br><span class="badge badge-info">Cambio de cabecera</span>
+                                    {% endif %}</td>
 
                                 <td>
                                     {% if expediente.expediente.fecha %}{{ expediente.expediente.fecha|date('d/m/Y') }}{% endif %}

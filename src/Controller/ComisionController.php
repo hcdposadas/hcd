@@ -851,7 +851,7 @@ class ComisionController extends AbstractController
         $expediente = $id->getExpediente();
         $sesion = $id->getBoletinAsuntoEntrado()->getSesion();
 
-        $titulo = "Giro " . $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
+        $titulo = ($id->getEsCambioCabecera() ? "Cambio de cabecera " : "Giro ") . $expediente->getExpediente() . "-" . $expediente->getLetra() . "-" . $expediente->getPeriodoLegislativo()->getAnio();
         $fecha = $sesion->getFecha();
 
 
